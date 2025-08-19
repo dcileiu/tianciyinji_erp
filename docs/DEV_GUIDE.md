@@ -9,22 +9,21 @@
 ### 2. 技术栈与版本建议 (Nuxt 官方生态黄金组合)
 | 组件 | 建议版本/说明 |
 |------|---------------|
-| Node.js | LTS（当前最新 20.x） |
-| Nuxt | ^3.x |
+| Node.js | LTS（当前最新） |
+| Nuxt | 最新版|
 | **Nuxt UI** | ^2.x（官方 UI 组件库，配置驱动） |
 | **Nuxt Drizzle** | 最新版（简化 Drizzle ORM 集成） |
-| **Supabase Auth Helpers** | ^0.x（@supabase/auth-helpers-nuxt） |
-| TypeScript | ^5.x |
-| Drizzle ORM | ^0.30+（Postgres driver） |
-| Supabase-js | ^2.x |
+| @nuxtjs/supabase | 最新版
+| TypeScript | 最新版
+| Drizzle ORM | 最新版（Postgres driver） |
 | Supabase 数据库 | PostgreSQL 15+ |
 | CSS 框架 | **UnoCSS**（Nuxt UI 默认，原子化 CSS） |
 | 状态管理 | **Pinia**（Nuxt 内置） |
 | 请求库 | **$fetch / useFetch**（Nuxt 内置） |
-| 测试 | Vitest ^1.x, Playwright ^1.x |
+| 测试 | Vitest , Playwright  |
 | 代码质量 | ESLint + Prettier（最新版） |
-| 国际化 | @nuxtjs/i18n |
-| 日志 | pino + hook（server runtime） |
+| 国际化 | @nuxtjs/i18n | 最新版
+| 日志 | pino + hook（server runtime） | 最新版
 
 ### 3. 系统高层架构
 ```
@@ -176,7 +175,7 @@ erp_nuxt/
 
 **安装与配置**:
 ```bash
-pnpm add @supabase/auth-helpers-nuxt @supabase/supabase-js
+pnpm add @supabase/auth-helpers-nuxt @nuxt/supabase
 ```
 
 **nuxt.config.ts 配置**:
@@ -545,7 +544,7 @@ const result = await db.query.purchaseOrders.findMany({
 
 **完整的初始化脚本** (`scripts/seed.ts`):
 ```typescript
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@nuxt/supabase'
 import { useDrizzle } from '#drizzle'
 import { 
   sysUsers, sysRoles, sysUserRoles, 
@@ -1202,7 +1201,7 @@ cd erp_nuxt
 
 # 2. 安装核心依赖 (Nuxt UI + Nuxt Drizzle + Supabase Auth)
 pnpm add @nuxt/ui nuxt-drizzle @supabase/auth-helpers-nuxt
-pnpm add @supabase/supabase-js drizzle-orm pg zod
+pnpm add @nuxt/supabase drizzle-orm pg zod
 
 # 3. 安装开发依赖
 pnpm add -D drizzle-kit @types/pg

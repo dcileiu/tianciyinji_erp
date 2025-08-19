@@ -10,60 +10,12 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
       cdnURL: string,
    },
 
-   supabaseServiceKey: string,
-
    nitro: {
       envPrefix: string,
    },
-
-   icon: {
-      serverKnownCssClasses: Array<any>,
-   },
-
-   supabase: {
-      serviceKey: any,
-   },
   }
   interface SharedPublicRuntimeConfig {
-   supabaseUrl: string,
 
-   supabaseAnonKey: string,
-
-   supabase: {
-      url: string,
-
-      key: string,
-
-      redirect: boolean,
-
-      redirectOptions: {
-         login: string,
-
-         callback: string,
-
-         exclude: Array<string>,
-
-         cookieRedirect: boolean,
-
-         saveRedirectToCookie: boolean,
-      },
-
-      cookieName: string,
-
-      cookiePrefix: string,
-
-      useSsrCookies: boolean,
-
-      cookieOptions: {
-         maxAge: number,
-
-         sameSite: string,
-
-         secure: boolean,
-      },
-
-      clientOptions: any,
-   },
   }
 declare module '@nuxt/schema' {
   interface RuntimeConfig extends UserRuntimeConfig {}
