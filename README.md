@@ -1,75 +1,233 @@
-# Nuxt Minimal Starter
+# ERP 企业资源管理系统
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+基于 Nuxt 3 + Supabase + shadcn-vue 构建的现代化企业资源管理系统。
 
-## Setup
+## 🚀 技术栈
 
-Make sure to install dependencies:
+- **前端框架**: Nuxt 3 (v4.x)
+- **UI 组件**: shadcn-vue + Tailwind CSS
+- **图标**: Lucide Vue
+- **后端服务**: Supabase
+- **认证系统**: Supabase Auth
+- **数据库**: PostgreSQL (Supabase)
+- **包管理器**: pnpm
+- **开发语言**: TypeScript + Vue 3
 
+## 📋 系统功能模块
+
+### 🏠 首页仪表盘
+- 关键业务指标展示
+- 快速操作入口
+- 待办事项提醒
+- 系统活动日志
+- 数据统计图表
+
+### 💰 销售管理
+- **客户档案**: 客户主数据管理
+- **销售订单**: 订单全生命周期管理
+- **备货订单**: 备货流程管理
+- **发货通知单**: 发货流程跟踪
+- **开票通知单**: 开票流程管理
+- **退货通知单**: 退货流程处理
+- **销售计划表**: 订单和明细计划
+- **销售报表**: 多维度销售统计分析
+
+### 📅 生产计划
+- **生产计划单**: 生产计划制定和管理
+- **物料清单**: BOM 管理
+- **采购计划单**: 基于生产的采购需求
+- **需求表**: 生产和采购需求分析
+
+### 🛒 采购管理
+- **供应商管理**: 供应商主数据维护
+- **采购订单**: 采购订单全流程管理
+- **采购到货单**: 到货确认和管理
+- **采购退货单**: 退货流程处理
+- **采购发票**: 发票管理和对账
+
+### 🏭 生产管理
+- **生产订单**: 生产任务下达和跟踪
+- **生产领料单**: 原料领用管理
+- **生产完工单**: 完工确认和质检
+- **生产入库单**: 成品入库管理
+- **生产退料单**: 剩余物料退回
+
+### ⚙️ 车间设置
+- **加工中心**: 设备和工作中心管理
+- **生产线**: 生产线配置和管理
+- **班组设置**: 生产班组管理
+- **工人管理**: 工人档案和技能管理
+- **工种设置**: 工种分类和标准
+- **标准工序段**: 工艺标准化管理
+- **工艺路线**: 产品工艺路线设计
+
+### 📦 仓库管理
+- **仓库列表**: 仓库主数据管理
+- **入库管理**: 采购入库、生产入库、其他入库
+- **出库管理**: 销售出库、生产出库、其他出库
+- **退料退货**: 各类退货退料处理
+- **盘点调拨**: 库存盘点和调拨管理
+- **现存量**: 实时库存查询和分析
+
+### 💳 财务管理
+- **收款单**: 客户收款管理
+- **付款单**: 供应商付款管理
+- **开票申请**: 开票流程管理
+- **销售发票**: 销售发票开具和管理
+- **采购发票**: 采购发票接收和核对
+
+### 🛠️ 系统设置
+- **角色管理**: 用户角色和权限配置
+- **部门管理**: 组织架构管理
+- **岗位管理**: 岗位设置和权限分配
+- **字典管理**: 系统数据字典维护
+- **人员管理**: 员工档案管理
+- **用户管理**: 系统用户账户管理
+- **日志管理**: 系统操作日志查询
+- **系统配置**: 系统参数配置
+
+### 📊 基础数据
+- **客户管理**: 客户主数据维护
+- **供应商管理**: 供应商主数据维护
+- **商品管理**: 产品和物料主数据
+- **仓库管理**: 仓库和库位设置
+
+## 🎨 界面特性
+
+- **现代化设计**: 基于 shadcn-vue 的现代化 UI 组件
+- **深色模式**: 支持浅色/深色主题切换
+- **响应式布局**: 适配桌面和移动设备
+- **直观导航**: 清晰的侧边栏导航结构
+- **数据可视化**: 图表和统计数据展示
+- **交互友好**: 流畅的交互体验和加载状态
+
+## 🔐 安全特性
+
+- **用户认证**: 基于 Supabase Auth 的安全认证
+- **路由保护**: 中间件层面的路由访问控制
+- **权限管理**: 基于角色的访问控制 (RBAC)
+- **会话管理**: 安全的用户会话管理
+- **数据加密**: 敏感数据加密存储
+
+## 🚀 开始使用
+
+### 环境要求
+
+- Node.js 18+ 
+- pnpm 8+
+- Supabase 项目
+
+### 安装步骤
+
+1. **克隆项目**
 ```bash
-# npm
-npm install
+git clone <repository-url>
+cd erp_nuxt
+```
 
-# pnpm
+2. **安装依赖**
+```bash
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
+3. **环境配置**
 ```bash
-# npm
-npm run dev
+# 复制环境变量文件
+cp .env.example .env
 
-# pnpm
+# 配置 Supabase 环境变量
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+4. **启动开发服务器**
+```bash
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+5. **访问应用**
+打开浏览器访问 `http://localhost:3000`
 
-Build the application for production:
+### 生产部署
 
 ```bash
-# npm
-npm run build
-
-# pnpm
+# 构建生产版本
 pnpm build
 
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
+# 启动生产服务器
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## 📁 项目结构
+
+```
+erp_nuxt/
+├── app/                    # 应用入口
+├── assets/                 # 静态资源
+│   └── css/               # 样式文件
+├── components/            # Vue 组件
+│   └── ui/                # UI 组件库
+├── layouts/               # 布局组件
+│   ├── default.vue        # 默认布局
+│   └── auth.vue          # 认证布局
+├── lib/                   # 工具库
+│   └── utils.ts          # 工具函数
+├── middleware/            # 路由中间件
+│   └── auth.ts           # 认证中间件
+├── pages/                 # 页面路由
+│   ├── dashboard.vue      # 仪表盘
+│   ├── login.vue         # 登录页面
+│   ├── sales/            # 销售管理
+│   ├── purchase/         # 采购管理
+│   ├── production/       # 生产管理
+│   ├── warehouse/        # 仓库管理
+│   ├── finance/          # 财务管理
+│   └── system/           # 系统设置
+├── types/                # TypeScript 类型定义
+└── docs/                 # 项目文档
+```
+
+## 🔧 开发指南
+
+### 添加新页面
+
+1. 在 `pages/` 目录下创建 Vue 文件
+2. 使用 `definePageMeta` 设置页面元数据
+3. 添加必要的认证中间件
+
+### 创建新组件
+
+1. 在 `components/` 目录下创建组件
+2. 使用 shadcn-vue 的设计系统
+3. 遵循组件命名规范
+
+### 样式开发
+
+- 使用 Tailwind CSS 工具类
+- 遵循 shadcn-vue 的设计令牌
+- 支持深色模式切换
+
+### 数据管理
+
+- 使用 Supabase 客户端进行数据操作
+- 实现响应式数据更新
+- 添加适当的错误处理
+
+## 📝 许可证
+
+本项目采用 MIT 许可证。
+
+## 🤝 贡献指南
+
+欢迎提交 Issue 和 Pull Request 来改善这个项目。
+
+## 📞 联系支持
+
+如有问题或建议，请通过以下方式联系：
+
+- 提交 GitHub Issue
+- 发送邮件至项目维护者
+
+---
+
+**ERP 管理系统** - 让企业管理更简单、更高效！
