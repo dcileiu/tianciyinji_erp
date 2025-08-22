@@ -30,73 +30,90 @@
     </div>
 
     <!-- 搜索和筛选 -->
-    <div class="bg-card p-6 rounded-lg border">
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <!-- 搜索框 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            搜索商品
-          </label>
-          <div class="relative">
-            <input
-              v-model="searchQuery"
-              placeholder="商品名称、编号、规格..."
-              class="w-full h-10 pl-10 pr-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+    <Card>
+      <CardContent class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <!-- 搜索框 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              搜索商品
+            </label>
+            <div class="relative">
+              <Input
+                v-model="searchQuery"
+                placeholder="商品名称、编号、规格..."
+                class="pl-10"
+              />
+              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 商品分类筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              商品分类
+            </label>
+            <Select v-model="categoryFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部分类" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部分类</SelectItem>
+                <SelectItem value="raw_material">原材料</SelectItem>
+                <SelectItem value="finished_product">成品</SelectItem>
+                <SelectItem value="semi_finished">半成品</SelectItem>
+                <SelectItem value="accessory">配件</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <!-- 状态筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              商品状态
+            </label>
+            <Select v-model="statusFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="active">正常</SelectItem>
+                <SelectItem value="inactive">停用</SelectItem>
+                <SelectItem value="discontinued">停产</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <!-- 库存状态筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              库存状态
+            </label>
+            <Select v-model="stockFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部库存" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部库存</SelectItem>
+                <SelectItem value="sufficient">库存充足</SelectItem>
+                <SelectItem value="low">库存不足</SelectItem>
+                <SelectItem value="out">缺货</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <!-- 操作按钮 -->
+          <div class="flex items-end">
+            <Button variant="secondary" class="w-full">
+              重置筛选
+            </Button>
           </div>
         </div>
-
-        <!-- 商品分类筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            商品分类
-          </label>
-          <select v-model="categoryFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部分类</option>
-            <option value="raw_material">原材料</option>
-            <option value="finished_product">成品</option>
-            <option value="semi_finished">半成品</option>
-            <option value="accessory">配件</option>
-          </select>
-        </div>
-
-        <!-- 状态筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            商品状态
-          </label>
-          <select v-model="statusFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部状态</option>
-            <option value="active">正常</option>
-            <option value="inactive">停用</option>
-            <option value="discontinued">停产</option>
-          </select>
-        </div>
-
-        <!-- 库存状态筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            库存状态
-          </label>
-          <select v-model="stockFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部库存</option>
-            <option value="sufficient">库存充足</option>
-            <option value="low">库存不足</option>
-            <option value="out">缺货</option>
-          </select>
-        </div>
-
-        <!-- 操作按钮 -->
-        <div class="flex items-end">
-          <button class="w-full h-10 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors">
-            重置筛选
-          </button>
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
 
     <!-- 商品统计 -->
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -172,129 +189,124 @@
     </div>
 
     <!-- 商品列表 -->
-    <div class="bg-card rounded-lg border overflow-hidden">
-      <div class="px-6 py-4 border-b flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-foreground">商品列表</h3>
-        <div class="flex items-center space-x-2">
-          <button class="text-sm px-3 py-1 border border-input rounded-md hover:bg-accent">
-            批量操作
-          </button>
-          <button class="text-sm px-3 py-1 border border-input rounded-md hover:bg-accent">
-            导出数据
-          </button>
+    <Card>
+      <CardHeader>
+        <div class="flex items-center justify-between">
+          <CardTitle>商品列表</CardTitle>
+          <div class="flex items-center space-x-2">
+            <Button variant="outline" size="sm">
+              批量操作
+            </Button>
+            <Button variant="outline" size="sm">
+              导出数据
+            </Button>
+          </div>
         </div>
-      </div>
+      </CardHeader>
       
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border">
-          <thead class="bg-muted/50">
-            <tr>
-              <th class="px-6 py-3 text-left">
-                <input type="checkbox" class="rounded border-input">
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">商品编号</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">商品信息</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">分类</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">规格型号</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">单位</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">当前库存</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">单价</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">状态</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">操作</th>
-            </tr>
-          </thead>
-          <tbody class="bg-background divide-y divide-border">
-            <tr
-              v-for="product in filteredProducts"
-              :key="product.id"
-              class="hover:bg-muted/20 transition-colors"
-            >
-              <td class="px-6 py-4 whitespace-nowrap">
-                <input type="checkbox" class="rounded border-input">
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                {{ product.product_no }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
+      <CardContent>
+        <div class="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead class="w-12">
+                  <Checkbox />
+                </TableHead>
+                <TableHead>商品编号</TableHead>
+                <TableHead>商品信息</TableHead>
+                <TableHead>分类</TableHead>
+                <TableHead>规格型号</TableHead>
+                <TableHead>单位</TableHead>
+                <TableHead>当前库存</TableHead>
+                <TableHead>单价</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="product in filteredProducts"
+                :key="product.id"
+              >
+                <TableCell>
+                  <Checkbox />
+                </TableCell>
+                <TableCell class="font-medium">
+                  {{ product.product_no }}
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                      <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                      </svg>
+                    </div>
+                    <div class="ml-3">
+                      <div class="text-sm font-medium">{{ product.name }}</div>
+                      <div class="text-sm text-muted-foreground">{{ product.description || '暂无描述' }}</div>
+                    </div>
                   </div>
-                  <div class="ml-3">
-                    <div class="text-sm font-medium text-foreground">{{ product.name }}</div>
-                    <div class="text-sm text-muted-foreground">{{ product.description || '暂无描述' }}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getCategoryVariant(product.category)">
+                    {{ getCategoryText(product.category) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  {{ product.specification }}
+                </TableCell>
+                <TableCell>
+                  {{ product.unit }}
+                </TableCell>
+                <TableCell>
+                  <div class="text-sm font-medium">{{ product.current_stock }}</div>
+                  <div class="text-xs text-muted-foreground">
+                    最低: {{ product.min_stock }} | 最高: {{ product.max_stock }}
                   </div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getCategoryColor(product.category)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                  {{ getCategoryText(product.category) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                {{ product.specification }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                {{ product.unit }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-foreground">{{ product.current_stock }}</div>
-                <div class="text-xs text-muted-foreground">
-                  最低: {{ product.min_stock }} | 最高: {{ product.max_stock }}
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                ¥{{ product.unit_price.toFixed(2) }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getStatusColor(product.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                  {{ getStatusText(product.status) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div class="flex items-center space-x-2">
-                  <button class="text-blue-600 hover:text-blue-900 p-1" title="查看详情">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
-                  </button>
-                  <button 
-                    @click="openProductDialog(product)"
-                    class="text-green-600 hover:text-green-900 p-1" 
-                    title="编辑"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                  </button>
-                  <button class="text-purple-600 hover:text-purple-900 p-1" title="库存调整">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4h10M7 4l-3 16h16L17 4M9 8v8m6-8v8"></path>
-                    </svg>
-                  </button>
-                  <button 
-                    @click="deleteProduct(product.id)"
-                    class="text-red-600 hover:text-red-900 p-1" 
-                    title="删除"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
-                  <button class="text-orange-600 hover:text-orange-900 p-1" title="复制商品">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                    </svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </TableCell>
+                <TableCell>
+                  ¥{{ product.unit_price.toFixed(2) }}
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(product.status)">
+                    {{ getStatusText(product.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center space-x-1">
+                    <Button variant="ghost" size="sm" title="查看详情">
+                      <Eye class="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      @click="openProductDialog(product)"
+                      variant="ghost" 
+                      size="sm"
+                      title="编辑"
+                    >
+                      <Edit class="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" title="库存调整">
+                      <Package class="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      @click="deleteProduct(product.id)"
+                      variant="ghost" 
+                      size="sm"
+                      title="删除"
+                    >
+                      <Trash2 class="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" title="复制商品">
+                      <Copy class="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
 
       <!-- 分页 -->
       <div class="bg-background px-4 py-3 border-t border-border sm:px-6">
@@ -332,212 +344,257 @@
   </div>
 
   <!-- 商品表单对话框 -->
-  <div v-if="showProductDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-card rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-      <div class="p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-semibold text-foreground">
-            {{ editingProduct ? '编辑商品' : '新增商品' }}
-          </h3>
-          <button @click="closeProductDialog" class="text-muted-foreground hover:text-foreground">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <form @submit.prevent="saveProduct" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">商品编号</label>
-              <input
-                v-model="productForm.product_no"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="请输入商品编号"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">商品名称</label>
-              <input
-                v-model="productForm.name"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="请输入商品名称"
-              />
-            </div>
-          </div>
-
+  <Dialog v-model:open="showProductDialog">
+    <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>{{ editingProduct ? '编辑商品' : '新增商品' }}</DialogTitle>
+      </DialogHeader>
+      
+      <form @submit.prevent="saveProduct" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- 商品编号 -->
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">商品描述</label>
-            <textarea
-              v-model="productForm.description"
-              rows="3"
-              class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-              placeholder="请输入商品描述"
-            ></textarea>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">分类</label>
-              <select
-                v-model="productForm.category"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="">请选择分类</option>
-                <option value="raw_material">原材料</option>
-                <option value="semi_finished">半成品</option>
-                <option value="finished_product">成品</option>
-                <option value="accessory">配件</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">单位</label>
-              <input
-                v-model="productForm.unit"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="如：个、套、米"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">状态</label>
-              <select
-                v-model="productForm.status"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="active">启用</option>
-                <option value="inactive">停用</option>
-                <option value="discontinued">停产</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">当前库存</label>
-              <input
-                v-model.number="productForm.current_stock"
-                type="number"
-                min="0"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="0"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">最低库存</label>
-              <input
-                v-model.number="productForm.min_stock"
-                type="number"
-                min="0"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="0"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">最高库存</label>
-              <input
-                v-model.number="productForm.max_stock"
-                type="number"
-                min="0"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="0"
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">销售单价</label>
-              <input
-                v-model.number="productForm.unit_price"
-                type="number"
-                step="0.01"
-                min="0"
-                required
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="0.00"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">成本价格</label>
-              <input
-                v-model.number="productForm.cost_price"
-                type="number"
-                step="0.01"
-                min="0"
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="0.00"
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">规格型号</label>
-              <input
-                v-model="productForm.specification"
-                type="text"
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="请输入规格型号"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">条形码</label>
-              <input
-                v-model="productForm.barcode"
-                type="text"
-                class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="请输入条形码"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-foreground mb-1">供应商</label>
-            <input
-              v-model="productForm.supplier_name"
-              type="text"
-              class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-              placeholder="请输入供应商名称"
+            <label class="block text-sm font-medium text-foreground mb-2">
+              商品编号 <span class="text-red-500">*</span>
+            </label>
+            <Input
+              v-model="productForm.product_no"
+              :disabled="editingProduct"
+              placeholder="自动生成或手动输入"
+              required
             />
           </div>
 
-          <div class="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              @click="closeProductDialog"
-              class="px-4 py-2 border border-input rounded-md text-foreground hover:bg-accent"
-            >
-              取消
-            </button>
-            <button
-              type="submit"
-              :disabled="saving"
-              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
-            >
-              {{ saving ? '保存中...' : '保存' }}
-            </button>
+          <!-- 商品名称 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              商品名称 <span class="text-red-500">*</span>
+            </label>
+            <Input
+              v-model="productForm.name"
+              placeholder="请输入商品名称"
+              required
+            />
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
+
+          <!-- 商品描述 -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-foreground mb-2">
+              商品描述
+            </label>
+            <Textarea
+              v-model="productForm.description"
+              placeholder="请输入商品描述"
+              rows="3"
+            />
+          </div>
+
+          <!-- 分类 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              分类 <span class="text-red-500">*</span>
+            </label>
+            <Select v-model="productForm.category" required>
+              <SelectTrigger>
+                <SelectValue placeholder="请选择分类" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="raw_material">原材料</SelectItem>
+                <SelectItem value="finished_product">成品</SelectItem>
+                <SelectItem value="semi_finished">半成品</SelectItem>
+                <SelectItem value="accessory">配件</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <!-- 单位 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              单位 <span class="text-red-500">*</span>
+            </label>
+            <Input
+              v-model="productForm.unit"
+              placeholder="如：个、套、米"
+              required
+            />
+          </div>
+
+          <!-- 状态 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              状态 <span class="text-red-500">*</span>
+            </label>
+            <Select v-model="productForm.status" required>
+              <SelectTrigger>
+                <SelectValue placeholder="请选择状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">启用</SelectItem>
+                <SelectItem value="inactive">停用</SelectItem>
+                <SelectItem value="discontinued">停产</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <!-- 库存信息 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              当前库存 <span class="text-red-500">*</span>
+            </label>
+            <Input
+              v-model.number="productForm.current_stock"
+              type="number"
+              min="0"
+              placeholder="0"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              最低库存 <span class="text-red-500">*</span>
+            </label>
+            <Input
+              v-model.number="productForm.min_stock"
+              type="number"
+              min="0"
+              placeholder="0"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              最高库存 <span class="text-red-500">*</span>
+            </label>
+            <Input
+              v-model.number="productForm.max_stock"
+              type="number"
+              min="0"
+              placeholder="0"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- 价格信息 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              销售单价 <span class="text-red-500">*</span>
+            </label>
+            <Input
+              v-model.number="productForm.unit_price"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              成本价格
+            </label>
+            <Input
+              v-model.number="productForm.cost_price"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <!-- 其他信息 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              规格型号
+            </label>
+            <Input
+              v-model="productForm.specification"
+              placeholder="请输入规格型号"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              条形码
+            </label>
+            <Input
+              v-model="productForm.barcode"
+              placeholder="请输入条形码"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-foreground mb-2">
+            供应商
+          </label>
+          <Input
+            v-model="productForm.supplier_name"
+            placeholder="请输入供应商名称"
+          />
+        </div>
+
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            @click="closeProductDialog"
+          >
+            取消
+          </Button>
+          <Button
+            type="submit"
+            :disabled="saving"
+          >
+            {{ saving ? '保存中...' : '保存' }}
+          </Button>
+        </DialogFooter>
+      </form>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, reactive, onMounted } from 'vue'
 import { useProducts } from '~/composables/useSupabase'
 import type { Product } from '~/types/database'
+import { Eye, Edit, Package, Trash2, Copy } from 'lucide-vue-next'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 
 // 商品表单数据
 const showProductDialog = ref(false)
@@ -767,15 +824,15 @@ const filteredProducts = computed(() => {
   return filtered
 })
 
-// 获取分类颜色
-const getCategoryColor = (category: string): string => {
-  const colors: Record<string, string> = {
-    raw_material: 'bg-blue-100 text-blue-800',
-    finished_product: 'bg-green-100 text-green-800',
-    semi_finished: 'bg-yellow-100 text-yellow-800',
-    accessory: 'bg-purple-100 text-purple-800'
+// 获取分类变体
+const getCategoryVariant = (category: string): string => {
+  const variants: Record<string, string> = {
+    raw_material: 'secondary',
+    finished_product: 'default',
+    semi_finished: 'outline',
+    accessory: 'destructive'
   }
-  return colors[category] || 'bg-gray-100 text-gray-800'
+  return variants[category] || 'secondary'
 }
 
 // 获取分类文本
@@ -789,14 +846,14 @@ const getCategoryText = (category: string): string => {
   return texts[category] || category
 }
 
-// 获取状态颜色
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
-    active: 'bg-green-100 text-green-800',
-    inactive: 'bg-gray-100 text-gray-800',
-    discontinued: 'bg-red-100 text-red-800'
+// 获取状态变体
+const getStatusVariant = (status: string): string => {
+  const variants: Record<string, string> = {
+    active: 'default',
+    inactive: 'secondary',
+    discontinued: 'destructive'
   }
-  return colors[status] || 'bg-gray-100 text-gray-800'
+  return variants[status] || 'secondary'
 }
 
 // 获取状态文本

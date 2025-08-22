@@ -99,7 +99,7 @@
             </div>
             <Button 
               @click="showAdminForm = true" 
-              :disabled="steps.createAdmin.status === 'running' || !steps.checkTables.status === 'completed'"
+              :disabled="steps.createAdmin.status === 'running' || steps.checkTables.status !== 'completed'"
               variant="outline"
             >
               创建管理员
@@ -225,9 +225,9 @@ import Button from '~/components/ui/Button.vue'
 import Input from '~/components/ui/Input.vue'
 
 // 页面配置
-definePageMeta({
-  middleware: 'auth'
-})
+// definePageMeta({
+//   middleware: 'auth'
+// })
 
 useHead({
   title: '数据库初始化 - ERP 管理系统'

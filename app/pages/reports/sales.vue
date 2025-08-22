@@ -19,187 +19,195 @@
     </div>
 
     <!-- 时间筛选 -->
-    <Card>
-      <div class="p-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+    <Card class="mb-6">
+      <CardContent class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label class="block text-sm font-medium mb-1">开始日期</label>
-            <Input v-model="dateRange.start" type="date" />
+            <label class="block text-sm font-medium mb-2">开始日期</label>
+            <Input 
+              v-model="dateRange.start" 
+              type="date" 
+            />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">结束日期</label>
-            <Input v-model="dateRange.end" type="date" />
+            <label class="block text-sm font-medium mb-2">结束日期</label>
+            <Input 
+              v-model="dateRange.end" 
+              type="date" 
+            />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">客户筛选</label>
-            <select v-model="customerFilter" class="w-full px-3 py-2 border rounded-md">
-              <option value="">全部客户</option>
-              <option v-for="customer in customers" :key="customer.id" :value="customer.id">
-                {{ customer.name }}
-              </option>
-            </select>
+            <label class="block text-sm font-medium mb-2">客户筛选</label>
+            <Select v-model="customerFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部客户" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部客户</SelectItem>
+                <SelectItem v-for="customer in customers" :key="customer.id" :value="customer.id">
+                  {{ customer.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div class="flex gap-2">
-            <Button @click="applyFilters" class="flex-1">
+          <div class="flex items-end">
+            <Button @click="applyFilters" class="w-full">
               <Search class="w-4 h-4 mr-2" />
               查询
             </Button>
           </div>
         </div>
-      </div>
+      </CardContent>
     </Card>
 
     <!-- 销售概览 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       <Card>
-        <div class="p-6">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-foreground">总销售额</p>
-              <p class="text-2xl font-bold text-green-600">¥{{ salesStats.totalAmount.toLocaleString() }}</p>
+              <p class="text-sm font-medium text-muted-foreground">总销售额</p>
+              <p class="text-2xl font-bold">¥{{ salesStats.totalAmount.toLocaleString() }}</p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
               <TrendingUp class="w-6 h-6 text-green-600" />
             </div>
           </div>
-          <div class="mt-2">
-            <span class="text-xs text-green-600">↗ +12.5%</span>
-            <span class="text-xs text-muted-foreground ml-2">较上期</span>
-          </div>
-        </div>
+        </CardContent>
       </Card>
-
+      
       <Card>
-        <div class="p-6">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-foreground">订单数量</p>
-              <p class="text-2xl font-bold text-blue-600">{{ salesStats.totalOrders }}</p>
+              <p class="text-sm font-medium text-muted-foreground">订单数量</p>
+              <p class="text-2xl font-bold">{{ salesStats.totalOrders }}</p>
             </div>
             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <ShoppingCart class="w-6 h-6 text-blue-600" />
             </div>
           </div>
-          <div class="mt-2">
-            <span class="text-xs text-blue-600">↗ +8.2%</span>
-            <span class="text-xs text-muted-foreground ml-2">较上期</span>
-          </div>
-        </div>
+        </CardContent>
       </Card>
-
+      
       <Card>
-        <div class="p-6">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-foreground">平均订单额</p>
-              <p class="text-2xl font-bold text-orange-600">¥{{ salesStats.avgOrderAmount.toLocaleString() }}</p>
-            </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Calculator class="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-          <div class="mt-2">
-            <span class="text-xs text-orange-600">↗ +3.8%</span>
-            <span class="text-xs text-muted-foreground ml-2">较上期</span>
-          </div>
-        </div>
-      </Card>
-
-      <Card>
-        <div class="p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-muted-foreground">活跃客户</p>
-              <p class="text-2xl font-bold text-purple-600">{{ salesStats.activeCustomers }}</p>
+              <p class="text-sm font-medium text-muted-foreground">平均订单额</p>
+              <p class="text-2xl font-bold">¥{{ salesStats.avgOrderAmount.toLocaleString() }}</p>
             </div>
             <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Users class="w-6 h-6 text-purple-600" />
+              <Calculator class="w-6 h-6 text-purple-600" />
             </div>
           </div>
-          <div class="mt-2">
-            <span class="text-xs text-purple-600">↗ +15.3%</span>
-            <span class="text-xs text-muted-foreground ml-2">较上期</span>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">活跃客户</p>
+              <p class="text-2xl font-bold">{{ salesStats.activeCustomers }}</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <Users class="w-6 h-6 text-orange-600" />
+            </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
 
     <!-- 销售趋势图 -->
-    <Card>
-      <div class="p-4 border-b">
-        <h3 class="text-lg font-semibold">销售趋势分析</h3>
-      </div>
-      <div class="p-6">
-        <div class="h-80 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <div class="text-center text-muted-foreground">
-            <BarChart3 class="w-16 h-16 mx-auto mb-4" />
-            <p class="text-lg font-medium">销售趋势图</p>
-            <p class="text-sm">图表组件将在后续版本中集成</p>
+    <Card class="mb-6">
+      <CardHeader>
+        <div class="flex items-center justify-between">
+          <CardTitle>销售趋势</CardTitle>
+          <div class="flex items-center gap-2">
+            <BarChart3 class="w-5 h-5 text-muted-foreground" />
+            <span class="text-sm text-muted-foreground">图表展示</span>
           </div>
         </div>
-      </div>
+      </CardHeader>
+      <CardContent>
+        <div class="h-64 bg-muted/50 rounded-lg flex items-center justify-center">
+          <p class="text-muted-foreground">销售趋势图表占位符</p>
+        </div>
+      </CardContent>
     </Card>
 
-    <!-- 销售明细表 -->
+    <!-- 销售明细 -->
     <Card>
-      <div class="p-4 border-b">
-        <h3 class="text-lg font-semibold">销售明细</h3>
-      </div>
-      
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="border-b">
-            <tr class="text-left">
-              <th class="p-4 font-medium">订单号</th>
-              <th class="p-4 font-medium">客户</th>
-              <th class="p-4 font-medium">订单日期</th>
-              <th class="p-4 font-medium">金额</th>
-              <th class="p-4 font-medium">状态</th>
-              <th class="p-4 font-medium">毛利率</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="order in salesDetails" :key="order.id" class="border-b hover:bg-muted/50">
-              <td class="p-4 font-mono text-sm">{{ order.order_no }}</td>
-              <td class="p-4">{{ order.customer_name }}</td>
-              <td class="p-4">{{ formatDate(order.order_date) }}</td>
-              <td class="p-4 font-medium">¥{{ order.final_amount.toLocaleString() }}</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-green-100 text-green-800': order.status === 'delivered',
-                    'bg-blue-100 text-blue-800': order.status === 'shipped',
-                    'bg-yellow-100 text-yellow-800': order.status === 'confirmed',
-                    'bg-gray-100 text-gray-800': order.status === 'draft'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {{ getStatusName(order.status) }}
-                </span>
-              </td>
-              <td class="p-4">
-                <span :class="order.profit_margin >= 0.3 ? 'text-green-600' : order.profit_margin >= 0.2 ? 'text-yellow-600' : 'text-red-600'">
-                  {{ (order.profit_margin * 100).toFixed(1) }}%
-                </span>
-              </td>
-            </tr>
-            <tr v-if="salesDetails.length === 0">
-              <td colspan="6" class="p-8 text-center text-muted-foreground">
-                暂无销售数据
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <CardHeader>
+        <div class="flex items-center justify-between">
+          <CardTitle>销售明细</CardTitle>
+          <Button @click="exportReport" variant="outline">
+            <Download class="w-4 h-4 mr-2" />
+            导出报表
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div class="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>订单号</TableHead>
+                <TableHead>客户</TableHead>
+                <TableHead>订单日期</TableHead>
+                <TableHead>金额</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>毛利率</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="order in salesDetails" :key="order.id">
+                <TableCell class="font-medium">
+                  {{ order.order_no }}
+                </TableCell>
+                <TableCell>
+                  {{ order.customer_name }}
+                </TableCell>
+                <TableCell>
+                  {{ formatDate(order.order_date) }}
+                </TableCell>
+                <TableCell>
+                  ¥{{ order.final_amount.toLocaleString() }}
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(order.status)">
+                    {{ getStatusName(order.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span :class="{
+                    'text-green-600': order.profit_margin > 0.3,
+                    'text-yellow-600': order.profit_margin > 0.2,
+                    'text-red-600': order.profit_margin <= 0.2
+                  }">
+                    {{ (order.profit_margin * 100).toFixed(1) }}%
+                  </span>
+                </TableCell>
+              </TableRow>
+              <TableRow v-if="salesDetails.length === 0">
+                <TableCell colspan="6" class="text-center text-muted-foreground">
+                  暂无销售数据
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
 
     <!-- 客户销售排行 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card>
-        <div class="p-4 border-b">
-          <h3 class="text-lg font-semibold">客户销售排行</h3>
-        </div>
-        <div class="p-4">
+        <CardHeader>
+          <CardTitle>客户销售排行</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div class="space-y-4">
             <div v-for="(customer, index) in topCustomers" :key="customer.id" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -223,14 +231,14 @@
               </div>
             </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
 
       <Card>
-        <div class="p-4 border-b">
-          <h3 class="text-lg font-semibold">产品销售排行</h3>
-        </div>
-        <div class="p-4">
+        <CardHeader>
+          <CardTitle>产品销售排行</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div class="space-y-4">
             <div v-for="(product, index) in topProducts" :key="product.id" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -254,7 +262,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
   </div>
@@ -265,6 +273,12 @@ import {
   Download, RefreshCw, Search, TrendingUp, ShoppingCart, 
   Calculator, Users, BarChart3 
 } from 'lucide-vue-next'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 // 页面配置
 definePageMeta({
@@ -370,6 +384,17 @@ const getStatusName = (status: string) => {
   return statuses[status as keyof typeof statuses] || status
 }
 
+const getStatusVariant = (status: string) => {
+  const variants = {
+    draft: 'secondary',
+    confirmed: 'default',
+    shipped: 'outline',
+    delivered: 'default',
+    cancelled: 'destructive'
+  }
+  return variants[status as keyof typeof variants] || 'secondary'
+}
+
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('zh-CN')
 }
@@ -378,4 +403,4 @@ const formatDate = (dateString: string) => {
 onMounted(async () => {
   await applyFilters()
 })
-</script> 
+</script>

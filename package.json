@@ -8,25 +8,38 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "echo 'ESLint temporarily disabled'",
-    "lint:fix": "echo 'ESLint temporarily disabled'",
-    "type-check": "echo 'TypeScript checking temporarily disabled'"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "nuxt typecheck",
+    "clean": "nuxt cleanup"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.23",
     "@nuxtjs/supabase": "^1.6.0",
-    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@tailwindcss/vite": "^4.1.12",
+    "@vee-validate/zod": "^4.15.1",
     "@vueuse/core": "^13.7.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.540.0",
     "nuxt": "^4.0.3",
+    "reka-ui": "^2.4.1",
+    "shadcn-nuxt": "^2.2.0",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.12",
     "tailwindcss-animate": "^1.0.7",
+    "tw-animate-css": "^1.3.7",
+    "vee-validate": "^4.15.1",
     "vue": "^3.5.18",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.9.0",
-    "eslint": "9.33.0"
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "9.33.0",
+    "typescript": "^5.9.2"
   }
 }

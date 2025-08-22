@@ -98,30 +98,34 @@
           <label class="text-sm font-medium text-foreground mb-2 block">
             车间状态
           </label>
-          <select
-            v-model="selectedStatus"
-            class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-          >
-            <option value="">全部状态</option>
-            <option value="active">运行中</option>
-            <option value="maintenance">维护中</option>
-            <option value="inactive">停用</option>
-          </select>
+          <Select v-model="selectedStatus">
+            <SelectTrigger>
+              <SelectValue placeholder="全部状态" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部状态</SelectItem>
+              <SelectItem value="active">运行中</SelectItem>
+              <SelectItem value="maintenance">维护中</SelectItem>
+              <SelectItem value="inactive">停用</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label class="text-sm font-medium text-foreground mb-2 block">
             车间类型
           </label>
-          <select
-            v-model="selectedType"
-            class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-          >
-            <option value="">全部类型</option>
-            <option value="assembly">装配车间</option>
-            <option value="machining">机加工车间</option>
-            <option value="painting">喷涂车间</option>
-            <option value="packaging">包装车间</option>
-          </select>
+          <Select v-model="selectedType">
+            <SelectTrigger>
+              <SelectValue placeholder="全部类型" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部类型</SelectItem>
+              <SelectItem value="assembly">装配车间</SelectItem>
+              <SelectItem value="machining">机加工车间</SelectItem>
+              <SelectItem value="painting">喷涂车间</SelectItem>
+              <SelectItem value="packaging">包装车间</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label class="text-sm font-medium text-foreground mb-2 block">
@@ -139,42 +143,42 @@
     <!-- 车间列表 -->
     <Card class="p-6">
       <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead>
-            <tr class="border-b border-border">
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                车间信息
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                车间类型
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                负责人
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                设备数量
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                产能利用率
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                状态
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                创建时间
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="workshop in paginatedWorkshops"
-              :key="workshop.id"
-              class="border-b border-border hover:bg-accent/20 transition-colors"
-            >
-              <td class="py-3 px-4">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>车间信息</TableHead>
+              <TableHead>车间类型</TableHead>
+              <TableHead>负责人</TableHead>
+              <TableHead>设备数量</TableHead>
+              <TableHead>产能利用率</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>创建时间</TableHead>
+              <TableHead>操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <!-- 加载状态 -->
+            <TableRow v-if="isLoading" v-for="n in 5" :key="n">
+              <TableCell v-for="m in 8" :key="m">
+                <Skeleton class="h-4 w-full" />
+              </TableCell>
+            </TableRow>
+            <!-- 空状态 -->
+            <TableRow v-else-if="paginatedWorkshops.length === 0">
+              <TableCell colspan="8" class="text-center py-8">
+                <div class="flex flex-col items-center justify-center space-y-2">
+                  <Factory class="w-12 h-12 text-muted-foreground" />
+                  <p class="text-muted-foreground">暂无车间数据</p>
+                  <Button @click="showCreateDialog = true" size="sm">
+                    <Plus class="w-4 h-4 mr-2" />
+                    新建车间
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+            <!-- 数据行 -->
+            <TableRow v-else v-for="workshop in paginatedWorkshops" :key="workshop.id">
+              <TableCell>
                 <div class="font-medium text-foreground">
                   {{ workshop.workshop_name }}
                 </div>
@@ -184,76 +188,79 @@
                 <div class="text-sm text-muted-foreground">
                   {{ workshop.location }}
                 </div>
-              </td>
-              <td class="py-3 px-4">
+              </TableCell>
+              <TableCell>
                 <span class="text-sm text-foreground">
                   {{ getTypeText(workshop.workshop_type) }}
                 </span>
-              </td>
-              <td class="py-3 px-4">
+              </TableCell>
+              <TableCell>
                 <div class="font-medium text-foreground">
                   {{ workshop.manager_name }}
                 </div>
                 <div class="text-sm text-muted-foreground">
                   {{ workshop.manager_phone }}
                 </div>
-              </td>
-              <td class="py-3 px-4">
+              </TableCell>
+              <TableCell>
                 <div class="font-medium text-foreground">
                   {{ workshop.equipment_count }}
                 </div>
                 <div class="text-sm text-muted-foreground">
                   运行: {{ workshop.active_equipment_count }}
                 </div>
-              </td>
-              <td class="py-3 px-4">
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    class="bg-blue-600 h-2 rounded-full" 
-                    :style="{ width: `${workshop.capacity_utilization}%` }"
-                  ></div>
+              </TableCell>
+              <TableCell>
+                <div class="w-24">
+                  <Progress :value="workshop.capacity_utilization" class="h-2" />
+                  <div class="text-sm text-muted-foreground mt-1">
+                    {{ workshop.capacity_utilization }}%
+                  </div>
                 </div>
-                <div class="text-sm text-muted-foreground mt-1">
-                  {{ workshop.capacity_utilization }}%
-                </div>
-              </td>
-              <td class="py-3 px-4">
-                <span :class="[
-                  'px-2 py-1 rounded-full text-xs font-medium',
-                  getStatusColor(workshop.status)
-                ]">
+              </TableCell>
+              <TableCell>
+                <Badge :variant="getStatusVariant(workshop.status)">
                   {{ getStatusText(workshop.status) }}
-                </span>
-              </td>
-              <td class="py-3 px-4">
+                </Badge>
+              </TableCell>
+              <TableCell>
                 <span class="text-sm text-foreground">
                   {{ formatDate(workshop.created_at) }}
                 </span>
-              </td>
-              <td class="py-3 px-4">
-                <div class="flex items-center space-x-2">
-                  <Button size="sm" variant="ghost" @click="viewWorkshop(workshop)">
-                    <Eye class="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" @click="editWorkshop(workshop)">
-                    <Edit class="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" @click="manageEquipment(workshop)">
-                    <Settings class="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    @click="deleteWorkshop(workshop.id)"
-                    class="text-destructive hover:text-destructive"
-                  >
-                    <Trash2 class="w-4 h-4" />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger as-child>
+                    <Button variant="ghost" size="sm">
+                      <MoreHorizontal class="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem @click="viewWorkshop(workshop)">
+                      <Eye class="w-4 h-4 mr-2" />
+                      查看详情
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="editWorkshop(workshop)">
+                      <Edit class="w-4 h-4 mr-2" />
+                      编辑车间
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="manageEquipment(workshop)">
+                      <Settings class="w-4 h-4 mr-2" />
+                      管理设备
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      @click="deleteWorkshop(workshop.id)"
+                      class="text-destructive focus:text-destructive"
+                    >
+                      <Trash2 class="w-4 h-4 mr-2" />
+                      删除车间
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
 
       <!-- 分页 -->
@@ -263,29 +270,225 @@
           {{ Math.min(currentPage * pageSize, filteredWorkshops.length) }} 条，
           共 {{ filteredWorkshops.length }} 条记录
         </div>
-        <div class="flex items-center space-x-2">
-          <Button
-            size="sm"
-            variant="outline"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
-            上一页
-          </Button>
-          <span class="text-sm text-muted-foreground">
-            {{ currentPage }} / {{ totalPages }}
-          </span>
-          <Button
-            size="sm"
-            variant="outline"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
-            下一页
-          </Button>
-        </div>
+        <Pagination
+          v-slot="{ page }"
+          :total="filteredWorkshops.length"
+          :sibling-count="1"
+          :show-edges="true"
+          :default-page="currentPage"
+          @update:page="currentPage = $event"
+        >
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrev />
+            </PaginationItem>
+            <PaginationItem v-for="(item, index) in page.items" :key="index">
+              <PaginationEllipsis v-if="item.type === 'ellipsis'" :index="index" />
+              <PaginationList v-else :value="item.value" :is-active="item.value === page.value" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </Card>
+
+    <!-- 创建车间对话框 -->
+    <Dialog v-model:open="showCreateDialog">
+      <DialogContent class="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>新建车间</DialogTitle>
+          <DialogDescription>
+            填写车间基本信息，创建新的生产车间。
+          </DialogDescription>
+        </DialogHeader>
+        <Form @submit="handleCreateSubmit">
+          <div class="grid gap-4 py-4">
+            <FormField name="workshop_code">
+              <FormItem>
+                <FormLabel>车间编码</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.workshop_code" placeholder="请输入车间编码" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="workshop_name">
+              <FormItem>
+                <FormLabel>车间名称</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.workshop_name" placeholder="请输入车间名称" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="workshop_type">
+              <FormItem>
+                <FormLabel>车间类型</FormLabel>
+                <FormControl>
+                  <Select v-model="formData.workshop_type">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择车间类型" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="assembly">装配车间</SelectItem>
+                      <SelectItem value="machining">机加工车间</SelectItem>
+                      <SelectItem value="painting">喷涂车间</SelectItem>
+                      <SelectItem value="packaging">包装车间</SelectItem>
+                      <SelectItem value="quality">质检车间</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="location">
+              <FormItem>
+                <FormLabel>车间位置</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.location" placeholder="请输入车间位置" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="manager_name">
+              <FormItem>
+                <FormLabel>负责人姓名</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.manager_name" placeholder="请输入负责人姓名" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="manager_phone">
+              <FormItem>
+                <FormLabel>负责人电话</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.manager_phone" placeholder="请输入负责人电话" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="description">
+              <FormItem>
+                <FormLabel>车间描述</FormLabel>
+                <FormControl>
+                  <Textarea v-model="formData.description" placeholder="请输入车间描述" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" @click="showCreateDialog = false">
+              取消
+            </Button>
+            <Button type="submit" :disabled="isSubmitting">
+              {{ isSubmitting ? '创建中...' : '创建车间' }}
+            </Button>
+          </DialogFooter>
+        </Form>
+      </DialogContent>
+    </Dialog>
+
+    <!-- 编辑车间对话框 -->
+    <Dialog v-model:open="showEditDialog">
+      <DialogContent class="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>编辑车间</DialogTitle>
+          <DialogDescription>
+            修改车间信息。
+          </DialogDescription>
+        </DialogHeader>
+        <Form @submit="handleEditSubmit">
+          <div class="grid gap-4 py-4">
+            <FormField name="workshop_code">
+              <FormItem>
+                <FormLabel>车间编码</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.workshop_code" placeholder="请输入车间编码" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="workshop_name">
+              <FormItem>
+                <FormLabel>车间名称</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.workshop_name" placeholder="请输入车间名称" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="workshop_type">
+              <FormItem>
+                <FormLabel>车间类型</FormLabel>
+                <FormControl>
+                  <Select v-model="formData.workshop_type">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择车间类型" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="assembly">装配车间</SelectItem>
+                      <SelectItem value="machining">机加工车间</SelectItem>
+                      <SelectItem value="painting">喷涂车间</SelectItem>
+                      <SelectItem value="packaging">包装车间</SelectItem>
+                      <SelectItem value="quality">质检车间</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="location">
+              <FormItem>
+                <FormLabel>车间位置</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.location" placeholder="请输入车间位置" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="manager_name">
+              <FormItem>
+                <FormLabel>负责人姓名</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.manager_name" placeholder="请输入负责人姓名" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="manager_phone">
+              <FormItem>
+                <FormLabel>负责人电话</FormLabel>
+                <FormControl>
+                  <Input v-model="formData.manager_phone" placeholder="请输入负责人电话" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="description">
+              <FormItem>
+                <FormLabel>车间描述</FormLabel>
+                <FormControl>
+                  <Textarea v-model="formData.description" placeholder="请输入车间描述" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" @click="showEditDialog = false">
+              取消
+            </Button>
+            <Button type="submit" :disabled="isSubmitting">
+              {{ isSubmitting ? '保存中...' : '保存修改' }}
+            </Button>
+          </DialogFooter>
+        </Form>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -302,9 +505,64 @@ import {
   Settings,
   Trash2
 } from 'lucide-vue-next'
-import Card from '~/components/ui/Card.vue'
-import Button from '~/components/ui/Button.vue'
-import Input from '~/components/ui/Input.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationFirst,
+  PaginationItem,
+  PaginationLast,
+  PaginationList,
+  PaginationNext,
+  PaginationPrev
+} from '@/components/ui/pagination'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import { Textarea } from '@/components/ui/textarea'
+import { Skeleton } from '@/components/ui/skeleton'
+import { MoreHorizontal } from 'lucide-vue-next'
 
 // 响应式数据
 const searchQuery = ref('')
@@ -314,6 +572,22 @@ const selectedManager = ref('')
 const currentPage = ref(1)
 const pageSize = ref(10)
 const showCreateDialog = ref(false)
+const showEditDialog = ref(false)
+const isLoading = ref(false)
+const isSubmitting = ref(false)
+
+// 表单数据
+const formData = ref({
+  workshop_code: '',
+  workshop_name: '',
+  workshop_type: '',
+  location: '',
+  manager_name: '',
+  manager_phone: '',
+  description: ''
+})
+
+const editingWorkshop = ref(null)
 
 // 统计数据
 const stats = ref({
@@ -440,13 +714,17 @@ const getTypeText = (type: string): string => {
   return types[type] || '未知类型'
 }
 
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
-    active: 'bg-green-100 text-green-800',
-    maintenance: 'bg-yellow-100 text-yellow-800',
-    inactive: 'bg-red-100 text-red-800'
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'default'
+    case 'maintenance':
+      return 'secondary'
+    case 'inactive':
+      return 'destructive'
+    default:
+      return 'outline'
   }
-  return colors[status] || 'bg-gray-100 text-gray-800'
 }
 
 const getStatusText = (status: string): string => {
@@ -462,21 +740,129 @@ const formatDate = (date: Date): string => {
   return date.toLocaleDateString('zh-CN')
 }
 
+// 表单处理函数
+const resetForm = () => {
+  formData.value = {
+    workshop_code: '',
+    workshop_name: '',
+    workshop_type: '',
+    location: '',
+    manager_name: '',
+    manager_phone: '',
+    description: ''
+  }
+}
+
+const handleCreateSubmit = async (event: Event) => {
+  event.preventDefault()
+  isSubmitting.value = true
+  
+  try {
+    // 模拟API调用
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // 添加新车间到列表
+    const newWorkshop = {
+      id: workshops.value.length + 1,
+      ...formData.value,
+      equipment_count: 0,
+      active_equipment_count: 0,
+      capacity_utilization: 0,
+      status: 'active',
+      created_at: new Date()
+    }
+    
+    workshops.value.push(newWorkshop)
+    showCreateDialog.value = false
+    resetForm()
+    
+    // 更新统计数据
+    stats.value.totalWorkshops++
+    stats.value.activeWorkshops++
+  } catch (error) {
+    console.error('创建车间失败:', error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+const handleEditSubmit = async (event: Event) => {
+  event.preventDefault()
+  isSubmitting.value = true
+  
+  try {
+    // 模拟API调用
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // 更新车间信息
+    const index = workshops.value.findIndex(w => w.id === editingWorkshop.value?.id)
+    if (index !== -1) {
+      workshops.value[index] = {
+        ...workshops.value[index],
+        ...formData.value
+      }
+    }
+    
+    showEditDialog.value = false
+    resetForm()
+    editingWorkshop.value = null
+  } catch (error) {
+    console.error('更新车间失败:', error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
 // 操作函数
 const viewWorkshop = (workshop: any) => {
   console.log('查看车间:', workshop)
+  // 这里可以导航到车间详情页面
 }
 
 const editWorkshop = (workshop: any) => {
-  console.log('编辑车间:', workshop)
+  editingWorkshop.value = workshop
+  formData.value = {
+    workshop_code: workshop.workshop_code,
+    workshop_name: workshop.workshop_name,
+    workshop_type: workshop.workshop_type,
+    location: workshop.location,
+    manager_name: workshop.manager_name,
+    manager_phone: workshop.manager_phone,
+    description: workshop.description || ''
+  }
+  showEditDialog.value = true
 }
 
 const manageEquipment = (workshop: any) => {
   console.log('管理设备:', workshop)
+  // 这里可以导航到设备管理页面
 }
 
-const deleteWorkshop = (workshopId: number) => {
-  console.log('删除车间:', workshopId)
+const deleteWorkshop = async (workshopId: number) => {
+  if (!confirm('确定要删除这个车间吗？此操作不可撤销。')) {
+    return
+  }
+  
+  try {
+    // 模拟API调用
+    await new Promise(resolve => setTimeout(resolve, 500))
+    
+    const index = workshops.value.findIndex(w => w.id === workshopId)
+    if (index !== -1) {
+      const workshop = workshops.value[index]
+      workshops.value.splice(index, 1)
+      
+      // 更新统计数据
+      stats.value.totalWorkshops--
+      if (workshop.status === 'active') {
+        stats.value.activeWorkshops--
+      } else if (workshop.status === 'maintenance') {
+        stats.value.maintenanceWorkshops--
+      }
+    }
+  } catch (error) {
+    console.error('删除车间失败:', error)
+  }
 }
 
 // 页面标题

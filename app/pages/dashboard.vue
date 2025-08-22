@@ -1,105 +1,78 @@
 <template>
   <div class="space-y-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
-    <!-- 页面标题 -->
-      <div class="flex items-center justify-between">
-        <div>
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-          仪表盘
-        </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
-          欢迎回来，{{ user?.email }}
-          </p>
-        </div>
-        <div class="text-right">
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          {{ formatDate(new Date()) }}
-          </p>
-        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
-            最后登录: {{ formatDate(new Date()) }}
-          </p>
-        </div>
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">仪表板</h1>
+        <p class="text-muted-foreground mt-1">欢迎回来，这里是您的业务概览</p>
       </div>
+      <div class="flex items-center space-x-4">
+        <Button @click="refreshData">
+          <RefreshCw class="mr-2 h-4 w-4" />
+          刷新数据
+        </Button>
+      </div>
+    </div>
 
-    <!-- 核心指标卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- 今日销售订单 -->
-      <Card class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border-blue-200 dark:border-blue-800">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-blue-600 dark:text-blue-400 mb-1">
-              今日销售订单
-            </p>
-            <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">
-              {{ stats.todayOrders }}
-            </p>
-            <p class="text-xs text-blue-600/70 dark:text-blue-400/70 mt-1">
-              +12% 比昨日
-            </p>
+    <!-- 统计卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">总销售额</p>
+              <p class="text-2xl font-bold">¥{{ formatCurrency(stats.totalSales) }}</p>
+              <p class="text-xs text-green-600 mt-1">+12.5% 较上月</p>
+            </div>
+            <div class="h-8 w-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <TrendingUp class="h-4 w-4 text-blue-600" />
+            </div>
           </div>
-          <div class="p-3 bg-blue-500/10 rounded-xl">
-            <ShoppingCart class="w-6 h-6 text-blue-600 dark:text-blue-400" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
 
-      <!-- 库存预警 -->
-      <Card class="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 border-amber-200 dark:border-amber-800">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-amber-600 dark:text-amber-400 mb-1">
-              库存预警
-            </p>
-            <p class="text-2xl font-bold text-amber-900 dark:text-amber-100">
-              {{ stats.stockAlerts }}
-            </p>
-            <p class="text-xs text-amber-600/70 dark:text-amber-400/70 mt-1">
-              需要关注
-            </p>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">订单数量</p>
+              <p class="text-2xl font-bold">{{ stats.totalOrders }}</p>
+              <p class="text-xs text-green-600 mt-1">+8.2% 较上月</p>
+            </div>
+            <div class="h-8 w-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <ShoppingCart class="h-4 w-4 text-green-600" />
+            </div>
           </div>
-          <div class="p-3 bg-amber-500/10 rounded-xl">
-            <AlertTriangle class="w-6 h-6 text-amber-600 dark:text-amber-400" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
 
-      <!-- 待处理采购 -->
-      <Card class="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-200 dark:border-green-800">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-green-600 dark:text-green-400 mb-1">
-              待处理采购
-            </p>
-            <p class="text-2xl font-bold text-green-900 dark:text-green-100">
-              {{ stats.pendingPurchases }}
-            </p>
-            <p class="text-xs text-green-600/70 dark:text-green-400/70 mt-1">
-              待审批
-            </p>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">客户数量</p>
+              <p class="text-2xl font-bold">{{ stats.totalCustomers }}</p>
+              <p class="text-xs text-blue-600 mt-1">+15.3% 较上月</p>
+            </div>
+            <div class="h-8 w-8 bg-purple-100 rounded-lg flex items-center justify-center">
+              <Users class="h-4 w-4 text-purple-600" />
+            </div>
           </div>
-          <div class="p-3 bg-green-500/10 rounded-xl">
-            <Package class="w-6 h-6 text-green-600 dark:text-green-400" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
 
-      <!-- 月度营收 -->
-      <Card class="p-6 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/50 dark:to-violet-950/50 border-purple-200 dark:border-purple-800">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-purple-600 dark:text-purple-400 mb-1">
-              月度营收
-            </p>
-            <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">
-              ¥{{ stats.monthlyRevenue.toLocaleString() }}
-            </p>
-            <p class="text-xs text-purple-600/70 dark:text-purple-400/70 mt-1">
-              +8.5% 环比
-            </p>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">库存价值</p>
+              <p class="text-2xl font-bold">¥{{ formatCurrency(stats.inventoryValue) }}</p>
+              <p class="text-xs text-red-600 mt-1">-2.1% 较上月</p>
+            </div>
+            <div class="h-8 w-8 bg-orange-100 rounded-lg flex items-center justify-center">
+              <Package class="h-4 w-4 text-orange-600" />
+            </div>
           </div>
-          <div class="p-3 bg-purple-500/10 rounded-xl">
-            <TrendingUp class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
 
@@ -236,25 +209,46 @@ import {
   Box,
   BarChart3,
   Clock,
-  CheckSquare
+  CheckSquare,
+  Users,
+  RefreshCw
 } from 'lucide-vue-next'
 import Card from '~/components/ui/Card.vue'
+import CardContent from '~/components/ui/CardContent.vue'
+import CardHeader from '~/components/ui/CardHeader.vue'
+import CardTitle from '~/components/ui/CardTitle.vue'
+import Button from '~/components/ui/Button.vue'
 
 // 用户信息
 const user = useSupabaseUser()
 
 // 统计数据
 const stats = reactive({
-  todayOrders: 24,
-  stockAlerts: 8,
-  productionOrders: 12,
-  pendingApprovals: 6,
-  pendingPurchases: 10,
-  monthlyRevenue: 1200000
+  totalSales: 1250000,
+  totalOrders: 1234,
+  totalCustomers: 567,
+  inventoryValue: 890000
 })
 
+// 热销产品数据
+const topProducts = reactive([
+  { id: 1, name: '产品A', sales: 156, price: 299, growth: 12.5 },
+  { id: 2, name: '产品B', sales: 134, price: 199, growth: 8.3 },
+  { id: 3, name: '产品C', sales: 98, price: 399, growth: 15.7 }
+])
+
+// 格式化货币
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('zh-CN').format(amount)
+}
+
+// 刷新数据
+const refreshData = () => {
+  // 刷新逻辑
+}
+
 // 格式化日期
-const formatDate = (date) => {
+const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: 'long', 
@@ -267,4 +261,4 @@ const formatDate = (date) => {
 useHead({
   title: '首页仪表盘 - ERP 管理系统'
 })
-</script> 
+</script>

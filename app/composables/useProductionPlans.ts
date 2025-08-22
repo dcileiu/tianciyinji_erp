@@ -493,7 +493,7 @@ export const useProductionPlans = () => {
       .limit(1)
     
     let sequence = 1
-    if (data && data.length > 0) {
+    if (data && data.length > 0 && data[0]) {
       const lastCode = data[0].plan_code
       const lastSequence = parseInt(lastCode.slice(-4))
       sequence = lastSequence + 1

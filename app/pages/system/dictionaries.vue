@@ -26,20 +26,30 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">字典类型</label>
-            <select v-model="typeFilter" class="w-full px-3 py-2 border rounded-md">
-              <option value="">全部类型</option>
-              <option value="system">系统字典</option>
-              <option value="business">业务字典</option>
-              <option value="config">配置字典</option>
-            </select>
+            <Select v-model="typeFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部类型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部类型</SelectItem>
+                <SelectItem value="system">系统字典</SelectItem>
+                <SelectItem value="business">业务字典</SelectItem>
+                <SelectItem value="config">配置字典</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">状态</label>
-            <select v-model="statusFilter" class="w-full px-3 py-2 border rounded-md">
-              <option value="">全部状态</option>
-              <option value="active">启用</option>
-              <option value="inactive">停用</option>
-            </select>
+            <Select v-model="statusFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="active">启用</SelectItem>
+                <SelectItem value="inactive">停用</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div class="flex gap-2">
             <Button variant="outline" @click="resetFilters" class="flex-1">
@@ -61,46 +71,33 @@
       </div>
       
       <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="border-b">
-            <tr class="text-left">
-              <th class="p-4 font-medium">字典编码</th>
-              <th class="p-4 font-medium">字典名称</th>
-              <th class="p-4 font-medium">字典类型</th>
-              <th class="p-4 font-medium">项目数量</th>
-              <th class="p-4 font-medium">状态</th>
-              <th class="p-4 font-medium">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="dict in filteredDictionaries" :key="dict.id" class="border-b hover:bg-muted/50">
-              <td class="p-4 font-mono text-sm">{{ dict.code }}</td>
-              <td class="p-4 font-medium">{{ dict.name }}</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-blue-100 text-blue-800': dict.type === 'system',
-                    'bg-green-100 text-green-800': dict.type === 'business',
-                    'bg-purple-100 text-purple-800': dict.type === 'config'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>字典编码</TableHead>
+              <TableHead>字典名称</TableHead>
+              <TableHead>字典类型</TableHead>
+              <TableHead>项目数量</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="dict in filteredDictionaries" :key="dict.id">
+              <TableCell class="font-mono text-sm">{{ dict.code }}</TableCell>
+              <TableCell class="font-medium">{{ dict.name }}</TableCell>
+              <TableCell>
+                <Badge :variant="getTypeVariant(dict.type)">
                   {{ getTypeName(dict.type) }}
-                </span>
-              </td>
-              <td class="p-4">{{ dict.item_count }}项</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-green-100 text-green-800': dict.status === 'active',
-                    'bg-red-100 text-red-800': dict.status === 'inactive'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
+                </Badge>
+              </TableCell>
+              <TableCell>{{ dict.item_count }}项</TableCell>
+              <TableCell>
+                <Badge :variant="getStatusVariant(dict.status)">
                   {{ getStatusName(dict.status) }}
-                </span>
-              </td>
-              <td class="p-4">
+                </Badge>
+              </TableCell>
+              <TableCell>
                 <div class="flex gap-2">
                   <Button size="sm" variant="outline" @click="viewDictionary(dict)">
                     <Eye class="w-4 h-4" />
@@ -120,24 +117,26 @@
                     <Trash2 class="w-4 h-4" />
                   </Button>
                 </div>
-              </td>
-            </tr>
-            <tr v-if="filteredDictionaries.length === 0">
-              <td colspan="6" class="p-8 text-center text-muted-foreground">
+              </TableCell>
+            </TableRow>
+            <TableRow v-if="filteredDictionaries.length === 0">
+              <TableCell colspan="6" class="text-center text-muted-foreground">
                 暂无字典数据
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </Card>
 
     <!-- 创建/编辑字典对话框 -->
-    <div v-if="showCreateDialog || showEditDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-        <h3 class="text-lg font-semibold mb-4">
-          {{ showEditDialog ? '编辑字典' : '新增字典' }}
-        </h3>
+    <Dialog :open="showCreateDialog || showEditDialog" @update:open="(open) => !open && cancelForm()">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>
+            {{ showEditDialog ? '编辑字典' : '新增字典' }}
+          </DialogTitle>
+        </DialogHeader>
         
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
@@ -154,85 +153,89 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium mb-1">字典类型</label>
-              <select v-model="formData.type" class="w-full px-3 py-2 border rounded-md" required>
-                <option value="">请选择类型</option>
-                <option value="system">系统字典</option>
-                <option value="business">业务字典</option>
-                <option value="config">配置字典</option>
-              </select>
+              <Select v-model="formData.type" required>
+                <SelectTrigger>
+                  <SelectValue placeholder="请选择类型" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="system">系统字典</SelectItem>
+                  <SelectItem value="business">业务字典</SelectItem>
+                  <SelectItem value="config">配置字典</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">状态</label>
-              <select v-model="formData.status" class="w-full px-3 py-2 border rounded-md" required>
-                <option value="active">启用</option>
-                <option value="inactive">停用</option>
-              </select>
+              <Select v-model="formData.status" required>
+                <SelectTrigger>
+                  <SelectValue placeholder="请选择状态" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">启用</SelectItem>
+                  <SelectItem value="inactive">停用</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           
           <div>
             <label class="block text-sm font-medium mb-1">字典描述</label>
-            <textarea 
+            <Textarea 
               v-model="formData.description"
-              class="w-full px-3 py-2 border rounded-md resize-none"
               rows="3"
               placeholder="请输入字典描述"
-            ></textarea>
+            />
           </div>
           
-          <div class="flex gap-3 pt-4">
-            <Button type="submit" class="flex-1">
+          <DialogFooter>
+            <Button type="submit">
               {{ showEditDialog ? '更新' : '创建' }}
             </Button>
-            <Button type="button" variant="outline" @click="cancelForm" class="flex-1">
+            <Button type="button" variant="outline" @click="cancelForm">
               取消
             </Button>
-          </div>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
 
     <!-- 字典项管理对话框 -->
-    <div v-if="showItemsDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">
-            管理字典项 - {{ currentDictionary?.name }}
-          </h3>
-          <Button @click="showAddItemDialog = true" size="sm">
-            <Plus class="w-4 h-4 mr-2" />
-            新增项目
-          </Button>
-        </div>
+    <Dialog :open="showItemsDialog" @update:open="(open) => !open && closeItemsDialog()">
+      <DialogContent class="max-w-4xl">
+        <DialogHeader>
+          <div class="flex justify-between items-center">
+            <DialogTitle>
+              管理字典项 - {{ currentDictionary?.name }}
+            </DialogTitle>
+            <Button @click="showAddItemDialog = true" size="sm">
+              <Plus class="w-4 h-4 mr-2" />
+              新增项目
+            </Button>
+          </div>
+        </DialogHeader>
         
         <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="border-b">
-              <tr class="text-left">
-                <th class="p-4 font-medium">项目编码</th>
-                <th class="p-4 font-medium">项目名称</th>
-                <th class="p-4 font-medium">排序</th>
-                <th class="p-4 font-medium">状态</th>
-                <th class="p-4 font-medium">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in dictionaryItems" :key="item.id" class="border-b hover:bg-muted/50">
-                <td class="p-4 font-mono text-sm">{{ item.code }}</td>
-                <td class="p-4">{{ item.name }}</td>
-                <td class="p-4">{{ item.sort_order }}</td>
-                <td class="p-4">
-                  <span 
-                    :class="{
-                      'bg-green-100 text-green-800': item.status === 'active',
-                      'bg-red-100 text-red-800': item.status === 'inactive'
-                    }"
-                    class="px-2 py-1 rounded-full text-xs font-medium"
-                  >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>项目编码</TableHead>
+                <TableHead>项目名称</TableHead>
+                <TableHead>排序</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="item in dictionaryItems" :key="item.id">
+                <TableCell class="font-mono text-sm">{{ item.code }}</TableCell>
+                <TableCell>{{ item.name }}</TableCell>
+                <TableCell>{{ item.sort_order }}</TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(item.status)">
                     {{ getStatusName(item.status) }}
-                  </span>
-                </td>
-                <td class="p-4">
+                  </Badge>
+                </TableCell>
+                <TableCell>
                   <div class="flex gap-2">
                     <Button size="sm" variant="outline" @click="editItem(item)">
                       <Edit3 class="w-4 h-4" />
@@ -246,24 +249,56 @@
                       <Trash2 class="w-4 h-4" />
                     </Button>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
         
-        <div class="flex gap-3 pt-4">
-          <Button variant="outline" @click="closeItemsDialog" class="flex-1">
+        <DialogFooter>
+          <Button variant="outline" @click="closeItemsDialog">
             关闭
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Plus, RefreshCw, Eye, Edit3, Trash2, List } from 'lucide-vue-next'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 // 页面配置
 definePageMeta({
@@ -345,6 +380,30 @@ const getStatusName = (status: string) => {
     inactive: '停用'
   }
   return statuses[status as keyof typeof statuses] || status
+}
+
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'default'
+    case 'inactive':
+      return 'destructive'
+    default:
+      return 'secondary'
+  }
+}
+
+const getTypeVariant = (type: string) => {
+  switch (type) {
+    case 'system':
+      return 'default'
+    case 'business':
+      return 'secondary'
+    case 'config':
+      return 'outline'
+    default:
+      return 'secondary'
+  }
 }
 
 const viewDictionary = (dict: any) => {
@@ -429,4 +488,4 @@ const deleteItem = (id: string) => {
 onMounted(async () => {
   await refreshDictionaries()
 })
-</script> 
+</script>

@@ -3,6 +3,11 @@ import type { PaginationParams, PaginationResponse } from '~/types/database'
 
 export const useCustomers = () => {
   const { findMany, findById, create, update, remove, exists, getStats } = useDatabase()
+  
+  // 响应式状态
+  const customers = ref<Customer[]>([])
+  const loading = ref(false)
+  const error = ref<string | null>(null)
 
   // 获取客户列表
   const getCustomers = async (params: PaginationParams & {
@@ -81,14 +86,14 @@ export const useCustomers = () => {
   // 创建客户
   const createCustomer = async (customerData: Omit<Customer, 'id' | 'created_at' | 'updated_at'>): Promise<Customer> => {
     // 检查客户编号是否已存在
-    const customerNoExists = await exists('customers', 'customer_no', customerData.customer_no)
+    const customerNoExists = await exists('customers', { customer_no: customerData.customer_no })
     if (customerNoExists) {
       throw new Error('客户编号已存在')
     }
 
     // 检查邮箱是否已存在
     if (customerData.email) {
-      const emailExists = await exists('customers', 'email', customerData.email)
+      const emailExists = await exists('customers', { email: customerData.email })
       if (emailExists) {
         throw new Error('邮箱地址已存在')
       }
@@ -175,7 +180,7 @@ export const useCustomers = () => {
     try {
       const [totalCustomers, activeCustomers, newCustomers] = await Promise.all([
         getStats('customers'),
-        getStats('customers', { status: 'active' }),
+        getStats('customers', 'count', [{ column: 'status', value: 'active' }]),
         getNewCustomersThisMonth()
       ])
 
@@ -289,6 +294,12 @@ export const useCustomers = () => {
   }
 
   return {
+    // 响应式状态
+    customers,
+    loading,
+    error,
+    
+    // 方法
     getCustomers,
     searchCustomers,
     getCustomer,

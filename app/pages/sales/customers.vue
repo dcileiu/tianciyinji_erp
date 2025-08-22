@@ -3,52 +3,57 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">
+        <h1 class="text-3xl font-bold tracking-tight">
           客户档案管理
         </h1>
         <p class="text-muted-foreground mt-1">
           管理客户基础信息，维护客户关系和联系方式
         </p>
       </div>
-      <button @click="openCreateForm" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        <span>新增客户</span>
-      </button>
+      <Button @click="openCreateForm">
+        <Plus class="mr-2 h-4 w-4" />
+        新增客户
+      </Button>
     </div>
 
     <!-- 搜索和筛选 -->
-    <div class="bg-card p-6 rounded-lg border">
+    <Card>
+      <CardHeader>
+        <CardTitle>搜索筛选</CardTitle>
+      </CardHeader>
+      <CardContent>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- 搜索框 -->
         <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
+          <label class="block text-sm font-medium mb-2">
             搜索客户
           </label>
           <div class="relative">
-            <input
+            <Input
               v-model="searchQuery"
               placeholder="客户名称、编号..."
-              class="w-full h-10 pl-10 pr-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+              class="pl-10"
             />
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           </div>
         </div>
 
         <!-- 客户类型筛选 -->
         <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
+          <label class="block text-sm font-medium mb-2">
             客户类型
           </label>
-          <select v-model="typeFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部类型</option>
-            <option value="enterprise">企业客户</option>
-            <option value="individual">个人客户</option>
-            <option value="distributor">经销商</option>
-          </select>
+          <Select v-model="typeFilter">
+            <SelectTrigger>
+              <SelectValue placeholder="全部类型" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部类型</SelectItem>
+              <SelectItem value="enterprise">企业客户</SelectItem>
+              <SelectItem value="individual">个人客户</SelectItem>
+              <SelectItem value="distributor">经销商</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <!-- 地区筛选 -->
@@ -67,108 +72,113 @@
 
         <!-- 状态筛选 -->
         <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
+          <label class="block text-sm font-medium mb-2">
             客户状态
           </label>
-          <select v-model="statusFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部状态</option>
-            <option value="active">活跃</option>
-            <option value="inactive">不活跃</option>
-            <option value="potential">潜在客户</option>
-          </select>
+          <Select v-model="statusFilter">
+            <SelectTrigger>
+              <SelectValue placeholder="全部状态" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部状态</SelectItem>
+              <SelectItem value="active">活跃</SelectItem>
+              <SelectItem value="inactive">不活跃</SelectItem>
+              <SelectItem value="potential">潜在客户</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
-    </div>
+      </CardContent>
+    </Card>
 
     <!-- 客户统计 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">总客户数</p>
-            <p class="text-2xl font-bold text-foreground">{{ stats.totalCustomers }}</p>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">总客户数</p>
+              <p class="text-2xl font-bold text-foreground">{{ stats.totalCustomers }}</p>
+            </div>
+            <div class="p-2 bg-blue-500/10 rounded-lg">
+              <Users class="w-6 h-6 text-blue-600" />
+            </div>
           </div>
-          <div class="p-2 bg-blue-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
       
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">活跃客户</p>
-            <p class="text-2xl font-bold text-foreground">{{ stats.activeCustomers }}</p>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">活跃客户</p>
+              <p class="text-2xl font-bold text-foreground">{{ stats.activeCustomers }}</p>
+            </div>
+            <div class="p-2 bg-green-500/10 rounded-lg">
+              <CheckCircle class="w-6 h-6 text-green-600" />
+            </div>
           </div>
-          <div class="p-2 bg-green-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
       
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">本月新增</p>
-            <p class="text-2xl font-bold text-foreground">{{ stats.newCustomers }}</p>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">本月新增</p>
+              <p class="text-2xl font-bold text-foreground">{{ stats.newCustomers }}</p>
+            </div>
+            <div class="p-2 bg-purple-500/10 rounded-lg">
+              <UserPlus class="w-6 h-6 text-purple-600" />
+            </div>
           </div>
-          <div class="p-2 bg-purple-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
       
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">总交易额</p>
-            <p class="text-2xl font-bold text-foreground">¥{{ stats.totalRevenue.toLocaleString() }}</p>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">总交易额</p>
+              <p class="text-2xl font-bold text-foreground">¥{{ stats.totalRevenue.toLocaleString() }}</p>
+            </div>
+            <div class="p-2 bg-orange-500/10 rounded-lg">
+              <DollarSign class="w-6 h-6 text-orange-600" />
+            </div>
           </div>
-          <div class="p-2 bg-orange-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
 
     <!-- 客户列表 -->
-    <div class="bg-card rounded-lg border overflow-hidden">
-      <div class="px-6 py-4 border-b">
-        <h3 class="text-lg font-semibold text-foreground">客户列表</h3>
-      </div>
+    <Card>
+      <CardHeader>
+        <div class="flex items-center justify-between">
+          <CardTitle>客户列表</CardTitle>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-muted-foreground">共 {{ filteredCustomers.length }} 条记录</span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
       
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border">
-          <thead class="bg-muted/50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">客户编号</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">客户名称</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">联系人</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">联系电话</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">客户类型</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">所在地区</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">状态</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">操作</th>
-            </tr>
-          </thead>
-          <tbody class="bg-background divide-y divide-border">
-            <tr
-              v-for="customer in filteredCustomers"
-              :key="customer.id"
-              class="hover:bg-muted/20 transition-colors"
-            >
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                {{ customer.customer_no }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>客户编号</TableHead>
+              <TableHead>客户名称</TableHead>
+              <TableHead>联系人</TableHead>
+              <TableHead>联系电话</TableHead>
+              <TableHead>客户类型</TableHead>
+              <TableHead>所在地区</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="customer in filteredCustomers" :key="customer.id">
+              <TableCell>{{ customer.customer_no }}</TableCell>
+              <TableCell>
                 <div class="flex items-center">
                   <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                     <span class="text-xs font-medium text-primary">
@@ -176,88 +186,72 @@
                     </span>
                   </div>
                   <div class="ml-3">
-                    <div class="text-sm font-medium text-foreground">{{ customer.name }}</div>
+                    <div class="text-sm font-medium">{{ customer.name }}</div>
                     <div class="text-sm text-muted-foreground">{{ customer.email }}</div>
                   </div>
                 </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                {{ customer.contact_person }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                {{ customer.contact_phone }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getTypeColor(customer.customer_type)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+              </TableCell>
+              <TableCell>{{ customer.contact_person }}</TableCell>
+              <TableCell>{{ customer.contact_phone }}</TableCell>
+              <TableCell>
+                <Badge :variant="getTypeVariant(customer.customer_type)">
                   {{ getTypeText(customer.customer_type) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                {{ getRegionText(customer.region) }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getStatusColor(customer.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                </Badge>
+              </TableCell>
+              <TableCell>{{ getRegionText(customer.region) }}</TableCell>
+              <TableCell>
+                <Badge :variant="getStatusVariant(customer.status)">
                   {{ getStatusText(customer.status) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                </Badge>
+              </TableCell>
+              <TableCell>
                 <div class="flex items-center space-x-2">
-                  <button @click="viewCustomer(customer)" class="text-blue-600 hover:text-blue-900 p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
-                  </button>
-                  <button @click="editCustomer(customer)" class="text-green-600 hover:text-green-900 p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                  </button>
-                  <button @click="handleDeleteCustomer(customer)" class="text-red-600 hover:text-red-900 p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
+                  <Button @click="viewCustomer(customer)" variant="ghost" size="sm">
+                    查看
+                  </Button>
+                  <Button @click="editCustomer(customer)" variant="ghost" size="sm">
+                    编辑
+                  </Button>
+                  <Button @click="handleDeleteCustomer(customer)" variant="ghost" size="sm">
+                    删除
+                  </Button>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
 
       <!-- 分页 -->
-      <div class="bg-background px-4 py-3 border-t border-border sm:px-6">
+      <div class="px-6 py-4 border-t bg-muted/20">
         <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <p class="text-sm text-muted-foreground">
-              显示 
-              <span class="font-medium">{{ (currentPage - 1) * pageSize + 1 }}</span>
-              到
-              <span class="font-medium">{{ Math.min(currentPage * pageSize, filteredCustomers.length) }}</span>
-              项，共
-              <span class="font-medium">{{ filteredCustomers.length }}</span>
-              项
-            </p>
+          <div class="text-sm text-muted-foreground">
+            显示第 {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, filteredCustomers.length) }} 条，
+            共 {{ filteredCustomers.length }} 条记录
           </div>
           <div class="flex items-center space-x-2">
-            <button
-              @click="currentPage--"
+            <Button
+              @click="currentPage = Math.max(1, currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 text-sm border border-input rounded-md hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="outline"
+              size="sm"
             >
               上一页
-            </button>
-            <button
-              @click="currentPage++"
-              :disabled="currentPage * pageSize >= filteredCustomers.length"
-              class="px-3 py-1 text-sm border border-input rounded-md hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            </Button>
+            <span class="px-3 py-1 text-sm">
+              第 {{ currentPage }} / {{ totalPages }} 页
+            </span>
+            <Button
+              @click="currentPage = Math.min(totalPages, currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              variant="outline"
+              size="sm"
             >
               下一页
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
 
     <!-- 客户表单弹窗 -->
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -346,14 +340,31 @@
 <script setup lang="ts">
 import { ref, computed, reactive, onMounted, watch } from 'vue'
 import type { Customer } from '~/types/database'
+import { Button } from '~/components/ui/Button.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/Card.vue'
+import { Input } from '~/components/ui/Input.vue'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/Select.vue'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/Table.vue'
+import { Badge } from '~/components/ui/Badge.vue'
+import { Plus, Search, Users, CheckCircle, Clock, TrendingUp, UserPlus, DollarSign } from 'lucide-vue-next'
+import CustomerForm from '~/components/CustomerForm.vue'
 
 // 响应式数据
 const searchQuery = ref('')
 const typeFilter = ref('')
 const regionFilter = ref('')
 const statusFilter = ref('')
+// 分页相关
 const currentPage = ref(1)
-const pageSize = 10
+const pageSize = ref(10)
+const totalPages = computed(() => Math.ceil(filteredCustomers.value.length / pageSize.value))
+
+// 分页数据
+const paginatedCustomers = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredCustomers.value.slice(start, end)
+})
 const loading = ref(false)
 const error = ref('')
 
@@ -497,14 +508,14 @@ onMounted(() => {
 // 计算显示的客户（用于分页显示）
 const filteredCustomers = computed(() => customers.value)
 
-// 获取类型颜色
-const getTypeColor = (type: string): string => {
-  const colors: Record<string, string> = {
-    enterprise: 'bg-blue-100 text-blue-800',
-    individual: 'bg-green-100 text-green-800',
-    distributor: 'bg-purple-100 text-purple-800'
+// 获取类型变体
+const getTypeVariant = (type: string): string => {
+  const variants: Record<string, string> = {
+    enterprise: 'default',
+    individual: 'secondary',
+    distributor: 'outline'
   }
-  return colors[type] || 'bg-gray-100 text-gray-800'
+  return variants[type] || 'default'
 }
 
 // 获取类型文本
@@ -528,15 +539,17 @@ const getRegionText = (region: string): string => {
   return texts[region] || region
 }
 
-// 获取状态颜色
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
-    active: 'bg-green-100 text-green-800',
-    inactive: 'bg-gray-100 text-gray-800',
-    potential: 'bg-yellow-100 text-yellow-800'
+// 获取状态变体
+const getStatusVariant = (status: string): string => {
+  const variants: Record<string, string> = {
+    active: 'default',
+    inactive: 'destructive',
+    potential: 'secondary'
   }
-  return colors[status] || 'bg-gray-100 text-gray-800'
+  return variants[status] || 'default'
 }
+
+
 
 // 获取状态文本
 const getStatusText = (status: string): string => {

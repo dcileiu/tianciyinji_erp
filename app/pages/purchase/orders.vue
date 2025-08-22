@@ -322,8 +322,8 @@ const paginatedOrders = computed(() => {
 
 // 加载数据
 const loadOrders = async () => {
-  const result = await fetchPurchaseOrders(filters.value, currentPage.value, pageSize.value)
-  totalCount.value = result.count
+  const result = await fetchPurchaseOrders()
+  totalCount.value = result.total
 }
 
 // 加载供应商列表

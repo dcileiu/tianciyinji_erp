@@ -36,41 +36,35 @@
       </div>
       
       <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="border-b">
-            <tr class="text-left">
-              <th class="p-4 font-medium">部门名称</th>
-              <th class="p-4 font-medium">部门编码</th>
-              <th class="p-4 font-medium">上级部门</th>
-              <th class="p-4 font-medium">负责人</th>
-              <th class="p-4 font-medium">描述</th>
-              <th class="p-4 font-medium">状态</th>
-              <th class="p-4 font-medium">创建时间</th>
-              <th class="p-4 font-medium">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="department in filteredDepartments" :key="department.id" class="border-b hover:bg-muted/50">
-              <td class="p-4 font-medium">{{ department.name }}</td>
-              <td class="p-4 font-mono text-sm">{{ department.code }}</td>
-              <td class="p-4 text-muted-foreground">{{ getParentName(department.parent_id) || '无' }}</td>
-              <td class="p-4">{{ department.manager }}</td>
-              <td class="p-4 text-muted-foreground">{{ department.description || '-' }}</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-green-100 text-green-800': department.status === 'active',
-                    'bg-red-100 text-red-800': department.status === 'inactive'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>部门名称</TableHead>
+              <TableHead>部门编码</TableHead>
+              <TableHead>上级部门</TableHead>
+              <TableHead>负责人</TableHead>
+              <TableHead>描述</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>创建时间</TableHead>
+              <TableHead>操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="department in filteredDepartments" :key="department.id">
+              <TableCell class="font-medium">{{ department.name }}</TableCell>
+              <TableCell class="font-mono text-sm">{{ department.code }}</TableCell>
+              <TableCell class="text-muted-foreground">{{ getParentName(department.parent_id) || '无' }}</TableCell>
+              <TableCell>{{ department.manager }}</TableCell>
+              <TableCell class="text-muted-foreground">{{ department.description || '-' }}</TableCell>
+              <TableCell>
+                <Badge :variant="getStatusVariant(department.status)">
                   {{ department.status === 'active' ? '启用' : '禁用' }}
-                </span>
-              </td>
-              <td class="p-4 text-sm text-muted-foreground">
+                </Badge>
+              </TableCell>
+              <TableCell class="text-sm text-muted-foreground">
                 {{ formatDate(department.created_at) }}
-              </td>
-              <td class="p-4">
+              </TableCell>
+              <TableCell>
                 <div class="flex gap-2">
                   <Button size="sm" variant="outline" @click="editDepartment(department)">
                     <Edit3 class="w-4 h-4" />
@@ -84,24 +78,26 @@
                     <Trash2 class="w-4 h-4" />
                   </Button>
                 </div>
-              </td>
-            </tr>
-            <tr v-if="filteredDepartments.length === 0">
-              <td colspan="8" class="p-8 text-center text-muted-foreground">
+              </TableCell>
+            </TableRow>
+            <TableRow v-if="filteredDepartments.length === 0">
+              <TableCell colspan="8" class="text-center text-muted-foreground">
                 暂无部门数据
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </Card>
 
     <!-- 创建/编辑部门对话框 -->
-    <div v-if="showCreateDialog || showEditDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-        <h3 class="text-lg font-semibold mb-4">
-          {{ showEditDialog ? '编辑部门' : '新增部门' }}
-        </h3>
+    <Dialog :open="showCreateDialog || showEditDialog" @update:open="(open) => !open && cancelForm()">
+      <DialogContent class="max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {{ showEditDialog ? '编辑部门' : '新增部门' }}
+          </DialogTitle>
+        </DialogHeader>
         
         <form @submit.prevent="submitForm" class="space-y-4">
           <div>
@@ -116,12 +112,17 @@
           
           <div>
             <label class="block text-sm font-medium mb-1">上级部门</label>
-            <select v-model="formData.parent_id" class="w-full px-3 py-2 border rounded-md">
-              <option value="">无上级部门</option>
-              <option v-for="dept in departments" :key="dept.id" :value="dept.id">
-                {{ dept.name }}
-              </option>
-            </select>
+            <Select v-model="formData.parent_id">
+              <SelectTrigger>
+                <SelectValue placeholder="选择上级部门" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">无上级部门</SelectItem>
+                <SelectItem v-for="dept in departments" :key="dept.id" :value="dept.id">
+                  {{ dept.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <div>
@@ -131,38 +132,74 @@
           
           <div>
             <label class="block text-sm font-medium mb-1">描述</label>
-            <textarea 
+            <Textarea 
               v-model="formData.description"
-              class="w-full px-3 py-2 border rounded-md resize-none"
-              rows="3"
               placeholder="请输入部门描述"
-            ></textarea>
+              rows="3"
+            />
           </div>
           
           <div>
             <label class="block text-sm font-medium mb-1">状态</label>
-            <select v-model="formData.status" class="w-full px-3 py-2 border rounded-md">
-              <option value="active">启用</option>
-              <option value="inactive">禁用</option>
-            </select>
+            <Select v-model="formData.status">
+              <SelectTrigger>
+                <SelectValue placeholder="选择状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">启用</SelectItem>
+                <SelectItem value="inactive">禁用</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
-          <div class="flex gap-3 pt-4">
-            <Button type="submit" class="flex-1">
-              {{ showEditDialog ? '更新' : '创建' }}
-            </Button>
-            <Button type="button" variant="outline" @click="cancelForm" class="flex-1">
+          <DialogFooter>
+            <Button type="button" variant="outline" @click="cancelForm">
               取消
             </Button>
-          </div>
+            <Button type="submit">
+              {{ showEditDialog ? '更新' : '创建' }}
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Plus, RefreshCw, Edit3, Trash2 } from 'lucide-vue-next'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 // 页面配置
 definePageMeta({
@@ -271,8 +308,19 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleString('zh-CN')
 }
 
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'default'
+    case 'inactive':
+      return 'destructive'
+    default:
+      return 'secondary'
+  }
+}
+
 // 初始化数据
 onMounted(async () => {
   await refreshDepartments()
 })
-</script> 
+</script>

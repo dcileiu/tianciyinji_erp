@@ -8,7 +8,7 @@
           制定和调整生产计划，优化生产资源配置
         </p>
       </div>
-      <Button @click="showCreate">
+      <Button @click="showCreateDialog = true">
          <Plus class="w-4 h-4 mr-2" />
          新建生产计划
        </Button>
@@ -98,45 +98,51 @@
           <label class="text-sm font-medium text-foreground mb-2 block">
             计划状态
           </label>
-          <select
-            v-model="selectedStatus"
-            class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-          >
-            <option value="">全部状态</option>
-            <option value="draft">草稿</option>
-            <option value="approved">已审核</option>
-            <option value="executing">执行中</option>
-            <option value="completed">已完成</option>
-            <option value="cancelled">已取消</option>
-          </select>
+          <Select v-model="selectedStatus">
+            <SelectTrigger class="w-full">
+              <SelectValue placeholder="全部状态" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部状态</SelectItem>
+              <SelectItem value="draft">草稿</SelectItem>
+              <SelectItem value="approved">已审核</SelectItem>
+              <SelectItem value="executing">执行中</SelectItem>
+              <SelectItem value="completed">已完成</SelectItem>
+              <SelectItem value="cancelled">已取消</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label class="text-sm font-medium text-foreground mb-2 block">
             计划周期
           </label>
-          <select
-            v-model="selectedPeriod"
-            class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-          >
-            <option value="">全部周期</option>
-            <option value="daily">日计划</option>
-            <option value="weekly">周计划</option>
-            <option value="monthly">月计划</option>
-          </select>
+          <Select v-model="selectedPeriod">
+            <SelectTrigger class="w-full">
+              <SelectValue placeholder="全部周期" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部周期</SelectItem>
+              <SelectItem value="daily">日计划</SelectItem>
+              <SelectItem value="weekly">周计划</SelectItem>
+              <SelectItem value="monthly">月计划</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label class="text-sm font-medium text-foreground mb-2 block">
             负责车间
           </label>
-          <select
-            v-model="selectedWorkshop"
-            class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-          >
-            <option value="">全部车间</option>
-            <option value="workshop_1">第一车间</option>
-            <option value="workshop_2">第二车间</option>
-            <option value="workshop_3">第三车间</option>
-          </select>
+          <Select v-model="selectedWorkshop">
+            <SelectTrigger class="w-full">
+              <SelectValue placeholder="全部车间" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部车间</SelectItem>
+              <SelectItem value="workshop_1">第一车间</SelectItem>
+              <SelectItem value="workshop_2">第二车间</SelectItem>
+              <SelectItem value="workshop_3">第三车间</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </Card>
@@ -144,134 +150,116 @@
     <!-- 生产计划列表 -->
     <Card class="p-6">
       <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead>
-            <tr class="border-b border-border">
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                计划名称
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                计划周期
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                负责车间
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                计划产量
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                完成进度
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                状态
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                计划时间
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>计划名称</TableHead>
+              <TableHead>计划周期</TableHead>
+              <TableHead>负责车间</TableHead>
+              <TableHead>计划产量</TableHead>
+              <TableHead>完成进度</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>计划时间</TableHead>
+              <TableHead>操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow
               v-for="plan in paginatedPlans"
               :key="plan.id"
-              class="border-b border-border hover:bg-accent/20 transition-colors"
             >
-              <td class="py-3 px-4">
+              <TableCell>
                 <div class="font-medium text-foreground">
                   {{ plan.plan_name }}
                 </div>
                 <div class="text-sm text-muted-foreground">
                   {{ plan.plan_code || plan.plan_no }}
                 </div>
-              </td>
-              <td class="py-3 px-4">
+              </TableCell>
+              <TableCell>
                 <span class="text-sm text-foreground">
                   {{ getPeriodText(plan.period_type) }}
                 </span>
-              </td>
-              <td class="py-3 px-4">
+              </TableCell>
+              <TableCell>
                 <span class="text-sm text-foreground">
                   {{ getWorkshopName(plan.workshop_id) }}
                 </span>
-              </td>
-              <td class="py-3 px-4">
+              </TableCell>
+              <TableCell>
                 <div class="font-medium text-foreground">
                   {{ plan.target_quantity || plan.planned_quantity || 0 }}
                 </div>
                 <div class="text-sm text-muted-foreground">
                   已完成: {{ plan.completed_quantity || 0 }}
                 </div>
-              </td>
-              <td class="py-3 px-4">
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    class="bg-blue-600 h-2 rounded-full" 
-                    :style="{ width: `${getProgress(plan)}%` }"
-                  ></div>
+              </TableCell>
+              <TableCell>
+                <div class="space-y-2">
+                  <Progress :value="getProgress(plan)" class="w-full" />
+                  <div class="text-sm text-muted-foreground">
+                    {{ getProgress(plan) }}%
+                  </div>
                 </div>
-                <div class="text-sm text-muted-foreground mt-1">
-                  {{ getProgress(plan) }}%
-                </div>
-              </td>
-              <td class="py-3 px-4">
-                <span :class="[
-                  'px-2 py-1 rounded-full text-xs font-medium',
-                  getStatusColor(plan.status)
-                ]">
+              </TableCell>
+              <TableCell>
+                <Badge :variant="getStatusVariant(plan.status)">
                   {{ getStatusText(plan.status) }}
-                </span>
-              </td>
-              <td class="py-3 px-4">
+                </Badge>
+              </TableCell>
+              <TableCell>
                 <div class="text-sm text-foreground">
                   {{ formatDate(plan.start_date) }}
                 </div>
                 <div class="text-sm text-muted-foreground">
                   至 {{ formatDate(plan.end_date) }}
                 </div>
-              </td>
-              <td class="py-3 px-4">
-                <div class="flex items-center space-x-2">
-                  <Button size="sm" variant="ghost" @click="viewPlan(plan)" title="查看">
-                    <Eye class="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" @click="handleEdit(plan)" title="编辑">
-                    <Edit class="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    v-if="plan.status === 'pending'"
-                    size="sm" 
-                    variant="ghost" 
-                    @click="handleApprove(plan.id)"
-                    title="审核"
-                  >
-                    <CheckCircle class="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    v-if="plan.status === 'approved'"
-                    size="sm" 
-                    variant="ghost" 
-                    @click="handleStart(plan.id)"
-                    title="开始"
-                  >
-                    <Play class="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    @click="handleDelete(plan.id)"
-                    class="text-destructive hover:text-destructive"
-                    title="删除"
-                  >
-                    <Trash2 class="w-4 h-4" />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <MoreHorizontal class="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem @click="viewPlan(plan)">
+                      <Eye class="w-4 h-4 mr-2" />
+                      查看详情
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="handleEdit(plan)">
+                      <Edit class="w-4 h-4 mr-2" />
+                      编辑计划
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator v-if="plan.status === 'pending' || plan.status === 'approved'" />
+                    <DropdownMenuItem 
+                      v-if="plan.status === 'pending'"
+                      @click="handleApprove(plan.id)"
+                    >
+                      <CheckCircle class="w-4 h-4 mr-2" />
+                      审核通过
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      v-if="plan.status === 'approved'"
+                      @click="handleStart(plan.id)"
+                    >
+                      <Play class="w-4 h-4 mr-2" />
+                      开始执行
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      @click="handleDelete(plan.id)"
+                      class="text-destructive focus:text-destructive"
+                    >
+                      <Trash2 class="w-4 h-4 mr-2" />
+                      删除计划
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
 
       <!-- 分页 -->
@@ -281,131 +269,102 @@
           {{ Math.min(currentPage * pageSize, filteredPlans.length) }} 条，
           共 {{ filteredPlans.length }} 条记录
         </div>
-        <div class="flex items-center space-x-2">
-          <Button
-            size="sm"
-            variant="outline"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
-            上一页
-          </Button>
-          <span class="text-sm text-muted-foreground">
-            {{ currentPage }} / {{ totalPages }}
-          </span>
-          <Button
-            size="sm"
-            variant="outline"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
-            下一页
-          </Button>
-        </div>
+        <Pagination
+          v-model:page="currentPage"
+          :total="filteredPlans.length"
+          :sibling-count="1"
+          :show-edges="true"
+          :items-per-page="pageSize"
+        />
       </div>
     </Card>
 
-    <!-- 创建计划模态框 -->
-    <div v-if="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-        <h3 class="text-lg font-semibold mb-4">新建生产计划</h3>
-        <form @submit.prevent="submitCreate">
+    <!-- 创建计划对话框 -->
+    <Dialog v-model:open="showCreateDialog">
+      <DialogContent class="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>创建生产计划</DialogTitle>
+          <DialogDescription>
+            填写以下信息创建新的生产计划
+          </DialogDescription>
+        </DialogHeader>
+        <form @submit.prevent="submitForm" class="space-y-4">
           <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">计划名称</label>
-              <input
-                v-model="planForm.plan_name"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            <div class="space-y-2">
+              <Label for="name">计划名称</Label>
+              <Input
+                id="name"
+                v-model="form.name"
                 placeholder="请输入计划名称"
+                required
               />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">计划周期</label>
-              <select
-                v-model="planForm.period_type"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="week">周计划</option>
-                <option value="month">月计划</option>
-                <option value="quarter">季度计划</option>
-                <option value="year">年度计划</option>
-              </select>
+            <div class="space-y-2">
+              <Label for="product">产品</Label>
+              <Select v-model="form.product" required>
+                <SelectTrigger>
+                  <SelectValue placeholder="请选择产品" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="产品A">产品A</SelectItem>
+                  <SelectItem value="产品B">产品B</SelectItem>
+                  <SelectItem value="产品C">产品C</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">负责车间</label>
-              <select
-                v-model="planForm.workshop_id"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">请选择车间</option>
-                <option v-for="workshop in workshops" :key="workshop.id" :value="workshop.id">
-                  {{ workshop.workshop_name || workshop.name }}
-                </option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">目标产量</label>
-              <input
-                v-model.number="planForm.target_quantity"
+            <div class="space-y-2">
+              <Label for="quantity">计划产量</Label>
+              <Input
+                id="quantity"
+                v-model.number="form.quantity"
                 type="number"
-                min="1"
+                placeholder="请输入计划产量"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="请输入目标产量"
               />
             </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">开始日期</label>
-                <input
-                  v-model="planForm.start_date"
-                  type="date"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">结束日期</label>
-                <input
-                  v-model="planForm.end_date"
-                  type="date"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+            <div class="space-y-2">
+              <Label for="startDate">开始日期</Label>
+              <Input
+                id="startDate"
+                v-model="form.startDate"
+                type="date"
+                required
+              />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">备注</label>
-              <textarea
-                v-model="planForm.notes"
-                rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="请输入备注信息"
-              ></textarea>
+            <div class="space-y-2">
+              <Label for="endDate">结束日期</Label>
+              <Input
+                id="endDate"
+                v-model="form.endDate"
+                type="date"
+                required
+              />
+            </div>
+            <div class="space-y-2">
+              <Label for="manager">负责人</Label>
+              <Select v-model="form.manager" required>
+                <SelectTrigger>
+                  <SelectValue placeholder="请选择负责人" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="张三">张三</SelectItem>
+                  <SelectItem value="李四">李四</SelectItem>
+                  <SelectItem value="王五">王五</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-          <div class="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              @click="showCreateModal = false"
-              class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-            >
+          <DialogFooter>
+            <Button type="button" variant="outline" @click="cancelForm">
               取消
-            </button>
-            <button
-              type="submit"
-              :disabled="loading"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-            >
-              {{ loading ? '创建中...' : '创建' }}
-            </button>
-          </div>
+            </Button>
+            <Button type="submit">
+              创建
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
 
     <!-- 编辑计划模态框 -->
     <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

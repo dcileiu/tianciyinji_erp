@@ -4,17 +4,17 @@ import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs';
-import { escapeHtml } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/@vue+shared@3.5.18/node_modules/@vue/shared/dist/shared.cjs.js';
+import { escapeHtml } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/@vue+shared@3.5.19/node_modules/@vue/shared/dist/shared.cjs.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/vue-bundle-renderer@2.1.2/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/ufo@1.6.1/node_modules/ufo/dist/index.mjs';
 import destr, { destr as destr$1 } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/destr@2.0.5/node_modules/destr/dist/index.mjs';
-import { renderToString } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/vue@3.5.18_typescript@5.9.2/node_modules/vue/server-renderer/index.mjs';
+import { renderToString } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/vue@3.5.19_typescript@5.9.2/node_modules/vue/server-renderer/index.mjs';
 import { klona } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/klona@2.0.6/node_modules/klona/dist/index.mjs';
 import defu, { defuFn } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/defu@6.1.4/node_modules/defu/dist/defu.mjs';
 import { snakeCase } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/scule@1.3.0/node_modules/scule/dist/index.mjs';
 import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/unhead@2.0.14/node_modules/unhead/dist/server.mjs';
 import { stringify, uneval } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/devalue@5.1.1/node_modules/devalue/index.js';
-import { isVNode, toValue, isRef } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/vue@3.5.18_typescript@5.9.2/node_modules/vue/index.mjs';
+import { isVNode, toValue, isRef } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/vue@3.5.19_typescript@5.9.2/node_modules/vue/index.mjs';
 import { createHooks } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/hookable@5.5.3/node_modules/hookable/dist/index.mjs';
 import { createFetch, Headers as Headers$1 } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/ofetch@1.4.1/node_modules/ofetch/dist/node.mjs';
 import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://C:/Users/60279/Desktop/erp/erp_nuxt/node_modules/.pnpm/node-mock-http@1.0.2/node_modules/node-mock-http/dist/index.mjs';
@@ -652,6 +652,8 @@ const _inlineRuntimeConfig = {
   "public": {
     "supabaseUrl": "https://pbsywtwwrhqbxneyorrx.supabase.co",
     "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBic3l3dHd3cmhxYnhuZXlvcnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MTgzOTYsImV4cCI6MjA3MTE5NDM5Nn0.E4UdtPsSQq7DW1ffTvUn2MoMnfa052uwLA2JcX_1RLQ",
+    "appVersion": "1.0.0",
+    "isDevelopment": true,
     "supabase": {
       "url": "https://pbsywtwwrhqbxneyorrx.supabase.co",
       "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBic3l3dHd3cmhxYnhuZXlvcnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MTgzOTYsImV4cCI6MjA3MTE5NDM5Nn0.E4UdtPsSQq7DW1ffTvUn2MoMnfa052uwLA2JcX_1RLQ",
@@ -676,6 +678,7 @@ const _inlineRuntimeConfig = {
       "clientOptions": {}
     }
   },
+  "authSecret": "",
   "supabase": {
     "serviceKey": ""
   }
@@ -1043,7 +1046,7 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _pY8TtBURYFuF5zLwhOSoDJXtFaOxjmQW5LMVbmoMSc = (function(nitro) {
+const _iMliATx5r0SNeOsqfYeDXJGbHPjN2vAKLyDcSIewk = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
@@ -1051,7 +1054,7 @@ const _pY8TtBURYFuF5zLwhOSoDJXtFaOxjmQW5LMVbmoMSc = (function(nitro) {
 
 const rootDir = "C:/Users/60279/Desktop/erp/erp_nuxt";
 
-const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
+const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"},{"name":"description","content":"Enterprise Resource Planning Management System"},{"name":"keywords","content":"ERP, 管理系统, Vue3, Nuxt3"},{"name":"author","content":"ERP Team"}],"link":[{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"}],"style":[],"script":[],"noscript":[],"charset":"utf-8","viewport":"width=device-width, initial-scale=1","title":"ERP管理系统"};
 
 const appRootTag = "div";
 
@@ -1072,7 +1075,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _HE605xjCrY7MceSIzAhe6BHyZwpPMcA9LystzF47G_E = (nitroApp) => {
+const _jfLyTQ1MK3twTrQK4QpatpN6grlDTIQJnO5PDJPCps = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -1142,8 +1145,8 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _pY8TtBURYFuF5zLwhOSoDJXtFaOxjmQW5LMVbmoMSc,
-_HE605xjCrY7MceSIzAhe6BHyZwpPMcA9LystzF47G_E
+  _iMliATx5r0SNeOsqfYeDXJGbHPjN2vAKLyDcSIewk,
+_jfLyTQ1MK3twTrQK4QpatpN6grlDTIQJnO5PDJPCps
 ];
 
 const assets = {};
@@ -1553,13 +1556,13 @@ async function getIslandContext(event) {
   return ctx;
 }
 
-const _lazy_LApOEh = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_DNbHSk = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _Lt4CDm, lazy: false, middleware: true, method: undefined },
-  { route: '/__nuxt_error', handler: _lazy_LApOEh, lazy: true, middleware: false, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_DNbHSk, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_LApOEh, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_DNbHSk, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -1887,17 +1890,6 @@ const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: styles
 }, Symbol.toStringTag, { value: 'Module' }));
 
-function renderPayloadResponse(ssrContext) {
-  return {
-    body: stringify(splitPayload(ssrContext).payload, ssrContext._payloadReducers) ,
-    statusCode: getResponseStatus(ssrContext.event),
-    statusMessage: getResponseStatusText(ssrContext.event),
-    headers: {
-      "content-type": "application/json;charset=utf-8" ,
-      "x-powered-by": "Nuxt"
-    }
-  };
-}
 function renderPayloadJsonScript(opts) {
   const contents = opts.data ? stringify(opts.data, opts.ssrContext._payloadReducers) : "";
   const payload = {
@@ -1920,13 +1912,6 @@ function renderPayloadJsonScript(opts) {
     }
   ];
 }
-function splitPayload(ssrContext) {
-  const { data, prerenderedAt, ...initial } = ssrContext.payload;
-  return {
-    initial: { ...initial, prerenderedAt },
-    payload: { data, prerenderedAt }
-  };
-}
 
 const renderSSRHeadOptions = {"omitLineBreaks":true};
 
@@ -1935,7 +1920,6 @@ globalThis.__publicAssetsURL = publicAssetsURL;
 const HAS_APP_TELEPORTS = !!(appTeleportAttrs.id);
 const APP_TELEPORT_OPEN_TAG = HAS_APP_TELEPORTS ? `<${appTeleportTag}${propsToString(appTeleportAttrs)}>` : "";
 const APP_TELEPORT_CLOSE_TAG = HAS_APP_TELEPORTS ? `</${appTeleportTag}>` : "";
-const PAYLOAD_URL_RE = /^[^?]*\/_payload.json(?:\?.*)?$/ ;
 const renderer = defineRenderHandler(async (event) => {
   const nitroApp = useNitroApp();
   const ssrError = event.path.startsWith("/__nuxt_error") ? getQuery$1(event) : null;
@@ -1958,12 +1942,6 @@ const renderer = defineRenderHandler(async (event) => {
     }
     setSSRError(ssrContext, ssrError);
   }
-  const isRenderingPayload = PAYLOAD_URL_RE.test(ssrContext.url);
-  if (isRenderingPayload) {
-    const url = ssrContext.url.substring(0, ssrContext.url.lastIndexOf("/")) || "/";
-    ssrContext.url = url;
-    event._path = event.node.req.url = url;
-  }
   const routeOptions = getRouteRules(event);
   if (routeOptions.ssr === false) {
     ssrContext.noSSR = true;
@@ -1984,10 +1962,6 @@ const renderer = defineRenderHandler(async (event) => {
   }
   if (ssrContext.payload?.error && !ssrError) {
     throw ssrContext.payload.error;
-  }
-  if (isRenderingPayload) {
-    const response = renderPayloadResponse(ssrContext);
-    return response;
   }
   const NO_SCRIPTS = routeOptions.noScripts;
   const { styles, scripts } = getRequestDependencies(ssrContext, renderer.rendererContext);

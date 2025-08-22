@@ -1,7 +1,7 @@
 import type { Supplier, PurchaseOrder, PurchaseOrderItem, Product, PaginationParams, PaginationResponse } from '~/types/database'
 
 // 采购订单筛选器接口
-interface OrderFilters {
+export interface PurchaseOrderFilters {
   status?: string
   supplier_id?: string
   date_range?: [string, string]
@@ -220,6 +220,41 @@ export const usePurchaseOrders = () => {
     }
   }
 
+  // 工具函数
+  const getStatusColor = (status: string) => {
+    const colors = {
+      'draft': 'bg-gray-100 text-gray-800',
+      'submitted': 'bg-blue-100 text-blue-800',
+      'approved': 'bg-green-100 text-green-800',
+      'in_transit': 'bg-yellow-100 text-yellow-800',
+      'received': 'bg-purple-100 text-purple-800',
+      'completed': 'bg-green-100 text-green-800',
+      'cancelled': 'bg-red-100 text-red-800'
+    }
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800'
+  }
+
+  const getStatusText = (status: string) => {
+    const texts = {
+      'draft': '草稿',
+      'submitted': '已提交',
+      'approved': '已批准',
+      'in_transit': '运输中',
+      'received': '已收货',
+      'completed': '已完成',
+      'cancelled': '已取消'
+    }
+    return texts[status as keyof typeof texts] || status
+  }
+
+  const formatCurrency = (amount: number) => {
+    return `¥${amount.toLocaleString()}`
+  }
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('zh-CN')
+  }
+
   return {
     // 状态
     purchaseOrders: readonly(purchaseOrders),
@@ -234,6 +269,12 @@ export const usePurchaseOrders = () => {
     updatePurchaseOrder,
     deletePurchaseOrder,
     fetchSuppliers,
-    fetchOrderStats
+    fetchOrderStats,
+    
+    // 工具函数
+    getStatusColor,
+    getStatusText,
+    formatCurrency,
+    formatDate
   }
 }

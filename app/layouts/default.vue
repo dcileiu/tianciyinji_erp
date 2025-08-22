@@ -17,88 +17,8 @@
               </NuxtLink>
             </div>
 
-            <!-- 主导航 -->
-            <nav class="hidden md:ml-8 md:flex md:space-x-8">
-              <NuxtLink 
-                to="/dashboard" 
-                class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <BarChart3 class="w-4 h-4 mr-2" />
-                仪表板
-              </NuxtLink>
-              
-              <!-- 快速入门 -->
-              <NuxtLink 
-                to="/getting-started" 
-                class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <BookOpen class="w-4 h-4 mr-2" />
-                快速入门
-              </NuxtLink>
-              <NuxtLink 
-                to="/master-data/products" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                主数据
-              </NuxtLink>
-              <NuxtLink 
-                to="/warehouse/inventory" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                仓库管理
-              </NuxtLink>
-              <NuxtLink 
-                to="/sales/orders" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                销售管理
-              </NuxtLink>
-              <NuxtLink 
-                to="/purchase/orders" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                采购管理
-              </NuxtLink>
-              <NuxtLink 
-                to="/production/orders" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                生产管理
-              </NuxtLink>
-              <NuxtLink 
-                to="/finance/receipts" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                财务管理
-              </NuxtLink>
-              <NuxtLink 
-                to="/reports/sales" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                报表中心
-              </NuxtLink>
-              <NuxtLink 
-                to="/users" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                用户管理
-              </NuxtLink>
-              <NuxtLink 
-                to="/system/roles" 
-                class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-                active-class="text-blue-600 dark:text-blue-400"
-              >
-                系统设置
-              </NuxtLink>
-            </nav>
+            <!-- 动态导航菜单 -->
+            <DynamicNavigation />
           </div>
 
           <!-- 右侧用户信息 -->
@@ -188,43 +108,48 @@
 
     <!-- 移动端菜单（可选） -->
     <!-- 这里可以添加移动端抽屉菜单 -->
+    
+    <!-- 全局加载指示器 -->
+    <GlobalLoader />
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { 
-  BarChart3, Users, Package, ShoppingCart, ShoppingBag, Factory, 
-  Warehouse, Settings, LogOut, Menu, X, BookOpen, Sun, Moon, ChevronDown
+<script setup>
+import { ref, computed } from 'vue'
+import {
+  Sun,
+  Moon,
+  User,
+  LogOut,
+  Settings,
+  ChevronDown
 } from 'lucide-vue-next'
 
-// 用户状态
-const { user, logout, isAuthenticated } = useAuth()
+import GlobalLoader from '~/components/ui/GlobalLoader.vue'
 
-// 界面状态
+// 用户状态
+const user = useSupabaseUser()
+const { auth } = useSupabaseClient()
+
+// 主题状态
 const isDark = ref(false)
 const showUserMenu = ref(false)
 
-// 计算属性
-const userDisplayName = computed(() => {
-  if (!user.value) return '未知用户'
-  
-  // 优先使用用户元数据中的 full_name
-  if (user.value.user_metadata?.full_name) {
-    return user.value.user_metadata.full_name
-  }
-  
-  // 如果没有，使用邮箱的用户名部分
-  if (user.value.email) {
-    return user.value.email.split('@')[0]
-  }
-  
-  return '未知用户'
+// 用户显示名称
+const displayName = computed(() => {
+  if (!user.value) return ''
+  return user.value.user_metadata?.full_name || 
+         user.value.user_metadata?.name || 
+         user.value.email?.split('@')[0] || 
+         '用户'
 })
 
+// 用户首字母
 const userInitials = computed(() => {
-  const name = userDisplayName.value
-  if (name === '未知用户') return 'U'
+  if (!user.value) return ''
+  const name = displayName.value
+  if (name.length === 0) return ''
+  if (name.length === 1) return name.toUpperCase()
   
   // 如果是中文名，取前两个字符
   if (/[\u4e00-\u9fa5]/.test(name)) {
@@ -236,39 +161,47 @@ const userInitials = computed(() => {
   if (words.length >= 2) {
     return (words[0][0] + words[1][0]).toUpperCase()
   }
-  
-  return name[0]?.toUpperCase() || 'U'
+  return name[0].toUpperCase()
 })
 
-// 主题切换
+// 切换主题
 const toggleTheme = () => {
   isDark.value = !isDark.value
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-    localStorage.setItem('theme', 'dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-    localStorage.setItem('theme', 'light')
+  document.documentElement.classList.toggle('dark', isDark.value)
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+}
+
+// 登出
+const handleLogout = async () => {
+  try {
+    await auth.signOut()
+    await navigateTo('/auth/login')
+  } catch (error) {
+    console.error('登出失败:', error)
   }
 }
 
-// 处理登出
-const handleLogout = async () => {
+// 切换用户菜单
+const toggleUserMenu = () => {
+  showUserMenu.value = !showUserMenu.value
+}
+
+// 关闭用户菜单
+const closeUserMenu = () => {
   showUserMenu.value = false
-  await logout()
 }
 
 // Click away directive
 const vClickAway = {
-  beforeMount(el: any, binding: any) {
-    el.clickAwayEvent = function (event: Event) {
+  beforeMount(el, binding) {
+    el.clickAwayEvent = function (event) {
       if (!(el === event.target || el.contains(event.target))) {
         binding.value()
       }
     }
     document.addEventListener('click', el.clickAwayEvent)
   },
-  unmounted(el: any) {
+  unmounted(el) {
     document.removeEventListener('click', el.clickAwayEvent)
   }
 }
@@ -276,19 +209,11 @@ const vClickAway = {
 // 初始化主题
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme')
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-  isDark.value = savedTheme === 'dark' || (!savedTheme && prefersDark)
-
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
+  if (savedTheme) {
+    isDark.value = savedTheme === 'dark'
+  } else {
+    isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
   }
+  document.documentElement.classList.toggle('dark', isDark.value)
 })
-
-// 确保用户已登录
-watch(() => isAuthenticated.value, (isAuth) => {
-  if (!isAuth) {
-    navigateTo('/login')
-  }
-}, { immediate: true })
 </script>

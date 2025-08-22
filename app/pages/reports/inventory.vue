@@ -20,37 +20,52 @@
 
     <!-- 筛选条件 -->
     <Card>
-      <div class="p-4">
+      <CardContent class="p-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
-            <label class="block text-sm font-medium mb-1">仓库筛选</label>
-            <select v-model="warehouseFilter" class="w-full px-3 py-2 border rounded-md">
-              <option value="">全部仓库</option>
-              <option value="main">主仓库</option>
-              <option value="raw_material">原料仓</option>
-              <option value="finished_goods">成品仓</option>
-              <option value="backup">备用仓</option>
-            </select>
+            <label class="block text-sm font-medium mb-2">仓库筛选</label>
+            <Select v-model="warehouseFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部仓库" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部仓库</SelectItem>
+                <SelectItem value="main">主仓库</SelectItem>
+                <SelectItem value="raw_material">原料仓</SelectItem>
+                <SelectItem value="finished_goods">成品仓</SelectItem>
+                <SelectItem value="backup">备用仓</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">商品类别</label>
-            <select v-model="categoryFilter" class="w-full px-3 py-2 border rounded-md">
-              <option value="">全部类别</option>
-              <option value="raw_material">原材料</option>
-              <option value="finished_product">成品</option>
-              <option value="semi_finished">半成品</option>
-              <option value="accessory">配件</option>
-            </select>
+            <label class="block text-sm font-medium mb-2">商品类别</label>
+            <Select v-model="categoryFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部类别" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部类别</SelectItem>
+                <SelectItem value="raw_material">原材料</SelectItem>
+                <SelectItem value="finished_product">成品</SelectItem>
+                <SelectItem value="semi_finished">半成品</SelectItem>
+                <SelectItem value="accessory">配件</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">库存状态</label>
-            <select v-model="stockStatusFilter" class="w-full px-3 py-2 border rounded-md">
-              <option value="">全部状态</option>
-              <option value="normal">正常</option>
-              <option value="low">低库存</option>
-              <option value="out">缺货</option>
-              <option value="excess">积压</option>
-            </select>
+            <label class="block text-sm font-medium mb-2">库存状态</label>
+            <Select v-model="stockStatusFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="normal">正常</SelectItem>
+                <SelectItem value="low">低库存</SelectItem>
+                <SelectItem value="out">缺货</SelectItem>
+                <SelectItem value="excess">积压</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div class="flex gap-2">
             <Button @click="applyFilters" class="flex-1">
@@ -59,13 +74,13 @@
             </Button>
           </div>
         </div>
-      </div>
+      </CardContent>
     </Card>
 
     <!-- 库存概览 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <Card>
-        <div class="p-6">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-muted-foreground">库存总值</p>
@@ -78,11 +93,11 @@
           <div class="mt-2">
             <span class="text-xs text-blue-600">库存总量: {{ inventoryStats.totalQuantity.toLocaleString() }}</span>
           </div>
-        </div>
+        </CardContent>
       </Card>
 
       <Card>
-        <div class="p-6">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-muted-foreground">商品种类</p>
@@ -95,11 +110,11 @@
           <div class="mt-2">
             <span class="text-xs text-green-600">在售: {{ inventoryStats.activeProducts }}</span>
           </div>
-        </div>
+        </CardContent>
       </Card>
 
       <Card>
-        <div class="p-6">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-muted-foreground">低库存预警</p>
@@ -112,11 +127,11 @@
           <div class="mt-2">
             <span class="text-xs text-yellow-600">需要补货</span>
           </div>
-        </div>
+        </CardContent>
       </Card>
 
       <Card>
-        <div class="p-6">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-muted-foreground">缺货商品</p>
@@ -129,115 +144,114 @@
           <div class="mt-2">
             <span class="text-xs text-red-600">紧急补货</span>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
 
     <!-- 库存分布 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- 按仓库分布 -->
       <Card>
-        <div class="p-4 border-b">
-          <h3 class="text-lg font-semibold">仓库库存分布</h3>
-        </div>
-        <div class="p-4">
+        <CardHeader>
+          <CardTitle>按仓库分布</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div class="space-y-4">
-            <div v-for="warehouse in warehouseDistribution" :key="warehouse.name" class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-4 h-4 rounded-full" :style="{ backgroundColor: warehouse.color }"></div>
-                <div>
-                  <p class="font-medium">{{ warehouse.name }}</p>
-                  <p class="text-sm text-muted-foreground">{{ warehouse.items }}种商品</p>
-                </div>
+            <div v-for="warehouse in warehouseDistribution" :key="warehouse.id" class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 rounded-full" :style="{ backgroundColor: warehouse.color }"></div>
+                <span class="text-sm font-medium">{{ warehouse.name }}</span>
               </div>
               <div class="text-right">
-                <p class="font-medium">¥{{ warehouse.value.toLocaleString() }}</p>
-                <p class="text-sm text-muted-foreground">{{ warehouse.percentage }}%</p>
+                <div class="text-sm font-semibold">¥{{ warehouse.value.toLocaleString() }}</div>
+                <div class="text-xs text-muted-foreground">{{ warehouse.percentage }}%</div>
               </div>
             </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
 
+      <!-- 按商品类别分布 -->
       <Card>
-        <div class="p-4 border-b">
-          <h3 class="text-lg font-semibold">商品类别分布</h3>
-        </div>
-        <div class="p-4">
+        <CardHeader>
+          <CardTitle>按商品类别分布</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div class="space-y-4">
-            <div v-for="category in categoryDistribution" :key="category.name" class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-4 h-4 rounded-full" :style="{ backgroundColor: category.color }"></div>
-                <div>
-                  <p class="font-medium">{{ category.name }}</p>
-                  <p class="text-sm text-muted-foreground">{{ category.items }}种</p>
-                </div>
+            <div v-for="category in categoryDistribution" :key="category.id" class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 rounded-full" :style="{ backgroundColor: category.color }"></div>
+                <span class="text-sm font-medium">{{ category.name }}</span>
               </div>
               <div class="text-right">
-                <p class="font-medium">{{ category.quantity.toLocaleString() }}件</p>
-                <p class="text-sm text-muted-foreground">{{ category.percentage }}%</p>
+                <div class="text-sm font-semibold">¥{{ category.value.toLocaleString() }}</div>
+                <div class="text-xs text-muted-foreground">{{ category.percentage }}%</div>
               </div>
             </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
 
-    <!-- 库存明细表 -->
+    <!-- 库存明细 -->
     <Card>
-      <div class="p-4 border-b">
-        <h3 class="text-lg font-semibold">库存明细</h3>
-      </div>
-      
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="border-b">
-            <tr class="text-left">
-              <th class="p-4 font-medium">商品编号</th>
-              <th class="p-4 font-medium">商品名称</th>
-              <th class="p-4 font-medium">仓库</th>
-              <th class="p-4 font-medium">当前库存</th>
-              <th class="p-4 font-medium">安全库存</th>
-              <th class="p-4 font-medium">单位成本</th>
-              <th class="p-4 font-medium">库存价值</th>
-              <th class="p-4 font-medium">状态</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in inventoryDetails" :key="item.id" class="border-b hover:bg-muted/50">
-              <td class="p-4 font-mono text-sm">{{ item.product_no }}</td>
-              <td class="p-4">{{ item.product_name }}</td>
-              <td class="p-4">{{ item.warehouse }}</td>
-              <td class="p-4 font-medium">{{ item.current_stock }}</td>
-              <td class="p-4 text-muted-foreground">{{ item.safety_stock }}</td>
-              <td class="p-4">¥{{ item.unit_cost.toLocaleString() }}</td>
-              <td class="p-4 font-medium">¥{{ item.total_value.toLocaleString() }}</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-green-100 text-green-800': item.status === 'normal',
-                    'bg-yellow-100 text-yellow-800': item.status === 'low',
-                    'bg-red-100 text-red-800': item.status === 'out',
-                    'bg-orange-100 text-orange-800': item.status === 'excess'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {{ getStockStatusName(item.status) }}
-                </span>
-              </td>
-            </tr>
-            <tr v-if="inventoryDetails.length === 0">
-              <td colspan="8" class="p-8 text-center text-muted-foreground">
-                暂无库存数据
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <CardHeader>
+        <div class="flex items-center justify-between">
+          <CardTitle>库存明细</CardTitle>
+          <Button @click="exportReport" class="gap-2">
+            <Download class="w-4 h-4" />
+            导出报表
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div class="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>商品编号</TableHead>
+                <TableHead>商品名称</TableHead>
+                <TableHead>仓库</TableHead>
+                <TableHead>当前库存</TableHead>
+                <TableHead>安全库存</TableHead>
+                <TableHead>单位成本</TableHead>
+                <TableHead>库存价值</TableHead>
+                <TableHead>状态</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+               <TableRow v-for="item in inventoryDetails" :key="item.id">
+                 <TableCell class="font-medium">{{ item.sku }}</TableCell>
+                 <TableCell>
+                   <div class="font-medium">{{ item.name }}</div>
+                   <div class="text-sm text-muted-foreground">{{ item.category }}</div>
+                 </TableCell>
+                 <TableCell>{{ item.warehouse }}</TableCell>
+                 <TableCell>{{ item.currentStock }}</TableCell>
+                 <TableCell>{{ item.safetyStock }}</TableCell>
+                 <TableCell>¥{{ item.unitCost.toFixed(2) }}</TableCell>
+                 <TableCell>¥{{ item.totalValue.toLocaleString() }}</TableCell>
+                 <TableCell>
+                   <Badge :variant="getStockStatusVariant(item.status)">
+                     {{ getStockStatusName(item.status) }}
+                   </Badge>
+                 </TableCell>
+               </TableRow>
+             </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { 
   Download, RefreshCw, Search, Package, Boxes, 
   AlertTriangle, XCircle 
@@ -358,8 +372,18 @@ const getStockStatusName = (status: string) => {
   return statuses[status as keyof typeof statuses] || status
 }
 
+const getStockStatusVariant = (status: string) => {
+  const variantMap = {
+    normal: 'default',
+    low: 'secondary',
+    out: 'destructive',
+    excess: 'outline'
+  }
+  return variantMap[status as keyof typeof variantMap] || 'default'
+}
+
 // 初始化数据
 onMounted(async () => {
   await applyFilters()
 })
-</script> 
+</script>

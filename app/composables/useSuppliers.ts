@@ -4,6 +4,11 @@ import { useDatabase } from './useDatabase'
 export const useSuppliers = () => {
   const { findMany, findById, create, update, remove, removeMany, exists, getStats } = useDatabase()
   
+  // 响应式状态
+  const suppliers = ref<Supplier[]>([])
+  const loading = ref(false)
+  const error = ref<string | null>(null)
+  
   // 获取供应商列表
   const getSuppliers = async (options?: {
     search?: string
@@ -127,9 +132,10 @@ export const useSuppliers = () => {
     
     // 查询当月最大编号
     const { data } = await findMany<Supplier>('suppliers', {
-      filters: [`supplier_no.like.${prefix}%`],
-      orderBy: { column: 'supplier_no', ascending: false },
-      pageSize: 1
+      page: 1,
+      pageSize: 1,
+      filters: { supplier_no: `${prefix}%` },
+      orderBy: { column: 'supplier_no', ascending: false }
     })
     
     let nextNumber = 1
@@ -191,6 +197,12 @@ export const useSuppliers = () => {
   }
   
   return {
+    // 响应式状态
+    suppliers,
+    loading,
+    error,
+    
+    // 方法
     getSuppliers,
     getSupplierById,
     createSupplier,

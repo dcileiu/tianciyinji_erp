@@ -17,114 +17,134 @@
     </div>
 
     <!-- 搜索和筛选 -->
-    <Card class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- 搜索框 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            搜索订单
-          </label>
-          <div class="relative">
+    <Card>
+      <CardContent class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- 搜索框 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              搜索订单
+            </label>
+            <div class="relative">
+              <Input
+                v-model="searchQuery"
+                placeholder="订单号、客户名称..."
+                class="pl-10"
+              />
+              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            </div>
+          </div>
+
+          <!-- 订单状态筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              订单状态
+            </label>
+            <Select v-model="selectedStatus">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="draft">草稿</SelectItem>
+                <SelectItem value="confirmed">已确认</SelectItem>
+                <SelectItem value="in_production">生产中</SelectItem>
+                <SelectItem value="shipped">已发货</SelectItem>
+                <SelectItem value="delivered">已送达</SelectItem>
+                <SelectItem value="completed">已完成</SelectItem>
+                <SelectItem value="cancelled">已取消</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <!-- 客户筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              客户
+            </label>
+            <Select v-model="selectedCustomer">
+              <SelectTrigger>
+                <SelectValue placeholder="全部客户" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部客户</SelectItem>
+                <SelectItem v-for="customer in customersList" :key="customer.id" :value="customer.id">
+                  {{ customer.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <!-- 日期范围 -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-2">
+              订单日期
+            </label>
             <Input
-              v-model="searchQuery"
-              placeholder="订单号、客户名称..."
-              class="pl-10"
+              v-model="dateRange"
+              type="date"
             />
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           </div>
         </div>
-
-        <!-- 订单状态筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            订单状态
-          </label>
-          <select v-model="selectedStatus" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部状态</option>
-            <option value="draft">草稿</option>
-            <option value="confirmed">已确认</option>
-            <option value="in_production">生产中</option>
-            <option value="shipped">已发货</option>
-            <option value="delivered">已送达</option>
-            <option value="completed">已完成</option>
-            <option value="cancelled">已取消</option>
-          </select>
-        </div>
-
-        <!-- 客户筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            客户
-          </label>
-          <select v-model="selectedCustomer" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部客户</option>
-            <option v-for="customer in customersList" :key="customer.id" :value="customer.id">
-              {{ customer.name }}
-            </option>
-          </select>
-        </div>
-
-        <!-- 日期范围 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            订单日期
-          </label>
-          <Input
-            v-model="dateRange"
-            type="date"
-          />
-        </div>
-      </div>
+      </CardContent>
     </Card>
 
     <!-- 订单统计 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card class="p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">今日新增</p>
-            <p class="text-2xl font-bold text-foreground">{{ orderStats.todayNew }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">总订单数</p>
+              <p class="text-2xl font-bold text-foreground">{{ orderStats.total }}</p>
+            </div>
+            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <ShoppingCart class="w-4 h-4 text-blue-600" />
+            </div>
           </div>
-          <div class="p-2 bg-blue-500/10 rounded-lg">
-            <Plus class="w-5 h-5 text-blue-600" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
-      
-      <Card class="p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">待确认</p>
-            <p class="text-2xl font-bold text-foreground">{{ orderStats.pendingConfirm }}</p>
+
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">待处理</p>
+              <p class="text-2xl font-bold text-foreground">{{ orderStats.pending }}</p>
+            </div>
+            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+              <Clock class="w-4 h-4 text-yellow-600" />
+            </div>
           </div>
-          <div class="p-2 bg-yellow-500/10 rounded-lg">
-            <Clock class="w-5 h-5 text-yellow-600" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
-      
-      <Card class="p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">生产中</p>
-            <p class="text-2xl font-bold text-foreground">{{ orderStats.inProduction }}</p>
+
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">已完成</p>
+              <p class="text-2xl font-bold text-foreground">{{ orderStats.completed }}</p>
+            </div>
+            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle class="w-4 h-4 text-green-600" />
+            </div>
           </div>
-          <div class="p-2 bg-orange-500/10 rounded-lg">
-            <Factory class="w-5 h-5 text-orange-600" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
-      
-      <Card class="p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">本月完成</p>
-            <p class="text-2xl font-bold text-foreground">{{ orderStats.monthlyCompleted }}</p>
+
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">总金额</p>
+              <p class="text-2xl font-bold text-foreground">¥{{ orderStats.totalAmount.toLocaleString() }}</p>
+            </div>
+            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <DollarSign class="w-4 h-4 text-purple-600" />
+            </div>
           </div>
-          <div class="p-2 bg-green-500/10 rounded-lg">
-            <CheckCircle class="w-5 h-5 text-green-600" />
-          </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
 
@@ -146,124 +166,93 @@
     </div>
 
     <!-- 订单列表 -->
-    <Card class="overflow-hidden">
-      <!-- 加载状态 -->
-      <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span class="ml-2 text-gray-600">加载中...</span>
-      </div>
-      
-      <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border">
-          <thead class="bg-muted/50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                订单号
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                客户
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                订单金额
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                状态
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                订单日期
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                交付日期
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-background divide-y divide-border">
-              <!-- 空数据状态 -->
-              <tr v-if="paginatedOrders.length === 0">
-                <td colspan="7" class="px-6 py-12 text-center">
-                  <div class="flex flex-col items-center">
-                    <svg class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <h3 class="text-sm font-medium text-gray-900 mb-1">暂无订单数据</h3>
-                    <p class="text-sm text-gray-500">开始创建您的第一个销售订单</p>
-                  </div>
-                </td>
-              </tr>
-              
-              <tr
-                v-for="order in paginatedOrders"
-                :key="order.id"
-                class="hover:bg-muted/20 transition-colors"
-              >
-              <!-- 订单号 -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-foreground">
-                  {{ order.order_no }}
-                </div>
-              </td>
+    <Card>
+      <CardHeader>
+        <div class="flex justify-between items-center">
+          <CardTitle>订单列表</CardTitle>
+          <Button @click="refreshData" variant="outline" size="sm">
+            <RefreshCw class="w-4 h-4 mr-2" />
+            刷新
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <!-- 加载状态 -->
+        <div v-if="loading" class="flex justify-center items-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
 
-              <!-- 客户 -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                    <span class="text-xs font-medium text-primary">
-                      {{ (order.customer?.name || '未知客户').charAt(0) }}
-                    </span>
-                  </div>
-                  <div class="ml-3">
-                    <div class="text-sm font-medium text-foreground">
-                      {{ order.customer?.name || '未知客户' }}
+        <!-- 订单表格 -->
+        <div v-else class="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>订单号</TableHead>
+                <TableHead>客户</TableHead>
+                <TableHead>订单金额</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>订单日期</TableHead>
+                <TableHead>交付日期</TableHead>
+                <TableHead>操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <!-- 空数据状态 -->
+              <TableRow v-if="paginatedOrders.length === 0">
+                <TableCell colspan="7" class="text-center py-8 text-muted-foreground">
+                  暂无订单数据
+                </TableCell>
+              </TableRow>
+              
+              <!-- 订单数据 -->
+              <TableRow v-for="order in paginatedOrders" :key="order.id">
+                <TableCell>
+                  <div class="font-medium">{{ order.order_no }}</div>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center">
+                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <span class="text-xs font-medium text-primary">
+                        {{ (order.customer?.name || '未知客户').charAt(0) }}
+                      </span>
+                    </div>
+                    <div class="ml-3">
+                      <div class="font-medium">{{ order.customer?.name || '未知客户' }}</div>
                     </div>
                   </div>
-                </div>
-              </td>
-
-              <!-- 订单金额 -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-foreground font-medium">
-                  {{ formatCurrency(order.total_amount) }}
-                </div>
-              </td>
-
-              <!-- 状态 -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getStatusColor(order.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                  {{ getStatusText(order.status) }}
-                </span>
-              </td>
-
-              <!-- 订单日期 -->
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                {{ formatDate(order.order_date) }}
-              </td>
-
-              <!-- 交付日期 -->
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                {{ order.delivery_date ? formatDate(order.delivery_date) : '-' }}
-              </td>
-
-              <!-- 操作 -->
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div class="flex items-center space-x-2">
-                  <Button variant="ghost" size="sm" title="查看详情">
-                    <Eye class="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" title="编辑">
-                    <Edit class="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" title="删除">
-                    <Trash2 class="w-4 h-4" />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </TableCell>
+                <TableCell>
+                  <div class="font-medium">{{ formatCurrency(order.total_amount) }}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(order.status)">
+                    {{ getStatusText(order.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div class="text-sm">{{ formatDate(order.order_date) }}</div>
+                </TableCell>
+                <TableCell>
+                  <div class="text-sm">{{ order.delivery_date ? formatDate(order.delivery_date) : '-' }}</div>
+                </TableCell>
+                <TableCell>
+                  <div class="flex space-x-2">
+                    <Button variant="ghost" size="sm" @click="viewOrder(order.id)">
+                      <Eye class="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="editOrder(order.id)">
+                      <Edit class="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="deleteOrder(order.id)" class="text-destructive hover:text-destructive">
+                      <Trash2 class="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
 
       <!-- 分页 -->
       <div class="bg-background px-4 py-3 border-t border-border sm:px-6">
@@ -283,18 +272,23 @@
             <Button
               variant="outline"
               size="sm"
-              @click="currentPage--"
+              @click="currentPage = Math.max(1, currentPage - 1)"
               :disabled="currentPage === 1"
             >
+              <ChevronLeft class="w-4 h-4 mr-1" />
               上一页
             </Button>
+            <span class="text-sm text-muted-foreground">
+              第 {{ currentPage }} / {{ totalPages }} 页
+            </span>
             <Button
               variant="outline" 
               size="sm"
-              @click="currentPage++"
-              :disabled="currentPage * pageSize >= filteredOrders.length"
+              @click="currentPage = Math.min(totalPages, currentPage + 1)"
+              :disabled="currentPage === totalPages"
             >
               下一页
+              <ChevronRight class="w-4 h-4 ml-1" />
             </Button>
           </div>
         </div>
@@ -305,8 +299,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import { Search, Filter, Plus, Eye, Edit, Trash2, Download } from 'lucide-vue-next'
 import { useSalesOrders, type OrderFilters } from '~/composables/useSalesOrders'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Search, RefreshCw, ShoppingCart, Clock, CheckCircle, DollarSign, Eye, Edit, Trash2, ChevronLeft, ChevronRight, Plus } from 'lucide-vue-next'
 
 // 页面标题和元数据
 useHead({
@@ -329,6 +329,43 @@ const {
   formatDate
 } = useSalesOrders()
 
+// 工具函数
+const getStatusVariant = (status) => {
+  const variantMap = {
+    draft: 'secondary',
+    confirmed: 'default',
+    in_production: 'outline',
+    shipped: 'secondary',
+    delivered: 'default',
+    completed: 'default',
+    cancelled: 'destructive'
+  }
+  return variantMap[status] || 'secondary'
+}
+
+// 操作函数
+const viewOrder = (orderId) => {
+  // 查看订单详情
+  navigateTo(`/sales/orders/${orderId}`)
+}
+
+const editOrder = (orderId) => {
+  // 编辑订单
+  navigateTo(`/sales/orders/${orderId}/edit`)
+}
+
+const deleteOrder = async (orderId) => {
+  // 删除订单
+  if (confirm('确定要删除这个订单吗？')) {
+    // 调用删除API
+    await refreshData()
+  }
+}
+
+const refreshData = async () => {
+  await initData()
+}
+
 // 响应式数据
 const searchQuery = ref('')
 const selectedStatus = ref('')
@@ -345,9 +382,30 @@ const filters = computed<OrderFilters>(() => ({
   customerId: selectedCustomer.value || undefined
 }))
 
-// 分页后的订单列表
+// 计算属性
+const filteredOrders = computed(() => {
+  if (!ordersList.value) return []
+  
+  return ordersList.value.filter(order => {
+    const matchesSearch = !searchQuery.value || 
+      order.order_no.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      order.customer?.name?.toLowerCase().includes(searchQuery.value.toLowerCase())
+    
+    const matchesStatus = !selectedStatus.value || order.status === selectedStatus.value
+    const matchesCustomer = !selectedCustomer.value || order.customer?.id === selectedCustomer.value
+    
+    return matchesSearch && matchesStatus && matchesCustomer
+  })
+})
+
 const paginatedOrders = computed(() => {
-  return ordersList.value
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredOrders.value.slice(start, end)
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredOrders.value.length / pageSize.value)
 })
 
 // 加载数据

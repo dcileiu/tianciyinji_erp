@@ -1,1 +1,1 @@
-export * from '../..app/types/database.types.ts'
+export * from '../../app/types/database.types.ts'

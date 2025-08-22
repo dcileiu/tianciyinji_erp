@@ -1,7 +1,8 @@
 import type { SalesOrder, Customer, Product, PaginationParams, PaginationResponse } from '~/types/database'
 
 // 销售订单筛选器
-interface OrderFilters {
+// 导出OrderFilters接口
+export interface OrderFilters {
   status?: string
   customer_id?: string
   date_range?: [string, string]
@@ -210,20 +211,62 @@ export const useSalesOrders = () => {
     }
   }
 
+  // 工具函数
+  const getStatusColor = (status: string) => {
+    const colors = {
+      'draft': 'bg-gray-100 text-gray-800',
+      'confirmed': 'bg-blue-100 text-blue-800',
+      'shipped': 'bg-yellow-100 text-yellow-800',
+      'delivered': 'bg-green-100 text-green-800',
+      'cancelled': 'bg-red-100 text-red-800'
+    }
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800'
+  }
+
+  const getStatusText = (status: string) => {
+    const texts = {
+      'draft': '草稿',
+      'confirmed': '已确认',
+      'shipped': '已发货',
+      'delivered': '已交付',
+      'cancelled': '已取消'
+    }
+    return texts[status as keyof typeof texts] || status
+  }
+
+  const formatCurrency = (amount: number) => {
+    return `¥${amount.toLocaleString()}`
+  }
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('zh-CN')
+  }
+
   return {
-    // 状态
+    // 状态 - 提供多种别名
     salesOrders: readonly(salesOrders),
+    ordersList: readonly(salesOrders), // 别名
     customers: readonly(customers),
+    customersList: readonly(customers), // 别名
     orderStats: readonly(orderStats),
     loading: readonly(loading),
     error: readonly(error),
 
-    // 方法
+    // 方法 - 提供多种别名
     fetchSalesOrders,
+    getSalesOrdersList: fetchSalesOrders, // 别名
     createSalesOrder,
     updateSalesOrder,
     deleteSalesOrder,
     fetchCustomers,
-    fetchOrderStats
+    getCustomersList: fetchCustomers, // 别名
+    fetchOrderStats,
+    getOrderStats: fetchOrderStats, // 别名
+    
+    // 工具函数
+    getStatusColor,
+    getStatusText,
+    formatCurrency,
+    formatDate
   }
 }

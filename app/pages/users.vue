@@ -1,353 +1,568 @@
 <template>
-  <div class="space-y-6">
+  <div class="container mx-auto py-6">
     <!-- 页面标题 -->
-    <div class="flex justify-between items-center">
+    <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">用户管理</h1>
-        <p class="text-muted-foreground">管理系统用户账户和权限分配</p>
+        <h1 class="text-3xl font-bold tracking-tight">用户管理</h1>
+        <p class="text-muted-foreground">管理系统用户账户、角色权限和访问控制</p>
       </div>
-      <Button @click="showCreateDialog = true" class="bg-blue-600 hover:bg-blue-700">
-        <Plus class="w-4 h-4 mr-2" />
-        新增用户
-      </Button>
+      <PermissionWrapper :has-permission="canCreateUser">
+        <Button @click="openCreateDialog">
+          <Plus class="mr-2 h-4 w-4" />
+          新增用户
+        </Button>
+      </PermissionWrapper>
     </div>
 
-    <!-- 搜索筛选 -->
-    <Card>
-      <div class="p-4">
-        <div class="flex gap-4 items-center">
-          <Input
-            v-model="searchQuery"
-            placeholder="搜索用户姓名、邮箱..."
-            class="max-w-sm"
-          />
-          <select v-model="statusFilter" class="px-3 py-2 border rounded-md">
-            <option value="">全部状态</option>
-            <option value="active">启用</option>
-            <option value="inactive">禁用</option>
-          </select>
-          <select v-model="roleFilter" class="px-3 py-2 border rounded-md">
-            <option value="">全部角色</option>
-            <option value="admin">管理员</option>
-            <option value="manager">经理</option>
-            <option value="employee">员工</option>
-            <option value="viewer">查看者</option>
-          </select>
-          <Button variant="outline" @click="resetFilters">
-            <RefreshCw class="w-4 h-4 mr-2" />
-            重置
-          </Button>
+    <!-- 统计卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center">
+            <div class="p-3 bg-blue-500/10 rounded-full">
+              <Users class="h-6 w-6 text-blue-600" />
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-foreground">总用户数</p>
+              <p class="text-2xl font-semibold">{{ userStats.totalUsers }}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center">
+            <div class="p-3 bg-green-500/10 rounded-full">
+              <UserCheck class="h-6 w-6 text-green-600" />
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-foreground">活跃用户</p>
+              <p class="text-2xl font-semibold">{{ userStats.activeUsers }}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center">
+            <div class="p-3 bg-yellow-500/10 rounded-full">
+              <Shield class="h-6 w-6 text-yellow-600" />
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-foreground">管理员</p>
+              <p class="text-2xl font-semibold">{{ userStats.adminUsers }}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center">
+            <div class="p-3 bg-red-500/10 rounded-full">
+              <UserX class="h-6 w-6 text-red-600" />
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-foreground">停用用户</p>
+              <p class="text-2xl font-semibold">{{ userStats.inactiveUsers }}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <!-- 搜索和筛选 -->
+    <Card class="mb-6">
+      <CardHeader>
+        <CardTitle>搜索筛选</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <Label for="search">搜索用户</Label>
+            <Input
+              id="search"
+              v-model="searchQuery"
+              placeholder="用户名或邮箱"
+              class="mt-1"
+            />
+          </div>
+          <div>
+            <Label for="role">角色</Label>
+            <select
+              id="role"
+              v-model="selectedRole"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+            >
+              <option value="">全部角色</option>
+              <option value="admin">管理员</option>
+              <option value="manager">经理</option>
+              <option value="employee">员工</option>
+              <option value="viewer">访客</option>
+            </select>
+          </div>
+          <div>
+            <Label for="status">状态</Label>
+            <select
+              id="status"
+              v-model="selectedStatus"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+            >
+              <option value="">全部状态</option>
+              <option value="active">活跃</option>
+              <option value="inactive">停用</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <Button @click="handleSearch" class="w-full">
+              <Search class="mr-2 h-4 w-4" />
+              搜索
+            </Button>
+          </div>
         </div>
-      </div>
+      </CardContent>
     </Card>
 
     <!-- 用户列表 -->
     <Card>
-      <div class="p-4 border-b">
-        <h2 class="text-lg font-semibold">用户列表</h2>
-      </div>
-      
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="border-b">
-            <tr class="text-left">
-              <th class="p-4 font-medium">姓名</th>
-              <th class="p-4 font-medium">邮箱</th>
-              <th class="p-4 font-medium">角色</th>
-              <th class="p-4 font-medium">部门</th>
-              <th class="p-4 font-medium">岗位</th>
-              <th class="p-4 font-medium">状态</th>
-              <th class="p-4 font-medium">创建时间</th>
-              <th class="p-4 font-medium">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="user in filteredUsers" :key="user.id" class="border-b hover:bg-muted/50">
-              <td class="p-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span class="text-blue-600 font-medium text-sm">{{ user.name[0] }}</span>
-                  </div>
-                  <span class="font-medium">{{ user.name }}</span>
-                </div>
-              </td>
-              <td class="p-4 text-muted-foreground">{{ user.email }}</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-purple-100 text-purple-800': user.role === 'admin',
-                    'bg-blue-100 text-blue-800': user.role === 'manager', 
-                    'bg-green-100 text-green-800': user.role === 'employee',
-                    'bg-gray-100 text-gray-800': user.role === 'viewer'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {{ getRoleName(user.role) }}
-                </span>
-              </td>
-              <td class="p-4">{{ user.department }}</td>
-              <td class="p-4">{{ user.position }}</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-green-100 text-green-800': user.status === 'active',
-                    'bg-red-100 text-red-800': user.status === 'inactive'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {{ user.status === 'active' ? '启用' : '禁用' }}
-                </span>
-              </td>
-              <td class="p-4 text-sm text-muted-foreground">
-                {{ formatDate(user.created_at) }}
-              </td>
-              <td class="p-4">
-                <div class="flex gap-2">
-                  <Button size="sm" variant="outline" @click="editUser(user)">
-                    <Edit3 class="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" @click="resetPassword(user.id)">
-                    <Key class="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    @click="deleteUser(user.id)"
-                    class="text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 class="w-4 h-4" />
-                  </Button>
+      <CardHeader>
+        <CardTitle>用户列表</CardTitle>
+        <CardDescription>
+          共 {{ filteredUsers.length }} 个用户
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div v-if="loading" class="flex items-center justify-center py-8">
+          <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+          加载中...
         </div>
-              </td>
-            </tr>
-            <tr v-if="filteredUsers.length === 0">
-              <td colspan="8" class="p-8 text-center text-muted-foreground">
-                暂无用户数据
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <div v-else-if="filteredUsers.length === 0" class="text-center py-8">
+          <Users class="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+          <p class="text-muted-foreground">暂无用户数据</p>
+        </div>
+        <div v-else class="space-y-4">
+          <div
+            v-for="user in filteredUsers"
+            :key="user.id"
+            class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+          >
+            <div class="flex items-center space-x-4">
+              <Avatar 
+                :src="user.avatar_url" 
+                :fallback="user.name"
+                size="lg"
+              />
+              <div>
+                <h3 class="font-semibold">{{ user.name }}</h3>
+                <p class="text-sm text-muted-foreground">{{ user.email }}</p>
+                <div class="flex items-center space-x-2 mt-1">
+                  <Badge variant="outline" size="sm">{{ user.department }}</Badge>
+                  <Badge variant="outline" size="sm">{{ user.position }}</Badge>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="text-right">
+                <div class="flex items-center space-x-2">
+                  <Badge :variant="getRoleVariant(user.role)">
+                    {{ getRoleText(user.role) }}
+                  </Badge>
+                  <Badge :variant="user.status === 'active' ? 'default' : 'secondary'">
+                    {{ user.status === 'active' ? '活跃' : '停用' }}
+                  </Badge>
+                </div>
+                <p class="text-sm text-muted-foreground mt-1">
+                  最后登录: {{ formatDate(user.updated_at) }}
+                </p>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="ghost" size="sm">
+                    <MoreHorizontal class="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem @click="viewUser(user)">
+                    <Eye class="mr-2 h-4 w-4" />
+                    查看详情
+                  </DropdownMenuItem>
+                  <PermissionWrapper :has-permission="canEditUser">
+                    <DropdownMenuItem @click="editUser(user)">
+                      <Edit class="mr-2 h-4 w-4" />
+                      编辑
+                    </DropdownMenuItem>
+                  </PermissionWrapper>
+                  <DropdownMenuItem @click="resetPassword(user)">
+                    <Key class="mr-2 h-4 w-4" />
+                    重置密码
+                  </DropdownMenuItem>
+                  <PermissionWrapper :has-permission="canDeleteUser">
+                    <DropdownMenuItem 
+                      @click="deleteUser(user)"
+                      class="text-destructive"
+                    >
+                      <Trash2 class="mr-2 h-4 w-4" />
+                      删除
+                    </DropdownMenuItem>
+                  </PermissionWrapper>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      </CardContent>
     </Card>
 
     <!-- 创建/编辑用户对话框 -->
-    <div v-if="showCreateDialog || showEditDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-        <h3 class="text-lg font-semibold mb-4">
-          {{ showEditDialog ? '编辑用户' : '新增用户' }}
-        </h3>
+    <Dialog v-model:open="showUserDialog">
+      <DialogContent class="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{{ editingUser ? '编辑用户' : '新增用户' }}</DialogTitle>
+          <DialogDescription>
+            {{ editingUser ? '修改用户信息' : '创建新的用户账户' }}
+          </DialogDescription>
+        </DialogHeader>
         
-        <form @submit.prevent="submitForm" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">姓名</label>
-            <Input v-model="formData.name" placeholder="请输入用户姓名" required />
+        <div class="space-y-4 py-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <Label for="user-name">用户姓名 <span class="text-destructive">*</span></Label>
+              <Input
+                id="user-name"
+                v-model="userForm.name"
+                placeholder="请输入用户姓名"
+                class="mt-1"
+              />
+            </div>
+            <div>
+              <Label for="email">邮箱地址 <span class="text-destructive">*</span></Label>
+              <Input
+                id="email"
+                v-model="userForm.email"
+                type="email"
+                placeholder="请输入邮箱地址"
+                class="mt-1"
+              />
+            </div>
           </div>
           
-          <div>
-            <label class="block text-sm font-medium mb-1">邮箱</label>
-            <Input 
-              v-model="formData.email" 
-              type="email"
-              placeholder="请输入邮箱地址" 
-              required 
-              :disabled="showEditDialog"
-            />
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <Label for="role">角色 <span class="text-destructive">*</span></Label>
+              <select
+                id="role"
+                v-model="userForm.role"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              >
+                <option value="">请选择角色</option>
+                <option value="admin">管理员</option>
+                <option value="manager">经理</option>
+                <option value="employee">员工</option>
+                <option value="viewer">访客</option>
+              </select>
+            </div>
+            <div>
+              <Label for="status">状态 <span class="text-destructive">*</span></Label>
+              <select
+                id="status"
+                v-model="userForm.status"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              >
+                <option value="active">活跃</option>
+                <option value="inactive">停用</option>
+              </select>
+            </div>
           </div>
           
-          <div v-if="!showEditDialog">
-            <label class="block text-sm font-medium mb-1">初始密码</label>
-            <Input 
-              v-model="formData.password" 
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <Label for="department">部门</Label>
+              <Input
+                id="department"
+                v-model="userForm.department"
+                placeholder="请输入部门"
+                class="mt-1"
+              />
+            </div>
+            <div>
+              <Label for="position">职位</Label>
+              <Input
+                id="position"
+                v-model="userForm.position"
+                placeholder="请输入职位"
+                class="mt-1"
+              />
+            </div>
+          </div>
+          
+          <div v-if="!editingUser">
+            <Label for="password">初始密码 <span class="text-destructive">*</span></Label>
+            <Input
+              id="password"
+              v-model="userForm.password"
               type="password"
-              placeholder="请输入初始密码" 
-              required 
+              placeholder="请输入初始密码"
+              class="mt-1"
             />
           </div>
-          
-          <div>
-            <label class="block text-sm font-medium mb-1">角色</label>
-            <select v-model="formData.role" class="w-full px-3 py-2 border rounded-md" required>
-              <option value="">请选择角色</option>
-              <option value="admin">管理员</option>
-              <option value="manager">经理</option>
-              <option value="employee">员工</option>
-              <option value="viewer">查看者</option>
-            </select>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium mb-1">部门</label>
-            <Input v-model="formData.department" placeholder="请输入部门" required />
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium mb-1">岗位</label>
-            <Input v-model="formData.position" placeholder="请输入岗位" required />
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium mb-1">状态</label>
-            <select v-model="formData.status" class="w-full px-3 py-2 border rounded-md">
-              <option value="active">启用</option>
-              <option value="inactive">禁用</option>
-            </select>
-          </div>
-          
-          <div class="flex gap-3 pt-4">
-            <Button type="submit" class="flex-1">
-              {{ showEditDialog ? '更新' : '创建' }}
-            </Button>
-            <Button type="button" variant="outline" @click="cancelForm" class="flex-1">
-              取消
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+        
+        <DialogFooter>
+          <Button type="button" variant="outline" @click="showUserDialog = false">
+            取消
+          </Button>
+          <Button @click="handleSubmit" :disabled="submitting">
+            <Loader2 v-if="submitting" class="mr-2 h-4 w-4 animate-spin" />
+            {{ editingUser ? '更新' : '创建' }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Plus, RefreshCw, Edit3, Key, Trash2 } from 'lucide-vue-next'
+import { 
+  Plus, Search, MoreHorizontal, Users, UserCheck, Shield, UserX,
+  Eye, Edit, Key, Trash2, Loader2 
+} from 'lucide-vue-next'
 
-// 页面配置
-definePageMeta({
-  layout: 'default'
-})
-
-useHead({
-  title: '用户管理 - ERP 管理系统'
-})
-
-// 数据管理
-const { users, createUser, updateUser, deleteUser: removeUser, refreshUsers } = useUsers()
+// 导入组件
+import Button from '~/components/ui/Button.vue'
+import Card, { CardContent, CardHeader, CardTitle, CardDescription } from '~/components/ui/Card.vue'
+import Input from '~/components/ui/Input.vue'
+import Label from '~/components/ui/Label.vue'
+import Badge from '~/components/ui/Badge.vue'
+import Dialog, { DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '~/components/ui/Dialog.vue'
+import Avatar from '~/components/ui/Avatar.vue'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
 // 响应式数据
 const searchQuery = ref('')
-const statusFilter = ref('')
-const roleFilter = ref('')
-const showCreateDialog = ref(false)
-const showEditDialog = ref(false)
-const currentEditId = ref<string | null>(null)
+const selectedRole = ref('')
+const selectedStatus = ref('')
+const showUserDialog = ref(false)
+const editingUser = ref(null)
+const submitting = ref(false)
+const loading = ref(false)
+
+// 权限检查（模拟）
+const canCreateUser = ref(true)
+const canEditUser = ref(true)
+const canDeleteUser = ref(true)
+
+// 统计数据
+const userStats = reactive({
+  totalUsers: 0,
+  activeUsers: 0,
+  adminUsers: 0,
+  inactiveUsers: 0
+})
 
 // 表单数据
-const formData = ref({
+const userForm = reactive({
   name: '',
   email: '',
-  password: '',
   role: '',
+  status: 'active',
   department: '',
   position: '',
-  status: 'active'
+  password: ''
 })
+
+// 模拟用户数据
+const users = ref([
+  {
+    id: '1',
+    name: '张三',
+    email: 'zhangsan@company.com',
+    role: 'admin',
+    status: 'active',
+    department: 'IT部',
+    position: '系统管理员',
+    avatar_url: '',
+    created_at: '2024-01-15T10:00:00Z',
+    updated_at: '2024-12-26T10:00:00Z'
+  },
+  {
+    id: '2',
+    name: '李四',
+    email: 'lisi@company.com',
+    role: 'manager',
+    status: 'active',
+    department: '销售部',
+    position: '销售经理',
+    avatar_url: '',
+    created_at: '2024-02-20T10:00:00Z',
+    updated_at: '2024-12-25T15:30:00Z'
+  },
+  {
+    id: '3',
+    name: '王五',
+    email: 'wangwu@company.com',
+    role: 'employee',
+    status: 'active',
+    department: '财务部',
+    position: '会计',
+    avatar_url: '',
+    created_at: '2024-03-10T10:00:00Z',
+    updated_at: '2024-12-24T09:15:00Z'
+  },
+  {
+    id: '4',
+    name: '赵六',
+    email: 'zhaoliu@company.com',
+    role: 'viewer',
+    status: 'inactive',
+    department: '采购部',
+    position: '采购员',
+    avatar_url: '',
+    created_at: '2024-04-05T10:00:00Z',
+    updated_at: '2024-11-20T16:45:00Z'
+  }
+])
 
 // 计算属性
 const filteredUsers = computed(() => {
-  let filtered = users.value
+  let result = users.value || []
   
-  // 搜索过滤
   if (searchQuery.value) {
-    filtered = filtered.filter(user => 
-      user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(user => 
+      user.name.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query)
     )
   }
   
-  // 状态过滤
-  if (statusFilter.value) {
-    filtered = filtered.filter(user => user.status === statusFilter.value)
+  if (selectedRole.value) {
+    result = result.filter(user => user.role === selectedRole.value)
   }
   
-  // 角色过滤
-  if (roleFilter.value) {
-    filtered = filtered.filter(user => user.role === roleFilter.value)
+  if (selectedStatus.value) {
+    result = result.filter(user => user.status === selectedStatus.value)
   }
   
-  return filtered
+  return result
 })
 
 // 方法
-const resetFilters = () => {
-  searchQuery.value = ''
-  statusFilter.value = ''
-  roleFilter.value = ''
-}
-
-const getRoleName = (role: string) => {
-  const roleNames = {
-    admin: '管理员',
-    manager: '经理',
-    employee: '员工',
-    viewer: '查看者'
-  }
-  return roleNames[role as keyof typeof roleNames] || role
+const openCreateDialog = () => {
+  editingUser.value = null
+  resetForm()
+  showUserDialog.value = true
 }
 
 const editUser = (user: any) => {
-  formData.value = {
-    name: user.name,
-    email: user.email,
-    password: '',
-    role: user.role,
-    department: user.department,
-    position: user.position,
-    status: user.status
-  }
-  currentEditId.value = user.id
-  showEditDialog.value = true
+  editingUser.value = user
+  Object.assign(userForm, {
+    ...user,
+    password: '' // 不显示现有密码
+  })
+  showUserDialog.value = true
 }
 
-const resetPassword = async (userId: string) => {
-  if (confirm('确定要重置该用户的密码吗？')) {
-    // TODO: 实现密码重置逻辑
-    console.log('重置密码:', userId)
+const viewUser = (user: any) => {
+  console.log('查看用户:', user)
+}
+
+const resetPassword = (user: any) => {
+  if (confirm(`确定要重置用户 "${user.name}" 的密码吗？`)) {
+    console.log('重置密码:', user)
   }
 }
 
-const deleteUser = async (id: string) => {
-  if (confirm('确定要删除这个用户吗？')) {
-    await removeUser(id)
-    await refreshUsers()
+const deleteUser = async (user: any) => {
+  if (confirm(`确定要删除用户 "${user.name}" 吗？`)) {
+    console.log('删除用户:', user)
   }
 }
 
-const submitForm = async () => {
+const handleSubmit = async () => {
+  if (!userForm.name || !userForm.email || !userForm.role) {
+    alert('请填写必填字段')
+    return
+  }
+  
+  if (!editingUser.value && !userForm.password) {
+    alert('请设置初始密码')
+    return
+  }
+  
+  submitting.value = true
   try {
-    if (showEditDialog.value && currentEditId.value) {
-      const { password, ...userData } = formData.value
-      await updateUser(currentEditId.value, userData)
-    } else {
-      await createUser(formData.value)
-    }
-    
-    await refreshUsers()
-    cancelForm()
+    console.log('提交用户:', userForm)
+    showUserDialog.value = false
+    updateStats()
   } catch (error) {
-    console.error('操作失败:', error)
+    alert('操作失败，请重试')
+  } finally {
+    submitting.value = false
   }
 }
 
-const cancelForm = () => {
-  showCreateDialog.value = false
-  showEditDialog.value = false
-  currentEditId.value = null
-  formData.value = {
+const resetForm = () => {
+  Object.assign(userForm, {
     name: '',
     email: '',
-    password: '',
     role: '',
+    status: 'active',
     department: '',
     position: '',
-    status: 'active'
+    password: ''
+  })
+}
+
+const handleSearch = () => {
+  // 搜索逻辑已在 computed 中实现
+}
+
+const updateStats = () => {
+  const items = users.value || []
+  userStats.totalUsers = items.length
+  userStats.activeUsers = items.filter(user => user.status === 'active').length
+  userStats.adminUsers = items.filter(user => user.role === 'admin').length
+  userStats.inactiveUsers = items.filter(user => user.status === 'inactive').length
+}
+
+const getRoleVariant = (role: string) => {
+  const variants = {
+    admin: 'default' as const,
+    manager: 'secondary' as const,
+    employee: 'outline' as const,
+    viewer: 'destructive' as const
   }
+  return variants[role as keyof typeof variants] || 'secondary'
+}
+
+const getRoleText = (role: string) => {
+  const texts = {
+    admin: '管理员',
+    manager: '经理',
+    employee: '员工',
+    viewer: '访客'
+  }
+  return texts[role as keyof typeof texts] || role
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN')
+  return new Date(dateString).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
 }
 
-// 初始化数据
-onMounted(async () => {
-  await refreshUsers()
+// 页面加载时更新统计
+onMounted(() => {
+  updateStats()
 })
-</script> 
+
+// 页面元数据
+definePageMeta({
+  layout: 'default',
+  middleware: 'auth' as any
+})
+</script>
