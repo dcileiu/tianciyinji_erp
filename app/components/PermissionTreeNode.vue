@@ -5,15 +5,15 @@
       class="flex items-center py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors"
       :class="{
         'bg-blue-50 dark:bg-blue-900/20': isSelected,
-        'opacity-50': disabled
+        'opacity-50': disabled,
       }"
       :style="{ paddingLeft: `${level * 20 + 8}px` }"
     >
       <!-- 展开/收起按钮 -->
       <button
         v-if="hasChildren"
-        @click="handleToggleExpand"
         class="flex items-center justify-center w-5 h-5 mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+        @click="handleToggleExpand"
       >
         <ChevronRight 
           class="w-4 h-4 transition-transform duration-200"
@@ -32,16 +32,16 @@
           :checked="isSelected"
           :indeterminate="isIndeterminate"
           :disabled="disabled"
-          @change="handleToggleSelection"
           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
+          @change="handleToggleSelection"
         />
       </div>
       
       <!-- 图标 -->
       <div class="flex items-center mr-3">
         <component
-          v-if="iconComponent"
           :is="iconComponent"
+          v-if="iconComponent"
           class="w-4 h-4 text-gray-500"
         />
         <div v-else class="w-4 h-4 bg-gray-300 rounded flex items-center justify-center">

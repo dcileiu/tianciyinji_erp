@@ -1,5 +1,7 @@
+import type { Database } from '~/types/database.types'
+
 export const useProductionReports = () => {
-  const supabase = useSupabaseClient()
+  const supabase = useSupabaseClient<Database>()
   
   // 响应式状态
   const isLoading = ref(false)
@@ -30,11 +32,13 @@ export const useProductionReports = () => {
       }
       
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产报表失败'
       console.error('Get production report error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -85,11 +89,13 @@ export const useProductionReports = () => {
       ]
       
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产明细失败'
       console.error('Get production details error:', err)
       return []
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -114,11 +120,13 @@ export const useProductionReports = () => {
       ]
       
       return mockData.slice(0, params.limit || 10)
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取车间排行失败'
       console.error('Get top workshops error:', err)
       return []
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -143,11 +151,13 @@ export const useProductionReports = () => {
       ]
       
       return mockData.slice(0, params.limit || 10)
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取产品排行失败'
       console.error('Get top products error:', err)
       return []
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -180,11 +190,13 @@ export const useProductionReports = () => {
       }
       
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产趋势失败'
       console.error('Get production trend error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -216,11 +228,13 @@ export const useProductionReports = () => {
       }
       
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产效率分析失败'
       console.error('Get production efficiency error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -254,11 +268,13 @@ export const useProductionReports = () => {
       }
       
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取质量分析失败'
       console.error('Get quality analysis error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -277,4 +293,4 @@ export const useProductionReports = () => {
     getProductionEfficiency,
     getQualityAnalysis
   }
-} 
+}

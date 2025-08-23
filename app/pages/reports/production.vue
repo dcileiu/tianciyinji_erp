@@ -40,7 +40,7 @@
             </select>
           </div>
           <div class="flex gap-2">
-            <Button @click="applyFilters" class="flex-1">
+            <Button class="flex-1" @click="applyFilters">
               <Search class="w-4 h-4 mr-2" />
               查询
             </Button>
@@ -172,7 +172,7 @@
                     'bg-green-100 text-green-800': order.status === 'completed',
                     'bg-blue-100 text-blue-800': order.status === 'in_progress',
                     'bg-yellow-100 text-yellow-800': order.status === 'planned',
-                    'bg-red-100 text-red-800': order.status === 'cancelled'
+                    'bg-red-100 text-red-800': order.status === 'cancelled',
                   }"
                   class="px-2 py-1 rounded-full text-xs font-medium"
                 >
@@ -205,13 +205,15 @@
           <div class="space-y-4">
             <div v-for="(workshop, index) in topWorkshops" :key="workshop.id" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                <div
+class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
                      :class="{
                        'bg-yellow-500': index === 0,
                        'bg-gray-400': index === 1,
                        'bg-orange-500': index === 2,
-                       'bg-blue-500': index > 2
-                     }">
+                       'bg-blue-500': index > 2,
+                     }"
+>
                   {{ index + 1 }}
                 </div>
                 <div>
@@ -236,13 +238,15 @@
           <div class="space-y-4">
             <div v-for="(product, index) in topProducts" :key="product.id" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                <div
+class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
                      :class="{
                        'bg-yellow-500': index === 0,
                        'bg-gray-400': index === 1,
                        'bg-orange-500': index === 2,
-                       'bg-green-500': index > 2
-                     }">
+                       'bg-green-500': index > 2,
+                     }"
+>
                   {{ index + 1 }}
                 </div>
                 <div>

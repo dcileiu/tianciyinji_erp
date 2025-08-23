@@ -3,588 +3,768 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">
+        <h1 class="text-2xl font-bold text-color">
           供应商管理
         </h1>
-        <p class="text-muted-foreground mt-1">
+        <p class="text-muted-color mt-1">
           管理供应商基础信息，维护供应商关系和合作协议
         </p>
       </div>
-      <button @click="openCreateForm" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        <span>新增供应商</span>
-      </button>
+      <Button 
+        label="新增供应商"
+        icon="pi pi-plus"
+        @click="openCreateForm"
+      />
     </div>
 
     <!-- 搜索和筛选 -->
-    <div class="bg-card p-6 rounded-lg border">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- 搜索框 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            搜索供应商
-          </label>
-          <div class="relative">
-            <input
-              v-model="searchQuery"
-              placeholder="供应商名称、编号..."
-              class="w-full h-10 pl-10 pr-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+    <Card>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- 搜索框 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              搜索供应商
+            </label>
+            <IconField icon-position="left">
+              <InputIcon>
+                <i class="pi pi-search"></i>
+              </InputIcon>
+              <InputText
+                v-model="searchQuery"
+                placeholder="供应商名称、编号..."
+                class="w-full"
+              />
+            </IconField>
+          </div>
+
+          <!-- 供应商类型筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              供应商类型
+            </label>
+            <Dropdown
+              v-model="typeFilter"
+              :options="typeOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部类型"
+              show-clear
+              class="w-full"
             />
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+          </div>
+
+          <!-- 合作状态筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              合作状态
+            </label>
+            <Dropdown
+              v-model="statusFilter"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
+          </div>
+
+          <!-- 评级筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              供应商评级
+            </label>
+            <Dropdown
+              v-model="ratingFilter"
+              :options="ratingOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部评级"
+              show-clear
+              class="w-full"
+            />
           </div>
         </div>
-
-        <!-- 供应商类型筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            供应商类型
-          </label>
-          <select v-model="typeFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部类型</option>
-            <option value="raw_material">原材料供应商</option>
-            <option value="equipment">设备供应商</option>
-            <option value="service">服务供应商</option>
-            <option value="logistics">物流供应商</option>
-          </select>
-        </div>
-
-        <!-- 合作状态筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            合作状态
-          </label>
-          <select v-model="statusFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部状态</option>
-            <option value="active">正常合作</option>
-            <option value="suspended">暂停合作</option>
-            <option value="terminated">终止合作</option>
-            <option value="potential">潜在供应商</option>
-          </select>
-        </div>
-
-        <!-- 评级筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            供应商评级
-          </label>
-          <select v-model="ratingFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部评级</option>
-            <option value="A">A级</option>
-            <option value="B">B级</option>
-            <option value="C">C级</option>
-            <option value="D">D级</option>
-          </select>
-        </div>
-      </div>
-    </div>
+      </template>
+    </Card>
 
     <!-- 供应商统计 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">总供应商数</p>
-            <p class="text-2xl font-bold text-foreground">{{ stats.totalSuppliers }}</p>
+      <Card>
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div>
+              <p class="text-sm text-muted-color">总供应商数</p>
+              <p class="text-2xl font-bold text-color">{{ stats.totalSuppliers }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-building text-blue-600 text-xl"></i>
+            </div>
           </div>
-          <div class="p-2 bg-blue-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-            </svg>
+        </template>
+      </Card>
+
+      <Card>
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div>
+              <p class="text-sm text-muted-color">活跃供应商</p>
+              <p class="text-2xl font-bold text-green-600">{{ stats.activeSuppliers }}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-check-circle text-green-600 text-xl"></i>
+            </div>
           </div>
-        </div>
-      </div>
-      
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">合作中</p>
-            <p class="text-2xl font-bold text-foreground">{{ stats.activeSuppliers }}</p>
+        </template>
+      </Card>
+
+      <Card>
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div>
+              <p class="text-sm text-muted-color">A级供应商</p>
+              <p class="text-2xl font-bold text-orange-600">{{ stats.aGradeSuppliers }}</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-star text-orange-600 text-xl"></i>
+            </div>
           </div>
-          <div class="p-2 bg-green-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+        </template>
+      </Card>
+
+      <Card>
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div>
+              <p class="text-sm text-muted-color">本月新增</p>
+              <p class="text-2xl font-bold text-purple-600">{{ stats.newThisMonth }}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-plus text-purple-600 text-xl"></i>
+            </div>
           </div>
-        </div>
-      </div>
-      
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">A级供应商</p>
-            <p class="text-2xl font-bold text-foreground">{{ stats.aGradeSuppliers }}</p>
-          </div>
-          <div class="p-2 bg-yellow-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
-      
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-muted-foreground">本月采购额</p>
-            <p class="text-2xl font-bold text-foreground">¥{{ stats.monthlyPurchase.toLocaleString() }}</p>
-          </div>
-          <div class="p-2 bg-purple-500/10 rounded-lg">
-            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
+        </template>
+      </Card>
     </div>
 
     <!-- 供应商列表 -->
-    <div class="bg-card rounded-lg border overflow-hidden">
-      <div class="px-6 py-4 border-b">
-        <h3 class="text-lg font-semibold text-foreground">供应商列表</h3>
-      </div>
-      
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border">
-          <thead class="bg-muted/50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">供应商编号</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">供应商名称</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">联系人</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">联系电话</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">供应商类型</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">评级</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">状态</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">操作</th>
-            </tr>
-          </thead>
-          <tbody class="bg-background divide-y divide-border">
-            <tr
-              v-for="supplier in filteredSuppliers"
-              :key="supplier.id"
-              class="hover:bg-muted/20 transition-colors"
-            >
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                {{ supplier.supplier_no }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <span class="text-xs font-medium text-primary">
-                      {{ supplier.name.charAt(0) }}
-                    </span>
-                  </div>
-                  <div class="ml-3">
-                    <div class="text-sm font-medium text-foreground">{{ supplier.name }}</div>
-                    <div class="text-sm text-muted-foreground">{{ supplier.email }}</div>
-                  </div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                {{ supplier.contact_person }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                {{ supplier.contact_phone }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getTypeColor(supplier.supplier_type)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                  {{ getTypeText(supplier.supplier_type) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getRatingColor(supplier.rating)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                  {{ supplier.rating }}级
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getStatusColor(supplier.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                  {{ getStatusText(supplier.status) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div class="flex items-center space-x-2">
-                  <button @click="viewSupplier(supplier)" class="text-blue-600 hover:text-blue-900 p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
-                  </button>
-                  <button @click="editSupplier(supplier)" class="text-green-600 hover:text-green-900 p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                  </button>
-                  <button @click="handleDeleteSupplier(supplier)" class="text-red-600 hover:text-red-900 p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 分页 -->
-      <div class="bg-background px-4 py-3 border-t border-border sm:px-6">
+    <Card>
+      <template #header>
         <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <p class="text-sm text-muted-foreground">
-              显示 
-              <span class="font-medium">{{ (currentPage - 1) * pageSize + 1 }}</span>
-              到
-              <span class="font-medium">{{ Math.min(currentPage * pageSize, filteredSuppliers.length) }}</span>
-              项，共
-              <span class="font-medium">{{ filteredSuppliers.length }}</span>
-              项
-            </p>
-          </div>
-          <div class="flex items-center space-x-2">
-            <button
-              @click="currentPage--"
-              :disabled="currentPage === 1"
-              class="px-3 py-1 text-sm border border-input rounded-md hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              上一页
-            </button>
-            <button
-              @click="currentPage++"
-              :disabled="currentPage * pageSize >= filteredSuppliers.length"
-              class="px-3 py-1 text-sm border border-input rounded-md hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              下一页
-            </button>
+          <h3 class="text-lg font-semibold text-color">供应商列表</h3>
+          <div class="flex items-center gap-2">
+            <Button
+              label="批量操作"
+              icon="pi pi-cog"
+              outlined
+              size="small"
+            />
+            <Button
+              label="导出数据"
+              icon="pi pi-download"
+              outlined
+              size="small"
+            />
           </div>
         </div>
-      </div>
-    </div>
+      </template>
 
-    <!-- 供应商表单弹窗 -->
-    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-card rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <SupplierForm
-            :supplier="selectedSupplier"
-            :is-edit="isEditMode"
-            @close="closeForm"
-            @success="handleFormSuccess"
+      <template #content>
+        <DataTable
+          v-model:selection="selectedSuppliers"
+          :value="filteredSuppliers"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+          selection-mode="multiple"
+        >
+          <Column selection-mode="multiple" :exportable="false"></Column>
+          
+          <Column field="supplier_no" header="供应商编号" sortable>
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+                {{ slotProps.data.supplier_no }}
+              </code>
+            </template>
+          </Column>
+          
+          <Column field="name" header="供应商名称" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <div>
+                  <span class="font-medium">{{ slotProps.data.name }}</span>
+                  <p class="text-xs text-muted-color">{{ slotProps.data.contact_person }}</p>
+                </div>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="type" header="供应商类型" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getTypeDisplayName(slotProps.data.type)"
+                :severity="getTypeSeverity(slotProps.data.type)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="phone" header="联系电话" sortable>
+            <template #body="slotProps">
+              <span class="text-sm">{{ slotProps.data.phone }}</span>
+            </template>
+          </Column>
+          
+          <Column field="email" header="邮箱" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">{{ slotProps.data.email }}</span>
+            </template>
+          </Column>
+          
+          <Column field="rating" header="评级" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Tag
+                  :value="slotProps.data.rating + '级'"
+                  :severity="getRatingSeverity(slotProps.data.rating)"
+                />
+                <Rating
+                  :model-value="getRatingValue(slotProps.data.rating)"
+                  readonly
+                  :stars="5"
+                  size="small"
+                />
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="total_orders" header="订单总数" sortable>
+            <template #body="slotProps">
+              <span class="font-medium text-blue-600">{{ slotProps.data.total_orders }}</span>
+            </template>
+          </Column>
+          
+          <Column field="total_amount" header="累计金额" sortable>
+            <template #body="slotProps">
+              <span class="font-medium text-green-600">
+                ¥{{ slotProps.data.total_amount.toLocaleString() }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewSupplier(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="editSupplier(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'查看订单'"
+                  icon="pi pi-shopping-cart"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewOrders(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'评级'"
+                  icon="pi pi-star"
+                  rounded
+                  text
+                  size="small"
+                  @click="rateSupplier(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'active'"
+                  v-tooltip="'暂停合作'"
+                  icon="pi pi-pause"
+                  rounded
+                  text
+                  size="small"
+                  severity="warning"
+                  @click="toggleStatus(slotProps.data, 'suspended')"
+                />
+                <Button
+                  v-else
+                  v-tooltip="'恢复合作'"
+                  icon="pi pi-play"
+                  rounded
+                  text
+                  size="small"
+                  severity="success"
+                  @click="toggleStatus(slotProps.data, 'active')"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
+
+    <!-- 供应商表单对话框 -->
+    <Dialog
+      v-model:visible="showSupplierDialog"
+      :header="editingSupplier ? '编辑供应商' : '新增供应商'"
+      :style="{ width: '900px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">供应商编号</label>
+              <InputText
+                v-model="supplierForm.supplier_no"
+                :disabled="true"
+                placeholder="系统自动生成"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">供应商名称 *</label>
+              <InputText
+                v-model="supplierForm.name"
+                placeholder="请输入供应商名称"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">供应商类型 *</label>
+              <Dropdown
+                v-model="supplierForm.type"
+                :options="typeOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择供应商类型"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">评级</label>
+              <Dropdown
+                v-model="supplierForm.rating"
+                :options="ratingOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择评级"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">联系人</label>
+              <InputText
+                v-model="supplierForm.contact_person"
+                placeholder="请输入联系人姓名"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">联系电话</label>
+              <InputText
+                v-model="supplierForm.phone"
+                placeholder="请输入联系电话"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">邮箱地址</label>
+              <InputText
+                v-model="supplierForm.email"
+                placeholder="请输入邮箱地址"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">合作状态</label>
+              <Dropdown
+                v-model="supplierForm.status"
+                :options="statusOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择状态"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">详细地址</label>
+            <Textarea
+              v-model="supplierForm.address"
+              placeholder="请输入详细地址"
+              :rows="2"
+              :disabled="dialogMode === 'view'"
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">备注信息</label>
+            <Textarea
+              v-model="supplierForm.notes"
+              placeholder="请输入备注信息"
+              :rows="3"
+              :disabled="dialogMode === 'view'"
+            />
+          </div>
+        </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeSupplierDialog"
+          />
+          <Button
+            v-if="dialogMode !== 'view'"
+            label="保存"
+            icon="pi pi-check"
+            :loading="saving"
+            @click="saveSupplier"
           />
         </div>
-      </div>
-    </div>
-
-    <!-- 供应商详情弹窗 -->
-    <div v-if="showDetail" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-card rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-medium text-foreground">供应商详情</h3>
-            <button @click="closeDetail" class="text-muted-foreground hover:text-foreground">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-          <div v-if="selectedSupplier" class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">供应商编号</label>
-                <p class="text-foreground">{{ selectedSupplier.supplier_no }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">供应商名称</label>
-                <p class="text-foreground">{{ selectedSupplier.name }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">联系人</label>
-                <p class="text-foreground">{{ selectedSupplier.contact_person }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">联系电话</label>
-                <p class="text-foreground">{{ selectedSupplier.contact_phone }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">邮箱地址</label>
-                <p class="text-foreground">{{ selectedSupplier.email || '未填写' }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">供应商类型</label>
-                <p class="text-foreground">{{ getTypeText(selectedSupplier.supplier_type) }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">供应商评级</label>
-                <span :class="getRatingColor(selectedSupplier.rating)" class="px-2 py-1 rounded-full text-xs font-medium">
-                  {{ selectedSupplier.rating }}级
-                </span>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">供应商状态</label>
-                <span :class="getStatusColor(selectedSupplier.status)" class="px-2 py-1 rounded-full text-xs font-medium">
-                  {{ getStatusText(selectedSupplier.status) }}
-                </span>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">创建时间</label>
-                <p class="text-foreground">{{ formatDate(selectedSupplier.created_at) }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">更新时间</label>
-                <p class="text-foreground">{{ formatDate(selectedSupplier.updated_at) }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted, watch } from 'vue'
-import type { Supplier } from '~/types/database'
-import { useSuppliers } from '~/composables/useSuppliers'
+import { ref, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Dropdown from 'primevue/dropdown'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import Rating from 'primevue/rating'
+import Dialog from 'primevue/dialog'
 
-// 响应式数据
-const searchQuery = ref('')
-const typeFilter = ref('')
-const statusFilter = ref('')
-const ratingFilter = ref('')
-const currentPage = ref(1)
-const pageSize = 10
-
-// 加载状态和错误处理
-const loading = ref(false)
-const error = ref('')
-
-// 统计数据
-const stats = reactive({
-  totalSuppliers: 0,
-  activeSuppliers: 0,
-  aGradeSuppliers: 0,
-  monthlyPurchase: 0
+// 页面配置
+definePageMeta({
+  layout: 'default'
 })
 
-// 供应商数据
-const suppliers = ref<Supplier[]>([])
-
-// 表单状态
-const showForm = ref(false)
-const showDetail = ref(false)
-const selectedSupplier = ref<Supplier | null>(null)
-const isEditMode = ref(false)
-
-// 使用供应商管理composable
-const { getSuppliers, getSupplierStats, deleteSupplier } = useSuppliers()
-
-// 获取供应商列表
-const fetchSuppliers = async () => {
-  try {
-    loading.value = true
-    error.value = ''
-    
-    const result = await getSuppliers({
-      search: searchQuery.value,
-      type: typeFilter.value,
-      status: statusFilter.value,
-      page: currentPage.value,
-      pageSize: pageSize
-    })
-    
-    suppliers.value = result.data || []
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : '获取供应商列表失败'
-    console.error('获取供应商列表失败:', err)
-  } finally {
-    loading.value = false
-  }
-}
-
-// 获取统计数据
-const fetchStats = async () => {
-  try {
-    const statsData = await getSupplierStats()
-    Object.assign(stats, statsData)
-  } catch (err) {
-    console.error('获取统计数据失败:', err)
-  }
-}
-
-// 删除供应商
-const handleDeleteSupplier = async (supplier: Supplier) => {
-  if (!confirm(`确定要删除供应商 "${supplier.name}" 吗？`)) {
-    return
-  }
-  
-  try {
-    await deleteSupplier(supplier.id)
-    await fetchSuppliers()
-    await fetchStats()
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : '删除供应商失败'
-    alert(errorMessage)
-  }
-}
-
-// 表单操作
-const openCreateForm = () => {
-  selectedSupplier.value = null
-  isEditMode.value = false
-  showForm.value = true
-}
-
-const editSupplier = (supplier: Supplier) => {
-  selectedSupplier.value = supplier
-  isEditMode.value = true
-  showForm.value = true
-}
-
-const closeForm = () => {
-  showForm.value = false
-  selectedSupplier.value = null
-  isEditMode.value = false
-}
-
-const handleFormSuccess = async (supplier: Supplier) => {
-  closeForm()
-  await fetchSuppliers()
-  await fetchStats()
-}
-
-// 详情操作
-const viewSupplier = (supplier: Supplier) => {
-  selectedSupplier.value = supplier
-  showDetail.value = true
-}
-
-const closeDetail = () => {
-  showDetail.value = false
-  selectedSupplier.value = null
-}
-
-// 格式化日期
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN')
-}
-
-// 筛选供应商
-const filteredSuppliers = computed(() => {
-  let filtered = suppliers.value
-
-  // 搜索筛选
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(supplier => 
-      supplier.name.toLowerCase().includes(query) ||
-      supplier.supplierNo.toLowerCase().includes(query) ||
-      supplier.contactPerson.toLowerCase().includes(query)
-    )
-  }
-
-  // 类型筛选
-  if (typeFilter.value) {
-    filtered = filtered.filter(supplier => supplier.type === typeFilter.value)
-  }
-
-  // 状态筛选
-  if (statusFilter.value) {
-    filtered = filtered.filter(supplier => supplier.status === statusFilter.value)
-  }
-
-  // 评级筛选
-  if (ratingFilter.value) {
-    filtered = filtered.filter(supplier => supplier.rating === ratingFilter.value)
-  }
-
-  return filtered
-})
-
-// 获取类型颜色
-const getTypeColor = (type: string): string => {
-  const colors: Record<string, string> = {
-    raw_material: 'bg-blue-100 text-blue-800',
-    equipment: 'bg-green-100 text-green-800',
-    service: 'bg-purple-100 text-purple-800',
-    logistics: 'bg-orange-100 text-orange-800'
-  }
-  return colors[type] || 'bg-gray-100 text-gray-800'
-}
-
-// 获取类型文本
-const getTypeText = (type: string): string => {
-  const texts: Record<string, string> = {
-    raw_material: '原材料',
-    equipment: '设备',
-    service: '服务',
-    logistics: '物流'
-  }
-  return texts[type] || type
-}
-
-// 获取评级颜色
-const getRatingColor = (rating: string): string => {
-  const colors: Record<string, string> = {
-    A: 'bg-green-100 text-green-800',
-    B: 'bg-blue-100 text-blue-800',
-    C: 'bg-yellow-100 text-yellow-800',
-    D: 'bg-red-100 text-red-800'
-  }
-  return colors[rating] || 'bg-gray-100 text-gray-800'
-}
-
-// 获取状态颜色
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
-    active: 'bg-green-100 text-green-800',
-    suspended: 'bg-yellow-100 text-yellow-800',
-    terminated: 'bg-red-100 text-red-800',
-    potential: 'bg-purple-100 text-purple-800'
-  }
-  return colors[status] || 'bg-gray-100 text-gray-800'
-}
-
-// 获取状态文本
-const getStatusText = (status: string): string => {
-  const texts: Record<string, string> = {
-    active: '正常合作',
-    suspended: '暂停合作',
-    terminated: '终止合作',
-    potential: '潜在供应商'
-  }
-  return texts[status] || status
-}
-
-// 监听筛选条件变化
-watch([searchQuery, typeFilter, statusFilter, ratingFilter], () => {
-  currentPage.value = 1
-  fetchSuppliers()
-})
-
-// 监听页码变化
-watch(currentPage, () => {
-  fetchSuppliers()
-})
-
-// 页面加载时获取数据
-onMounted(async () => {
-  await Promise.all([
-    fetchSuppliers(),
-    fetchStats()
-  ])
-})
-
-// 页面标题
 useHead({
   title: '供应商管理 - ERP 管理系统'
 })
 
-// 页面元数据
-definePageMeta({
-  middleware: 'auth'
+// 状态管理
+const loading = ref(false)
+const saving = ref(false)
+const showSupplierDialog = ref(false)
+const dialogMode = ref<'view' | 'create' | 'edit'>('view')
+const editingSupplier = ref(null as any)
+const selectedSuppliers = ref([])
+
+// 筛选条件
+const searchQuery = ref('')
+const typeFilter = ref('')
+const statusFilter = ref('')
+const ratingFilter = ref('')
+
+// 表单数据
+const supplierForm = ref({
+  supplier_no: '',
+  name: '',
+  type: '',
+  rating: '',
+  contact_person: '',
+  phone: '',
+  email: '',
+  address: '',
+  status: 'active',
+  notes: ''
+})
+
+// 选项数据
+const typeOptions = ref([
+  { label: '原材料供应商', value: 'raw_material' },
+  { label: '设备供应商', value: 'equipment' },
+  { label: '服务供应商', value: 'service' },
+  { label: '物流供应商', value: 'logistics' }
+])
+
+const statusOptions = ref([
+  { label: '正常合作', value: 'active' },
+  { label: '暂停合作', value: 'suspended' },
+  { label: '终止合作', value: 'terminated' },
+  { label: '潜在供应商', value: 'potential' }
+])
+
+const ratingOptions = ref([
+  { label: 'A级', value: 'A' },
+  { label: 'B级', value: 'B' },
+  { label: 'C级', value: 'C' },
+  { label: 'D级', value: 'D' }
+])
+
+// 统计数据
+const stats = ref({
+  totalSuppliers: 156,
+  activeSuppliers: 128,
+  aGradeSuppliers: 45,
+  newThisMonth: 8
+})
+
+// 模拟数据
+const mockSuppliers = ref([
+  {
+    id: '1',
+    supplier_no: 'SUP-001',
+    name: 'ABC材料供应公司',
+    type: 'raw_material',
+    rating: 'A',
+    contact_person: '王经理',
+    phone: '010-12345678',
+    email: 'wang@abc.com',
+    address: '北京市朝阳区工业园区',
+    total_orders: 45,
+    total_amount: 850000,
+    status: 'active',
+    created_at: new Date('2024-01-15'),
+    notes: '优质供应商，长期合作伙伴'
+  },
+  {
+    id: '2',
+    supplier_no: 'SUP-002',
+    name: 'XYZ设备制造厂',
+    type: 'equipment',
+    rating: 'B',
+    contact_person: '李总',
+    phone: '021-87654321',
+    email: 'li@xyz.com',
+    address: '上海市浦东新区制造基地',
+    total_orders: 28,
+    total_amount: 650000,
+    status: 'active',
+    created_at: new Date('2024-01-10'),
+    notes: '设备质量稳定，价格合理'
+  }
+])
+
+// 计算属性
+const filteredSuppliers = computed(() => {
+  let result = mockSuppliers.value
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(supplier =>
+      supplier.supplier_no.toLowerCase().includes(query)
+      || supplier.name.toLowerCase().includes(query)
+      || supplier.contact_person.toLowerCase().includes(query)
+    )
+  }
+
+  if (typeFilter.value) {
+    result = result.filter(supplier => supplier.type === typeFilter.value)
+  }
+
+  if (statusFilter.value) {
+    result = result.filter(supplier => supplier.status === statusFilter.value)
+  }
+
+  if (ratingFilter.value) {
+    result = result.filter(supplier => supplier.rating === ratingFilter.value)
+  }
+
+  return result
+})
+
+// 映射对象
+const typeMap: Record<string, string> = {
+  raw_material: '原材料供应商',
+  equipment: '设备供应商',
+  service: '服务供应商',
+  logistics: '物流供应商'
+}
+
+const typeSeverityMap: Record<string, string> = {
+  raw_material: 'info',
+  equipment: 'success',
+  service: 'warning',
+  logistics: 'secondary'
+}
+
+const statusMap: Record<string, string> = {
+  active: '正常合作',
+  suspended: '暂停合作',
+  terminated: '终止合作',
+  potential: '潜在供应商'
+}
+
+const statusSeverityMap: Record<string, string> = {
+  active: 'success',
+  suspended: 'warning',
+  terminated: 'danger',
+  potential: 'info'
+}
+
+const ratingSeverityMap: Record<string, string> = {
+  A: 'success',
+  B: 'info',
+  C: 'warning',
+  D: 'danger'
+}
+
+// 方法
+const getTypeDisplayName = (type: string) => typeMap[type] || type
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'info'
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getRatingSeverity = (rating: string) => ratingSeverityMap[rating] || 'info'
+
+const getRatingValue = (rating: string) => {
+  const ratingMap: Record<string, number> = { A: 5, B: 4, C: 3, D: 2 }
+  return ratingMap[rating] || 0
+}
+
+const openCreateForm = () => {
+  editingSupplier.value = null
+  dialogMode.value = 'create'
+  supplierForm.value = {
+    supplier_no: `SUP-${Date.now()}`,
+    name: '',
+    type: '',
+    rating: '',
+    contact_person: '',
+    phone: '',
+    email: '',
+    address: '',
+    status: 'active',
+    notes: ''
+  }
+  showSupplierDialog.value = true
+}
+
+const viewSupplier = (supplier: any) => {
+  editingSupplier.value = supplier
+  dialogMode.value = 'view'
+  Object.assign(supplierForm.value, supplier)
+  showSupplierDialog.value = true
+}
+
+const editSupplier = (supplier: any) => {
+  editingSupplier.value = supplier
+  dialogMode.value = 'edit'
+  Object.assign(supplierForm.value, supplier)
+  showSupplierDialog.value = true
+}
+
+const viewOrders = (supplier: any) => {
+  console.log('查看订单:', supplier.name)
+}
+
+const rateSupplier = (supplier: any) => {
+  console.log('评级供应商:', supplier.name)
+}
+
+const toggleStatus = async (supplier: any, newStatus: string) => {
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    const index = mockSuppliers.value.findIndex(s => s.id === supplier.id)
+    if (index !== -1) {
+      mockSuppliers.value[index].status = newStatus
+    }
+  }
+  catch (error) {
+    console.error('操作失败:', error)
+  }
+}
+
+const closeSupplierDialog = () => {
+  showSupplierDialog.value = false
+  editingSupplier.value = null
+}
+
+const saveSupplier = async () => {
+  saving.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    if (dialogMode.value === 'create') {
+      const newSupplier = {
+        id: Date.now().toString(),
+        ...supplierForm.value,
+        total_orders: 0,
+        total_amount: 0,
+        created_at: new Date()
+      }
+      mockSuppliers.value.push(newSupplier as any)
+    }
+    else if (dialogMode.value === 'edit') {
+      const index = mockSuppliers.value.findIndex(s => s.id === editingSupplier.value.id)
+      if (index !== -1) {
+        mockSuppliers.value[index] = {
+          ...mockSuppliers.value[index],
+          ...supplierForm.value
+        }
+      }
+    }
+    
+    closeSupplierDialog()
+  }
+  catch (error) {
+    console.error('保存供应商失败:', error)
+  }
+  finally {
+    saving.value = false
+  }
+}
+
+// 初始化
+onMounted(() => {
+  // 加载数据
 })
 </script>

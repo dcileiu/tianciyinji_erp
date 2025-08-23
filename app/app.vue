@@ -7,8 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import '~/style/main.css'
-
 // 设置页面标题
 useHead({
   title: 'ERP 管理系统',

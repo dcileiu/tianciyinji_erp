@@ -3,405 +3,752 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">
+        <h1 class="text-2xl font-bold text-color">
           采购订单管理
         </h1>
-        <p class="text-muted-foreground mt-1">
+        <p class="text-muted-color mt-1">
           管理所有采购订单，跟踪采购进度和供应商信息
         </p>
       </div>
-      <button @click="handleCreate" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
-        + 新增采购订单
-      </button>
+      <Button
+        label="新增采购订单"
+        icon="pi pi-plus"
+        @click="handleCreate"
+      />
     </div>
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center">
-          <div class="p-3 bg-blue-500/10 rounded-full">
-            <svg
-              class="w-6 h-6 text-blue-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
+      <Card>
+        <template #content>
+          <div class="flex items-center">
+            <div class="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-full">
+              <i class="pi pi-shopping-bag text-blue-600 text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-color">
+                本月采购订单
+              </p>
+              <p class="text-2xl font-semibold text-color">
+                {{ orderStats.monthlyOrders }}
+              </p>
+            </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
-              本月采购订单
-            </p>
-            <p class="text-2xl font-semibold text-foreground">
-              {{ orderStats.monthlyOrders }}
-            </p>
-          </div>
-        </div>
-      </div>
+        </template>
+      </Card>
 
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center">
-          <div class="p-3 bg-yellow-500/10 rounded-full">
-            <svg
-              class="w-6 h-6 text-yellow-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+      <Card>
+        <template #content>
+          <div class="flex items-center">
+            <div class="p-3 bg-yellow-100 dark:bg-yellow-900/20 rounded-full">
+              <i class="pi pi-clock text-yellow-600 text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-color">
+                待审核
+              </p>
+              <p class="text-2xl font-semibold text-color">
+                {{ orderStats.pendingApproval }}
+              </p>
+            </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
-              待审核
-            </p>
-            <p class="text-2xl font-semibold text-foreground">
-              {{ orderStats.pendingApproval }}
-            </p>
-          </div>
-        </div>
-      </div>
+        </template>
+      </Card>
 
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center">
-          <div class="p-3 bg-green-500/10 rounded-full">
-            <svg
-              class="w-6 h-6 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+      <Card>
+        <template #content>
+          <div class="flex items-center">
+            <div class="p-3 bg-green-100 dark:bg-green-900/20 rounded-full">
+              <i class="pi pi-check-circle text-green-600 text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-color">
+                已完成
+              </p>
+              <p class="text-2xl font-semibold text-color">
+                {{ orderStats.completed }}
+              </p>
+            </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
-              已完成
-            </p>
-            <p class="text-2xl font-semibold text-foreground">
-              {{ orderStats.completed }}
-            </p>
-          </div>
-        </div>
-      </div>
+        </template>
+      </Card>
 
-      <div class="bg-card p-6 rounded-lg border">
-        <div class="flex items-center">
-          <div class="p-3 bg-purple-500/10 rounded-full">
-            <svg
-              class="w-6 h-6 text-purple-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
+      <Card>
+        <template #content>
+          <div class="flex items-center">
+            <div class="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-full">
+              <i class="pi pi-dollar text-purple-600 text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-muted-color">
+                本月采购金额
+              </p>
+              <p class="text-2xl font-semibold text-color">
+                ¥{{ orderStats.monthlyAmount.toLocaleString() }}
+              </p>
+            </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
-              本月金额
-            </p>
-            <p class="text-2xl font-semibold text-foreground">
-              {{ formatCurrency(orderStats.monthlyAmount) }}
-            </p>
-          </div>
-        </div>
-      </div>
+        </template>
+      </Card>
     </div>
 
-    <!-- 筛选条件 -->
-    <div class="bg-card p-6 rounded-lg border">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-muted-foreground mb-2">订单号</label>
-          <input v-model="filters.orderNo" type="text" placeholder="输入订单号" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <!-- 搜索和筛选 -->
+    <Card>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <!-- 搜索框 -->
+          <div>
+            <label class="block text-sm font-medium mb-2 text-color">搜索</label>
+            <IconField icon-position="left">
+              <InputIcon>
+                <i class="pi pi-search"></i>
+              </InputIcon>
+              <InputText
+                v-model="searchQuery"
+                placeholder="订单号、供应商..."
+                class="w-full"
+              />
+            </IconField>
+          </div>
+          
+          <!-- 状态筛选 -->
+          <div>
+            <label class="block text-sm font-medium mb-2 text-color">状态</label>
+            <Dropdown
+              v-model="statusFilter"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
+          </div>
+          
+          <!-- 供应商筛选 -->
+          <div>
+            <label class="block text-sm font-medium mb-2 text-color">供应商</label>
+            <Dropdown
+              v-model="supplierFilter"
+              :options="suppliers"
+              option-label="name"
+              option-value="id"
+              placeholder="全部供应商"
+              show-clear
+              class="w-full"
+            />
+          </div>
+          
+          <!-- 日期范围 -->
+          <div>
+            <label class="block text-sm font-medium mb-2 text-color">日期范围</label>
+            <Calendar
+              v-model="dateRange"
+              selection-mode="range"
+              placeholder="选择日期范围"
+              :manual-input="false"
+              class="w-full"
+            />
+          </div>
+          
+          <!-- 操作按钮 -->
+          <div class="flex items-end gap-2">
+            <Button
+              label="重置"
+              icon="pi pi-refresh"
+              outlined
+              class="flex-1"
+              @click="resetFilters"
+            />
+          </div>
         </div>
-        <div>
-          <label class="block text-sm font-medium text-muted-foreground mb-2">供应商</label>
-          <select v-model="filters.supplierId" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="supplier in suppliersList" :key="supplier.value" :value="supplier.value">
-              {{ supplier.label }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-muted-foreground mb-2">状态</label>
-          <select v-model="filters.status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="status in statusOptions" :key="status.value" :value="status.value">
-              {{ status.label }}
-            </option>
-          </select>
-        </div>
-        <div class="flex items-end gap-2">
-          <button @click="resetFilters" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-            重置
-          </button>
-        </div>
-      </div>
-    </div>
+      </template>
+    </Card>
 
     <!-- 采购订单列表 -->
-    <div class="bg-card rounded-lg border overflow-hidden">
-      <div class="px-6 py-4 border-b">
-        <h3 class="text-lg font-semibold text-foreground">
-          采购订单列表
-        </h3>
-      </div>
+    <Card>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-color">采购订单列表</h3>
+          <div class="flex items-center gap-2">
+            <Button
+              label="导出"
+              icon="pi pi-download"
+              outlined
+              size="small"
+              @click="exportOrders"
+            />
+          </div>
+        </div>
+      </template>
 
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border">
-          <thead class="bg-muted/50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                订单号
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                供应商
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                金额
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                状态
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                订单日期
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-background divide-y divide-border">
-             <!-- 错误提示 -->
-             <tr v-if="error">
-               <td colspan="6" class="px-6 py-8 text-center">
-                 <div class="text-red-600">
-                   <p class="text-sm">{{ error }}</p>
-                 </div>
-               </td>
-             </tr>
-             
-             <!-- 加载状态 -->
-             <tr v-else-if="loading">
-               <td colspan="6" class="px-6 py-8 text-center">
-                 <div class="flex items-center justify-center">
-                   <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                   <span class="ml-2 text-sm text-gray-600">加载中...</span>
-                 </div>
-               </td>
-             </tr>
-             
-             <!-- 空数据状态 -->
-             <tr v-else-if="paginatedOrders.length === 0">
-               <td colspan="6" class="px-6 py-8 text-center">
-                 <div class="text-gray-500">
-                   <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                   </svg>
-                   <p class="mt-2 text-sm">暂无采购订单数据</p>
-                 </div>
-               </td>
-             </tr>
-             
-             <!-- 订单数据 -->
-             <tr v-else v-for="order in paginatedOrders" :key="order.id" class="hover:bg-muted/20">
-               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                 {{ order.order_no }}
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                 {{ order.supplier?.name }}
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                 {{ formatCurrency(order.total_amount) }}
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap">
-                 <span :class="getStatusColor(order.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                   {{ getStatusText(order.status) }}
-                 </span>
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                 {{ formatDate(order.order_date) }}
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                 <button @click="handleView(order)" class="text-blue-600 hover:text-blue-900 mr-3" title="查看订单">
-                   <EyeIcon class="h-4 w-4" />
-                 </button>
-                 <button @click="handleEdit(order)" class="text-green-600 hover:text-green-900 mr-3" title="编辑订单">
-                   <EditIcon class="h-4 w-4" />
-                 </button>
-                 <button @click="handleDelete(order)" class="text-red-600 hover:text-red-900" title="删除订单">
-                   <TrashIcon class="h-4 w-4" />
-                 </button>
-               </td>
-             </tr>
-           </tbody>
-        </table>
-      </div>
-    </div>
+      <template #content>
+        <DataTable
+          :value="filteredOrders"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+        >
+          <Column field="order_no" header="订单号" sortable>
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+                {{ slotProps.data.order_no }}
+              </code>
+            </template>
+          </Column>
+          
+          <Column field="supplier_name" header="供应商" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.supplier_name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <span class="font-medium">{{ slotProps.data.supplier_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="total_amount" header="订单金额" sortable>
+            <template #body="slotProps">
+              <span class="font-medium text-green-600">
+                ¥{{ slotProps.data.total_amount.toLocaleString() }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="order_date" header="订单日期" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.order_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="expected_date" header="预期到货" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.expected_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="items_count" header="商品数量">
+            <template #body="slotProps">
+              <span class="text-sm">{{ slotProps.data.items.length }} 种商品</span>
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewOrder(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="editOrder(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'pending'"
+                  v-tooltip="'审核'"
+                  icon="pi pi-check"
+                  rounded
+                  text
+                  size="small"
+                  @click="approveOrder(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'删除'"
+                  icon="pi pi-trash"
+                  rounded
+                  text
+                  size="small"
+                  severity="danger"
+                  @click="confirmDeleteOrder(slotProps.data)"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
+
+    <!-- 订单详情对话框 -->
+    <Dialog
+      v-model:visible="showOrderDialog"
+      :header="dialogMode === 'create' ? '新增采购订单' : '订单详情'"
+      :style="{ width: '800px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">订单号</label>
+              <InputText
+                v-model="orderForm.order_no"
+                :disabled="dialogMode !== 'create'"
+                placeholder="系统自动生成"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">供应商 *</label>
+              <Dropdown
+                v-model="orderForm.supplier_id"
+                :options="suppliers"
+                option-label="name"
+                option-value="id"
+                placeholder="选择供应商"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">订单日期 *</label>
+              <Calendar
+                v-model="orderForm.order_date"
+                placeholder="选择订单日期"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">预期到货日期</label>
+              <Calendar
+                v-model="orderForm.expected_date"
+                placeholder="选择预期到货日期"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">备注</label>
+            <Textarea
+              v-model="orderForm.remark"
+              placeholder="请输入备注信息"
+              :rows="3"
+              :disabled="dialogMode === 'view'"
+            />
+          </div>
+          
+          <!-- 订单项列表 -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="block text-sm font-medium text-color">订单项</label>
+              <Button
+                v-if="dialogMode !== 'view'"
+                label="添加商品"
+                icon="pi pi-plus"
+                text
+                size="small"
+                @click="addOrderItem"
+              />
+            </div>
+            
+            <DataTable
+              :value="orderForm.items"
+              class="p-datatable-sm"
+            >
+              <Column field="product_name" header="商品名称">
+                <template #body="slotProps">
+                  <span class="font-medium">{{ slotProps.data.product_name }}</span>
+                </template>
+              </Column>
+              
+              <Column field="quantity" header="数量">
+                <template #body="slotProps">
+                  <span>{{ slotProps.data.quantity }} {{ slotProps.data.unit }}</span>
+                </template>
+              </Column>
+              
+              <Column field="unit_price" header="单价">
+                <template #body="slotProps">
+                  <span>¥{{ slotProps.data.unit_price.toLocaleString() }}</span>
+                </template>
+              </Column>
+              
+              <Column field="amount" header="金额">
+                <template #body="slotProps">
+                  <span class="font-medium">
+                    ¥{{ (slotProps.data.quantity * slotProps.data.unit_price).toLocaleString() }}
+                  </span>
+                </template>
+              </Column>
+              
+              <Column v-if="dialogMode !== 'view'" header="操作" :exportable="false">
+                <template #body="slotProps">
+                  <Button
+                    icon="pi pi-trash"
+                    rounded
+                    text
+                    size="small"
+                    severity="danger"
+                    @click="removeOrderItem(slotProps.index)"
+                  />
+                </template>
+              </Column>
+            </DataTable>
+          </div>
+          
+          <!-- 总计 -->
+          <div class="border-t pt-4">
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-medium text-color">总计：</span>
+              <span class="text-xl font-bold text-green-600">
+                ¥{{ totalAmount.toLocaleString() }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeOrderDialog"
+          />
+          <Button
+            v-if="dialogMode !== 'view'"
+            label="保存"
+            icon="pi pi-check"
+            :loading="saving"
+            @click="saveOrder"
+          />
+        </div>
+      </template>
+    </Dialog>
+    
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import { PlusIcon, SearchIcon, FilterIcon, EditIcon, TrashIcon, EyeIcon } from 'lucide-vue-next'
-import type { PurchaseOrderFilters } from '~/composables/usePurchaseOrders'
+import { ref, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Dropdown from 'primevue/dropdown'
+import Calendar from 'primevue/calendar'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import Dialog from 'primevue/dialog'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
-const {
-  purchaseOrders,
-  suppliers,
-  orderStats,
-  loading,
-  error,
-  fetchPurchaseOrders,
-  fetchSuppliers,
-  fetchOrderStats,
-  deletePurchaseOrder,
-  getStatusColor,
-  getStatusText,
-  formatCurrency,
-  formatDate
-} = usePurchaseOrders()
+// 页面配置
+definePageMeta({
+  layout: 'default'
+})
 
-// 分页状态
-const currentPage = ref(1)
-const pageSize = ref(10)
-const totalCount = ref(0)
+useHead({
+  title: '采购订单管理 - ERP 管理系统'
+})
+
+// 状态管理
+const loading = ref(false)
+const saving = ref(false)
+const showOrderDialog = ref(false)
+const dialogMode = ref<'view' | 'create' | 'edit'>('view')
+const confirm = useConfirm()
 
 // 筛选条件
-const filters = ref<PurchaseOrderFilters>({
-  orderNo: '',
-  supplierName: '',
-  status: '',
-  supplierId: '',
-  startDate: '',
-  endDate: ''
+const searchQuery = ref('')
+const statusFilter = ref('')
+const supplierFilter = ref('')
+const dateRange = ref()
+
+// 表单数据
+const orderForm = ref({
+  order_no: '',
+  supplier_id: '',
+  order_date: new Date(),
+  expected_date: null,
+  remark: '',
+  items: []
 })
 
-// 供应商列表
-const suppliersList = ref<Array<{value: string, label: string}>>([])
-
-// 状态选项
-const statusOptions = [
-  { value: '', label: '全部状态' },
-  { value: 'draft', label: '草稿' },
-  { value: 'pending', label: '待审核' },
-  { value: 'approved', label: '已审核' },
-  { value: 'ordered', label: '已下单' },
-  { value: 'partial_received', label: '部分收货' },
-  { value: 'received', label: '已收货' },
-  { value: 'completed', label: '已完成' },
-  { value: 'cancelled', label: '已取消' }
-]
-
-// 分页后的订单
-const paginatedOrders = computed(() => {
-  return purchaseOrders.value
+// 统计数据
+const orderStats = ref({
+  monthlyOrders: 156,
+  pendingApproval: 23,
+  completed: 89,
+  monthlyAmount: 2456789
 })
 
-// 加载数据
-const loadOrders = async () => {
-  const result = await fetchPurchaseOrders()
-  totalCount.value = result.total
-}
+// 选项数据
+const statusOptions = ref([
+  { label: '草稿', value: 'draft' },
+  { label: '待审核', value: 'pending' },
+  { label: '已批准', value: 'approved' },
+  { label: '进行中', value: 'in_progress' },
+  { label: '已完成', value: 'completed' },
+  { label: '已取消', value: 'cancelled' }
+])
 
-// 加载供应商列表
-const loadSuppliers = async () => {
-  const data = await fetchSuppliers()
-  suppliersList.value = [
-    { value: '', label: '全部供应商' },
-    ...data.map(supplier => ({
-      value: supplier.id,
-      label: supplier.name
-    }))
-  ]
-}
+const suppliers = ref([
+  { id: '1', name: '供应商A' },
+  { id: '2', name: '供应商B' },
+  { id: '3', name: '供应商C' }
+])
 
-// 操作方法
-const handleEdit = (order: any) => {
-  console.log('编辑订单:', order)
-}
-
-const handleDelete = async (order: any) => {
-  if (confirm('确定要删除这个采购订单吗？')) {
-    try {
-      await deletePurchaseOrder(order.id)
-      await loadOrders()
-    } catch (err) {
-      console.error('删除失败:', err)
-    }
+// 模拟数据
+const mockOrders = ref([
+  {
+    id: '1',
+    order_no: 'PO202401001',
+    supplier_id: '1',
+    supplier_name: '供应商A',
+    total_amount: 156780,
+    status: 'pending',
+    order_date: new Date('2024-01-15'),
+    expected_date: new Date('2024-01-25'),
+    items: [
+      { product_name: '商品A', quantity: 100, unit: '个', unit_price: 50 },
+      { product_name: '商品B', quantity: 200, unit: '个', unit_price: 30 }
+    ],
+    remark: '紧急采购'
+  },
+  {
+    id: '2',
+    order_no: 'PO202401002',
+    supplier_id: '2',
+    supplier_name: '供应商B',
+    total_amount: 89560,
+    status: 'approved',
+    order_date: new Date('2024-01-14'),
+    expected_date: new Date('2024-01-24'),
+    items: [
+      { product_name: '商品C', quantity: 150, unit: '箱', unit_price: 45 }
+    ],
+    remark: ''
   }
+])
+
+// 计算属性
+const filteredOrders = computed(() => {
+  let result = mockOrders.value
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(order =>
+      order.order_no.toLowerCase().includes(query)
+      || order.supplier_name.toLowerCase().includes(query)
+    )
+  }
+
+  if (statusFilter.value) {
+    result = result.filter(order => order.status === statusFilter.value)
+  }
+
+  if (supplierFilter.value) {
+    result = result.filter(order => order.supplier_id === supplierFilter.value)
+  }
+
+  return result
+})
+
+const totalAmount = computed(() => {
+  return orderForm.value.items.reduce((sum: number, item: any) => {
+    return sum + (item.quantity * item.unit_price)
+  }, 0)
+})
+
+// 状态映射
+const statusMap: Record<string, string> = {
+  draft: '草稿',
+  pending: '待审核',
+  approved: '已批准',
+  in_progress: '进行中',
+  completed: '已完成',
+  cancelled: '已取消'
 }
 
-const handleView = (order: any) => {
-  console.log('查看订单:', order)
+const statusSeverityMap: Record<string, string> = {
+  draft: 'secondary',
+  pending: 'warn',
+  approved: 'info',
+  in_progress: 'primary',
+  completed: 'success',
+  cancelled: 'danger'
 }
 
-const handleCreate = () => {
-  console.log('创建新订单')
+// 方法
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('zh-CN')
 }
 
 const resetFilters = () => {
-  filters.value = {
-    orderNo: '',
-    supplierName: '',
-    status: '',
-    supplierId: '',
-    startDate: '',
-    endDate: ''
-  }
-  currentPage.value = 1
-  loadOrders()
+  searchQuery.value = ''
+  statusFilter.value = ''
+  supplierFilter.value = ''
+  dateRange.value = null
 }
 
-// 监听筛选条件变化
-watch(filters, () => {
-  currentPage.value = 1
-  loadOrders()
-}, { deep: true })
+const handleCreate = () => {
+  dialogMode.value = 'create'
+  orderForm.value = {
+    order_no: `PO${Date.now()}`,
+    supplier_id: '',
+    order_date: new Date(),
+    expected_date: null,
+    remark: '',
+    items: []
+  }
+  showOrderDialog.value = true
+}
 
-// 监听分页变化
-watch([currentPage, pageSize], () => {
-  loadOrders()
-})
+const viewOrder = (order: any) => {
+  dialogMode.value = 'view'
+  Object.assign(orderForm.value, order)
+  showOrderDialog.value = true
+}
 
-// 初始化数据
-onMounted(async () => {
-  await Promise.all([
-    loadOrders(),
-    loadSuppliers(),
-    fetchOrderStats()
-  ])
-})
+const editOrder = (order: any) => {
+  dialogMode.value = 'edit'
+  Object.assign(orderForm.value, order)
+  showOrderDialog.value = true
+}
 
-// 页面标题
-useHead({
-  title: '采购订单管理 - ERP 管理系统',
-})
+const approveOrder = async (order: any) => {
+  confirm.require({
+    message: `确定要审核通过订单 ${order.order_no} 吗？`,
+    header: '确认审核',
+    icon: 'pi pi-check',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockOrders.value.findIndex(o => o.id === order.id)
+        if (index !== -1) {
+          mockOrders.value[index].status = 'approved'
+        }
+      }
+      catch (error) {
+        console.error('审核失败:', error)
+      }
+    }
+  })
+}
 
-// 页面元数据
-definePageMeta({
-  middleware: 'auth',
+const confirmDeleteOrder = (order: any) => {
+  confirm.require({
+    message: `确定要删除订单 ${order.order_no} 吗？`,
+    header: '确认删除',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      deleteOrder(order.id)
+    }
+  })
+}
+
+const deleteOrder = (orderId: string) => {
+  mockOrders.value = mockOrders.value.filter(order => order.id !== orderId)
+}
+
+const closeOrderDialog = () => {
+  showOrderDialog.value = false
+}
+
+const saveOrder = async () => {
+  saving.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    if (dialogMode.value === 'create') {
+      const newOrder = {
+        id: Date.now().toString(),
+        ...orderForm.value,
+        supplier_name: suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
+        total_amount: totalAmount.value,
+        status: 'draft'
+      }
+      mockOrders.value.push(newOrder)
+    }
+    else if (dialogMode.value === 'edit') {
+      const index = mockOrders.value.findIndex(o => o.id === orderForm.value.id)
+      if (index !== -1) {
+        mockOrders.value[index] = {
+          ...mockOrders.value[index],
+          ...orderForm.value,
+          supplier_name: suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
+          total_amount: totalAmount.value
+        }
+      }
+    }
+    
+    closeOrderDialog()
+  }
+  catch (error) {
+    console.error('保存订单失败:', error)
+  }
+  finally {
+    saving.value = false
+  }
+}
+
+const addOrderItem = () => {
+  orderForm.value.items.push({
+    product_name: '新商品',
+    quantity: 1,
+    unit: '个',
+    unit_price: 0
+  })
+}
+
+const removeOrderItem = (index: number) => {
+  orderForm.value.items.splice(index, 1)
+}
+
+const exportOrders = () => {
+  console.log('导出采购订单')
+}
+
+// 初始化
+onMounted(() => {
+  // 加载数据
 })
 </script>

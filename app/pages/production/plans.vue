@@ -3,810 +3,783 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">生产计划管理</h1>
-        <p class="text-muted-foreground mt-1">
+        <h1 class="text-2xl font-bold text-color">生产计划管理</h1>
+        <p class="text-muted-color mt-1">
           制定和调整生产计划，优化生产资源配置
         </p>
       </div>
-      <Button @click="showCreateDialog = true">
-         <Plus class="w-4 h-4 mr-2" />
-         新建生产计划
-       </Button>
+      <Button 
+        label="新建生产计划"
+        icon="pi pi-plus"
+        @click="showCreateDialog = true"
+      />
     </div>
 
     <!-- 计划概览 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <Card class="p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center">
           <div class="p-3 bg-blue-500/10 rounded-full">
-            <Calendar class="w-6 h-6 text-blue-600" />
+              <i class="pi pi-calendar text-blue-600 text-xl"></i>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+              <p class="text-sm font-medium text-muted-color">
               本周计划
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-semibold text-color">
               {{ planStats?.thisWeekPlans || 0 }}
             </p>
           </div>
         </div>
+        </template>
       </Card>
 
-      <Card class="p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center">
           <div class="p-3 bg-green-500/10 rounded-full">
-            <CheckCircle class="w-6 h-6 text-green-600" />
+              <i class="pi pi-check-circle text-green-600 text-xl"></i>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+              <p class="text-sm font-medium text-muted-color">
               执行中
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-semibold text-color">
               {{ planStats?.executing || 0 }}
             </p>
           </div>
         </div>
+        </template>
       </Card>
 
-      <Card class="p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center">
           <div class="p-3 bg-yellow-500/10 rounded-full">
-            <Clock class="w-6 h-6 text-yellow-600" />
+              <i class="pi pi-clock text-yellow-600 text-xl"></i>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+              <p class="text-sm font-medium text-muted-color">
               待审核
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-semibold text-color">
               {{ planStats?.pending || 0 }}
             </p>
           </div>
         </div>
+        </template>
       </Card>
 
-      <Card class="p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center">
           <div class="p-3 bg-purple-500/10 rounded-full">
-            <TrendingUp class="w-6 h-6 text-purple-600" />
+              <i class="pi pi-chart-line text-purple-600 text-xl"></i>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+              <p class="text-sm font-medium text-muted-color">
               产能利用率
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-semibold text-color">
               {{ planStats?.capacityUtilization || 0 }}%
             </p>
           </div>
         </div>
+        </template>
       </Card>
     </div>
 
     <!-- 筛选和搜索 -->
-    <Card class="p-6">
+    <Card>
+      <template #content>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
+            <label class="text-sm font-medium text-color mb-2 block">
             计划名称
           </label>
-          <Input
+            <InputText
             v-model="searchQuery"
             placeholder="输入计划名称搜索"
             class="w-full"
           />
         </div>
         <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
+            <label class="text-sm font-medium text-color mb-2 block">
             计划状态
           </label>
-          <Select v-model="selectedStatus">
-            <SelectTrigger class="w-full">
-              <SelectValue placeholder="全部状态" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">全部状态</SelectItem>
-              <SelectItem value="draft">草稿</SelectItem>
-              <SelectItem value="approved">已审核</SelectItem>
-              <SelectItem value="executing">执行中</SelectItem>
-              <SelectItem value="completed">已完成</SelectItem>
-              <SelectItem value="cancelled">已取消</SelectItem>
-            </SelectContent>
-          </Select>
+            <Dropdown
+              v-model="statusFilter"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
         </div>
         <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
-            计划周期
+            <label class="text-sm font-medium text-color mb-2 block">
+              车间
           </label>
-          <Select v-model="selectedPeriod">
-            <SelectTrigger class="w-full">
-              <SelectValue placeholder="全部周期" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">全部周期</SelectItem>
-              <SelectItem value="daily">日计划</SelectItem>
-              <SelectItem value="weekly">周计划</SelectItem>
-              <SelectItem value="monthly">月计划</SelectItem>
-            </SelectContent>
-          </Select>
+            <Dropdown
+              v-model="workshopFilter"
+              :options="workshopOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部车间"
+              show-clear
+              class="w-full"
+            />
+          </div>
+          <div class="flex items-end">
+            <Button
+              label="重置筛选"
+              icon="pi pi-filter-slash"
+              outlined
+              class="w-full"
+              @click="resetFilters"
+            />
         </div>
-        <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
-            负责车间
-          </label>
-          <Select v-model="selectedWorkshop">
-            <SelectTrigger class="w-full">
-              <SelectValue placeholder="全部车间" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">全部车间</SelectItem>
-              <SelectItem value="workshop_1">第一车间</SelectItem>
-              <SelectItem value="workshop_2">第二车间</SelectItem>
-              <SelectItem value="workshop_3">第三车间</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
-      </div>
+      </template>
     </Card>
 
-    <!-- 生产计划列表 -->
-    <Card class="p-6">
-      <div class="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>计划名称</TableHead>
-              <TableHead>计划周期</TableHead>
-              <TableHead>负责车间</TableHead>
-              <TableHead>计划产量</TableHead>
-              <TableHead>完成进度</TableHead>
-              <TableHead>状态</TableHead>
-              <TableHead>计划时间</TableHead>
-              <TableHead>操作</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow
-              v-for="plan in paginatedPlans"
-              :key="plan.id"
-            >
-              <TableCell>
-                <div class="font-medium text-foreground">
-                  {{ plan.plan_name }}
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  {{ plan.plan_code || plan.plan_no }}
-                </div>
-              </TableCell>
-              <TableCell>
-                <span class="text-sm text-foreground">
-                  {{ getPeriodText(plan.period_type) }}
-                </span>
-              </TableCell>
-              <TableCell>
-                <span class="text-sm text-foreground">
-                  {{ getWorkshopName(plan.workshop_id) }}
-                </span>
-              </TableCell>
-              <TableCell>
-                <div class="font-medium text-foreground">
-                  {{ plan.target_quantity || plan.planned_quantity || 0 }}
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  已完成: {{ plan.completed_quantity || 0 }}
-                </div>
-              </TableCell>
-              <TableCell>
-                <div class="space-y-2">
-                  <Progress :value="getProgress(plan)" class="w-full" />
-                  <div class="text-sm text-muted-foreground">
-                    {{ getProgress(plan) }}%
+    <!-- 生产计划表格 -->
+    <Card>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-color">生产计划列表</h3>
+          <div class="flex items-center gap-2">
+            <Button
+              label="批量操作"
+              icon="pi pi-cog"
+              outlined
+              size="small"
+            />
+            <Button
+              label="导出计划"
+              icon="pi pi-download"
+              outlined
+              size="small"
+            />
                   </div>
                 </div>
-              </TableCell>
-              <TableCell>
-                <Badge :variant="getStatusVariant(plan.status)">
-                  {{ getStatusText(plan.status) }}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <div class="text-sm text-foreground">
-                  {{ formatDate(plan.start_date) }}
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  至 {{ formatDate(plan.end_date) }}
-                </div>
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal class="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem @click="viewPlan(plan)">
-                      <Eye class="w-4 h-4 mr-2" />
-                      查看详情
-                    </DropdownMenuItem>
-                    <DropdownMenuItem @click="handleEdit(plan)">
-                      <Edit class="w-4 h-4 mr-2" />
-                      编辑计划
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator v-if="plan.status === 'pending' || plan.status === 'approved'" />
-                    <DropdownMenuItem 
-                      v-if="plan.status === 'pending'"
-                      @click="handleApprove(plan.id)"
-                    >
-                      <CheckCircle class="w-4 h-4 mr-2" />
-                      审核通过
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      v-if="plan.status === 'approved'"
-                      @click="handleStart(plan.id)"
-                    >
-                      <Play class="w-4 h-4 mr-2" />
-                      开始执行
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      @click="handleDelete(plan.id)"
-                      class="text-destructive focus:text-destructive"
-                    >
-                      <Trash2 class="w-4 h-4 mr-2" />
-                      删除计划
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
+      </template>
 
-      <!-- 分页 -->
-      <div class="flex items-center justify-between mt-6">
-        <div class="text-sm text-muted-foreground">
-          显示 {{ (currentPage - 1) * pageSize + 1 }} 到 
-          {{ Math.min(currentPage * pageSize, filteredPlans.length) }} 条，
-          共 {{ filteredPlans.length }} 条记录
-        </div>
-        <Pagination
-          v-model:page="currentPage"
-          :total="filteredPlans.length"
-          :sibling-count="1"
-          :show-edges="true"
-          :items-per-page="pageSize"
+      <template #content>
+        <DataTable
+          v-model:selection="selectedPlans"
+          :value="filteredPlans"
+          :loading="loading"
+          :paginator="true"
+          :rows="15"
+          :rows-per-page-options="[10, 15, 25]"
+          data-key="id"
+          class="p-datatable-sm"
+          selection-mode="multiple"
+        >
+          <Column selection-mode="multiple" :exportable="false"></Column>
+          
+          <Column field="plan_name" header="计划名称" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.plan_name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <span class="font-medium">{{ slotProps.data.plan_name }}</span>
+                </div>
+            </template>
+          </Column>
+          
+          <Column field="workshop_name" header="车间" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="slotProps.data.workshop_name"
+                severity="info"
+              />
+            </template>
+          </Column>
+          
+          <Column field="start_date" header="开始日期" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.start_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="end_date" header="结束日期" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.end_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="total_orders" header="订单数量" sortable>
+            <template #body="slotProps">
+              <span class="font-medium">{{ slotProps.data.total_orders }}</span>
+            </template>
+          </Column>
+          
+          <Column field="completed_orders" header="已完成" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <span class="font-medium">{{ slotProps.data.completed_orders }}</span>
+                <ProgressBar 
+                  :value="(slotProps.data.completed_orders / slotProps.data.total_orders) * 100"
+                  class="w-20"
+                  :show-value="false"
+                />
+                </div>
+            </template>
+          </Column>
+          
+          <Column field="capacity_utilization" header="产能利用率" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <span class="font-medium">{{ slotProps.data.capacity_utilization }}%</span>
+                <ProgressBar 
+                  :value="slotProps.data.capacity_utilization"
+                  class="w-16"
+                  :show-value="false"
+                />
+      </div>
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewPlan(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft' || slotProps.data.status === 'pending'"
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="editPlan(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'提交审核'"
+                  icon="pi pi-send"
+                  rounded
+                  text
+                  size="small"
+                  @click="submitPlan(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'pending'"
+                  v-tooltip="'审核通过'"
+                  icon="pi pi-check"
+                  rounded
+                  text
+                  size="small"
+                  @click="approvePlan(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'approved'"
+                  v-tooltip="'开始执行'"
+                  icon="pi pi-play"
+                  rounded
+                  text
+                  size="small"
+                  @click="startPlan(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'"
+                  v-tooltip="'删除'"
+                  icon="pi pi-trash"
+                  rounded
+                  text
+                  size="small"
+                  severity="danger"
+                  @click="confirmDeletePlan(slotProps.data)"
         />
       </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
 
-    <!-- 创建计划对话框 -->
-    <Dialog v-model:open="showCreateDialog">
-      <DialogContent class="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>创建生产计划</DialogTitle>
-          <DialogDescription>
-            填写以下信息创建新的生产计划
-          </DialogDescription>
-        </DialogHeader>
-        <form @submit.prevent="submitForm" class="space-y-4">
+    <!-- 生产计划对话框 -->
+    <Dialog
+      v-model:visible="showCreateDialog"
+      header="新建生产计划"
+      :style="{ width: '900px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
           <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
-              <Label for="name">计划名称</Label>
-              <Input
-                id="name"
-                v-model="form.name"
-                placeholder="请输入计划名称"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <Label for="product">产品</Label>
-              <Select v-model="form.product" required>
-                <SelectTrigger>
-                  <SelectValue placeholder="请选择产品" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="产品A">产品A</SelectItem>
-                  <SelectItem value="产品B">产品B</SelectItem>
-                  <SelectItem value="产品C">产品C</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div class="space-y-2">
-              <Label for="quantity">计划产量</Label>
-              <Input
-                id="quantity"
-                v-model.number="form.quantity"
-                type="number"
-                placeholder="请输入计划产量"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <Label for="startDate">开始日期</Label>
-              <Input
-                id="startDate"
-                v-model="form.startDate"
-                type="date"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <Label for="endDate">结束日期</Label>
-              <Input
-                id="endDate"
-                v-model="form.endDate"
-                type="date"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <Label for="manager">负责人</Label>
-              <Select v-model="form.manager" required>
-                <SelectTrigger>
-                  <SelectValue placeholder="请选择负责人" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="张三">张三</SelectItem>
-                  <SelectItem value="李四">李四</SelectItem>
-                  <SelectItem value="王五">王五</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" @click="cancelForm">
-              取消
-            </Button>
-            <Button type="submit">
-              创建
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-
-    <!-- 编辑计划模态框 -->
-    <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-        <h3 class="text-lg font-semibold mb-4">编辑生产计划</h3>
-        <form @submit.prevent="submitEdit">
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">计划名称</label>
-              <input
+              <label class="block text-sm font-medium text-color">计划名称 *</label>
+              <InputText
                 v-model="planForm.plan_name"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="请输入计划名称"
+                required
               />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">计划周期</label>
-              <select
-                v-model="planForm.period_type"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="week">周计划</option>
-                <option value="month">月计划</option>
-                <option value="quarter">季度计划</option>
-                <option value="year">年度计划</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">负责车间</label>
-              <select
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">车间 *</label>
+              <Dropdown
                 v-model="planForm.workshop_id"
+                :options="workshopOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择车间"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">请选择车间</option>
-                <option v-for="workshop in workshops" :key="workshop.id" :value="workshop.id">
-                  {{ workshop.workshop_name || workshop.name }}
-                </option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">目标产量</label>
-              <input
-                v-model.number="planForm.target_quantity"
-                type="number"
-                min="1"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="请输入目标产量"
               />
             </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">开始日期</label>
-                <input
-                  v-model="planForm.start_date"
-                  type="date"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">结束日期</label>
-                <input
-                  v-model="planForm.end_date"
-                  type="date"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">开始日期 *</label>
+              <Calendar
+                v-model="planForm.start_date"
+                placeholder="选择开始日期"
+                required
+              />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">备注</label>
-              <textarea
-                v-model="planForm.notes"
-                rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="请输入备注信息"
-              ></textarea>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">结束日期 *</label>
+              <Calendar
+                v-model="planForm.end_date"
+                placeholder="选择结束日期"
+                required
+              />
             </div>
           </div>
-          <div class="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              @click="showEditModal = false"
-              class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">计划说明</label>
+            <Textarea
+              v-model="planForm.description"
+              placeholder="请输入计划说明"
+              :rows="4"
+              />
+            </div>
+          
+          <!-- 计划订单列表 -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="block text-sm font-medium text-color">计划订单</label>
+              <Button
+                label="添加订单"
+                icon="pi pi-plus"
+                text
+                size="small"
+                @click="addPlanOrder"
+              />
+            </div>
+            
+            <DataTable
+              :value="planForm.orders"
+              class="p-datatable-sm"
             >
-              取消
-            </button>
-            <button
-              type="submit"
-              :disabled="loading"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-            >
-              {{ loading ? '更新中...' : '更新' }}
-            </button>
+              <Column field="order_no" header="订单号">
+                <template #body="slotProps">
+                  <Dropdown
+                    v-model="slotProps.data.order_no"
+                    :options="availableOrders"
+                    option-label="label"
+                    option-value="value"
+                    placeholder="选择订单"
+                    class="w-full"
+                />
+                </template>
+              </Column>
+              
+              <Column field="quantity" header="计划数量">
+                <template #body="slotProps">
+                  <InputNumber
+                    v-model="slotProps.data.quantity"
+                    :min="1"
+                    show-buttons
+                />
+                </template>
+              </Column>
+              
+              <Column field="priority" header="优先级">
+                <template #body="slotProps">
+                  <Dropdown
+                    v-model="slotProps.data.priority"
+                    :options="priorityOptions"
+                    option-label="label"
+                    option-value="value"
+                    placeholder="选择优先级"
+                    class="w-full"
+                  />
+                </template>
+              </Column>
+              
+              <Column header="操作" :exportable="false">
+                <template #body="slotProps">
+                  <Button
+                    icon="pi pi-trash"
+                    rounded
+                    text
+                    size="small"
+                    severity="danger"
+                    @click="removePlanOrder(slotProps.index)"
+                  />
+                </template>
+              </Column>
+            </DataTable>
           </div>
-        </form>
       </div>
-    </div>
+      </template>
 
-    <!-- 删除确认模态框 -->
-    <div v-if="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-sm mx-4">
-        <h3 class="text-lg font-semibold mb-4">确认删除</h3>
-        <p class="text-gray-600 mb-6">确定要删除这个生产计划吗？此操作不可撤销。</p>
-        <div class="flex justify-end space-x-3">
-          <button
-            @click="showDeleteModal = false"
-            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-          >
-            取消
-          </button>
-          <button
-            @click="confirmDelete"
-            :disabled="loading"
-            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
-          >
-            {{ loading ? '删除中...' : '删除' }}
-          </button>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="showCreateDialog = false"
+          />
+          <Button
+            label="保存"
+            icon="pi pi-check"
+            :loading="saving"
+            @click="savePlan"
+          />
         </div>
-      </div>
-    </div>
+      </template>
+    </Dialog>
+    
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Eye, 
-  Edit, 
-  Trash2, 
-  Calendar, 
-  Factory, 
-  Package, 
-  CheckCircle,
-  Clock,
-  BarChart3,
-  Play,
-  XCircle,
-  TrendingUp
-} from 'lucide-vue-next'
-import { useProductionPlans } from '~/composables/useProductionPlans'
-import { useWorkshops } from '~/composables/useWorkshops'
-import type { ProductionPlan } from '~/types/production'
-import Card from '~/components/ui/Card.vue'
-import Button from '~/components/ui/Button.vue'
-import Input from '~/components/ui/Input.vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import Dropdown from 'primevue/dropdown'
+import Calendar from 'primevue/calendar'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import ProgressBar from 'primevue/progressbar'
+import Dialog from 'primevue/dialog'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
-// 页面元数据
-useHead({
-  title: '生产计划管理 - ERP系统'
+// 页面配置
+definePageMeta({
+  layout: 'default'
 })
 
-// 使用 composables
-const { 
-  plans, 
-  loading, 
-  error, 
-  planStats,
-  createPlan, 
-  updatePlan, 
-  deletePlan,
-  approvePlan,
-  startPlan,
-  completePlan,
-  fetchPlans
-} = useProductionPlans()
+useHead({
+  title: '生产计划管理 - ERP 管理系统'
+})
 
-const { workshops, fetchWorkshops } = useWorkshops()
+// 状态管理
+const loading = ref(false)
+const saving = ref(false)
+const showCreateDialog = ref(false)
+const selectedPlans = ref([])
+const confirm = useConfirm()
 
-// 响应式数据
+// 筛选条件
 const searchQuery = ref('')
-const selectedStatus = ref('')
-const selectedPeriod = ref('')
-const selectedWorkshop = ref('')
 const statusFilter = ref('')
-const periodFilter = ref('')
 const workshopFilter = ref('')
-const currentPage = ref(1)
-const pageSize = ref(10)
-const showCreateModal = ref(false)
-const showEditModal = ref(false)
-const showDeleteModal = ref(false)
-const selectedPlanId = ref<string | null>(null)
-const editingPlan = ref<ProductionPlan | null>(null)
 
 // 表单数据
 const planForm = ref({
   plan_name: '',
-  period_type: 'month',
-  start_date: '',
-  end_date: '',
   workshop_id: '',
-  target_quantity: 0,
-  notes: ''
+  start_date: new Date(),
+  end_date: null as Date | null,
+  description: '',
+  orders: [] as any[]
 })
 
-// 统计数据 - 使用 composable 的数据或回退到默认值
-const stats = computed(() => {
-  return planStats.value || {
-    weeklyPlans: 8,
-    executing: 5,
-    pending: 3,
-    utilization: 85
+// 统计数据
+const planStats = ref({
+  thisWeekPlans: 12,
+  executing: 8,
+  pending: 3,
+  capacityUtilization: 85
+})
+
+// 选项数据
+const statusOptions = ref([
+  { label: '草稿', value: 'draft' },
+  { label: '待审核', value: 'pending' },
+  { label: '已审核', value: 'approved' },
+  { label: '执行中', value: 'executing' },
+  { label: '已完成', value: 'completed' },
+  { label: '已取消', value: 'cancelled' }
+])
+
+const workshopOptions = ref([
+  { label: '装配车间', value: 'assembly' },
+  { label: '机加工车间', value: 'machining' },
+  { label: '喷涂车间', value: 'painting' },
+  { label: '包装车间', value: 'packaging' }
+])
+
+const priorityOptions = ref([
+  { label: '低', value: 'low' },
+  { label: '中', value: 'medium' },
+  { label: '高', value: 'high' },
+  { label: '紧急', value: 'urgent' }
+])
+
+const availableOrders = ref([
+  { label: 'PO-2024-001', value: 'PO-2024-001' },
+  { label: 'PO-2024-002', value: 'PO-2024-002' },
+  { label: 'PO-2024-003', value: 'PO-2024-003' }
+])
+
+// 模拟数据
+const mockPlans = ref([
+  {
+    id: '1',
+    plan_name: '第一季度生产计划',
+    workshop_name: '装配车间',
+    start_date: new Date('2024-01-15'),
+    end_date: new Date('2024-03-31'),
+    total_orders: 25,
+    completed_orders: 18,
+    capacity_utilization: 85,
+    status: 'executing'
+  },
+  {
+    id: '2',
+    plan_name: '紧急订单生产计划',
+    workshop_name: '机加工车间',
+    start_date: new Date('2024-01-20'),
+    end_date: new Date('2024-02-15'),
+    total_orders: 8,
+    completed_orders: 8,
+    capacity_utilization: 95,
+    status: 'completed'
   }
-})
-
-// 使用 plans 而不是 productionPlans
-const productionPlans = computed(() => plans.value)
+])
 
 // 计算属性
 const filteredPlans = computed(() => {
-  return productionPlans.value.filter(plan => {
-    const matchesSearch = !searchQuery.value || 
-      plan.plan_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      (plan.plan_code && plan.plan_code.toLowerCase().includes(searchQuery.value.toLowerCase()))
-    
-    const matchesStatus = (!selectedStatus.value && !statusFilter.value) || 
-      plan.status === selectedStatus.value || plan.status === statusFilter.value
-    
-    const matchesPeriod = (!selectedPeriod.value && !periodFilter.value) || 
-      plan.period_type === selectedPeriod.value || plan.period_type === periodFilter.value
-    
-    const matchesWorkshop = (!selectedWorkshop.value && !workshopFilter.value) || 
-      plan.workshop_id === selectedWorkshop.value || plan.workshop_id === workshopFilter.value
-    
-    return matchesSearch && matchesStatus && matchesPeriod && matchesWorkshop
-  })
+  let result = mockPlans.value
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(plan =>
+      plan.plan_name.toLowerCase().includes(query)
+    )
+  }
+
+  if (statusFilter.value) {
+    result = result.filter(plan => plan.status === statusFilter.value)
+  }
+
+  if (workshopFilter.value) {
+    result = result.filter(plan => plan.workshop_name === workshopFilter.value)
+  }
+
+  return result
 })
 
-// 分页后的计划
-const paginatedPlans = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filteredPlans.value.slice(start, end)
-})
-
-// 总页数
-const totalPages = computed(() => {
-  return Math.ceil(filteredPlans.value.length / pageSize.value)
-})
-
-// 辅助函数
-const getWorkshopName = (workshopId: string): string => {
-  const workshop = workshops.value.find(w => w.id === workshopId)
-  return workshop?.workshop_name || workshop?.name || '未知车间'
+// 映射对象
+const statusMap: Record<string, string> = {
+  draft: '草稿',
+  pending: '待审核',
+  approved: '已审核',
+  executing: '执行中',
+  completed: '已完成',
+  cancelled: '已取消'
 }
 
-const getPeriodText = (periodType: string): string => {
-  const periods: Record<string, string> = {
-    daily: '日计划',
-    weekly: '周计划',
-    monthly: '月计划',
-    quarter: '季度计划',
-    year: '年度计划'
-  }
-  return periods[periodType] || '未知周期'
+const statusSeverityMap: Record<string, string> = {
+  draft: 'secondary',
+  pending: 'warning',
+  approved: 'info',
+  executing: 'success',
+  completed: 'success',
+  cancelled: 'danger'
 }
 
-const getProgress = (plan: any): number => {
-  const targetQuantity = plan.planned_quantity || plan.target_quantity || 0
-  const completedQuantity = plan.completed_quantity || 0
-  if (!targetQuantity || targetQuantity === 0) return 0
-  return Math.round((completedQuantity / targetQuantity) * 100)
+// 方法
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('zh-CN')
 }
 
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-800',
-    approved: 'bg-blue-100 text-blue-800',
-    pending: 'bg-yellow-100 text-yellow-800',
-    executing: 'bg-green-100 text-green-800',
-    completed: 'bg-purple-100 text-purple-800',
-    cancelled: 'bg-red-100 text-red-800'
-  }
-  return colors[status] || 'bg-gray-100 text-gray-800'
+const resetFilters = () => {
+  searchQuery.value = ''
+  statusFilter.value = ''
+  workshopFilter.value = ''
 }
 
-const getStatusText = (status: string): string => {
-  const texts: Record<string, string> = {
-    draft: '草稿',
-    approved: '已审核',
-    pending: '待审核',
-    executing: '执行中',
-    completed: '已完成',
-    cancelled: '已取消'
-  }
-  return texts[status] || '未知状态'
-}
-
-const formatDate = (date: Date | string | null): string => {
-  if (!date) return '-'
-  if (typeof date === 'string') {
-    return new Date(date).toLocaleDateString('zh-CN')
-  }
-  return date.toLocaleDateString('zh-CN')
-}
-
-// 重置表单
-const resetForm = () => {
-  planForm.value = {
-    plan_name: '',
-    period_type: 'month',
-    start_date: '',
-    end_date: '',
-    workshop_id: '',
-    target_quantity: 0,
-    notes: ''
-  }
-}
-
-// 处理创建计划
-const handleCreate = () => {
-  resetForm()
-  showCreateModal.value = true
-}
-
-// 提交创建
-const submitCreate = async () => {
-  try {
-    await createPlan(planForm.value)
-    showCreateModal.value = false
-    resetForm()
-    await fetchPlans()
-  } catch (error) {
-    console.error('创建计划失败:', error)
-  }
-}
-
-// 处理编辑计划
-const handleEdit = (plan: ProductionPlan) => {
-  editingPlan.value = plan
-  planForm.value = {
-    plan_name: plan.plan_name,
-    period_type: plan.period_type,
-    start_date: plan.start_date ? plan.start_date.split('T')[0] : '',
-    end_date: plan.end_date ? plan.end_date.split('T')[0] : '',
-    workshop_id: plan.workshop_id,
-    target_quantity: plan.target_quantity || plan.planned_quantity || 0,
-    notes: plan.notes || ''
-  }
-  showEditModal.value = true
-}
-
-// 提交编辑
-const submitEdit = async () => {
-  if (!editingPlan.value) return
-  
-  try {
-    await updatePlan(editingPlan.value.id, planForm.value)
-    showEditModal.value = false
-    editingPlan.value = null
-    resetForm()
-    await fetchPlans()
-  } catch (error) {
-    console.error('更新计划失败:', error)
-  }
-}
-
-// 处理删除计划
-const handleDelete = (planId: string | number) => {
-  selectedPlanId.value = String(planId)
-  showDeleteModal.value = true
-}
-
-// 确认删除
-const confirmDelete = async () => {
-  if (!selectedPlanId.value) return
-  
-  try {
-    await deletePlan(selectedPlanId.value)
-    showDeleteModal.value = false
-    selectedPlanId.value = null
-    await fetchPlans()
-  } catch (error) {
-    console.error('删除计划失败:', error)
-  }
-}
-
-// 审核计划
-const handleApprove = async (planId: string) => {
-  try {
-    await approvePlan(planId)
-    await fetchPlans()
-  } catch (error) {
-    console.error('审核计划失败:', error)
-  }
-}
-
-// 开始计划
-const handleStart = async (planId: string) => {
-  try {
-    await startPlan(planId)
-    await fetchPlans()
-  } catch (error) {
-    console.error('开始计划失败:', error)
-  }
-}
-
-// 完成计划
-const handleComplete = async (planId: string) => {
-  try {
-    await completePlan(planId)
-    await fetchPlans()
-  } catch (error) {
-    console.error('完成计划失败:', error)
-  }
-}
-
-// 操作函数 - 保持向后兼容
 const viewPlan = (plan: any) => {
-  console.log('查看计划:', plan)
+  console.log('查看计划:', plan.plan_name)
 }
 
 const editPlan = (plan: any) => {
-  handleEdit(plan)
+  console.log('编辑计划:', plan.plan_name)
 }
 
-const deletePlan_old = (planId: number) => {
-  handleDelete(planId)
+const submitPlan = async (plan: any) => {
+  confirm.require({
+    message: `确定要提交计划 ${plan.plan_name} 进行审核吗？`,
+    header: '提交审核',
+    icon: 'pi pi-send',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockPlans.value.findIndex(p => p.id === plan.id)
+        if (index !== -1) {
+          mockPlans.value[index].status = 'pending'
+        }
+      }
+      catch (error) {
+        console.error('提交失败:', error)
+      }
+    }
+  })
 }
 
-// 生命周期
-onMounted(async () => {
+const approvePlan = async (plan: any) => {
+  confirm.require({
+    message: `确定要审核通过计划 ${plan.plan_name} 吗？`,
+    header: '审核通过',
+    icon: 'pi pi-check',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockPlans.value.findIndex(p => p.id === plan.id)
+        if (index !== -1) {
+          mockPlans.value[index].status = 'approved'
+        }
+      }
+      catch (error) {
+        console.error('审核失败:', error)
+      }
+    }
+  })
+}
+
+const startPlan = async (plan: any) => {
+  confirm.require({
+    message: `确定要开始执行计划 ${plan.plan_name} 吗？`,
+    header: '开始执行',
+    icon: 'pi pi-play',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockPlans.value.findIndex(p => p.id === plan.id)
+        if (index !== -1) {
+          mockPlans.value[index].status = 'executing'
+        }
+      }
+      catch (error) {
+        console.error('开始执行失败:', error)
+      }
+    }
+  })
+}
+
+const confirmDeletePlan = (plan: any) => {
+  confirm.require({
+    message: `确定要删除计划 ${plan.plan_name} 吗？`,
+    header: '确认删除',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      deletePlan(plan.id)
+    }
+  })
+}
+
+const deletePlan = (planId: string) => {
+  mockPlans.value = mockPlans.value.filter(plan => plan.id !== planId)
+}
+
+const addPlanOrder = () => {
+  planForm.value.orders.push({
+    order_no: '',
+    quantity: 1,
+    priority: 'medium'
+  })
+}
+
+const removePlanOrder = (index: number) => {
+  planForm.value.orders.splice(index, 1)
+}
+
+const savePlan = async () => {
+  saving.value = true
   try {
-    await Promise.all([
-      fetchPlans(),
-      fetchWorkshops()
-    ])
-  } catch (error) {
-    console.error('初始化数据失败:', error)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    const newPlan = {
+      id: Date.now().toString(),
+      ...planForm.value,
+      workshop_name: workshopOptions.value.find(w => w.value === planForm.value.workshop_id)?.label || '',
+      total_orders: planForm.value.orders.length,
+      completed_orders: 0,
+      capacity_utilization: 0,
+      status: 'draft'
+    }
+    
+    mockPlans.value.push(newPlan as any)
+    showCreateDialog.value = false
+    
+    // 重置表单
+    planForm.value = {
+      plan_name: '',
+      workshop_id: '',
+      start_date: new Date(),
+      end_date: null,
+      description: '',
+      orders: []
+    }
   }
-})
+  catch (error) {
+    console.error('保存计划失败:', error)
+  }
+  finally {
+    saving.value = false
+  }
+}
 
-// 页面元数据
-definePageMeta({
-  middleware: 'auth'
+// 初始化
+onMounted(() => {
+  // 加载数据
 })
 </script>

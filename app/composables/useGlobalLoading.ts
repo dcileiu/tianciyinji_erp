@@ -47,7 +47,8 @@ export const useGlobalLoading = () => {
       startLoading(taskId, message)
       const result = await fn()
       return result
-    } finally {
+    }
+    finally {
       stopLoading(taskId)
     }
   }

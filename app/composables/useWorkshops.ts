@@ -46,7 +46,7 @@ export const useWorkshops = () => {
   // 按类型分组的车间
   const workshopsByType = computed(() => {
     const grouped: Record<string, Workshop[]> = {}
-    workshops.value.forEach(workshop => {
+    workshops.value.forEach((workshop) => {
       const type = workshop.workshop_type || 'other'
       if (!grouped[type]) {
         grouped[type] = []
@@ -92,10 +92,12 @@ export const useWorkshops = () => {
       
       workshops.value = data || []
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取车间列表失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -116,10 +118,12 @@ export const useWorkshops = () => {
       
       currentWorkshop.value = data
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取车间详情失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -149,10 +153,12 @@ export const useWorkshops = () => {
       await fetchWorkshops()
       
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '创建车间失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -183,10 +189,12 @@ export const useWorkshops = () => {
       }
       
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新车间失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -222,10 +230,12 @@ export const useWorkshops = () => {
       }
       
       return true
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '删除车间失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -235,7 +245,8 @@ export const useWorkshops = () => {
     try {
       const updates: WorkshopUpdate = { status }
       return await updateWorkshop(id, updates)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新车间状态失败'
       throw err
     }
@@ -249,7 +260,8 @@ export const useWorkshops = () => {
         active_equipment_count: activeCount
       }
       return await updateWorkshop(id, updates)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新设备数量失败'
       throw err
     }
@@ -262,7 +274,8 @@ export const useWorkshops = () => {
         capacity_utilization: utilization
       }
       return await updateWorkshop(id, updates)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新产能利用率失败'
       throw err
     }
@@ -289,7 +302,8 @@ export const useWorkshops = () => {
       if (fetchError) throw fetchError
       
       return data || []
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取车间生产订单失败'
       throw err
     }

@@ -1,63 +1,36 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-      <!-- Logo和标题区域 -->
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mb-4 shadow-lg">
-          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-          </svg>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 max-w-4xl w-full bg-white/95 backdrop-blur-lg rounded-3xl overflow-hidden shadow-2xl">
+      <!-- 品牌标识 -->
+      <div class="bg-gradient-to-br from-blue-500 to-purple-600 text-white p-12 flex flex-col justify-center">
+        <div class="flex flex-col items-center mb-8">
+          <div class="w-20 h-20 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center mb-4">
+            <span class="text-4xl font-bold text-white">E</span>
+          </div>
+          <h1 class="text-3xl font-bold text-center text-white drop-shadow-sm">ERP 管理系统</h1>
         </div>
-        <h1 class="text-3xl font-bold mb-2">
-          ERP 管理系统
-        </h1>
-        <p class="text-muted-foreground">
-          企业资源管理平台
+        <p class="text-lg leading-relaxed text-center text-white/90">
+          现代化企业资源规划系统，助力企业数字化转型
         </p>
       </div>
 
-      <!-- 登录卡片 -->
-      <Card class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-2xl">
-        <CardContent class="p-8">
-          <div class="mb-6">
-            <h2 class="text-xl font-semibold mb-2">
-              欢迎回来
-            </h2>
-            <p class="text-muted-foreground text-sm">
-              请登录您的账户以继续使用系统
-            </p>
-          </div>
-
-          <Login />
-
-          <!-- 额外信息 -->
-          <div class="mt-6 pt-6 border-t">
-            <div class="flex items-center justify-center space-x-1 text-xs text-muted-foreground">
-              <span>没有账户？</span>
-              <span class="font-medium">请联系系统管理员</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <!-- 页脚信息 -->
-      <div class="mt-8 text-center">
-        <p class="text-xs text-muted-foreground">
-          © 2025 ERP管理系统. 保留所有权利.
-        </p>
-      </div>
+      <!-- 登录表单 -->
+      <Login />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 // 导入组件
-import Card from '~/components/ui/Card.vue'
-import CardContent from '~/components/ui/CardContent.vue'
 import Login from '~/components/Login.vue'
 
 // 页面元数据
 definePageMeta({
   layout: 'auth'
+})
+
+// 页面标题
+useHead({
+  title: '用户登录 - ERP 管理系统'
 })
 </script>

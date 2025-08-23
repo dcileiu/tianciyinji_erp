@@ -3,309 +3,331 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">BOM物料清单管理</h1>
-        <p class="text-muted-foreground mt-1">
+        <h1 class="text-2xl font-bold text-color">BOM物料清单管理</h1>
+        <p class="text-muted-color mt-1">
           管理产品物料清单，维护产品结构和用料关系
         </p>
       </div>
-      <Button @click="showCreateDialog = true">
-        <Plus class="w-4 h-4 mr-2" />
-        新建BOM
-      </Button>
+      <Button 
+        label="新建BOM" 
+        icon="pi pi-plus"
+        @click="showCreateDialog = true"
+      />
     </div>
 
     <!-- BOM概览 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <Card class="p-6">
-        <div class="flex items-center">
-          <div class="p-3 bg-blue-500/10 rounded-full">
-            <FileText class="w-6 h-6 text-blue-600" />
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <Card class="bg-blue-50 dark:bg-blue-900/20 border-blue-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-blue-600 dark:text-blue-400 text-sm font-medium">
               总BOM数
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">
               {{ stats.totalBOMs }}
             </p>
           </div>
+            <div class="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
+              <i class="pi pi-file-text text-blue-600 dark:text-blue-400 text-xl"></i>
+            </div>
         </div>
+        </template>
       </Card>
 
-      <Card class="p-6">
-        <div class="flex items-center">
-          <div class="p-3 bg-green-500/10 rounded-full">
-            <CheckCircle class="w-6 h-6 text-green-600" />
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+      <Card class="bg-green-50 dark:bg-green-900/20 border-green-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-green-600 dark:text-green-400 text-sm font-medium">
               已审核
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-bold text-green-900 dark:text-green-100">
               {{ stats.approvedBOMs }}
             </p>
           </div>
+            <div class="bg-green-100 dark:bg-green-800 p-3 rounded-full">
+              <i class="pi pi-check-circle text-green-600 dark:text-green-400 text-xl"></i>
+            </div>
         </div>
+        </template>
       </Card>
 
-      <Card class="p-6">
-        <div class="flex items-center">
-          <div class="p-3 bg-yellow-500/10 rounded-full">
-            <Clock class="w-6 h-6 text-yellow-600" />
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+      <Card class="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-yellow-600 dark:text-yellow-400 text-sm font-medium">
               待审核
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-bold text-yellow-900 dark:text-yellow-100">
               {{ stats.pendingBOMs }}
             </p>
           </div>
+            <div class="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-full">
+              <i class="pi pi-clock text-yellow-600 dark:text-yellow-400 text-xl"></i>
+            </div>
         </div>
+        </template>
       </Card>
 
-      <Card class="p-6">
-        <div class="flex items-center">
-          <div class="p-3 bg-purple-500/10 rounded-full">
-            <Package class="w-6 h-6 text-purple-600" />
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-muted-foreground">
+      <Card class="bg-purple-50 dark:bg-purple-900/20 border-purple-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-purple-600 dark:text-purple-400 text-sm font-medium">
               涉及物料
             </p>
-            <p class="text-2xl font-semibold text-foreground">
+              <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">
               {{ stats.totalMaterials }}
             </p>
           </div>
+            <div class="bg-purple-100 dark:bg-purple-800 p-3 rounded-full">
+              <i class="pi pi-box text-purple-600 dark:text-purple-400 text-xl"></i>
+            </div>
         </div>
+        </template>
       </Card>
     </div>
 
     <!-- 筛选和搜索 -->
-    <Card class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
+    <Card>
+      <template #header>
+        <h3 class="text-lg font-semibold text-color">搜索筛选</h3>
+      </template>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">
             产品名称
           </label>
-          <Input
+            <InputText
             v-model="searchQuery"
             placeholder="输入产品名称搜索"
             class="w-full"
           />
         </div>
-        <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">
             BOM状态
           </label>
-          <select
+            <Dropdown
             v-model="selectedStatus"
-            class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-          >
-            <option value="">全部状态</option>
-            <option value="draft">草稿</option>
-            <option value="approved">已审核</option>
-            <option value="active">启用</option>
-            <option value="inactive">停用</option>
-          </select>
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              class="w-full"
+              show-clear
+            />
         </div>
-        <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">
             产品类别
           </label>
-          <select
+            <Dropdown
             v-model="selectedCategory"
-            class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-          >
-            <option value="">全部类别</option>
-            <option value="electronics">电子产品</option>
-            <option value="mechanical">机械产品</option>
-            <option value="chemical">化工产品</option>
-          </select>
+              :options="categoryOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部类别"
+              class="w-full"
+              show-clear
+            />
         </div>
-        <div>
-          <label class="text-sm font-medium text-foreground mb-2 block">
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">
             BOM版本
           </label>
-          <Input
+            <InputText
             v-model="selectedVersion"
             placeholder="输入版本号"
             class="w-full"
           />
         </div>
       </div>
+      </template>
     </Card>
 
     <!-- BOM列表 -->
-    <Card class="p-6">
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead>
-            <tr class="border-b border-border">
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                产品信息
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                BOM版本
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                物料数量
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                总成本
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                状态
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                创建时间
-              </th>
-              <th class="text-left py-3 px-4 font-medium text-foreground">
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="bom in paginatedBOMs"
-              :key="bom.id"
-              class="border-b border-border hover:bg-accent/20 transition-colors"
-            >
-              <td class="py-3 px-4">
-                <div class="font-medium text-foreground">
-                  {{ bom.product_name }}
+    <Card>
+      <template #header>
+        <h3 class="text-lg font-semibold text-color">BOM列表</h3>
+      </template>
+      <template #content>
+        <DataTable
+          :value="paginatedBOMs"
+          :loading="loading"
+          striped-rows
+          show-gridlines
+          responsive-layout="scroll"
+          class="p-4"
+        >
+          <template #empty>
+            <div class="text-center py-12 text-muted-color">
+              <i class="pi pi-file-text text-6xl mb-4 opacity-50"></i>
+              <h3 class="text-lg mb-2">暂无BOM数据</h3>
+              <p class="mb-4">开始创建您的第一个BOM</p>
+              <Button
+                label="新建BOM"
+                icon="pi pi-plus"
+                @click="showCreateDialog = true"
+              />
                 </div>
-                <div class="text-sm text-muted-foreground">
-                  {{ bom.product_code }}
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  {{ getCategoryText(bom.product_category) }}
-                </div>
-              </td>
-              <td class="py-3 px-4">
-                <div class="font-medium text-foreground">
-                  {{ bom.version }}
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  {{ bom.is_current ? '当前版本' : '历史版本' }}
-                </div>
-              </td>
-              <td class="py-3 px-4">
-                <div class="font-medium text-foreground">
-                  {{ bom.material_count }} 种
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  总用量: {{ bom.total_quantity }}
-                </div>
-              </td>
-              <td class="py-3 px-4">
-                <div class="font-medium text-foreground">
-                  ¥{{ bom.total_cost?.toFixed(2) || '0.00' }}
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  单位成本
-                </div>
-              </td>
-              <td class="py-3 px-4">
-                <span :class="[
-                  'px-2 py-1 rounded-full text-xs font-medium',
-                  getStatusColor(bom.status)
-                ]">
-                  {{ getStatusText(bom.status) }}
-                </span>
-              </td>
-              <td class="py-3 px-4">
-                <div class="text-sm text-foreground">
-                  {{ formatDate(bom.created_at) }}
-                </div>
-                <div class="text-sm text-muted-foreground">
-                  {{ bom.created_by }}
-                </div>
-              </td>
-              <td class="py-3 px-4">
-                <div class="flex items-center space-x-2">
-                  <Button size="sm" variant="ghost" @click="viewBOM(bom)">
-                    <Eye class="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" @click="editBOM(bom)">
-                    <Edit class="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" @click="copyBOM(bom)">
-                    <Copy class="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    @click="deleteBOM(bom.id)"
-                    class="text-destructive hover:text-destructive"
-                  >
-                    <Trash2 class="w-4 h-4" />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          </template>
 
-      <!-- 分页 -->
-      <div class="flex items-center justify-between mt-6">
-        <div class="text-sm text-muted-foreground">
-          显示 {{ (currentPage - 1) * pageSize + 1 }} 到 
-          {{ Math.min(currentPage * pageSize, filteredBOMs.length) }} 条，
-          共 {{ filteredBOMs.length }} 条记录
-        </div>
-        <div class="flex items-center space-x-2">
+          <Column field="product_name" header="产品信息" :sortable="true">
+            <template #body="slotProps">
+              <div>
+                <span class="font-medium text-color">{{ slotProps.data.product_name }}</span>
+                <div class="text-sm text-muted-color">
+                  编号: {{ slotProps.data.product_code }}
+                </div>
+                <div class="text-sm text-muted-color">
+                  类别: {{ getCategoryText(slotProps.data.product_category) }}
+                </div>
+                </div>
+            </template>
+          </Column>
+
+          <Column field="version" header="BOM版本" :sortable="true">
+            <template #body="slotProps">
+              <span class="font-mono bg-surface-100 px-2 py-1 rounded text-primary text-sm">
+                {{ slotProps.data.version }}
+              </span>
+            </template>
+          </Column>
+
+          <Column field="status" header="状态" :sortable="true">
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusText(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+
+          <Column field="material_count" header="物料数量" :sortable="true">
+            <template #body="slotProps">
+              <span class="font-semibold">{{ slotProps.data.material_count }}</span>
+            </template>
+          </Column>
+
+          <Column field="total_cost" header="总成本" :sortable="true">
+            <template #body="slotProps">
+              <span class="font-semibold text-green-600">
+                ¥{{ slotProps.data.total_cost.toFixed(2) }}
+              </span>
+            </template>
+          </Column>
+
+          <Column field="effective_date" header="生效日期" :sortable="true">
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.effective_date) }}
+                </span>
+            </template>
+          </Column>
+
+          <Column header="操作" class="w-40">
+            <template #body="slotProps">
+              <div class="flex gap-2">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  outlined
+                  rounded
+                  size="small"
+                  @click="viewBOM(slotProps.data)"
+                />
+                  <Button 
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  outlined
+                  rounded
+                  size="small"
+                  @click="editBOM(slotProps.data)"
+                />
           <Button
-            size="sm"
-            variant="outline"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
-            上一页
-          </Button>
-          <span class="text-sm text-muted-foreground">
-            {{ currentPage }} / {{ totalPages }}
-          </span>
+                  v-tooltip="'复制'"
+                  icon="pi pi-copy"
+                  outlined
+                  rounded
+                  size="small"
+                  @click="copyBOM(slotProps.data)"
+                />
           <Button
-            size="sm"
-            variant="outline"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
-            下一页
-          </Button>
+                  v-tooltip="'删除'"
+                  icon="pi pi-trash"
+                  outlined
+                  rounded
+                  size="small"
+                  severity="danger"
+                  @click="confirmDelete(slotProps.data)"
+                />
         </div>
-      </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
+
+    <!-- 分页 -->
+    <div class="flex justify-between items-center">
+      <span class="text-sm text-muted-color">
+        共 {{ filteredBOMs.length }} 条记录，每页显示 {{ pageSize }} 条
+      </span>
+      <Paginator
+        v-model:first="firstRecord"
+        :rows="pageSize"
+        :total-records="filteredBOMs.length"
+        :rows-per-page-options="[10, 20, 50]"
+        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import {
-  Plus,
-  FileText,
-  CheckCircle,
-  Clock,
-  Package,
-  Eye,
-  Edit,
-  Copy,
-  Trash2
-} from 'lucide-vue-next'
-import Card from '~/components/ui/Card.vue'
-import Button from '~/components/ui/Button.vue'
-import Input from '~/components/ui/Input.vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Dropdown from 'primevue/dropdown'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Paginator from 'primevue/paginator'
 
 // 响应式数据
+const loading = ref(false)
 const searchQuery = ref('')
 const selectedStatus = ref('')
 const selectedCategory = ref('')
 const selectedVersion = ref('')
 const currentPage = ref(1)
 const pageSize = ref(10)
+const firstRecord = ref(0)
 const showCreateDialog = ref(false)
+
+// 选项数据
+const statusOptions = ref([
+  { label: '全部状态', value: '' },
+  { label: '草稿', value: 'draft' },
+  { label: '已审核', value: 'approved' },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' }
+])
+
+const categoryOptions = ref([
+  { label: '全部类别', value: '' },
+  { label: '电子产品', value: 'electronics' },
+  { label: '机械产品', value: 'mechanical' },
+  { label: '化工产品', value: 'chemical' }
+])
 
 // 统计数据
 const stats = ref({
@@ -330,7 +352,8 @@ const boms = ref([
     status: 'active',
     created_by: '张工程师',
     created_at: new Date('2024-01-15'),
-    updated_at: new Date('2024-01-20')
+    updated_at: new Date('2024-01-20'),
+    effective_date: new Date('2024-01-20')
   },
   {
     id: 2,
@@ -396,13 +419,13 @@ const boms = ref([
 
 // 筛选后的BOM
 const filteredBOMs = computed(() => {
-  return boms.value.filter(bom => {
-    const matchesSearch = !searchQuery.value || 
-      bom.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return boms.value.filter((bom) => {
+    const matchesSearch = !searchQuery.value 
+      || bom.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesStatus = !selectedStatus.value || bom.status === selectedStatus.value
     const matchesCategory = !selectedCategory.value || bom.product_category === selectedCategory.value
-    const matchesVersion = !selectedVersion.value || 
-      bom.version.toLowerCase().includes(selectedVersion.value.toLowerCase())
+    const matchesVersion = !selectedVersion.value 
+      || bom.version.toLowerCase().includes(selectedVersion.value.toLowerCase())
     
     return matchesSearch && matchesStatus && matchesCategory && matchesVersion
   })
@@ -450,6 +473,16 @@ const getStatusText = (status: string): string => {
   return texts[status] || '未知状态'
 }
 
+const getStatusSeverity = (status: string): string => {
+  const severityMap: Record<string, string> = {
+    draft: 'warn',
+    approved: 'info',
+    active: 'success',
+    inactive: 'danger'
+  }
+  return severityMap[status] || 'secondary'
+}
+
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString('zh-CN')
 }
@@ -469,6 +502,13 @@ const copyBOM = (bom: any) => {
 
 const deleteBOM = (bomId: number) => {
   console.log('删除BOM:', bomId)
+  boms.value = boms.value.filter(bom => bom.id !== bomId)
+}
+
+const confirmDelete = (bom: any) => {
+  if (confirm(`确定要删除 ${bom.product_name} 的BOM吗？`)) {
+    deleteBOM(bom.id)
+  }
 }
 
 // 页面标题
@@ -476,8 +516,8 @@ useHead({
   title: 'BOM物料清单管理 - ERP 管理系统'
 })
 
-// 页面元数据
+// 页面元数据  
 definePageMeta({
-  middleware: 'auth'
+  layout: 'default'
 })
 </script>

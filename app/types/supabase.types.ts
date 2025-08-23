@@ -1,10 +1,10 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json
+  = | string
+    | number
+    | boolean
+    | null
+    | { [key: string]: Json | undefined }
+    | Json[]
 
 export interface Database {
   public: {
@@ -308,7 +308,7 @@ export interface Database {
           resource_code: string
           details?: string | null
         }
-        Returns: void
+        Returns: undefined
       }
     }
     Enums: {

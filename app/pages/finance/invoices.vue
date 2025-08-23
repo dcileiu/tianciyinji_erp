@@ -1,539 +1,799 @@
 <template>
-  <div class="container mx-auto p-6 space-y-6">
+  <div class="space-y-6">
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold">发票管理</h1>
-        <p class="text-muted-foreground mt-2">管理销售发票和采购发票</p>
+        <h1 class="text-3xl font-bold text-color">发票管理</h1>
+        <p class="text-muted-color mt-2">管理销售发票和采购发票</p>
       </div>
-      <Button @click="openInvoiceDialog()" class="gap-2">
-        <Plus class="h-4 w-4" />
-        新建发票
-      </Button>
+      <Button
+        label="新建发票"
+        icon="pi pi-plus"
+        @click="openInvoiceDialog()"
+      />
     </div>
 
     <!-- 筛选区域 -->
     <Card>
-      <CardContent class="p-6">
+      <template #content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label class="text-sm font-medium mb-2 block">发票类型</label>
-            <Select v-model="filters.type">
-              <SelectTrigger>
-                <SelectValue placeholder="全部类型" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">全部类型</SelectItem>
-                <SelectItem value="sales">销售发票</SelectItem>
-                <SelectItem value="purchase">采购发票</SelectItem>
-              </SelectContent>
-            </Select>
+            <label class="text-sm font-medium mb-2 block text-color">发票类型</label>
+            <Dropdown
+              v-model="filters.type"
+              :options="invoiceTypeOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部类型"
+              show-clear
+              class="w-full"
+            />
           </div>
           <div>
-            <label class="text-sm font-medium mb-2 block">状态</label>
-            <Select v-model="filters.status">
-              <SelectTrigger>
-                <SelectValue placeholder="全部状态" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
-                <SelectItem value="draft">草稿</SelectItem>
-                <SelectItem value="sent">已发送</SelectItem>
-                <SelectItem value="paid">已付款</SelectItem>
-                <SelectItem value="overdue">逾期</SelectItem>
-              </SelectContent>
-            </Select>
+            <label class="text-sm font-medium mb-2 block text-color">状态</label>
+            <Dropdown
+              v-model="filters.status"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
           </div>
           <div>
-            <label class="text-sm font-medium mb-2 block">搜索</label>
-            <div class="relative">
-              <Search class="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
-              <Input
+            <label class="text-sm font-medium mb-2 block text-color">搜索</label>
+            <IconField icon-position="left">
+              <InputIcon>
+                <i class="pi pi-search"></i>
+              </InputIcon>
+              <InputText
                 v-model="filters.search"
                 placeholder="搜索发票号、客户/供应商..."
-                class="pl-10"
+                class="w-full"
               />
-            </div>
+            </IconField>
           </div>
           <div class="flex items-end gap-2">
-            <Button @click="loadInvoices" variant="outline" class="gap-2">
-              <RefreshCw class="h-4 w-4" />
-              刷新
-            </Button>
-            <Button @click="exportInvoices" variant="outline" class="gap-2">
-              <Download class="h-4 w-4" />
-              导出
-            </Button>
+            <Button
+              label="刷新"
+              icon="pi pi-refresh"
+              outlined
+              @click="loadInvoices"
+            />
+            <Button
+              label="导出"
+              icon="pi pi-download"
+              outlined
+              @click="exportInvoices"
+            />
           </div>
         </div>
-      </CardContent>
+      </template>
     </Card>
 
     <!-- 发票列表 -->
     <Card>
-      <CardHeader>
+      <template #header>
         <div class="flex items-center justify-between">
-          <CardTitle>发票列表</CardTitle>
-          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <h3 class="text-lg font-semibold text-color">发票列表</h3>
+          <div class="flex items-center gap-2 text-sm text-muted-color">
             共 {{ totalCount }} 条记录
           </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div v-if="loading" class="flex justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-        
-        <div v-else class="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>发票号</TableHead>
-                <TableHead>类型</TableHead>
-                <TableHead>客户/供应商</TableHead>
-                <TableHead>金额</TableHead>
-                <TableHead>开票日期</TableHead>
-                <TableHead>到期日期</TableHead>
-                <TableHead>状态</TableHead>
-                <TableHead>操作</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="invoice in invoices" :key="invoice.id">
-                <TableCell>
-                  <div class="font-medium">{{ invoice.invoice_number }}</div>
-                </TableCell>
-                <TableCell>
-                  <Badge :variant="invoice.type === 'sales' ? 'default' : 'secondary'">
-                    {{ invoice.type === 'sales' ? '销售发票' : '采购发票' }}
-                  </Badge>
-                </TableCell>
-                <TableCell>{{ invoice.partner_name }}</TableCell>
-                <TableCell>
-                  <div class="font-medium">¥{{ invoice.total_amount?.toLocaleString() }}</div>
-                </TableCell>
-                <TableCell>{{ formatDate(invoice.invoice_date) }}</TableCell>
-                <TableCell>{{ formatDate(invoice.due_date) }}</TableCell>
-                <TableCell>
-                  <Badge :variant="getStatusVariant(invoice.status)">
-                    {{ getStatusText(invoice.status) }}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <div class="flex items-center gap-2">
-                    <Button @click="viewInvoice(invoice)" size="sm" variant="ghost">
-                      <Eye class="h-4 w-4" />
-                    </Button>
-                    <Button @click="editInvoice(invoice)" size="sm" variant="ghost">
-                      <Edit class="h-4 w-4" />
-                    </Button>
-                    <Button @click="deleteInvoice(invoice)" size="sm" variant="ghost" class="text-red-500 hover:text-red-700">
-                      <Trash2 class="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+      </template>
+
+      <template #content>
+        <DataTable
+          :value="filteredInvoices"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+        >
+          <Column field="invoice_no" header="发票号" sortable>
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+                {{ slotProps.data.invoice_no }}
+              </code>
+            </template>
+          </Column>
           
-          <div v-if="invoices.length === 0" class="text-center py-8 text-muted-foreground">
-            暂无发票数据
-          </div>
-        </div>
-      </CardContent>
+          <Column field="type" header="类型" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getTypeDisplayName(slotProps.data.type)"
+                :severity="getTypeSeverity(slotProps.data.type)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="customer_name" header="客户/供应商" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.customer_name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <span class="font-medium">{{ slotProps.data.customer_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="amount" header="金额" sortable>
+            <template #body="slotProps">
+              <span class="font-medium text-green-600">
+                ¥{{ slotProps.data.amount.toLocaleString() }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="tax_amount" header="税额">
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                ¥{{ slotProps.data.tax_amount.toLocaleString() }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="total_amount" header="总金额" sortable>
+            <template #body="slotProps">
+              <span class="font-bold text-primary">
+                ¥{{ slotProps.data.total_amount.toLocaleString() }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="invoice_date" header="开票日期" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.invoice_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="due_date" header="到期日期" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.due_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewInvoice(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="editInvoice(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'发送'"
+                  icon="pi pi-send"
+                  rounded
+                  text
+                  size="small"
+                  @click="sendInvoice(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'打印'"
+                  icon="pi pi-print"
+                  rounded
+                  text
+                  size="small"
+                  @click="printInvoice(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'删除'"
+                  icon="pi pi-trash"
+                  rounded
+                  text
+                  size="small"
+                  severity="danger"
+                  @click="confirmDeleteInvoice(slotProps.data)"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
 
     <!-- 发票对话框 -->
-    <div v-if="showDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <CardHeader>
-          <div class="flex items-center justify-between">
-            <CardTitle>
-              {{ editingInvoice ? '编辑发票' : '新建发票' }}
-            </CardTitle>
-            <Button @click="closeDialog" variant="ghost" size="sm">
-              <X class="h-4 w-4" />
-            </Button>
+    <Dialog
+      v-model:visible="showInvoiceDialog"
+      :header="editingInvoice ? '编辑发票' : '新建发票'"
+      :style="{ width: '900px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-4">
+          <div class="grid grid-cols-3 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">发票号</label>
+              <InputText
+                v-model="invoiceForm.invoice_no"
+                :disabled="true"
+                placeholder="系统自动生成"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">发票类型 *</label>
+              <Dropdown
+                v-model="invoiceForm.type"
+                :options="invoiceTypeOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择发票类型"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">状态</label>
+              <Dropdown
+                v-model="invoiceForm.status"
+                :options="statusOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择状态"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <form @submit.prevent="saveInvoice" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="text-sm font-medium mb-2 block">发票类型</label>
-                <Select v-model="form.type" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="选择类型" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="sales">销售发票</SelectItem>
-                    <SelectItem value="purchase">采购发票</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">发票号</label>
-                <Input v-model="form.invoice_number" placeholder="自动生成或手动输入" />
-              </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">客户/供应商 *</label>
+              <InputText
+                v-model="invoiceForm.customer_name"
+                placeholder="请输入客户或供应商名称"
+                :disabled="dialogMode === 'view'"
+                required
+              />
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="text-sm font-medium mb-2 block">
-                  {{ form.type === 'sales' ? '客户' : '供应商' }}
-                </label>
-                <Input v-model="form.partner_name" placeholder="输入名称" required />
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">联系人</label>
-                <Input v-model="form.contact_person" placeholder="联系人姓名" />
-              </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">联系人</label>
+              <InputText
+                v-model="invoiceForm.contact_person"
+                placeholder="请输入联系人姓名"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">开票日期 *</label>
+              <Calendar
+                v-model="invoiceForm.invoice_date"
+                placeholder="选择开票日期"
+                :disabled="dialogMode === 'view'"
+                required
+              />
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="text-sm font-medium mb-2 block">开票日期</label>
-                <Input v-model="form.invoice_date" type="date" required />
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">到期日期</label>
-                <Input v-model="form.due_date" type="date" required />
-              </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">到期日期</label>
+              <Calendar
+                v-model="invoiceForm.due_date"
+                placeholder="选择到期日期"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">备注</label>
+            <Textarea
+              v-model="invoiceForm.notes"
+              placeholder="请输入备注信息"
+              :rows="3"
+              :disabled="dialogMode === 'view'"
+            />
+          </div>
+          
+          <!-- 发票项目列表 -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="block text-sm font-medium text-color">发票项目</label>
+              <Button
+                v-if="dialogMode !== 'view'"
+                label="添加项目"
+                icon="pi pi-plus"
+                text
+                size="small"
+                @click="addInvoiceItem"
+              />
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="text-sm font-medium mb-2 block">金额</label>
-                <Input v-model="form.total_amount" type="number" step="0.01" placeholder="0.00" required />
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">税率 (%)</label>
-                <Input v-model="form.tax_rate" type="number" step="0.01" placeholder="13.00" />
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">状态</label>
-                <Select v-model="form.status" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="选择状态" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">草稿</SelectItem>
-                    <SelectItem value="sent">已发送</SelectItem>
-                    <SelectItem value="paid">已付款</SelectItem>
-                    <SelectItem value="overdue">逾期</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <DataTable
+              :value="invoiceForm.items"
+              class="p-datatable-sm"
+            >
+              <Column field="description" header="描述">
+                <template #body="slotProps">
+                  <InputText
+                    v-if="dialogMode !== 'view'"
+                    v-model="slotProps.data.description"
+                    placeholder="项目描述"
+                    class="w-full"
+                  />
+                  <span v-else>{{ slotProps.data.description }}</span>
+                </template>
+              </Column>
+              
+              <Column field="quantity" header="数量">
+                <template #body="slotProps">
+                  <InputNumber
+                    v-if="dialogMode !== 'view'"
+                    v-model="slotProps.data.quantity"
+                    :min="1"
+                    show-buttons
+                    @update:model-value="calculateItemAmount(slotProps.data)"
+                  />
+                  <span v-else>{{ slotProps.data.quantity }}</span>
+                </template>
+              </Column>
+              
+              <Column field="unit_price" header="单价">
+                <template #body="slotProps">
+                  <InputNumber
+                    v-if="dialogMode !== 'view'"
+                    v-model="slotProps.data.unit_price"
+                    mode="currency"
+                    currency="CNY"
+                    :min="0"
+                    @update:model-value="calculateItemAmount(slotProps.data)"
+                  />
+                  <span v-else>¥{{ slotProps.data.unit_price.toLocaleString() }}</span>
+                </template>
+              </Column>
+              
+              <Column field="amount" header="金额">
+                <template #body="slotProps">
+                  <span class="font-medium">
+                    ¥{{ slotProps.data.amount.toLocaleString() }}
+                  </span>
+                </template>
+              </Column>
+              
+              <Column v-if="dialogMode !== 'view'" header="操作" :exportable="false">
+                <template #body="slotProps">
+                  <Button
+                    icon="pi pi-trash"
+                    rounded
+                    text
+                    size="small"
+                    severity="danger"
+                    @click="removeInvoiceItem(slotProps.index)"
+                  />
+                </template>
+              </Column>
+            </DataTable>
+          </div>
+          
+          <!-- 金额统计 -->
+          <div class="border-t pt-4 space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-color">小计：</span>
+              <span class="font-medium">¥{{ subtotal.toLocaleString() }}</span>
             </div>
-            
-            <div>
-              <label class="text-sm font-medium mb-2 block">备注</label>
-              <Textarea v-model="form.notes" rows="3" placeholder="发票备注信息" />
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-color">税额 ({{ taxRate }}%)：</span>
+              <span class="font-medium">¥{{ taxAmount.toLocaleString() }}</span>
             </div>
-            
-            <div class="flex justify-end gap-2 pt-4">
-              <Button type="button" @click="closeDialog" variant="outline">
-                取消
-              </Button>
-              <Button type="submit" :disabled="saving">
-                {{ saving ? '保存中...' : '保存' }}
-              </Button>
+            <Divider />
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-medium text-color">总计：</span>
+              <span class="text-xl font-bold text-primary">
+                ¥{{ totalAmount.toLocaleString() }}
+              </span>
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+          </div>
+        </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeInvoiceDialog"
+          />
+          <Button
+            v-if="dialogMode !== 'view'"
+            label="保存"
+            icon="pi pi-check"
+            :loading="saving"
+            @click="saveInvoice"
+          />
+        </div>
+      </template>
+    </Dialog>
+    
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import Button from '~/components/ui/Button.vue'
-import Input from '~/components/ui/Input.vue'
-import Card from '~/components/ui/Card.vue'
-import CardContent from '~/components/ui/CardContent.vue'
-import CardHeader from '~/components/ui/CardHeader.vue'
-import CardTitle from '~/components/ui/CardTitle.vue'
-import Select from '~/components/ui/Select.vue'
-import SelectContent from '~/components/ui/SelectContent.vue'
-import SelectItem from '~/components/ui/SelectItem.vue'
-import SelectTrigger from '~/components/ui/SelectTrigger.vue'
-import SelectValue from '~/components/ui/SelectValue.vue'
-import Badge from '~/components/ui/Badge.vue'
-import Table from '~/components/ui/Table.vue'
-import TableBody from '~/components/ui/TableBody.vue'
-import TableCell from '~/components/ui/TableCell.vue'
-import TableHead from '~/components/ui/TableHead.vue'
-import TableHeader from '~/components/ui/TableHeader.vue'
-import TableRow from '~/components/ui/TableRow.vue'
-import Textarea from '~/components/ui/Textarea.vue'
-import { Plus, Search, RefreshCw, Download, Eye, Edit, Trash2, X } from 'lucide-vue-next'
-import { log } from '~/utils/logger'
-import { handleAsyncError } from '~/utils/error-handler'
+import { ref, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Dropdown from 'primevue/dropdown'
+import Calendar from 'primevue/calendar'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import Dialog from 'primevue/dialog'
+import Divider from 'primevue/divider'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
-// 发票类型定义
-interface Invoice {
-  id: number
-  invoice_number: string
-  type: string
-  partner_name: string
-  contact_person: string
-  total_amount: number
-  tax_rate: number
-  invoice_date: string
-  due_date: string
-  status: string
-  notes: string
-}
-
-// 页面元数据
+// 页面配置
 definePageMeta({
-  title: '发票管理',
-  description: '管理销售发票和采购发票'
+  layout: 'default'
 })
 
-// 响应式数据
-const invoices = ref<Invoice[]>([])
+useHead({
+  title: '发票管理 - ERP 管理系统'
+})
+
+// 状态管理
 const loading = ref(false)
 const saving = ref(false)
-const showDialog = ref(false)
-const editingInvoice = ref<Invoice | null>(null)
-const totalCount = ref(0)
+const showInvoiceDialog = ref(false)
+const dialogMode = ref<'view' | 'create' | 'edit'>('view')
+const editingInvoice = ref(null as any)
+const confirm = useConfirm()
 
 // 筛选条件
-const filters = reactive({
+const filters = ref({
   type: '',
   status: '',
   search: ''
 })
 
 // 表单数据
-const form = reactive({
-  type: '',
-  invoice_number: '',
-  partner_name: '',
+const invoiceForm = ref({
+  invoice_no: '',
+  type: 'sales',
+  customer_name: '',
   contact_person: '',
-  invoice_date: '',
-  due_date: '',
-  total_amount: '',
-  tax_rate: 13,
+  invoice_date: new Date(),
+  due_date: null as Date | null,
   status: 'draft',
-  notes: ''
+  notes: '',
+  items: [] as any[]
 })
 
-// 初始化表单
-const initForm = () => {
-  form.type = ''
-  form.invoice_number = ''
-  form.partner_name = ''
-  form.contact_person = ''
-  form.invoice_date = ''
-  form.due_date = ''
-  form.total_amount = ''
-  form.tax_rate = 13
-  form.status = 'draft'
-  form.notes = ''
+// 选项数据
+const invoiceTypeOptions = ref([
+  { label: '销售发票', value: 'sales' },
+  { label: '采购发票', value: 'purchase' }
+])
+
+const statusOptions = ref([
+  { label: '草稿', value: 'draft' },
+  { label: '已发送', value: 'sent' },
+  { label: '已付款', value: 'paid' },
+  { label: '逾期', value: 'overdue' }
+])
+
+// 模拟数据
+const mockInvoices = ref([
+  {
+    id: '1',
+    invoice_no: 'INV-2024-001',
+    type: 'sales',
+    customer_name: 'ABC公司',
+    contact_person: '张经理',
+    amount: 85000,
+    tax_amount: 11050,
+    total_amount: 96050,
+    status: 'sent',
+    invoice_date: new Date('2024-01-15'),
+    due_date: new Date('2024-02-15'),
+    notes: '销售发票备注',
+    items: [
+      { description: '产品A', quantity: 10, unit_price: 5000, amount: 50000 },
+      { description: '产品B', quantity: 7, unit_price: 5000, amount: 35000 }
+    ]
+  },
+  {
+    id: '2',
+    invoice_no: 'INV-2024-002',
+    type: 'purchase',
+    customer_name: 'XYZ供应商',
+    contact_person: '李总',
+    amount: 45000,
+    tax_amount: 5850,
+    total_amount: 50850,
+    status: 'paid',
+    invoice_date: new Date('2024-01-10'),
+    due_date: new Date('2024-02-10'),
+    notes: '采购发票备注',
+    items: [
+      { description: '原料C', quantity: 15, unit_price: 3000, amount: 45000 }
+    ]
+  }
+])
+
+// 计算属性
+const filteredInvoices = computed(() => {
+  let result = mockInvoices.value
+
+  if (filters.value.search) {
+    const query = filters.value.search.toLowerCase()
+    result = result.filter(invoice =>
+      invoice.invoice_no.toLowerCase().includes(query)
+      || invoice.customer_name.toLowerCase().includes(query)
+    )
+  }
+
+  if (filters.value.type) {
+    result = result.filter(invoice => invoice.type === filters.value.type)
+  }
+
+  if (filters.value.status) {
+    result = result.filter(invoice => invoice.status === filters.value.status)
+  }
+
+  return result
+})
+
+const totalCount = computed(() => mockInvoices.value.length)
+
+const subtotal = computed(() => {
+  return invoiceForm.value.items.reduce((sum: number, item: any) => {
+    return sum + (item.amount || 0)
+  }, 0)
+})
+
+const taxRate = ref(13) // 13% 税率
+
+const taxAmount = computed(() => {
+  return Math.round(subtotal.value * taxRate.value / 100)
+})
+
+const totalAmount = computed(() => {
+  return subtotal.value + taxAmount.value
+})
+
+// 类型映射
+const typeMap: Record<string, string> = {
+  sales: '销售发票',
+  purchase: '采购发票'
 }
 
-// 格式化日期
-const formatDate = (date: string) => {
-  if (!date) return '-'
+const typeSeverityMap: Record<string, string> = {
+  sales: 'success',
+  purchase: 'info'
+}
+
+const statusMap: Record<string, string> = {
+  draft: '草稿',
+  sent: '已发送',
+  paid: '已付款',
+  overdue: '逾期'
+}
+
+const statusSeverityMap: Record<string, string> = {
+  draft: 'secondary',
+  sent: 'info',
+  paid: 'success',
+  overdue: 'danger'
+}
+
+// 方法
+const getTypeDisplayName = (type: string) => typeMap[type] || type
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'info'
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+
+const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString('zh-CN')
 }
 
-// 获取状态文本
-const getStatusText = (status: string) => {
-  const statusMap: Record<string, string> = {
-    draft: '草稿',
-    sent: '已发送',
-    paid: '已付款',
-    overdue: '逾期'
-  }
-  return statusMap[status] || status
-}
-
-// 获取状态变体
-const getStatusVariant = (status: string) => {
-  const variantMap: Record<string, string> = {
-    draft: 'secondary',
-    sent: 'default',
-    paid: 'success',
-    overdue: 'destructive'
-  }
-  return variantMap[status] || 'secondary'
-}
-
-// 加载发票数据
 const loadInvoices = async () => {
   loading.value = true
   try {
-    // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // 模拟数据
-    const mockData = [
-      {
-        id: 1,
-        invoice_number: 'INV-2024-001',
-        type: 'sales',
-        partner_name: '北京科技有限公司',
-        contact_person: '张经理',
-        total_amount: 50000,
-        tax_rate: 13,
-        invoice_date: '2024-01-15',
-        due_date: '2024-02-15',
-        status: 'sent',
-        notes: '季度采购发票'
-      },
-      {
-        id: 2,
-        invoice_number: 'INV-2024-002',
-        type: 'purchase',
-        partner_name: '上海供应链公司',
-        contact_person: '李总',
-        total_amount: 30000,
-        tax_rate: 13,
-        invoice_date: '2024-01-10',
-        due_date: '2024-02-10',
-        status: 'paid',
-        notes: '原材料采购'
-      }
-    ]
-    
-    invoices.value = mockData
-    totalCount.value = mockData.length
-  } catch (error) {
+  }
+  catch (error) {
     console.error('加载发票失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
-// 打开发票对话框
-const openInvoiceDialog = (invoice: Invoice | null = null) => {
-  editingInvoice.value = invoice
+const openInvoiceDialog = (invoice: any = null) => {
   if (invoice) {
-    form.type = invoice.type
-    form.invoice_number = invoice.invoice_number
-    form.partner_name = invoice.partner_name
-    form.contact_person = invoice.contact_person
-    form.invoice_date = invoice.invoice_date
-    form.due_date = invoice.due_date
-    form.total_amount = String(invoice.total_amount)
-    form.tax_rate = invoice.tax_rate
-    form.status = invoice.status
-    form.notes = invoice.notes
-  } else {
-    initForm()
-    // 生成发票号
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-    form.invoice_number = `INV-${year}${month}${day}-${random}`
-    
-    // 设置默认日期
-    form.invoice_date = now.toISOString().split('T')[0] || ''
-    const dueDate = new Date(now)
-    dueDate.setMonth(dueDate.getMonth() + 1)
-    form.due_date = dueDate.toISOString().split('T')[0] || ''
+    editingInvoice.value = invoice
+    dialogMode.value = 'edit'
+    Object.assign(invoiceForm.value, {
+      ...invoice,
+      items: [...invoice.items]
+    })
   }
-  showDialog.value = true
+  else {
+    editingInvoice.value = null
+    dialogMode.value = 'create'
+    invoiceForm.value = {
+      invoice_no: `INV-${Date.now()}`,
+      type: 'sales',
+      customer_name: '',
+      contact_person: '',
+      invoice_date: new Date(),
+      due_date: null,
+      status: 'draft',
+      notes: '',
+      items: []
+    }
+  }
+  showInvoiceDialog.value = true
 }
 
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false
+const viewInvoice = (invoice: any) => {
+  editingInvoice.value = invoice
+  dialogMode.value = 'view'
+  Object.assign(invoiceForm.value, {
+    ...invoice,
+    items: [...invoice.items]
+  })
+  showInvoiceDialog.value = true
+}
+
+const editInvoice = (invoice: any) => {
+  openInvoiceDialog(invoice)
+}
+
+const sendInvoice = async (invoice: any) => {
+  confirm.require({
+    message: `确定要发送发票 ${invoice.invoice_no} 吗？`,
+    header: '确认发送',
+    icon: 'pi pi-send',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockInvoices.value.findIndex(i => i.id === invoice.id)
+        if (index !== -1) {
+          mockInvoices.value[index].status = 'sent'
+        }
+      }
+      catch (error) {
+        console.error('发送失败:', error)
+      }
+    }
+  })
+}
+
+const printInvoice = (invoice: any) => {
+  console.log('打印发票:', invoice.invoice_no)
+}
+
+const confirmDeleteInvoice = (invoice: any) => {
+  confirm.require({
+    message: `确定要删除发票 ${invoice.invoice_no} 吗？`,
+    header: '确认删除',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      deleteInvoice(invoice.id)
+    }
+  })
+}
+
+const deleteInvoice = (invoiceId: string) => {
+  mockInvoices.value = mockInvoices.value.filter(invoice => invoice.id !== invoiceId)
+}
+
+const closeInvoiceDialog = () => {
+  showInvoiceDialog.value = false
   editingInvoice.value = null
-  initForm()
 }
 
-// 保存发票
 const saveInvoice = async () => {
   saving.value = true
   try {
-    // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    if (editingInvoice.value) {
-      // 更新现有发票
-      const index = invoices.value.findIndex(p => p.id === editingInvoice.value!.id)
-      if (index !== -1) {
-        invoices.value[index] = { 
-          ...editingInvoice.value, 
-          ...form,
-          total_amount: Number(form.total_amount)
-        }
-      }
-    } else {
-      // 添加新发票
-      const newInvoice = {
-        id: Date.now(),
-        type: form.type,
-        invoice_number: form.invoice_number,
-        partner_name: form.partner_name,
-        contact_person: form.contact_person,
-        invoice_date: form.invoice_date,
-        due_date: form.due_date,
-        total_amount: Number(form.total_amount),
-        tax_rate: form.tax_rate,
-        status: form.status,
-        notes: form.notes
-      }
-      invoices.value.unshift(newInvoice)
-      totalCount.value++
+    // 计算金额
+    const calculatedInvoice = {
+      ...invoiceForm.value,
+      amount: subtotal.value,
+      tax_amount: taxAmount.value,
+      total_amount: totalAmount.value
     }
     
-    closeDialog()
-  } catch (error) {
+    if (dialogMode.value === 'create') {
+      const newInvoice = {
+        id: Date.now().toString(),
+        ...calculatedInvoice
+      }
+      mockInvoices.value.push(newInvoice)
+    }
+    else if (dialogMode.value === 'edit') {
+      const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value.id)
+      if (index !== -1) {
+        mockInvoices.value[index] = {
+          ...mockInvoices.value[index],
+          ...calculatedInvoice
+        }
+      }
+    }
+    
+    closeInvoiceDialog()
+  }
+  catch (error) {
     console.error('保存发票失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
 
-// 查看发票
-const viewInvoice = (invoice: Invoice) => {
-  // TODO: 实现发票详情查看功能
-  log.action('查看发票', { invoiceId: invoice.id, invoiceNumber: invoice.invoice_number })
+const addInvoiceItem = () => {
+  invoiceForm.value.items.push({
+    description: '',
+    quantity: 1,
+    unit_price: 0,
+    amount: 0
+  })
 }
 
-// 编辑发票
-const editInvoice = (invoice: Invoice) => {
-  openInvoiceDialog(invoice)
+const removeInvoiceItem = (index: number) => {
+  invoiceForm.value.items.splice(index, 1)
 }
 
-// 删除发票
-const deleteInvoice = async (invoice: Invoice) => {
-  if (confirm('确定要删除这张发票吗？')) {
-    const result = await handleAsyncError(
-      async () => {
-        // 模拟API调用
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        const index = invoices.value.findIndex(p => p.id === invoice.id)
-        if (index !== -1) {
-          invoices.value.splice(index, 1)
-          totalCount.value--
-        }
-      },
-      '删除发票'
-    )
-    
-    if (!result.success) {
-      alert(result.error.message)
-    }
-  }
+const calculateItemAmount = (item: any) => {
+  item.amount = (item.quantity || 0) * (item.unit_price || 0)
 }
 
-// 导出发票
 const exportInvoices = () => {
-  // TODO: 实现发票导出功能
-  log.action('导出发票数据', { count: invoices.value.length })
+  console.log('导出发票')
 }
 
-// 页面加载时获取数据
+// 初始化
 onMounted(() => {
   loadInvoices()
 })

@@ -119,4 +119,18 @@ export interface AmountInfo {
   taxRate?: number
   taxAmount?: number
   totalAmount?: number
+}
+
+// 表单验证相关类型
+export interface ValidationFunction {
+  (value: any): string | null
+}
+
+export interface FormValidationRules {
+  [field: string]: ValidationFunction[]
+}
+
+export interface ValidationResult {
+  isValid: boolean
+  errors: Record<string, string>
 } 

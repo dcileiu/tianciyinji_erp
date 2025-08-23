@@ -1,261 +1,300 @@
 <template>
-  <div class="space-y-6">
+  <div class="p-6 min-h-screen bg-surface-50">
     <!-- 页面标题 -->
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-start mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">库存报表</h1>
-        <p class="text-muted-foreground">库存分析和盘点统计报表</p>
+        <h1 class="text-3xl font-semibold text-color mb-2">库存报表</h1>
+        <p class="text-muted-color">库存分析和盘点统计报表</p>
       </div>
-      <div class="flex gap-2">
-        <Button variant="outline" @click="exportReport">
-          <Download class="w-4 h-4 mr-2" />
-          导出报表
-        </Button>
-        <Button @click="refreshData">
-          <RefreshCw class="w-4 h-4 mr-2" />
-          刷新数据
-        </Button>
+      <div class="flex gap-3">
+        <Button
+          label="导出报表"
+          icon="pi pi-download"
+          outlined
+          @click="exportReport"
+        />
+        <Button
+          label="刷新数据"
+          icon="pi pi-refresh"
+          @click="refreshData"
+        />
       </div>
     </div>
 
     <!-- 筛选条件 -->
-    <Card>
-      <CardContent class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <div>
-            <label class="block text-sm font-medium mb-2">仓库筛选</label>
-            <Select v-model="warehouseFilter">
-              <SelectTrigger>
-                <SelectValue placeholder="全部仓库" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">全部仓库</SelectItem>
-                <SelectItem value="main">主仓库</SelectItem>
-                <SelectItem value="raw_material">原料仓</SelectItem>
-                <SelectItem value="finished_goods">成品仓</SelectItem>
-                <SelectItem value="backup">备用仓</SelectItem>
-              </SelectContent>
-            </Select>
+    <Card class="mb-6">
+      <template #header>
+        <h3 class="text-lg font-semibold text-color">筛选条件</h3>
+      </template>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-color">仓库筛选</label>
+            <Dropdown
+              v-model="warehouseFilter"
+              :options="warehouseOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="选择仓库"
+              show-clear
+            />
           </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">商品类别</label>
-            <Select v-model="categoryFilter">
-              <SelectTrigger>
-                <SelectValue placeholder="全部类别" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">全部类别</SelectItem>
-                <SelectItem value="raw_material">原材料</SelectItem>
-                <SelectItem value="finished_product">成品</SelectItem>
-                <SelectItem value="semi_finished">半成品</SelectItem>
-                <SelectItem value="accessory">配件</SelectItem>
-              </SelectContent>
-            </Select>
+          
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-color">商品类别</label>
+            <Dropdown
+              v-model="categoryFilter"
+              :options="categoryOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="选择类别"
+              show-clear
+            />
           </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">库存状态</label>
-            <Select v-model="stockStatusFilter">
-              <SelectTrigger>
-                <SelectValue placeholder="全部状态" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
-                <SelectItem value="normal">正常</SelectItem>
-                <SelectItem value="low">低库存</SelectItem>
-                <SelectItem value="out">缺货</SelectItem>
-                <SelectItem value="excess">积压</SelectItem>
-              </SelectContent>
-            </Select>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-color">库存状态</label>
+            <Dropdown
+              v-model="stockStatusFilter"
+              :options="stockStatusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="库存状态"
+              show-clear
+            />
           </div>
-          <div class="flex gap-2">
-            <Button @click="applyFilters" class="flex-1">
-              <Search class="w-4 h-4 mr-2" />
-              查询
-            </Button>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-color">搜索</label>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <InputText
+                v-model="searchQuery"
+                placeholder="搜索商品名称、编码..."
+              />
+            </span>
           </div>
         </div>
-      </CardContent>
+      </template>
     </Card>
 
-    <!-- 库存概览 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-muted-foreground">库存总值</p>
-              <p class="text-2xl font-bold text-blue-600">¥{{ inventoryStats.totalValue.toLocaleString() }}</p>
-            </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Package class="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-          <div class="mt-2">
-            <span class="text-xs text-blue-600">库存总量: {{ inventoryStats.totalQuantity.toLocaleString() }}</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-muted-foreground">商品种类</p>
-              <p class="text-2xl font-bold text-green-600">{{ inventoryStats.totalProducts }}</p>
-            </div>
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Boxes class="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-          <div class="mt-2">
-            <span class="text-xs text-green-600">在售: {{ inventoryStats.activeProducts }}</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-muted-foreground">低库存预警</p>
-              <p class="text-2xl font-bold text-yellow-600">{{ inventoryStats.lowStockItems }}</p>
-            </div>
-            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <AlertTriangle class="w-6 h-6 text-yellow-600" />
-            </div>
-          </div>
-          <div class="mt-2">
-            <span class="text-xs text-yellow-600">需要补货</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-muted-foreground">缺货商品</p>
-              <p class="text-2xl font-bold text-red-600">{{ inventoryStats.outOfStockItems }}</p>
-            </div>
-            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-              <XCircle class="w-6 h-6 text-red-600" />
-            </div>
-          </div>
-          <div class="mt-2">
-            <span class="text-xs text-red-600">紧急补货</span>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    <!-- 库存分布 -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- 按仓库分布 -->
-      <Card>
-        <CardHeader>
-          <CardTitle>按仓库分布</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-4">
-            <div v-for="warehouse in warehouseDistribution" :key="warehouse.id" class="flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-3 h-3 rounded-full" :style="{ backgroundColor: warehouse.color }"></div>
-                <span class="text-sm font-medium">{{ warehouse.name }}</span>
-              </div>
-              <div class="text-right">
-                <div class="text-sm font-semibold">¥{{ warehouse.value.toLocaleString() }}</div>
-                <div class="text-xs text-muted-foreground">{{ warehouse.percentage }}%</div>
+    <!-- 统计概览 -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div class="flex-1">
+              <div class="text-2xl font-semibold text-blue-600 mb-1">{{ inventoryStats.totalItems }}</div>
+              <div class="text-sm text-muted-color mb-2">商品品种</div>
+              <div class="flex items-center gap-1 text-sm text-green-600">
+                <i class="pi pi-arrow-up"></i>
+                <span>+5.2%</span>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <!-- 按商品类别分布 -->
-      <Card>
-        <CardHeader>
-          <CardTitle>按商品类别分布</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-4">
-            <div v-for="category in categoryDistribution" :key="category.id" class="flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-3 h-3 rounded-full" :style="{ backgroundColor: category.color }"></div>
-                <span class="text-sm font-medium">{{ category.name }}</span>
-              </div>
-              <div class="text-right">
-                <div class="text-sm font-semibold">¥{{ category.value.toLocaleString() }}</div>
-                <div class="text-xs text-muted-foreground">{{ category.percentage }}%</div>
-              </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-border flex items-center justify-center text-white">
+              <i class="pi pi-box text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
+      </Card>
+
+      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div class="flex-1">
+              <div class="text-2xl font-semibold text-green-600 mb-1">{{ inventoryStats.totalQuantity }}</div>
+              <div class="text-sm text-muted-color mb-2">总库存量</div>
+              <div class="flex items-center gap-1 text-sm text-green-600">
+                <i class="pi pi-arrow-up"></i>
+                <span>+8.1%</span>
+              </div>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-border flex items-center justify-center text-white">
+              <i class="pi pi-database text-xl"></i>
+            </div>
+          </div>
+        </template>
+            </Card>
+      
+      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div class="flex-1">
+              <div class="text-2xl font-semibold text-orange-600 mb-1">{{ inventoryStats.lowStockItems }}</div>
+              <div class="text-sm text-muted-color mb-2">库存预警</div>
+              <div class="flex items-center gap-1 text-sm text-red-600">
+                <i class="pi pi-arrow-down"></i>
+                <span>-2.3%</span>
+              </div>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-border flex items-center justify-center text-white">
+              <i class="pi pi-exclamation-triangle text-xl"></i>
+            </div>
+          </div>
+        </template>
+      </Card>
+
+      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
+            <div class="flex-1">
+              <div class="text-2xl font-semibold text-purple-600 mb-1">
+                ¥{{ formatCurrency(inventoryStats.totalValue) }}
+              </div>
+              <div class="text-sm text-muted-color mb-2">库存总价值</div>
+              <div class="flex items-center gap-1 text-sm text-green-600">
+                <i class="pi pi-arrow-up"></i>
+                <span>+12.4%</span>
+              </div>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-border flex items-center justify-center text-white">
+              <i class="pi pi-dollar text-xl"></i>
+            </div>
+          </div>
+        </template>
       </Card>
     </div>
 
     <!-- 库存明细 -->
     <Card>
-      <CardHeader>
-        <div class="flex items-center justify-between">
-          <CardTitle>库存明细</CardTitle>
-          <Button @click="exportReport" class="gap-2">
-            <Download class="w-4 h-4" />
-            导出报表
-          </Button>
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold text-color">库存明细</h3>
+          <span class="text-sm text-muted-color">共 {{ filteredInventoryItems.length }} 条记录</span>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div class="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>商品编号</TableHead>
-                <TableHead>商品名称</TableHead>
-                <TableHead>仓库</TableHead>
-                <TableHead>当前库存</TableHead>
-                <TableHead>安全库存</TableHead>
-                <TableHead>单位成本</TableHead>
-                <TableHead>库存价值</TableHead>
-                <TableHead>状态</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-               <TableRow v-for="item in inventoryDetails" :key="item.id">
-                 <TableCell class="font-medium">{{ item.sku }}</TableCell>
-                 <TableCell>
-                   <div class="font-medium">{{ item.name }}</div>
-                   <div class="text-sm text-muted-foreground">{{ item.category }}</div>
-                 </TableCell>
-                 <TableCell>{{ item.warehouse }}</TableCell>
-                 <TableCell>{{ item.currentStock }}</TableCell>
-                 <TableCell>{{ item.safetyStock }}</TableCell>
-                 <TableCell>¥{{ item.unitCost.toFixed(2) }}</TableCell>
-                 <TableCell>¥{{ item.totalValue.toLocaleString() }}</TableCell>
-                 <TableCell>
-                   <Badge :variant="getStockStatusVariant(item.status)">
-                     {{ getStockStatusName(item.status) }}
-                   </Badge>
-                 </TableCell>
-               </TableRow>
-             </TableBody>
-          </Table>
+      </template>
+      <template #content>
+        <DataTable
+          :value="filteredInventoryItems"
+          :loading="loading"
+          :paginator="true"
+          :rows="10"
+          :total-records="filteredInventoryItems.length"
+          :rows-per-page-options="[10, 20, 50]"
+          striped-rows
+          show-gridlines
+          responsive-layout="scroll"
+          class="p-4"
+        >
+          <template #empty>
+            <div class="text-center py-12 text-muted-color">
+              <i class="pi pi-inbox text-6xl mb-4 opacity-50"></i>
+              <h3 class="text-lg mb-2">暂无库存数据</h3>
+              <p class="mb-4">当前筛选条件下没有找到相关数据</p>
+            </div>
+          </template>
+
+          <Column field="product_code" header="商品编码" :sortable="true">
+            <template #body="slotProps">
+              <span class="font-mono bg-surface-100 px-2 py-1 rounded text-primary text-sm">
+                {{ slotProps.data.product_code }}
+              </span>
+            </template>
+          </Column>
+
+          <Column field="product_name" header="商品名称" :sortable="true">
+            <template #body="slotProps">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary-100 rounded-border flex items-center justify-center">
+                  <i class="pi pi-box text-primary"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-color mb-1">{{ slotProps.data.product_name }}</div>
+                  <div class="text-sm text-muted-color">{{ getCategoryText(slotProps.data.category) }}</div>
+                </div>
+              </div>
+            </template>
+          </Column>
+
+          <Column field="warehouse" header="仓库" :sortable="true">
+            <template #body="slotProps">
+              <Tag
+                :value="getWarehouseText(slotProps.data.warehouse)"
+                :severity="getWarehouseSeverity(slotProps.data.warehouse)"
+              />
+            </template>
+          </Column>
+
+          <Column field="current_stock" header="当前库存" :sortable="true">
+            <template #body="slotProps">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-lg">{{ slotProps.data.current_stock }}</span>
+                <span class="text-sm text-muted-color">{{ slotProps.data.unit }}</span>
+                <Tag
+                  v-if="slotProps.data.current_stock <= slotProps.data.min_stock"
+                  value="预警"
+                  severity="warn"
+                  class="text-xs"
+                />
+              </div>
+            </template>
+          </Column>
+
+          <Column field="min_stock" header="安全库存" :sortable="true">
+            <template #body="slotProps">
+              <span class="text-muted-color">{{ slotProps.data.min_stock }} {{ slotProps.data.unit }}</span>
+            </template>
+          </Column>
+
+          <Column field="unit_cost" header="单位成本" :sortable="true">
+            <template #body="slotProps">
+              <span class="font-medium">¥{{ formatCurrency(slotProps.data.unit_cost) }}</span>
+            </template>
+          </Column>
+
+          <Column field="total_value" header="库存价值" :sortable="true">
+            <template #body="slotProps">
+              <span class="font-semibold text-green-600 text-lg">
+                ¥{{ formatCurrency(slotProps.data.current_stock * slotProps.data.unit_cost) }}
+              </span>
+            </template>
+          </Column>
+
+          <Column field="last_updated" header="最后更新" :sortable="true">
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.last_updated) }}
+              </span>
+            </template>
+          </Column>
+
+          <Column header="操作" class="w-32">
+            <template #body="slotProps">
+              <div class="flex gap-2">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  outlined
+                  rounded
+                  size="small"
+                  @click="viewItem(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'库存记录'"
+                  icon="pi pi-history"
+                  outlined
+                  rounded
+                  size="small"
+                  @click="viewHistory(slotProps.data)"
+                />
         </div>
-      </CardContent>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { 
-  Download, RefreshCw, Search, Package, Boxes, 
-  AlertTriangle, XCircle 
-} from 'lucide-vue-next'
+import { ref, computed } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Dropdown from 'primevue/dropdown'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
 
 // 页面配置
 definePageMeta({
@@ -266,124 +305,204 @@ useHead({
   title: '库存报表 - ERP 管理系统'
 })
 
-// 响应式数据
+// 页面状态
+const loading = ref(false)
 const warehouseFilter = ref('')
 const categoryFilter = ref('')
 const stockStatusFilter = ref('')
+const searchQuery = ref('')
 
-// 库存统计数据
+// 仓库选项
+const warehouseOptions = ref([
+  { label: '全部仓库', value: '' },
+  { label: '主仓库', value: 'main' },
+  { label: '原料仓', value: 'raw_material' },
+  { label: '成品仓', value: 'finished_goods' },
+  { label: '备用仓', value: 'backup' }
+])
+
+// 类别选项
+const categoryOptions = ref([
+  { label: '全部类别', value: '' },
+  { label: '原材料', value: 'raw_material' },
+  { label: '成品', value: 'finished_product' },
+  { label: '半成品', value: 'semi_finished' },
+  { label: '配件', value: 'accessory' }
+])
+
+// 库存状态选项
+const stockStatusOptions = ref([
+  { label: '全部状态', value: '' },
+  { label: '正常库存', value: 'normal' },
+  { label: '库存预警', value: 'low' },
+  { label: '库存不足', value: 'out' }
+])
+
+// 统计数据
 const inventoryStats = ref({
-  totalValue: 2850000,
-  totalQuantity: 15420,
-  totalProducts: 238,
-  activeProducts: 215,
-  lowStockItems: 15,
-  outOfStockItems: 3
+  totalItems: 324,
+  totalQuantity: 12580,
+  lowStockItems: 28,
+  totalValue: 2580000
 })
 
-const warehouseDistribution = ref([
-  { name: '主仓库', value: 1200000, items: 150, percentage: 42, color: '#3B82F6' },
-  { name: '原料仓', value: 850000, items: 80, percentage: 30, color: '#10B981' },
-  { name: '成品仓', value: 600000, items: 45, percentage: 21, color: '#F59E0B' },
-  { name: '备用仓', value: 200000, items: 25, percentage: 7, color: '#8B5CF6' }
-])
-
-const categoryDistribution = ref([
-  { name: '原材料', quantity: 8500, items: 95, percentage: 55, color: '#3B82F6' },
-  { name: '成品', quantity: 3200, items: 60, percentage: 21, color: '#10B981' },
-  { name: '半成品', quantity: 2800, items: 45, percentage: 18, color: '#F59E0B' },
-  { name: '配件', quantity: 920, items: 38, percentage: 6, color: '#EF4444' }
-])
-
-const inventoryDetails = ref([
+// 库存明细数据
+const inventoryItems = ref([
   {
     id: '1',
-    product_no: 'P001',
-    product_name: '钢材原料 Q235',
-    warehouse: '原料仓',
-    current_stock: 1200,
-    safety_stock: 500,
-    unit_cost: 4.5,
-    total_value: 5400,
-    status: 'normal'
+    product_code: 'P001',
+    product_name: '智能控制器',
+    category: 'finished_product',
+    warehouse: 'main',
+    current_stock: 50,
+    min_stock: 20,
+    unit: '个',
+    unit_cost: 2500,
+    last_updated: '2025-01-20'
   },
   {
     id: '2',
-    product_no: 'P002',
-    product_name: '智能控制器 Model-A',
-    warehouse: '成品仓',
-    current_stock: 45,
-    safety_stock: 50,
-    unit_cost: 1200,
-    total_value: 54000,
-    status: 'low'
+    product_code: 'R001',
+    product_name: '电路板基材',
+    category: 'raw_material',
+    warehouse: 'raw_material',
+    current_stock: 15,
+    min_stock: 30,
+    unit: '片',
+    unit_cost: 150,
+    last_updated: '2025-01-19'
   },
   {
     id: '3',
-    product_no: 'P003',
-    product_name: '传感器套装 Pro',
-    warehouse: '成品仓',
-    current_stock: 0,
-    safety_stock: 20,
+    product_code: 'S001',
+    product_name: '半成品模块',
+    category: 'semi_finished',
+    warehouse: 'main',
+    current_stock: 80,
+    min_stock: 25,
+    unit: '个',
     unit_cost: 800,
-    total_value: 0,
-    status: 'out'
+    last_updated: '2025-01-18'
   },
   {
     id: '4',
-    product_no: 'P004',
-    product_name: '电子元件 IC芯片',
-    warehouse: '主仓库',
-    current_stock: 2800,
-    safety_stock: 300,
-    unit_cost: 25,
-    total_value: 70000,
-    status: 'excess'
+    product_code: 'A001',
+    product_name: '连接器',
+    category: 'accessory',
+    warehouse: 'main',
+    current_stock: 200,
+    min_stock: 100,
+    unit: '个',
+    unit_cost: 50,
+    last_updated: '2025-01-17'
   }
 ])
 
+// 计算属性
+const filteredInventoryItems = computed(() => {
+  let result = inventoryItems.value
+
+  if (searchQuery.value) {
+    result = result.filter(item =>
+      item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      || item.product_code.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  }
+
+  if (warehouseFilter.value) {
+    result = result.filter(item => item.warehouse === warehouseFilter.value)
+  }
+
+  if (categoryFilter.value) {
+    result = result.filter(item => item.category === categoryFilter.value)
+  }
+
+  if (stockStatusFilter.value) {
+    result = result.filter((item) => {
+      if (stockStatusFilter.value === 'normal') {
+        return item.current_stock > item.min_stock
+      }
+      else if (stockStatusFilter.value === 'low') {
+        return item.current_stock <= item.min_stock && item.current_stock > 0
+      }
+      else if (stockStatusFilter.value === 'out') {
+        return item.current_stock === 0
+      }
+      return true
+    })
+  }
+
+  return result
+})
+
 // 方法
-const applyFilters = async () => {
-  // TODO: 根据筛选条件重新加载数据
-  console.log('应用筛选条件:', {
-    warehouse: warehouseFilter.value,
-    category: categoryFilter.value,
-    stockStatus: stockStatusFilter.value
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('zh-CN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount)
+}
+
+const formatDate = (dateStr: string) => {
+  return new Date(dateStr).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
   })
 }
 
-const refreshData = async () => {
-  // TODO: 刷新库存数据
-  console.log('刷新库存数据')
+const getCategoryText = (category: string) => {
+  const categoryMap: Record<string, string> = {
+    raw_material: '原材料',
+    finished_product: '成品',
+    semi_finished: '半成品',
+    accessory: '配件'
+  }
+  return categoryMap[category] || category
+}
+
+const getWarehouseText = (warehouse: string) => {
+  const warehouseMap: Record<string, string> = {
+    main: '主仓库',
+    raw_material: '原料仓',
+    finished_goods: '成品仓',
+    backup: '备用仓'
+  }
+  return warehouseMap[warehouse] || warehouse
+}
+
+const getWarehouseSeverity = (warehouse: string) => {
+  const severityMap: Record<string, string> = {
+    main: 'success',
+    raw_material: 'info',
+    finished_goods: 'warn',
+    backup: 'secondary'
+  }
+  return severityMap[warehouse] || 'secondary'
 }
 
 const exportReport = () => {
-  // TODO: 导出库存报表
   console.log('导出库存报表')
+  // 这里可以实现导出功能
 }
 
-const getStockStatusName = (status: string) => {
-  const statuses = {
-    normal: '正常',
-    low: '低库存',
-    out: '缺货',
-    excess: '积压'
-  }
-  return statuses[status as keyof typeof statuses] || status
+const refreshData = () => {
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+    console.log('数据已刷新')
+  }, 1000)
 }
 
-const getStockStatusVariant = (status: string) => {
-  const variantMap = {
-    normal: 'default',
-    low: 'secondary',
-    out: 'destructive',
-    excess: 'outline'
-  }
-  return variantMap[status as keyof typeof variantMap] || 'default'
+const viewItem = (item: any) => {
+  console.log('查看商品详情:', item)
+  // 这里可以实现查看详情功能
 }
 
-// 初始化数据
-onMounted(async () => {
-  await applyFilters()
-})
+const viewHistory = (item: any) => {
+  console.log('查看库存记录:', item)
+  // 这里可以实现查看库存记录功能
+}
 </script>
+
+

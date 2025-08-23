@@ -1,6 +1,7 @@
 import type { Product } from '~/types/database'
+import type { Database } from '~/types/database.types'
 
-const supabase = useSupabaseClient()
+const supabase = useSupabaseClient<Database>()
 
 export { supabase }
 

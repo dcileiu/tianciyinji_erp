@@ -1,12 +1,12 @@
 # ERP 企业资源管理系统
 
-基于 Nuxt 3 + Supabase + shadcn-vue 构建的现代化企业资源管理系统。
+基于 Nuxt 4 + Supabase + PrimeVue 构建的现代化企业资源管理系统。
 
 ## 🚀 技术栈
 
 - **前端框架**: Nuxt 3 (v4.x)
-- **UI 组件**: shadcn-vue + Tailwind CSS
-- **图标**: Lucide Vue
+- **UI 组件**: PrimeVue + Tailwind CSS
+- **图标**: PrimeIcons
 - **后端服务**: Supabase
 - **认证系统**: Supabase Auth
 - **数据库**: PostgreSQL (Supabase)
@@ -94,7 +94,7 @@
 
 ## 🎨 界面特性
 
-- **现代化设计**: 基于 shadcn-vue 的现代化 UI 组件
+- **现代化设计**: 基于 PrimeVue 的现代化 UI 组件
 - **深色模式**: 支持浅色/深色主题切换
 - **响应式布局**: 适配桌面和移动设备
 - **直观导航**: 清晰的侧边栏导航结构
@@ -198,13 +198,13 @@ erp_nuxt/
 ### 创建新组件
 
 1. 在 `components/` 目录下创建组件
-2. 使用 shadcn-vue 的设计系统
+2. 使用 PrimeVue 的组件库
 3. 遵循组件命名规范
 
 ### 样式开发
 
 - 使用 Tailwind CSS 工具类
-- 遵循 shadcn-vue 的设计令牌
+- 遵循 PrimeVue 的主题系统
 - 支持深色模式切换
 
 ### 数据管理

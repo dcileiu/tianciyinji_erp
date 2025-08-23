@@ -3,571 +3,776 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight">
+        <h1 class="text-3xl font-bold text-color">
           客户档案管理
         </h1>
-        <p class="text-muted-foreground mt-1">
+        <p class="text-muted-color mt-1">
           管理客户基础信息，维护客户关系和联系方式
         </p>
       </div>
-      <Button @click="openCreateForm">
-        <Plus class="mr-2 h-4 w-4" />
-        新增客户
-      </Button>
+      <Button 
+        label="新增客户"
+        icon="pi pi-plus"
+        @click="openCreateForm"
+      />
     </div>
 
     <!-- 搜索和筛选 -->
     <Card>
-      <CardHeader>
-        <CardTitle>搜索筛选</CardTitle>
-      </CardHeader>
-      <CardContent>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- 搜索框 -->
-        <div>
-          <label class="block text-sm font-medium mb-2">
-            搜索客户
-          </label>
-          <div class="relative">
-            <Input
-              v-model="searchQuery"
-              placeholder="客户名称、编号..."
-              class="pl-10"
+      <template #header>
+        <h3 class="text-lg font-semibold text-color">搜索筛选</h3>
+      </template>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- 搜索框 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              搜索客户
+            </label>
+            <IconField icon-position="left">
+              <InputIcon>
+                <i class="pi pi-search"></i>
+              </InputIcon>
+              <InputText
+                v-model="searchQuery"
+                placeholder="客户名称、编号..."
+                class="w-full"
+              />
+            </IconField>
+          </div>
+
+          <!-- 客户类型筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              客户类型
+            </label>
+            <Dropdown
+              v-model="typeFilter"
+              :options="typeOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部类型"
+              show-clear
+              class="w-full"
             />
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          </div>
+
+          <!-- 地区筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              所在地区
+            </label>
+            <Dropdown
+              v-model="regionFilter"
+              :options="regionOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部地区"
+              show-clear
+              class="w-full"
+            />
+          </div>
+
+          <!-- 状态筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-color mb-2">
+              客户状态
+            </label>
+            <Dropdown
+              v-model="statusFilter"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
           </div>
         </div>
-
-        <!-- 客户类型筛选 -->
-        <div>
-          <label class="block text-sm font-medium mb-2">
-            客户类型
-          </label>
-          <Select v-model="typeFilter">
-            <SelectTrigger>
-              <SelectValue placeholder="全部类型" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">全部类型</SelectItem>
-              <SelectItem value="enterprise">企业客户</SelectItem>
-              <SelectItem value="individual">个人客户</SelectItem>
-              <SelectItem value="distributor">经销商</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <!-- 地区筛选 -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">
-            所在地区
-          </label>
-          <select v-model="regionFilter" class="w-full h-10 px-3 rounded-md border border-input bg-background">
-            <option value="">全部地区</option>
-            <option value="north">华北地区</option>
-            <option value="east">华东地区</option>
-            <option value="south">华南地区</option>
-            <option value="southwest">西南地区</option>
-          </select>
-        </div>
-
-        <!-- 状态筛选 -->
-        <div>
-          <label class="block text-sm font-medium mb-2">
-            客户状态
-          </label>
-          <Select v-model="statusFilter">
-            <SelectTrigger>
-              <SelectValue placeholder="全部状态" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">全部状态</SelectItem>
-              <SelectItem value="active">活跃</SelectItem>
-              <SelectItem value="inactive">不活跃</SelectItem>
-              <SelectItem value="potential">潜在客户</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      </CardContent>
+      </template>
     </Card>
 
     <!-- 客户统计 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
             <div>
-              <p class="text-sm text-muted-foreground">总客户数</p>
-              <p class="text-2xl font-bold text-foreground">{{ stats.totalCustomers }}</p>
+              <p class="text-sm text-muted-color">总客户数</p>
+              <p class="text-2xl font-bold text-blue-600">{{ customerStats.total }}</p>
+              <div class="mt-2">
+                <span class="text-xs text-blue-600">↗ +12</span>
+                <span class="text-xs text-muted-color ml-2">本月新增</span>
+              </div>
             </div>
-            <div class="p-2 bg-blue-500/10 rounded-lg">
-              <Users class="w-6 h-6 text-blue-600" />
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-users text-blue-600 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
-      
+
       <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
             <div>
-              <p class="text-sm text-muted-foreground">活跃客户</p>
-              <p class="text-2xl font-bold text-foreground">{{ stats.activeCustomers }}</p>
+              <p class="text-sm text-muted-color">活跃客户</p>
+              <p class="text-2xl font-bold text-green-600">{{ customerStats.active }}</p>
+              <div class="mt-2">
+                <span class="text-xs text-green-600">{{ Math.round((customerStats.active / customerStats.total) * 100) }}%</span>
+                <span class="text-xs text-muted-color ml-2">活跃率</span>
+              </div>
             </div>
-            <div class="p-2 bg-green-500/10 rounded-lg">
-              <CheckCircle class="w-6 h-6 text-green-600" />
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-check-circle text-green-600 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
-      
+
       <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
             <div>
-              <p class="text-sm text-muted-foreground">本月新增</p>
-              <p class="text-2xl font-bold text-foreground">{{ stats.newCustomers }}</p>
+              <p class="text-sm text-muted-color">企业客户</p>
+              <p class="text-2xl font-bold text-purple-600">{{ customerStats.enterprise }}</p>
+              <div class="mt-2">
+                <span class="text-xs text-purple-600">{{ Math.round((customerStats.enterprise / customerStats.total) * 100) }}%</span>
+                <span class="text-xs text-muted-color ml-2">占比</span>
+              </div>
             </div>
-            <div class="p-2 bg-purple-500/10 rounded-lg">
-              <UserPlus class="w-6 h-6 text-purple-600" />
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-building text-purple-600 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
-      
+
       <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
+        <template #content>
+          <div class="flex items-center justify-between p-4">
             <div>
-              <p class="text-sm text-muted-foreground">总交易额</p>
-              <p class="text-2xl font-bold text-foreground">¥{{ stats.totalRevenue.toLocaleString() }}</p>
+              <p class="text-sm text-muted-color">潜在客户</p>
+              <p class="text-2xl font-bold text-orange-600">{{ customerStats.potential }}</p>
+              <div class="mt-2">
+                <span class="text-xs text-orange-600">{{ Math.round((customerStats.potential / customerStats.total) * 100) }}%</span>
+                <span class="text-xs text-muted-color ml-2">占比</span>
+              </div>
             </div>
-            <div class="p-2 bg-orange-500/10 rounded-lg">
-              <DollarSign class="w-6 h-6 text-orange-600" />
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-eye text-orange-600 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
     </div>
 
     <!-- 客户列表 -->
     <Card>
-      <CardHeader>
+      <template #header>
         <div class="flex items-center justify-between">
-          <CardTitle>客户列表</CardTitle>
-          <div class="flex items-center space-x-2">
-            <span class="text-sm text-muted-foreground">共 {{ filteredCustomers.length }} 条记录</span>
+          <h3 class="text-lg font-semibold text-color">客户列表</h3>
+          <div class="flex items-center gap-2">
+            <Button
+              label="批量操作"
+              icon="pi pi-cog"
+              outlined
+              size="small"
+            />
+            <Button
+              label="导出数据"
+              icon="pi pi-download"
+              outlined
+              size="small"
+            />
           </div>
         </div>
-      </CardHeader>
-      <CardContent>
-      
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>客户编号</TableHead>
-              <TableHead>客户名称</TableHead>
-              <TableHead>联系人</TableHead>
-              <TableHead>联系电话</TableHead>
-              <TableHead>客户类型</TableHead>
-              <TableHead>所在地区</TableHead>
-              <TableHead>状态</TableHead>
-              <TableHead>操作</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow v-for="customer in filteredCustomers" :key="customer.id">
-              <TableCell>{{ customer.customer_no }}</TableCell>
-              <TableCell>
-                <div class="flex items-center">
-                  <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <span class="text-xs font-medium text-primary">
-                      {{ customer.name.charAt(0) }}
-                    </span>
-                  </div>
-                  <div class="ml-3">
-                    <div class="text-sm font-medium">{{ customer.name }}</div>
-                    <div class="text-sm text-muted-foreground">{{ customer.email }}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>{{ customer.contact_person }}</TableCell>
-              <TableCell>{{ customer.contact_phone }}</TableCell>
-              <TableCell>
-                <Badge :variant="getTypeVariant(customer.customer_type)">
-                  {{ getTypeText(customer.customer_type) }}
-                </Badge>
-              </TableCell>
-              <TableCell>{{ getRegionText(customer.region) }}</TableCell>
-              <TableCell>
-                <Badge :variant="getStatusVariant(customer.status)">
-                  {{ getStatusText(customer.status) }}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <div class="flex items-center space-x-2">
-                  <Button @click="viewCustomer(customer)" variant="ghost" size="sm">
-                    查看
-                  </Button>
-                  <Button @click="editCustomer(customer)" variant="ghost" size="sm">
-                    编辑
-                  </Button>
-                  <Button @click="handleDeleteCustomer(customer)" variant="ghost" size="sm">
-                    删除
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+      </template>
 
-      <!-- 分页 -->
-      <div class="px-6 py-4 border-t bg-muted/20">
-        <div class="flex items-center justify-between">
-          <div class="text-sm text-muted-foreground">
-            显示第 {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, filteredCustomers.length) }} 条，
-            共 {{ filteredCustomers.length }} 条记录
-          </div>
-          <div class="flex items-center space-x-2">
-            <Button
-              @click="currentPage = Math.max(1, currentPage - 1)"
-              :disabled="currentPage === 1"
-              variant="outline"
-              size="sm"
-            >
-              上一页
-            </Button>
-            <span class="px-3 py-1 text-sm">
-              第 {{ currentPage }} / {{ totalPages }} 页
-            </span>
-            <Button
-              @click="currentPage = Math.min(totalPages, currentPage + 1)"
-              :disabled="currentPage === totalPages"
-              variant="outline"
-              size="sm"
-            >
-              下一页
-            </Button>
-          </div>
-        </div>
-      </CardContent>
+      <template #content>
+        <DataTable
+          v-model:selection="selectedCustomers"
+          :value="filteredCustomers"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+          selection-mode="multiple"
+        >
+          <Column selection-mode="multiple" :exportable="false"></Column>
+          
+          <Column field="customer_no" header="客户编号" sortable>
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+                {{ slotProps.data.customer_no }}
+              </code>
+            </template>
+          </Column>
+          
+          <Column field="name" header="客户名称" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <div>
+                  <span class="font-medium">{{ slotProps.data.name }}</span>
+                  <p class="text-xs text-muted-color">{{ slotProps.data.contact_person }}</p>
+                </div>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="type" header="客户类型" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getTypeDisplayName(slotProps.data.type)"
+                :severity="getTypeSeverity(slotProps.data.type)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="phone" header="联系电话" sortable>
+            <template #body="slotProps">
+              <span class="text-sm">{{ slotProps.data.phone }}</span>
+            </template>
+          </Column>
+          
+          <Column field="email" header="邮箱" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">{{ slotProps.data.email }}</span>
+            </template>
+          </Column>
+          
+          <Column field="region" header="地区" sortable>
+            <template #body="slotProps">
+              <span class="text-sm">{{ getRegionDisplayName(slotProps.data.region) }}</span>
+            </template>
+          </Column>
+          
+          <Column field="total_orders" header="订单总数" sortable>
+            <template #body="slotProps">
+              <span class="font-medium text-blue-600">{{ slotProps.data.total_orders }}</span>
+            </template>
+          </Column>
+          
+          <Column field="total_amount" header="累计金额" sortable>
+            <template #body="slotProps">
+              <span class="font-medium text-green-600">
+                ¥{{ slotProps.data.total_amount.toLocaleString() }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="created_at" header="创建时间" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.created_at) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewCustomer(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="editCustomer(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'查看订单'"
+                  icon="pi pi-shopping-cart"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewOrders(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'联系客户'"
+                  icon="pi pi-phone"
+                  rounded
+                  text
+                  size="small"
+                  @click="contactCustomer(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'active'"
+                  v-tooltip="'停用'"
+                  icon="pi pi-pause"
+                  rounded
+                  text
+                  size="small"
+                  severity="warning"
+                  @click="toggleStatus(slotProps.data, 'inactive')"
+                />
+                <Button
+                  v-else
+                  v-tooltip="'启用'"
+                  icon="pi pi-play"
+                  rounded
+                  text
+                  size="small"
+                  severity="success"
+                  @click="toggleStatus(slotProps.data, 'active')"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
 
-    <!-- 客户表单弹窗 -->
-    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-background rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <CustomerForm
-            :customer="selectedCustomer"
-            :is-edit="isEditMode"
-            @close="closeForm"
-            @success="handleFormSuccess"
+    <!-- 客户表单对话框 -->
+    <Dialog
+      v-model:visible="showCustomerDialog"
+      :header="editingCustomer ? '编辑客户' : '新增客户'"
+      :style="{ width: '800px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">客户编号</label>
+              <InputText
+                v-model="customerForm.customer_no"
+                :disabled="true"
+                placeholder="系统自动生成"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">客户名称 *</label>
+              <InputText
+                v-model="customerForm.name"
+                placeholder="请输入客户名称"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">客户类型 *</label>
+              <Dropdown
+                v-model="customerForm.type"
+                :options="typeOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择客户类型"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">所在地区</label>
+              <Dropdown
+                v-model="customerForm.region"
+                :options="regionOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择地区"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">联系人</label>
+              <InputText
+                v-model="customerForm.contact_person"
+                placeholder="请输入联系人姓名"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">联系电话</label>
+              <InputText
+                v-model="customerForm.phone"
+                placeholder="请输入联系电话"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">邮箱地址</label>
+              <InputText
+                v-model="customerForm.email"
+                placeholder="请输入邮箱地址"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">客户状态</label>
+              <Dropdown
+                v-model="customerForm.status"
+                :options="statusOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择状态"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">详细地址</label>
+            <Textarea
+              v-model="customerForm.address"
+              placeholder="请输入详细地址"
+              :rows="2"
+              :disabled="dialogMode === 'view'"
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">备注信息</label>
+            <Textarea
+              v-model="customerForm.notes"
+              placeholder="请输入备注信息"
+              :rows="3"
+              :disabled="dialogMode === 'view'"
+            />
+          </div>
+        </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeCustomerDialog"
+          />
+          <Button
+            v-if="dialogMode !== 'view'"
+            label="保存"
+            icon="pi pi-check"
+            :loading="saving"
+            @click="saveCustomer"
           />
         </div>
-      </div>
-    </div>
-
-    <!-- 客户详情弹窗 -->
-    <div v-if="showDetail" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-background rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-medium text-foreground">客户详情</h3>
-            <button @click="closeDetail" class="text-muted-foreground hover:text-foreground">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-          <div v-if="selectedCustomer" class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">客户编号</label>
-                <p class="text-foreground">{{ selectedCustomer.customer_no }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">客户名称</label>
-                <p class="text-foreground">{{ selectedCustomer.name }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">联系人</label>
-                <p class="text-foreground">{{ selectedCustomer.contact_person }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">联系电话</label>
-                <p class="text-foreground">{{ selectedCustomer.contact_phone }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">邮箱地址</label>
-                <p class="text-foreground">{{ selectedCustomer.email || '未填写' }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">客户类型</label>
-                <p class="text-foreground">{{ getTypeText(selectedCustomer.customer_type) }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">所在地区</label>
-                <p class="text-foreground">{{ getRegionText(selectedCustomer.region) }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">客户状态</label>
-                <span :class="getStatusColor(selectedCustomer.status)" class="px-2 py-1 rounded-full text-xs font-medium">
-                  {{ getStatusText(selectedCustomer.status) }}
-                </span>
-              </div>
-            </div>
-            <div v-if="selectedCustomer.address">
-              <label class="block text-sm font-medium text-muted-foreground mb-1">详细地址</label>
-              <p class="text-foreground">{{ selectedCustomer.address }}</p>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">创建时间</label>
-                <p class="text-foreground">{{ formatDate(selectedCustomer.created_at) }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-muted-foreground mb-1">更新时间</label>
-                <p class="text-foreground">{{ formatDate(selectedCustomer.updated_at) }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted, watch } from 'vue'
-import type { Customer } from '~/types/database'
-import { Button } from '~/components/ui/Button.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/Card.vue'
-import { Input } from '~/components/ui/Input.vue'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/Select.vue'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/Table.vue'
-import { Badge } from '~/components/ui/Badge.vue'
-import { Plus, Search, Users, CheckCircle, Clock, TrendingUp, UserPlus, DollarSign } from 'lucide-vue-next'
-import CustomerForm from '~/components/CustomerForm.vue'
+import { ref, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Dropdown from 'primevue/dropdown'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import Dialog from 'primevue/dialog'
 
-// 响应式数据
-const searchQuery = ref('')
-const typeFilter = ref('')
-const regionFilter = ref('')
-const statusFilter = ref('')
-// 分页相关
-const currentPage = ref(1)
-const pageSize = ref(10)
-const totalPages = computed(() => Math.ceil(filteredCustomers.value.length / pageSize.value))
-
-// 分页数据
-const paginatedCustomers = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filteredCustomers.value.slice(start, end)
-})
-const loading = ref(false)
-const error = ref('')
-
-// 表单状态
-const showForm = ref(false)
-const showDetail = ref(false)
-const selectedCustomer = ref<Customer | null>(null)
-const isEditMode = ref(false)
-
-// 客户数据
-const customers = ref<Customer[]>([])
-const totalCustomers = ref(0)
-const totalPages = ref(0)
-
-// 统计数据
-const stats = reactive({
-  totalCustomers: 0,
-  activeCustomers: 0,
-  newCustomers: 0,
-  totalRevenue: 0
+// 页面配置
+definePageMeta({
+  layout: 'default'
 })
 
-// 使用客户管理composable
-const { 
-  getCustomers, 
-  getCustomerStats, 
-  deleteCustomer,
-  deleteCustomers 
-} = useCustomers()
-
-// 加载客户数据
-const loadCustomers = async () => {
-  try {
-    loading.value = true
-    error.value = ''
-    
-    const params = {
-      page: currentPage.value,
-      pageSize,
-      search: searchQuery.value || undefined,
-      type: typeFilter.value || undefined,
-      region: regionFilter.value || undefined,
-      status: statusFilter.value || undefined
-    }
-    
-    const result = await getCustomers(params)
-    customers.value = result.data
-    totalCustomers.value = result.total
-    totalPages.value = result.totalPages
-  } catch (err) {
-    console.error('加载客户数据失败:', err)
-    error.value = '加载客户数据失败，请重试'
-  } finally {
-    loading.value = false
-  }
-}
-
-// 加载统计数据
-const loadStats = async () => {
-  try {
-    const statsData = await getCustomerStats()
-    Object.assign(stats, statsData)
-  } catch (err) {
-    console.error('加载统计数据失败:', err)
-  }
-}
-
-// 删除客户
-const handleDeleteCustomer = async (customer: Customer) => {
-  if (!confirm(`确定要删除客户 "${customer.name}" 吗？`)) {
-    return
-  }
-  
-  try {
-    await deleteCustomer(customer.id)
-    await loadCustomers()
-    await loadStats()
-  } catch (err: any) {
-    alert(err.message || '删除失败')
-  }
-}
-
-// 表单操作
-const openCreateForm = () => {
-  selectedCustomer.value = null
-  isEditMode.value = false
-  showForm.value = true
-}
-
-const editCustomer = (customer: Customer) => {
-  selectedCustomer.value = customer
-  isEditMode.value = true
-  showForm.value = true
-}
-
-const closeForm = () => {
-  showForm.value = false
-  selectedCustomer.value = null
-  isEditMode.value = false
-}
-
-const handleFormSuccess = async (customer: Customer) => {
-  closeForm()
-  await loadCustomers()
-  await loadStats()
-}
-
-// 详情操作
-const viewCustomer = (customer: Customer) => {
-  selectedCustomer.value = customer
-  showDetail.value = true
-}
-
-const closeDetail = () => {
-  showDetail.value = false
-  selectedCustomer.value = null
-}
-
-// 格式化日期
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN')
-}
-
-// 监听筛选条件变化
-watch([searchQuery, typeFilter, regionFilter, statusFilter], () => {
-  currentPage.value = 1
-  loadCustomers()
-})
-
-// 监听页码变化
-watch(currentPage, () => {
-  loadCustomers()
-})
-
-// 页面加载时获取数据
-onMounted(() => {
-  loadCustomers()
-  loadStats()
-})
-
-// 计算显示的客户（用于分页显示）
-const filteredCustomers = computed(() => customers.value)
-
-// 获取类型变体
-const getTypeVariant = (type: string): string => {
-  const variants: Record<string, string> = {
-    enterprise: 'default',
-    individual: 'secondary',
-    distributor: 'outline'
-  }
-  return variants[type] || 'default'
-}
-
-// 获取类型文本
-const getTypeText = (type: string): string => {
-  const texts: Record<string, string> = {
-    enterprise: '企业客户',
-    individual: '个人客户',
-    distributor: '经销商'
-  }
-  return texts[type] || type
-}
-
-// 获取地区文本
-const getRegionText = (region: string): string => {
-  const texts: Record<string, string> = {
-    north: '华北地区',
-    east: '华东地区',
-    south: '华南地区',
-    southwest: '西南地区'
-  }
-  return texts[region] || region
-}
-
-// 获取状态变体
-const getStatusVariant = (status: string): string => {
-  const variants: Record<string, string> = {
-    active: 'default',
-    inactive: 'destructive',
-    potential: 'secondary'
-  }
-  return variants[status] || 'default'
-}
-
-
-
-// 获取状态文本
-const getStatusText = (status: string): string => {
-  const texts: Record<string, string> = {
-    active: '活跃',
-    inactive: '不活跃',
-    potential: '潜在客户'
-  }
-  return texts[status] || status
-}
-
-// 页面标题
 useHead({
   title: '客户档案管理 - ERP 管理系统'
 })
 
-// 页面元数据
-definePageMeta({
-  middleware: 'auth'
+// 状态管理
+const loading = ref(false)
+const saving = ref(false)
+const showCustomerDialog = ref(false)
+const dialogMode = ref<'view' | 'create' | 'edit'>('view')
+const editingCustomer = ref(null as any)
+const selectedCustomers = ref([])
+
+// 筛选条件
+const searchQuery = ref('')
+const typeFilter = ref('')
+const regionFilter = ref('')
+const statusFilter = ref('')
+
+// 表单数据
+const customerForm = ref({
+  customer_no: '',
+  name: '',
+  type: '',
+  region: '',
+  contact_person: '',
+  phone: '',
+  email: '',
+  address: '',
+  status: 'active',
+  notes: ''
+})
+
+// 选项数据
+const typeOptions = ref([
+  { label: '企业客户', value: 'enterprise' },
+  { label: '个人客户', value: 'individual' },
+  { label: '经销商', value: 'distributor' }
+])
+
+const regionOptions = ref([
+  { label: '华北地区', value: 'north' },
+  { label: '华东地区', value: 'east' },
+  { label: '华南地区', value: 'south' },
+  { label: '西南地区', value: 'southwest' }
+])
+
+const statusOptions = ref([
+  { label: '活跃', value: 'active' },
+  { label: '不活跃', value: 'inactive' },
+  { label: '潜在客户', value: 'potential' }
+])
+
+// 统计数据
+const customerStats = ref({
+  total: 1248,
+  active: 985,
+  enterprise: 456,
+  potential: 123
+})
+
+// 模拟数据
+const mockCustomers = ref([
+  {
+    id: '1',
+    customer_no: 'CUS-001',
+    name: '北京科技有限公司',
+    type: 'enterprise',
+    region: 'north',
+    contact_person: '张经理',
+    phone: '010-12345678',
+    email: 'zhang@example.com',
+    address: '北京市朝阳区科技园区',
+    total_orders: 25,
+    total_amount: 580000,
+    status: 'active',
+    created_at: new Date('2024-01-15'),
+    notes: '重要客户，长期合作伙伴'
+  },
+  {
+    id: '2',
+    customer_no: 'CUS-002',
+    name: '上海制造集团',
+    type: 'enterprise',
+    region: 'east',
+    contact_person: '李总',
+    phone: '021-87654321',
+    email: 'li@example.com',
+    address: '上海市浦东新区工业园',
+    total_orders: 18,
+    total_amount: 420000,
+    status: 'active',
+    created_at: new Date('2024-01-10'),
+    notes: '新兴客户，发展潜力大'
+  }
+])
+
+// 计算属性
+const filteredCustomers = computed(() => {
+  let result = mockCustomers.value
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(customer =>
+      customer.customer_no.toLowerCase().includes(query)
+      || customer.name.toLowerCase().includes(query)
+      || customer.contact_person.toLowerCase().includes(query)
+    )
+  }
+
+  if (typeFilter.value) {
+    result = result.filter(customer => customer.type === typeFilter.value)
+  }
+
+  if (regionFilter.value) {
+    result = result.filter(customer => customer.region === regionFilter.value)
+  }
+
+  if (statusFilter.value) {
+    result = result.filter(customer => customer.status === statusFilter.value)
+  }
+
+  return result
+})
+
+// 映射对象
+const typeMap: Record<string, string> = {
+  enterprise: '企业客户',
+  individual: '个人客户',
+  distributor: '经销商'
+}
+
+const typeSeverityMap: Record<string, string> = {
+  enterprise: 'info',
+  individual: 'success',
+  distributor: 'warning'
+}
+
+const regionMap: Record<string, string> = {
+  north: '华北地区',
+  east: '华东地区',
+  south: '华南地区',
+  southwest: '西南地区'
+}
+
+const statusMap: Record<string, string> = {
+  active: '活跃',
+  inactive: '不活跃',
+  potential: '潜在客户'
+}
+
+const statusSeverityMap: Record<string, string> = {
+  active: 'success',
+  inactive: 'danger',
+  potential: 'warning'
+}
+
+// 方法
+const getTypeDisplayName = (type: string) => typeMap[type] || type
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'info'
+const getRegionDisplayName = (region: string) => regionMap[region] || region
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('zh-CN')
+}
+
+const openCreateForm = () => {
+  editingCustomer.value = null
+  dialogMode.value = 'create'
+  customerForm.value = {
+    customer_no: `CUS-${Date.now()}`,
+    name: '',
+    type: '',
+    region: '',
+    contact_person: '',
+    phone: '',
+    email: '',
+    address: '',
+    status: 'active',
+    notes: ''
+  }
+  showCustomerDialog.value = true
+}
+
+const viewCustomer = (customer: any) => {
+  editingCustomer.value = customer
+  dialogMode.value = 'view'
+  Object.assign(customerForm.value, customer)
+  showCustomerDialog.value = true
+}
+
+const editCustomer = (customer: any) => {
+  editingCustomer.value = customer
+  dialogMode.value = 'edit'
+  Object.assign(customerForm.value, customer)
+  showCustomerDialog.value = true
+}
+
+const viewOrders = (customer: any) => {
+  console.log('查看订单:', customer.name)
+}
+
+const contactCustomer = (customer: any) => {
+  console.log('联系客户:', customer.phone)
+}
+
+const toggleStatus = async (customer: any, newStatus: string) => {
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    const index = mockCustomers.value.findIndex(c => c.id === customer.id)
+    if (index !== -1) {
+      mockCustomers.value[index].status = newStatus
+    }
+  }
+  catch (error) {
+    console.error('操作失败:', error)
+  }
+}
+
+const closeCustomerDialog = () => {
+  showCustomerDialog.value = false
+  editingCustomer.value = null
+}
+
+const saveCustomer = async () => {
+  saving.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    if (dialogMode.value === 'create') {
+      const newCustomer = {
+        id: Date.now().toString(),
+        ...customerForm.value,
+        total_orders: 0,
+        total_amount: 0,
+        created_at: new Date()
+      }
+      mockCustomers.value.push(newCustomer as any)
+    }
+    else if (dialogMode.value === 'edit') {
+      const index = mockCustomers.value.findIndex(c => c.id === editingCustomer.value.id)
+      if (index !== -1) {
+        mockCustomers.value[index] = {
+          ...mockCustomers.value[index],
+          ...customerForm.value
+        }
+      }
+    }
+    
+    closeCustomerDialog()
+  }
+  catch (error) {
+    console.error('保存客户失败:', error)
+  }
+  finally {
+    saving.value = false
+  }
+}
+
+// 初始化
+onMounted(() => {
+  // 加载数据
 })
 </script>

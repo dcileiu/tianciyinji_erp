@@ -10,7 +10,7 @@
         </p>
       </div>
 
-      <form @submit.prevent="handleResetPassword" class="space-y-6">
+      <form class="space-y-6" @submit.prevent="handleResetPassword">
         <!-- 新密码输入 -->
         <div>
           <label for="password" class="block text-sm font-medium text-foreground mb-2">
@@ -107,9 +107,9 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { AlertTriangle, Loader2, CheckCircle } from 'lucide-vue-next'
-import Card from '~/components/ui/Card.vue'
-import Input from '~/components/ui/Input.vue'
-import Button from '~/components/ui/Button.vue'
+import Card from 'primevue/card'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
 
 // 使用认证布局
 definePageMeta({
@@ -156,7 +156,8 @@ const validateForm = (): boolean => {
   if (!form.password) {
     errors.password = '请输入新密码'
     isValid = false
-  } else if (form.password.length < 6) {
+  }
+  else if (form.password.length < 6) {
     errors.password = '密码至少需要6个字符'
     isValid = false
   }
@@ -165,7 +166,8 @@ const validateForm = (): boolean => {
   if (!form.confirmPassword) {
     errors.confirmPassword = '请确认新密码'
     isValid = false
-  } else if (form.password !== form.confirmPassword) {
+  }
+  else if (form.password !== form.confirmPassword) {
     errors.confirmPassword = '两次输入的密码不一致'
     isValid = false
   }
@@ -195,13 +197,16 @@ const handleResetPassword = async () => {
       setTimeout(() => {
         router.push('/dashboard')
       }, 2000)
-    } else {
+    }
+    else {
       resetError.value = result.error?.message || '密码重置失败，请重试'
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Reset password error:', err)
     resetError.value = '网络错误，请检查您的网络连接'
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }

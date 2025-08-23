@@ -33,7 +33,7 @@
           <p class="text-sm text-muted-foreground">
             {{ error }}
           </p>
-          <Button @click="handleRetry" class="mt-4">
+          <Button class="mt-4" @click="handleRetry">
             重新尝试
           </Button>
         </div>
@@ -45,8 +45,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Loader2, CheckCircle, AlertTriangle } from 'lucide-vue-next'
-import Card from '~/components/ui/Card.vue'
-import Button from '~/components/ui/Button.vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
 
 // 使用认证布局
 definePageMeta({
@@ -96,11 +96,12 @@ const handleEmailConfirmation = async () => {
     setTimeout(() => {
       router.push('/dashboard')
     }, 2000)
-
-  } catch (err: any) {
+  }
+  catch (err: any) {
     console.error('Email confirmation error:', err)
     error.value = err.message || '邮箱验证失败，请重试'
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }

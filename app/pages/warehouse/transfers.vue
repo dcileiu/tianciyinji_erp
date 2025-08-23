@@ -1,554 +1,722 @@
 <template>
-  <div class="container mx-auto p-6 space-y-6">
+  <div class="space-y-6">
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold">库存调拨</h1>
-        <p class="text-muted-foreground mt-2">管理仓库间库存调拨</p>
+        <h1 class="text-3xl font-bold text-color">库存调拨</h1>
+        <p class="text-muted-color mt-2">管理仓库间库存调拨</p>
       </div>
-      <Button @click="openTransferDialog()" class="gap-2">
-        <Plus class="h-4 w-4" />
-        新建调拨单
-      </Button>
+      <Button
+        label="新建调拨单"
+        icon="pi pi-plus"
+        @click="openTransferDialog()"
+      />
     </div>
 
     <!-- 筛选区域 -->
-    <Card class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label class="text-sm font-medium mb-2 block">状态</label>
-          <select v-model="filters.status" class="w-full p-2 border rounded-md">
-            <option value="">全部状态</option>
-            <option value="draft">草稿</option>
-            <option value="pending">待审核</option>
-            <option value="approved">已批准</option>
-            <option value="in_transit">运输中</option>
-            <option value="completed">已完成</option>
-            <option value="cancelled">已取消</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-sm font-medium mb-2 block">调出仓库</label>
-          <select v-model="filters.from_warehouse" class="w-full p-2 border rounded-md">
-            <option value="">全部仓库</option>
-            <option value="WH001">主仓库</option>
-            <option value="WH002">原料仓库</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-sm font-medium mb-2 block">搜索</label>
-          <div class="relative">
-            <Search class="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
-            <Input
-              v-model="filters.search"
-              placeholder="搜索调拨单号、商品..."
-              class="pl-10"
+    <Card>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label class="text-sm font-medium mb-2 block text-color">状态</label>
+            <Dropdown
+              v-model="filters.status"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
+          </div>
+          <div>
+            <label class="text-sm font-medium mb-2 block text-color">调出仓库</label>
+            <Dropdown
+              v-model="filters.from_warehouse"
+              :options="warehouses"
+              option-label="name"
+              option-value="id"
+              placeholder="全部仓库"
+              show-clear
+              class="w-full"
+            />
+          </div>
+          <div>
+            <label class="text-sm font-medium mb-2 block text-color">搜索</label>
+            <IconField icon-position="left">
+              <InputIcon>
+                <i class="pi pi-search"></i>
+              </InputIcon>
+              <InputText
+                v-model="filters.search"
+                placeholder="搜索调拨单号、商品..."
+                class="w-full"
+              />
+            </IconField>
+          </div>
+          <div class="flex items-end gap-2">
+            <Button
+              label="刷新"
+              icon="pi pi-refresh"
+              outlined
+              @click="loadTransfers"
+            />
+            <Button
+              label="导出"
+              icon="pi pi-download"
+              outlined
+              @click="exportTransfers"
             />
           </div>
         </div>
-        <div class="flex items-end gap-2">
-          <Button @click="loadTransfers" variant="outline" class="gap-2">
-            <RefreshCw class="h-4 w-4" />
-            刷新
-          </Button>
-          <Button @click="exportTransfers" variant="outline" class="gap-2">
-            <Download class="h-4 w-4" />
-            导出
-          </Button>
-        </div>
-      </div>
+      </template>
     </Card>
 
     <!-- 调拨单列表 -->
     <Card>
-      <div class="p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold">调拨单列表</h3>
-          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-color">调拨单列表</h3>
+          <div class="flex items-center gap-2 text-sm text-muted-color">
             共 {{ totalCount }} 条记录
           </div>
         </div>
-        
-        <div v-if="loading" class="flex justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-        
-        <div v-else class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b">
-                <th class="text-left py-3 px-4 font-medium">调拨单号</th>
-                <th class="text-left py-3 px-4 font-medium">调出仓库</th>
-                <th class="text-left py-3 px-4 font-medium">调入仓库</th>
-                <th class="text-left py-3 px-4 font-medium">商品数量</th>
-                <th class="text-left py-3 px-4 font-medium">申请人</th>
-                <th class="text-left py-3 px-4 font-medium">申请时间</th>
-                <th class="text-left py-3 px-4 font-medium">状态</th>
-                <th class="text-left py-3 px-4 font-medium">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="transfer in transfers" :key="transfer.id" class="border-b hover:bg-muted/50">
-                <td class="py-3 px-4">
-                  <div class="font-medium">{{ transfer.transfer_number }}</div>
-                </td>
-                <td class="py-3 px-4">
-                  <div class="font-medium">{{ transfer.from_warehouse_name }}</div>
-                  <div class="text-sm text-muted-foreground">{{ transfer.from_warehouse_code }}</div>
-                </td>
-                <td class="py-3 px-4">
-                  <div class="font-medium">{{ transfer.to_warehouse_name }}</div>
-                  <div class="text-sm text-muted-foreground">{{ transfer.to_warehouse_code }}</div>
-                </td>
-                <td class="py-3 px-4">
-                  <div class="font-medium">{{ transfer.item_count }} 种商品</div>
-                  <div class="text-sm text-muted-foreground">{{ transfer.total_quantity }} 件</div>
-                </td>
-                <td class="py-3 px-4">
-                  <div>{{ transfer.applicant_name }}</div>
-                  <div class="text-sm text-muted-foreground">{{ transfer.applicant_department }}</div>
-                </td>
-                <td class="py-3 px-4">{{ formatDate(transfer.created_at) }}</td>
-                <td class="py-3 px-4">
-                  <span :class="{
-                    'bg-gray-100 text-gray-800': transfer.status === 'draft',
-                    'bg-yellow-100 text-yellow-800': transfer.status === 'pending',
-                    'bg-blue-100 text-blue-800': transfer.status === 'approved',
-                    'bg-purple-100 text-purple-800': transfer.status === 'in_transit',
-                    'bg-green-100 text-green-800': transfer.status === 'completed',
-                    'bg-red-100 text-red-800': transfer.status === 'cancelled'
-                  }" class="px-2 py-1 rounded-full text-xs font-medium">
-                    {{ getStatusText(transfer.status) }}
-                  </span>
-                </td>
-                <td class="py-3 px-4">
-                  <div class="flex items-center gap-2">
-                    <Button @click="viewTransfer(transfer)" size="sm" variant="ghost">
-                      <Eye class="h-4 w-4" />
-                    </Button>
-                    <Button v-if="transfer.status === 'draft'" @click="editTransfer(transfer)" size="sm" variant="ghost">
-                      <Edit class="h-4 w-4" />
-                    </Button>
-                    <Button v-if="transfer.status === 'pending'" @click="approveTransfer(transfer)" size="sm" variant="ghost" class="text-green-600">
-                      <CheckCircle class="h-4 w-4" />
-                    </Button>
-                    <Button v-if="['draft', 'pending'].includes(transfer.status)" @click="cancelTransfer(transfer)" size="sm" variant="ghost" class="text-red-500 hover:text-red-700">
-                      <XCircle class="h-4 w-4" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </template>
+
+      <template #content>
+        <DataTable
+          :value="filteredTransfers"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+        >
+          <Column field="transfer_no" header="调拨单号" sortable>
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+                {{ slotProps.data.transfer_no }}
+              </code>
+            </template>
+          </Column>
           
-          <div v-if="transfers.length === 0" class="text-center py-8 text-muted-foreground">
-            暂无调拨单数据
-          </div>
-        </div>
-      </div>
+          <Column field="from_warehouse_name" header="调出仓库" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-home text-blue-600"></i>
+                <span>{{ slotProps.data.from_warehouse_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="to_warehouse_name" header="调入仓库" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-home text-green-600"></i>
+                <span>{{ slotProps.data.to_warehouse_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="items_count" header="商品数量">
+            <template #body="slotProps">
+              <span class="text-sm">{{ slotProps.data.items.length }} 种商品</span>
+            </template>
+          </Column>
+          
+          <Column field="total_quantity" header="总数量">
+            <template #body="slotProps">
+              <span class="font-medium">{{ slotProps.data.total_quantity }}</span>
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="operator_name" header="操作人">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.operator_name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <span class="text-sm">{{ slotProps.data.operator_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="created_at" header="创建时间" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.created_at) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewTransfer(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="editTransfer(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'pending'"
+                  v-tooltip="'审核'"
+                  icon="pi pi-check"
+                  rounded
+                  text
+                  size="small"
+                  @click="approveTransfer(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'draft'"
+                  v-tooltip="'删除'"
+                  icon="pi pi-trash"
+                  rounded
+                  text
+                  size="small"
+                  severity="danger"
+                  @click="confirmDeleteTransfer(slotProps.data)"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
 
     <!-- 调拨单对话框 -->
-    <div v-if="showDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card class="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-semibold">
-              {{ editingTransfer ? '编辑调拨单' : '新建调拨单' }}
-            </h2>
-            <Button @click="closeDialog" variant="ghost" size="sm">
-              <X class="h-4 w-4" />
-            </Button>
+    <Dialog
+      v-model:visible="showDialog"
+      :header="editingTransfer ? '编辑调拨单' : '新建调拨单'"
+      :style="{ width: '800px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">调拨单号</label>
+              <InputText
+                v-model="transferForm.transfer_no"
+                :disabled="true"
+                placeholder="系统自动生成"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">状态</label>
+              <Dropdown
+                v-model="transferForm.status"
+                :options="statusOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择状态"
+                :disabled="dialogMode === 'view'"
+              />
+            </div>
           </div>
           
-          <form @submit.prevent="saveTransfer" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="text-sm font-medium mb-2 block">调拨单号</label>
-                <Input v-model="form.transfer_number" placeholder="自动生成" readonly />
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">调出仓库</label>
-                <select v-model="form.from_warehouse" class="w-full p-2 border rounded-md" required>
-                  <option value="">选择调出仓库</option>
-                  <option value="WH001">主仓库</option>
-                  <option value="WH002">原料仓库</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">调入仓库</label>
-                <select v-model="form.to_warehouse" class="w-full p-2 border rounded-md" required>
-                  <option value="">选择调入仓库</option>
-                  <option value="WH001">主仓库</option>
-                  <option value="WH002">原料仓库</option>
-                </select>
-              </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">调出仓库 *</label>
+              <Dropdown
+                v-model="transferForm.from_warehouse_id"
+                :options="warehouses"
+                option-label="name"
+                option-value="id"
+                placeholder="选择调出仓库"
+                :disabled="dialogMode === 'view'"
+                required
+              />
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="text-sm font-medium mb-2 block">申请人</label>
-                <Input v-model="form.applicant_name" placeholder="申请人姓名" required />
-              </div>
-              <div>
-                <label class="text-sm font-medium mb-2 block">申请部门</label>
-                <Input v-model="form.applicant_department" placeholder="申请部门" required />
-              </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">调入仓库 *</label>
+              <Dropdown
+                v-model="transferForm.to_warehouse_id"
+                :options="warehouses"
+                option-label="name"
+                option-value="id"
+                placeholder="选择调入仓库"
+                :disabled="dialogMode === 'view'"
+                required
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">备注</label>
+            <Textarea
+              v-model="transferForm.remark"
+              placeholder="请输入备注信息"
+              :rows="3"
+              :disabled="dialogMode === 'view'"
+            />
+          </div>
+          
+          <!-- 调拨商品列表 -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="block text-sm font-medium text-color">调拨商品</label>
+              <Button
+                v-if="dialogMode !== 'view'"
+                label="添加商品"
+                icon="pi pi-plus"
+                text
+                size="small"
+                @click="addTransferItem"
+              />
             </div>
             
-            <div>
-              <label class="text-sm font-medium mb-2 block">调拨原因</label>
-              <textarea v-model="form.reason" class="w-full p-2 border rounded-md" rows="3" placeholder="请说明调拨原因" required></textarea>
-            </div>
-            
-            <!-- 调拨商品列表 -->
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <h4 class="font-medium">调拨商品</h4>
-                <Button type="button" @click="addTransferItem" variant="outline" size="sm">
-                  <Plus class="h-4 w-4 mr-2" />
-                  添加商品
-                </Button>
-              </div>
+            <DataTable
+              :value="transferForm.items"
+              class="p-datatable-sm"
+            >
+              <Column field="product_name" header="商品名称">
+                <template #body="slotProps">
+                  <span class="font-medium">{{ slotProps.data.product_name }}</span>
+                </template>
+              </Column>
               
-              <div class="border rounded-md">
-                <table class="w-full">
-                  <thead class="bg-muted/50">
-                    <tr>
-                      <th class="text-left py-2 px-3 text-sm font-medium">商品编码</th>
-                      <th class="text-left py-2 px-3 text-sm font-medium">商品名称</th>
-                      <th class="text-left py-2 px-3 text-sm font-medium">规格</th>
-                      <th class="text-left py-2 px-3 text-sm font-medium">调拨数量</th>
-                      <th class="text-left py-2 px-3 text-sm font-medium">单位</th>
-                      <th class="text-left py-2 px-3 text-sm font-medium">备注</th>
-                      <th class="text-left py-2 px-3 text-sm font-medium">操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in form.items" :key="index" class="border-t">
-                      <td class="py-2 px-3">
-                        <Input v-model="item.product_code" placeholder="商品编码" class="text-sm" />
-                      </td>
-                      <td class="py-2 px-3">
-                        <Input v-model="item.product_name" placeholder="商品名称" class="text-sm" />
-                      </td>
-                      <td class="py-2 px-3">
-                        <Input v-model="item.specification" placeholder="规格" class="text-sm" />
-                      </td>
-                      <td class="py-2 px-3">
-                        <Input v-model="item.quantity" type="number" placeholder="数量" class="text-sm" />
-                      </td>
-                      <td class="py-2 px-3">
-                        <Input v-model="item.unit" placeholder="单位" class="text-sm" />
-                      </td>
-                      <td class="py-2 px-3">
-                        <Input v-model="item.notes" placeholder="备注" class="text-sm" />
-                      </td>
-                      <td class="py-2 px-3">
-                        <Button type="button" @click="removeTransferItem(index)" size="sm" variant="ghost" class="text-red-500">
-                          <Trash2 class="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                
-                <div v-if="form.items.length === 0" class="text-center py-8 text-muted-foreground text-sm">
-                  暂无商品，请点击"添加商品"按钮添加
-                </div>
-              </div>
+              <Column field="current_stock" header="当前库存">
+                <template #body="slotProps">
+                  <span class="text-sm">{{ slotProps.data.current_stock }} {{ slotProps.data.unit }}</span>
+                </template>
+              </Column>
+              
+              <Column field="transfer_quantity" header="调拨数量">
+                <template #body="slotProps">
+                  <div v-if="dialogMode === 'view'">
+                    <span>{{ slotProps.data.transfer_quantity }} {{ slotProps.data.unit }}</span>
+                  </div>
+                  <InputNumber
+                    v-else
+                    v-model="slotProps.data.transfer_quantity"
+                    :min="1"
+                    :max="slotProps.data.current_stock"
+                    show-buttons
+                  />
+                </template>
+              </Column>
+              
+              <Column field="unit" header="单位">
+                <template #body="slotProps">
+                  <span class="text-sm text-muted-color">{{ slotProps.data.unit }}</span>
+                </template>
+              </Column>
+              
+              <Column v-if="dialogMode !== 'view'" header="操作" :exportable="false">
+                <template #body="slotProps">
+                  <Button
+                    icon="pi pi-trash"
+                    rounded
+                    text
+                    size="small"
+                    severity="danger"
+                    @click="removeTransferItem(slotProps.index)"
+                  />
+                </template>
+              </Column>
+            </DataTable>
+          </div>
+          
+          <!-- 总计 -->
+          <div class="border-t pt-4">
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-medium text-color">总数量：</span>
+              <span class="text-xl font-bold text-primary">
+                {{ totalQuantity }} 件
+              </span>
             </div>
-            
-            <div class="flex justify-end gap-2 pt-4">
-              <Button type="button" @click="closeDialog" variant="outline">
-                取消
-              </Button>
-              <Button type="submit" :disabled="saving">
-                {{ saving ? '保存中...' : '保存' }}
-              </Button>
-            </div>
-          </form>
+          </div>
         </div>
-      </Card>
-    </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeTransferDialog"
+          />
+          <Button
+            v-if="dialogMode !== 'view'"
+            label="保存"
+            icon="pi pi-check"
+            :loading="saving"
+            @click="saveTransfer"
+          />
+        </div>
+      </template>
+    </Dialog>
+    
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, onMounted } from 'vue'
-import Button from '~/components/ui/Button.vue'
-import Input from '~/components/ui/Input.vue'
-import Card from '~/components/ui/Card.vue'
-import { Plus, Search, RefreshCw, Download, Eye, Edit, CheckCircle, XCircle, Trash2, X } from 'lucide-vue-next'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Dropdown from 'primevue/dropdown'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import Dialog from 'primevue/dialog'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
-// 页面元数据
+// 页面配置
 definePageMeta({
-  title: '库存调拨',
-  description: '管理仓库间库存调拨'
+  layout: 'default'
 })
 
-// 响应式数据
-const transfers = ref([])
+useHead({
+  title: '库存调拨 - ERP 管理系统'
+})
+
+// 状态管理
 const loading = ref(false)
 const saving = ref(false)
 const showDialog = ref(false)
-const editingTransfer = ref(null)
-const totalCount = ref(0)
+const dialogMode = ref<'view' | 'create' | 'edit'>('view')
+const editingTransfer = ref(null as any)
+const confirm = useConfirm()
 
 // 筛选条件
-const filters = reactive({
+const filters = ref({
   status: '',
   from_warehouse: '',
   search: ''
 })
 
 // 表单数据
-const form = reactive({
-  transfer_number: '',
-  from_warehouse: '',
-  to_warehouse: '',
-  applicant_name: '',
-  applicant_department: '',
-  reason: '',
-  items: []
+const transferForm = ref({
+  transfer_no: '',
+  from_warehouse_id: '',
+  to_warehouse_id: '',
+  status: 'draft',
+  remark: '',
+  items: [] as any[]
 })
 
-// 初始化表单
-const initForm = () => {
-  form.transfer_number = ''
-  form.from_warehouse = ''
-  form.to_warehouse = ''
-  form.applicant_name = ''
-  form.applicant_department = ''
-  form.reason = ''
-  form.items = []
-}
+// 选项数据
+const statusOptions = ref([
+  { label: '草稿', value: 'draft' },
+  { label: '待审核', value: 'pending' },
+  { label: '已批准', value: 'approved' },
+  { label: '运输中', value: 'in_transit' },
+  { label: '已完成', value: 'completed' },
+  { label: '已取消', value: 'cancelled' }
+])
 
-// 格式化日期
-const formatDate = (date) => {
-  if (!date) return '-'
-  return new Date(date).toLocaleDateString('zh-CN')
-}
+const warehouses = ref([
+  { id: 'WH001', name: '主仓库' },
+  { id: 'WH002', name: '原料仓库' },
+  { id: 'WH003', name: '成品仓库' }
+])
 
-// 获取状态文本
-const getStatusText = (status) => {
-  const statusMap = {
-    draft: '草稿',
-    pending: '待审核',
-    approved: '已批准',
-    in_transit: '运输中',
-    completed: '已完成',
-    cancelled: '已取消'
+// 模拟数据
+const mockTransfers = ref([
+  {
+    id: '1',
+    transfer_no: 'TF202401001',
+    from_warehouse_id: 'WH001',
+    from_warehouse_name: '主仓库',
+    to_warehouse_id: 'WH002',
+    to_warehouse_name: '原料仓库',
+    status: 'pending',
+    operator_name: '张三',
+    total_quantity: 200,
+    created_at: new Date('2024-01-15'),
+    remark: '紧急调拨',
+    items: [
+      {
+        product_name: '商品A',
+        current_stock: 500,
+        transfer_quantity: 100,
+        unit: '个'
+      },
+      {
+        product_name: '商品B',
+        current_stock: 300,
+        transfer_quantity: 100,
+        unit: '个'
+      }
+    ]
+  },
+  {
+    id: '2',
+    transfer_no: 'TF202401002',
+    from_warehouse_id: 'WH002',
+    from_warehouse_name: '原料仓库',
+    to_warehouse_id: 'WH003',
+    to_warehouse_name: '成品仓库',
+    status: 'completed',
+    operator_name: '李四',
+    total_quantity: 150,
+    created_at: new Date('2024-01-14'),
+    remark: '常规调拨',
+    items: [
+      {
+        product_name: '商品C',
+        current_stock: 200,
+        transfer_quantity: 150,
+        unit: '箱'
+      }
+    ]
   }
-  return statusMap[status] || status
+])
+
+// 计算属性
+const filteredTransfers = computed(() => {
+  let result = mockTransfers.value
+
+  if (filters.value.search) {
+    const query = filters.value.search.toLowerCase()
+    result = result.filter(transfer =>
+      transfer.transfer_no.toLowerCase().includes(query)
+      || transfer.items.some(item => item.product_name.toLowerCase().includes(query))
+    )
+  }
+
+  if (filters.value.status) {
+    result = result.filter(transfer => transfer.status === filters.value.status)
+  }
+
+  if (filters.value.from_warehouse) {
+    result = result.filter(transfer => transfer.from_warehouse_id === filters.value.from_warehouse)
+  }
+
+  return result
+})
+
+const totalCount = computed(() => mockTransfers.value.length)
+
+const totalQuantity = computed(() => {
+  return transferForm.value.items.reduce((sum: number, item: any) => {
+    return sum + (item.transfer_quantity || 0)
+  }, 0)
+})
+
+// 状态映射
+const statusMap: Record<string, string> = {
+  draft: '草稿',
+  pending: '待审核',
+  approved: '已批准',
+  in_transit: '运输中',
+  completed: '已完成',
+  cancelled: '已取消'
+}
+
+const statusSeverityMap: Record<string, string> = {
+  draft: 'secondary',
+  pending: 'warn',
+  approved: 'info',
+  in_transit: 'primary',
+  completed: 'success',
+  cancelled: 'danger'
+}
+
+// 方法
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('zh-CN')
 }
 
 // 加载调拨单数据
 const loadTransfers = async () => {
   loading.value = true
   try {
-    // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // 模拟数据
-    const mockData = [
-      {
-        id: 1,
-        transfer_number: 'TR-2024-001',
-        from_warehouse_code: 'WH001',
-        from_warehouse_name: '主仓库',
-        to_warehouse_code: 'WH002',
-        to_warehouse_name: '原料仓库',
-        item_count: 3,
-        total_quantity: 150,
-        applicant_name: '张三',
-        applicant_department: '生产部',
-        status: 'pending',
-        created_at: '2024-01-15T10:00:00Z',
-        reason: '生产需要调拨原料'
-      },
-      {
-        id: 2,
-        transfer_number: 'TR-2024-002',
-        from_warehouse_code: 'WH002',
-        from_warehouse_name: '原料仓库',
-        to_warehouse_code: 'WH001',
-        to_warehouse_name: '主仓库',
-        item_count: 2,
-        total_quantity: 80,
-        applicant_name: '李四',
-        applicant_department: '仓储部',
-        status: 'completed',
-        created_at: '2024-01-10T14:30:00Z',
-        reason: '库存平衡调整'
-      }
-    ]
-    
-    transfers.value = mockData
-    totalCount.value = mockData.length
-  } catch (error) {
+  }
+  catch (error) {
     console.error('加载调拨单失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
-// 添加调拨商品
-const addTransferItem = () => {
-  form.items.push({
-    product_code: '',
-    product_name: '',
-    specification: '',
-    quantity: '',
-    unit: '',
-    notes: ''
-  })
-}
-
-// 移除调拨商品
-const removeTransferItem = (index) => {
-  form.items.splice(index, 1)
-}
-
-// 打开调拨单对话框
-const openTransferDialog = (transfer = null) => {
-  editingTransfer.value = transfer
+const openTransferDialog = (transfer: any = null) => {
   if (transfer) {
-    form.transfer_number = transfer.transfer_number
-    form.from_warehouse = transfer.from_warehouse_code
-    form.to_warehouse = transfer.to_warehouse_code
-    form.applicant_name = transfer.applicant_name
-    form.applicant_department = transfer.applicant_department
-    form.reason = transfer.reason
-    form.items = transfer.items || []
-  } else {
-    initForm()
-    // 生成调拨单号
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-    form.transfer_number = `TR-${year}${month}${day}-${random}`
+    editingTransfer.value = transfer
+    dialogMode.value = 'edit'
+    Object.assign(transferForm.value, {
+      transfer_no: transfer.transfer_no,
+      from_warehouse_id: transfer.from_warehouse_id,
+      to_warehouse_id: transfer.to_warehouse_id,
+      status: transfer.status,
+      remark: transfer.remark,
+      items: [...transfer.items]
+    })
+  }
+  else {
+    editingTransfer.value = null
+    dialogMode.value = 'create'
+    transferForm.value = {
+      transfer_no: `TF${Date.now()}`,
+      from_warehouse_id: '',
+      to_warehouse_id: '',
+      status: 'draft',
+      remark: '',
+      items: []
+    }
   }
   showDialog.value = true
 }
 
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false
-  editingTransfer.value = null
-  initForm()
+const viewTransfer = (transfer: any) => {
+  editingTransfer.value = transfer
+  dialogMode.value = 'view'
+  Object.assign(transferForm.value, {
+    transfer_no: transfer.transfer_no,
+    from_warehouse_id: transfer.from_warehouse_id,
+    to_warehouse_id: transfer.to_warehouse_id,
+    status: transfer.status,
+    remark: transfer.remark,
+    items: [...transfer.items]
+  })
+  showDialog.value = true
 }
 
-// 保存调拨单
-const saveTransfer = async () => {
-  if (form.items.length === 0) {
-    alert('请至少添加一个调拨商品')
-    return
-  }
-  
-  if (form.from_warehouse === form.to_warehouse) {
-    alert('调出仓库和调入仓库不能相同')
-    return
-  }
-  
-  saving.value = true
-  try {
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    if (editingTransfer.value) {
-      // 更新现有调拨单
-      const index = transfers.value.findIndex(t => t.id === editingTransfer.value.id)
-      if (index !== -1) {
-        transfers.value[index] = { 
-          ...editingTransfer.value, 
-          ...form,
-          item_count: form.items.length,
-          total_quantity: form.items.reduce((sum, item) => sum + Number(item.quantity || 0), 0)
+const editTransfer = (transfer: any) => {
+  openTransferDialog(transfer)
+}
+
+const approveTransfer = async (transfer: any) => {
+  confirm.require({
+    message: `确定要审核通过调拨单 ${transfer.transfer_no} 吗？`,
+    header: '确认审核',
+    icon: 'pi pi-check',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockTransfers.value.findIndex(t => t.id === transfer.id)
+        if (index !== -1) {
+          mockTransfers.value[index].status = 'approved'
         }
       }
-    } else {
-      // 添加新调拨单
-      const newTransfer = {
-        id: Date.now(),
-        transfer_number: form.transfer_number,
-        from_warehouse_code: form.from_warehouse,
-        from_warehouse_name: form.from_warehouse === 'WH001' ? '主仓库' : '原料仓库',
-        to_warehouse_code: form.to_warehouse,
-        to_warehouse_name: form.to_warehouse === 'WH001' ? '主仓库' : '原料仓库',
-        item_count: form.items.length,
-        total_quantity: form.items.reduce((sum, item) => sum + Number(item.quantity || 0), 0),
-        applicant_name: form.applicant_name,
-        applicant_department: form.applicant_department,
-        status: 'draft',
-        created_at: new Date().toISOString(),
-        reason: form.reason,
-        items: form.items
+      catch (error) {
+        console.error('审核失败:', error)
       }
-      transfers.value.unshift(newTransfer)
-      totalCount.value++
+    }
+  })
+}
+
+const confirmDeleteTransfer = (transfer: any) => {
+  confirm.require({
+    message: `确定要删除调拨单 ${transfer.transfer_no} 吗？`,
+    header: '确认删除',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      deleteTransfer(transfer.id)
+    }
+  })
+}
+
+const deleteTransfer = (transferId: string) => {
+  mockTransfers.value = mockTransfers.value.filter(transfer => transfer.id !== transferId)
+}
+
+const closeTransferDialog = () => {
+  showDialog.value = false
+  editingTransfer.value = null
+}
+
+const saveTransfer = async () => {
+  saving.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    if (dialogMode.value === 'create') {
+      const newTransfer = {
+        id: Date.now().toString(),
+        ...transferForm.value,
+        from_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.from_warehouse_id)?.name || '',
+        to_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.to_warehouse_id)?.name || '',
+        operator_name: '当前用户',
+        total_quantity: totalQuantity.value,
+        created_at: new Date()
+      }
+      mockTransfers.value.push(newTransfer)
+    }
+    else if (dialogMode.value === 'edit') {
+      const index = mockTransfers.value.findIndex(t => t.id === editingTransfer.value.id)
+      if (index !== -1) {
+        mockTransfers.value[index] = {
+          ...mockTransfers.value[index],
+          ...transferForm.value,
+          from_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.from_warehouse_id)?.name || '',
+          to_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.to_warehouse_id)?.name || '',
+          total_quantity: totalQuantity.value
+        }
+      }
     }
     
-    closeDialog()
-  } catch (error) {
+    closeTransferDialog()
+  }
+  catch (error) {
     console.error('保存调拨单失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
 
-// 查看调拨单
-const viewTransfer = (transfer) => {
-  console.log('查看调拨单:', transfer)
+const addTransferItem = () => {
+  transferForm.value.items.push({
+    product_name: '新商品',
+    current_stock: 100,
+    transfer_quantity: 1,
+    unit: '个'
+  })
 }
 
-// 编辑调拨单
-const editTransfer = (transfer) => {
-  openTransferDialog(transfer)
+const removeTransferItem = (index: number) => {
+  transferForm.value.items.splice(index, 1)
 }
 
-// 批准调拨单
-const approveTransfer = async (transfer) => {
-  if (confirm('确定要批准这个调拨单吗？')) {
-    try {
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      const index = transfers.value.findIndex(t => t.id === transfer.id)
-      if (index !== -1) {
-        transfers.value[index].status = 'approved'
-      }
-    } catch (error) {
-      console.error('批准调拨单失败:', error)
-    }
-  }
-}
-
-// 取消调拨单
-const cancelTransfer = async (transfer) => {
-  if (confirm('确定要取消这个调拨单吗？')) {
-    try {
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      const index = transfers.value.findIndex(t => t.id === transfer.id)
-      if (index !== -1) {
-        transfers.value[index].status = 'cancelled'
-      }
-    } catch (error) {
-      console.error('取消调拨单失败:', error)
-    }
-  }
-}
-
-// 导出调拨单
 const exportTransfers = () => {
-  console.log('导出调拨单数据')
+  console.log('导出调拨单')
 }
 
-// 页面加载时获取数据
+// 初始化
 onMounted(() => {
   loadTransfers()
 })

@@ -1,677 +1,809 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="space-y-6">
     <!-- 页面头部 -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">生产订单管理</h1>
-        <p class="text-gray-600 mt-1">管理和跟踪生产订单的执行情况</p>
+        <h1 class="text-2xl font-bold text-color">生产订单管理</h1>
+        <p class="text-muted-color mt-1">管理和跟踪生产订单的执行情况</p>
       </div>
-      <button 
+      <Button 
+        label="新建订单"
+        icon="pi pi-plus"
         @click="handleCreate"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-      >
-        <Plus class="w-4 h-4" />
-        新建订单
-      </button>
+      />
     </div>
 
     <!-- 搜索和筛选 -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <Card>
+      <template #content>
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">订单号/产品名称</label>
-          <div class="relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
+            <label class="block text-sm font-medium text-color mb-2">订单号/产品名称</label>
+            <IconField icon-position="left">
+              <InputIcon>
+                <i class="pi pi-search"></i>
+              </InputIcon>
+              <InputText
               v-model="searchQuery"
-              type="text"
               placeholder="搜索订单号或产品名称"
-              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full"
             />
-          </div>
+            </IconField>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">订单状态</label>
-          <select
+            <label class="block text-sm font-medium text-color mb-2">订单状态</label>
+            <Dropdown
             v-model="statusFilter"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">全部状态</option>
-            <option value="pending">待确认</option>
-            <option value="confirmed">已确认</option>
-            <option value="producing">生产中</option>
-            <option value="completed">已完工</option>
-            <option value="cancelled">已取消</option>
-          </select>
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">车间</label>
-          <select
+            <label class="block text-sm font-medium text-color mb-2">车间</label>
+            <Dropdown
             v-model="workshopFilter"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">全部车间</option>
-            <option v-for="workshop in workshops" :key="workshop.id" :value="workshop.id">
-              {{ workshop.workshop_name }}
-            </option>
-          </select>
+              :options="workshopOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部车间"
+              show-clear
+              class="w-full"
+            />
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">优先级</label>
-          <select
+            <label class="block text-sm font-medium text-color mb-2">优先级</label>
+            <Dropdown
             v-model="priorityFilter"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">全部优先级</option>
-            <option value="low">低</option>
-            <option value="medium">中</option>
-            <option value="high">高</option>
-            <option value="urgent">紧急</option>
-          </select>
+              :options="priorityOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部优先级"
+              show-clear
+              class="w-full"
+            />
         </div>
         
         <div class="flex items-end">
-          <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center gap-2">
-            <Filter class="w-4 h-4" />
-            重置筛选
-          </button>
+            <Button
+              label="重置筛选"
+              icon="pi pi-filter-slash"
+              outlined
+              class="w-full"
+              @click="resetFilters"
+            />
+          </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </Card>
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <div class="bg-white rounded-lg shadow p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">今日新增</p>
-            <p class="text-2xl font-bold text-gray-900">{{ orderStats.todayNew }}</p>
+              <p class="text-sm font-medium text-muted-color">今日新增</p>
+              <p class="text-2xl font-bold text-color">{{ orderStats.todayNew }}</p>
           </div>
           <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <Plus class="w-6 h-6 text-blue-600" />
+              <i class="pi pi-plus text-blue-600 text-xl"></i>
+            </div>
           </div>
-        </div>
-      </div>
+        </template>
+      </Card>
       
-      <div class="bg-white rounded-lg shadow p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">待确认</p>
-            <p class="text-2xl font-bold text-gray-900">{{ orderStats.pending }}</p>
+              <p class="text-sm font-medium text-muted-color">生产中</p>
+              <p class="text-2xl font-bold text-color">{{ orderStats.producing }}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-cog text-green-600 text-xl"></i>
           </div>
-          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-            <Clock class="w-6 h-6 text-yellow-600" />
           </div>
-        </div>
-      </div>
+        </template>
+      </Card>
       
-      <div class="bg-white rounded-lg shadow p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">生产中</p>
-            <p class="text-2xl font-bold text-gray-900">{{ orderStats.producing }}</p>
+              <p class="text-sm font-medium text-muted-color">已完工</p>
+              <p class="text-2xl font-bold text-color">{{ orderStats.completed }}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-check-circle text-purple-600 text-xl"></i>
           </div>
-          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-            <Factory class="w-6 h-6 text-green-600" />
           </div>
-        </div>
-      </div>
+        </template>
+      </Card>
       
-      <div class="bg-white rounded-lg shadow p-6">
+      <Card>
+        <template #content>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">本月完工</p>
-            <p class="text-2xl font-bold text-gray-900">{{ orderStats.monthCompleted }}</p>
+              <p class="text-sm font-medium text-muted-color">延期订单</p>
+              <p class="text-2xl font-bold text-red-600">{{ orderStats.delayed }}</p>
+            </div>
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
           </div>
-          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-            <Package class="w-6 h-6 text-purple-600" />
+          </div>
+        </template>
+      </Card>
+    </div>
+
+    <!-- 生产订单列表 -->
+    <Card>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-color">生产订单列表</h3>
+          <div class="flex items-center gap-2 text-sm text-muted-color">
+            共 {{ totalCount }} 条记录
           </div>
         </div>
+      </template>
+
+      <template #content>
+        <DataTable
+          :value="filteredOrders"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+        >
+          <Column field="order_no" header="订单号" sortable>
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+                {{ slotProps.data.order_no }}
+              </code>
+            </template>
+          </Column>
+          
+          <Column field="product_name" header="产品名称" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.product_name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <span class="font-medium">{{ slotProps.data.product_name }}</span>
+      </div>
+            </template>
+          </Column>
+          
+          <Column field="quantity" header="计划数量" sortable>
+            <template #body="slotProps">
+              <span class="font-medium">{{ slotProps.data.quantity.toLocaleString() }}</span>
+            </template>
+          </Column>
+          
+          <Column field="produced_quantity" header="已生产" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <span class="font-medium">{{ slotProps.data.produced_quantity.toLocaleString() }}</span>
+                <ProgressBar 
+                  :value="(slotProps.data.produced_quantity / slotProps.data.quantity) * 100"
+                  class="w-16"
+                  :show-value="false"
+                />
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="workshop_name" header="车间" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="slotProps.data.workshop_name"
+                severity="info"
+              />
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="priority" header="优先级" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getPriorityDisplayName(slotProps.data.priority)"
+                :severity="getPrioritySeverity(slotProps.data.priority)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="start_date" header="开始日期" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.start_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="due_date" header="预期完成日期" sortable>
+            <template #body="slotProps">
+              <span class="text-sm" :class="getDueDateClass(slotProps.data.due_date)">
+                {{ formatDate(slotProps.data.due_date) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewOrder(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'"
+                  v-tooltip="'编辑'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="editOrder(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'pending'"
+                  v-tooltip="'确认订单'"
+                  icon="pi pi-check"
+                  rounded
+                  text
+                  size="small"
+                  @click="confirmOrder(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'confirmed'"
+                  v-tooltip="'开始生产'"
+                  icon="pi pi-play"
+                  rounded
+                  text
+                  size="small"
+                  @click="startProduction(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status === 'producing'"
+                  v-tooltip="'完成生产'"
+                  icon="pi pi-stop"
+                  rounded
+                  text
+                  size="small"
+                  @click="completeProduction(slotProps.data)"
+                />
+                <Button
+                  v-if="slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'"
+                  v-tooltip="'取消订单'"
+                  icon="pi pi-trash"
+                  rounded
+                  text
+                  size="small"
+                  severity="danger"
+                  @click="confirmCancelOrder(slotProps.data)"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
+
+    <!-- 生产订单对话框 -->
+    <Dialog
+      v-model:visible="showOrderDialog"
+      :header="editingOrder ? '编辑生产订单' : '新建生产订单'"
+      :style="{ width: '800px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">订单号</label>
+              <InputText
+                v-model="orderForm.order_no"
+                :disabled="true"
+                placeholder="系统自动生成"
+              />
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">产品名称 *</label>
+              <Dropdown
+                v-model="orderForm.product_id"
+                :options="productOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择产品"
+                :disabled="dialogMode === 'view'"
+                required
+              />
       </div>
     </div>
 
-    <!-- 订单列表 -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-      <div v-if="loading" class="p-8 text-center">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p class="mt-2 text-gray-600">加载中...</p>
-      </div>
-      
-      <div v-else-if="error" class="p-8 text-center text-red-600">
-        <p>{{ error }}</p>
-      </div>
-      
-      <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">订单信息</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">产品信息</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数量/进度</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">车间</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态/优先级</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">计划时间</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="order in paginatedOrders" :key="order.id" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div>
-                  <div class="text-sm font-medium text-gray-900">{{ order.order_code }}</div>
-                  <div class="text-sm text-gray-500">{{ formatDate(order.created_at) }}</div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div>
-                  <div class="text-sm font-medium text-gray-900">{{ order.product_name }}</div>
-                  <div class="text-sm text-gray-500">{{ order.product_code }}</div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div>
-                  <div class="text-sm font-medium text-gray-900">{{ order.quantity }}</div>
-                  <div class="text-sm text-gray-500">已完成: {{ order.completed_quantity || 0 }}</div>
-                  <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
-                    <div 
-                      class="bg-blue-600 h-2 rounded-full" 
-                      :style="{ width: getProgress(order) + '%' }"
-                    ></div>
-                  </div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ getWorkshopName(order.workshop_id) }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="space-y-1">
-                  <span :class="getStatusColor(order.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                    {{ getStatusText(order.status) }}
-                  </span>
-                  <div>
-                    <span :class="getPriorityColor(order.priority)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                      {{ getPriorityText(order.priority) }}
-                    </span>
-                  </div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <div>
-                  <div>开始: {{ formatDate(order.plan_start_date) }}</div>
-                  <div>结束: {{ formatDate(order.plan_end_date) }}</div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div class="flex space-x-2">
-                  <button 
-                    v-if="order.status === 'pending'"
-                    @click="handleConfirm(order.id)"
-                    class="text-blue-600 hover:text-blue-900" 
-                    title="确认订单"
-                  >
-                    <CheckCircle class="w-4 h-4" />
-                  </button>
-                  <button 
-                    v-if="order.status === 'confirmed'"
-                    @click="handleStart(order.id)"
-                    class="text-green-600 hover:text-green-900" 
-                    title="开始生产"
-                  >
-                    <Play class="w-4 h-4" />
-                  </button>
-                  <button 
-                    @click="handleEdit(order)"
-                    class="text-indigo-600 hover:text-indigo-900" 
-                    title="编辑"
-                  >
-                    <Edit class="w-4 h-4" />
-                  </button>
-                  <button 
-                    @click="handleDelete(order.id)"
-                    class="text-red-600 hover:text-red-900" 
-                    title="删除"
-                  >
-                    <Trash2 class="w-4 h-4" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 分页 -->
-      <div class="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
-        <div class="flex-1 flex justify-between sm:hidden">
-          <button 
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-          >
-            上一页
-          </button>
-          <button 
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-          >
-            下一页
-          </button>
-        </div>
-        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-          <div>
-            <p class="text-sm text-gray-700">
-              显示第 <span class="font-medium">{{ (currentPage - 1) * pageSize + 1 }}</span> 到 
-              <span class="font-medium">{{ Math.min(currentPage * pageSize, filteredOrders.length) }}</span> 条，
-              共 <span class="font-medium">{{ filteredOrders.length }}</span> 条记录
-            </p>
-          </div>
-          <div>
-            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-              <button 
-                :disabled="currentPage === 1"
-                @click="currentPage--"
-                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-              >
-                上一页
-              </button>
-              <button 
-                v-for="page in totalPages" 
-                :key="page"
-                @click="currentPage = page"
-                :class="[
-                  'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
-                  currentPage === page 
-                    ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' 
-                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                ]"
-              >
-                {{ page }}
-              </button>
-              <button 
-                :disabled="currentPage === totalPages"
-                @click="currentPage++"
-                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-              >
-                下一页
-              </button>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 创建订单模态框 -->
-    <div v-if="showCreateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-          <h3 class="text-lg font-medium text-gray-900 mb-4">创建生产订单</h3>
-          <form @submit.prevent="submitCreate" class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">产品编码</label>
-              <input v-model="orderForm.product_code" type="text" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
+          <div class="grid grid-cols-3 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">计划数量 *</label>
+              <InputNumber
+                v-model="orderForm.quantity"
+                :min="1"
+                show-buttons
+                placeholder="输入计划数量"
+                :disabled="dialogMode === 'view'"
+                required
+              />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">产品名称</label>
-              <input v-model="orderForm.product_name" type="text" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">车间 *</label>
+              <Dropdown
+                v-model="orderForm.workshop_id"
+                :options="workshopOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择车间"
+                :disabled="dialogMode === 'view'"
+                required
+              />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">生产数量</label>
-              <input v-model.number="orderForm.quantity" type="number" required min="1" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">优先级</label>
+              <Dropdown
+                v-model="orderForm.priority"
+                :options="priorityOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="选择优先级"
+                :disabled="dialogMode === 'view'"
+              />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">车间</label>
-              <select v-model="orderForm.workshop_id" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                <option value="">请选择车间</option>
-                <option v-for="workshop in workshops" :key="workshop.id" :value="workshop.id">
-                  {{ workshop.workshop_name }}
-                </option>
-              </select>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">优先级</label>
-              <select v-model="orderForm.priority" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                <option value="low">低</option>
-                <option value="medium">中</option>
-                <option value="high">高</option>
-                <option value="urgent">紧急</option>
-              </select>
-            </div>
+          
             <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">计划开始日期</label>
-                <input v-model="orderForm.plan_start_date" type="date" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">计划完成日期</label>
-                <input v-model="orderForm.plan_end_date" type="date" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-              </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">开始日期 *</label>
+              <Calendar
+                v-model="orderForm.start_date"
+                placeholder="选择开始日期"
+                :disabled="dialogMode === 'view'"
+                required
+              />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">备注</label>
-              <textarea v-model="orderForm.notes" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"></textarea>
-            </div>
-            <div class="flex justify-end space-x-3 pt-4">
-              <button type="button" @click="showCreateModal = false" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                取消
-              </button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                创建
-              </button>
-            </div>
-          </form>
-        </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-color">预期完成日期 *</label>
+              <Calendar
+                v-model="orderForm.due_date"
+                placeholder="选择预期完成日期"
+                :disabled="dialogMode === 'view'"
+                required
+              />
       </div>
     </div>
 
-    <!-- 编辑订单模态框 -->
-    <div v-if="showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-          <h3 class="text-lg font-medium text-gray-900 mb-4">编辑生产订单</h3>
-          <form @submit.prevent="submitEdit" class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">产品编码</label>
-              <input v-model="orderForm.product_code" type="text" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">产品名称</label>
-              <input v-model="orderForm.product_name" type="text" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">生产数量</label>
-              <input v-model.number="orderForm.quantity" type="number" required min="1" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">车间</label>
-              <select v-model="orderForm.workshop_id" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                <option value="">请选择车间</option>
-                <option v-for="workshop in workshops" :key="workshop.id" :value="workshop.id">
-                  {{ workshop.workshop_name }}
-                </option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">优先级</label>
-              <select v-model="orderForm.priority" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                <option value="low">低</option>
-                <option value="medium">中</option>
-                <option value="high">高</option>
-                <option value="urgent">紧急</option>
-              </select>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">计划开始日期</label>
-                <input v-model="orderForm.plan_start_date" type="date" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">计划完成日期</label>
-                <input v-model="orderForm.plan_end_date" type="date" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">备注</label>
-              <textarea v-model="orderForm.notes" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"></textarea>
-            </div>
-            <div class="flex justify-end space-x-3 pt-4">
-              <button type="button" @click="showEditModal = false" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                取消
-              </button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                保存
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- 删除确认模态框 -->
-    <div v-if="showDeleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3 text-center">
-          <XCircle class="mx-auto h-12 w-12 text-red-600" />
-          <h3 class="text-lg font-medium text-gray-900 mt-4">确认删除</h3>
-          <p class="text-sm text-gray-500 mt-2">确定要删除这个生产订单吗？此操作无法撤销。</p>
-          <div class="flex justify-center space-x-3 mt-6">
-            <button @click="showDeleteModal = false" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-              取消
-            </button>
-            <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-              删除
-            </button>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">订单说明</label>
+            <Textarea
+              v-model="orderForm.notes"
+              placeholder="请输入订单说明"
+              :rows="3"
+              :disabled="dialogMode === 'view'"
+            />
           </div>
         </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeOrderDialog"
+          />
+          <Button
+            v-if="dialogMode !== 'view'"
+            label="保存"
+            icon="pi pi-check"
+            :loading="saving"
+            @click="saveOrder"
+          />
       </div>
-    </div>
+      </template>
+    </Dialog>
+    
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Eye, 
-  Edit, 
-  Trash2, 
-  Clock, 
-  Factory, 
-  Package, 
-  CheckCircle,
-  Play,
-  XCircle
-} from 'lucide-vue-next'
-import { useProduction } from '~/composables/useProduction'
-import { useWorkshops } from '~/composables/useWorkshops'
-import type { ProductionOrder } from '~/types/production'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Dropdown from 'primevue/dropdown'
+import Calendar from 'primevue/calendar'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import ProgressBar from 'primevue/progressbar'
+import Dialog from 'primevue/dialog'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
-// 页面元数据
+// 页面配置
 definePageMeta({
-  title: '生产订单管理',
   layout: 'default'
 })
 
-// 使用 composables
-const { 
-  orders, 
-  loading, 
-  error, 
-  orderStats,
-  createOrder, 
-  updateOrder, 
-  deleteOrder,
-  confirmOrder,
-  startProduction,
-  completeOrder,
-  fetchOrders
-} = useProduction()
+useHead({
+  title: '生产订单管理 - ERP 管理系统'
+})
 
-const { workshops, fetchWorkshops } = useWorkshops()
+// 状态管理
+const loading = ref(false)
+const saving = ref(false)
+const showOrderDialog = ref(false)
+const dialogMode = ref<'view' | 'create' | 'edit'>('view')
+const editingOrder = ref(null as any)
+const confirm = useConfirm()
 
-// 响应式数据
+// 筛选条件
 const searchQuery = ref('')
 const statusFilter = ref('')
 const workshopFilter = ref('')
 const priorityFilter = ref('')
-const currentPage = ref(1)
-const pageSize = ref(10)
-const showCreateModal = ref(false)
-const showEditModal = ref(false)
-const showDeleteModal = ref(false)
-const selectedOrderId = ref('')
 
 // 表单数据
 const orderForm = ref({
+  order_no: '',
   product_id: '',
-  product_code: '',
-  product_name: '',
-  quantity: 0,
+  quantity: 1,
   workshop_id: '',
-  bom_id: '',
   priority: 'medium',
-  plan_start_date: '',
-  plan_end_date: '',
+  start_date: new Date(),
+  due_date: null as Date | null,
   notes: ''
 })
 
-// 筛选后的订单
-const filteredOrders = computed(() => {
-  return orders.value.filter(order => {
-    const matchesSearch = !searchQuery.value || 
-      order.order_code?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      order.product_name?.toLowerCase().includes(searchQuery.value.toLowerCase())
-    
-    const matchesStatus = !statusFilter.value || order.status === statusFilter.value
-    const matchesWorkshop = !workshopFilter.value || order.workshop_id === workshopFilter.value
-    const matchesPriority = !priorityFilter.value || order.priority === priorityFilter.value
-    
-    return matchesSearch && matchesStatus && matchesWorkshop && matchesPriority
-  })
+// 选项数据
+const statusOptions = ref([
+  { label: '待确认', value: 'pending' },
+  { label: '已确认', value: 'confirmed' },
+  { label: '生产中', value: 'producing' },
+  { label: '已完工', value: 'completed' },
+  { label: '已取消', value: 'cancelled' }
+])
+
+const workshopOptions = ref([
+  { label: '装配车间', value: 'assembly' },
+  { label: '机加工车间', value: 'machining' },
+  { label: '喷涂车间', value: 'painting' },
+  { label: '包装车间', value: 'packaging' }
+])
+
+const priorityOptions = ref([
+  { label: '低', value: 'low' },
+  { label: '中', value: 'medium' },
+  { label: '高', value: 'high' },
+  { label: '紧急', value: 'urgent' }
+])
+
+const productOptions = ref([
+  { label: '产品A', value: 'product-a' },
+  { label: '产品B', value: 'product-b' },
+  { label: '产品C', value: 'product-c' }
+])
+
+// 统计数据
+const orderStats = ref({
+  todayNew: 8,
+  producing: 15,
+  completed: 42,
+  delayed: 3
 })
 
-// 分页数据
-const paginatedOrders = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filteredOrders.value.slice(start, end)
-})
-
-const totalPages = computed(() => {
-  return Math.ceil(filteredOrders.value.length / pageSize.value)
-})
-
-// 辅助函数
-const getWorkshopName = (workshopId: string) => {
-  const workshop = workshops.value.find(w => w.id === workshopId)
-  return workshop?.workshop_name || '未分配'
-}
-
-const formatDate = (dateString: string | null) => {
-  if (!dateString) return '-'
-  return new Date(dateString).toLocaleDateString('zh-CN')
-}
-
-const getProgress = (order: any) => {
-  if (order.quantity === 0) return 0
-  return Math.round((order.completed_quantity || 0) / order.quantity * 100)
-}
-
-// 操作函数
-const handleCreate = () => {
-  orderForm.value = {
-    product_id: '',
-    product_code: '',
-    product_name: '',
-    quantity: 0,
-    workshop_id: '',
-    bom_id: '',
+// 模拟数据
+const mockOrders = ref([
+  {
+    id: '1',
+    order_no: 'PO-2024-001',
+    product_name: '智能手机组件',
+    quantity: 1000,
+    produced_quantity: 750,
+    workshop_name: '装配车间',
+    status: 'producing',
+    priority: 'high',
+    start_date: new Date('2024-01-15'),
+    due_date: new Date('2024-01-25'),
+    notes: '紧急订单，需优先生产'
+  },
+  {
+    id: '2',
+    order_no: 'PO-2024-002',
+    product_name: '电脑配件',
+    quantity: 500,
+    produced_quantity: 500,
+    workshop_name: '机加工车间',
+    status: 'completed',
     priority: 'medium',
-    plan_start_date: '',
-    plan_end_date: '',
+    start_date: new Date('2024-01-10'),
+    due_date: new Date('2024-01-20'),
+    notes: '常规生产订单'
+  }
+])
+
+// 计算属性
+const filteredOrders = computed(() => {
+  let result = mockOrders.value
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(order =>
+      order.order_no.toLowerCase().includes(query)
+      || order.product_name.toLowerCase().includes(query)
+    )
+  }
+
+  if (statusFilter.value) {
+    result = result.filter(order => order.status === statusFilter.value)
+  }
+
+  if (workshopFilter.value) {
+    result = result.filter(order => order.workshop_name === workshopFilter.value)
+  }
+
+  if (priorityFilter.value) {
+    result = result.filter(order => order.priority === priorityFilter.value)
+  }
+
+  return result
+})
+
+const totalCount = computed(() => mockOrders.value.length)
+
+// 映射对象
+const statusMap: Record<string, string> = {
+  pending: '待确认',
+  confirmed: '已确认',
+  producing: '生产中',
+  completed: '已完工',
+  cancelled: '已取消'
+}
+
+const statusSeverityMap: Record<string, string> = {
+  pending: 'warning',
+  confirmed: 'info',
+  producing: 'success',
+  completed: 'success',
+  cancelled: 'danger'
+}
+
+const priorityMap: Record<string, string> = {
+  low: '低',
+  medium: '中',
+  high: '高',
+  urgent: '紧急'
+}
+
+const prioritySeverityMap: Record<string, string> = {
+  low: 'secondary',
+  medium: 'info',
+  high: 'warning',
+  urgent: 'danger'
+}
+
+// 方法
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getPriorityDisplayName = (priority: string) => priorityMap[priority] || priority
+const getPrioritySeverity = (priority: string) => prioritySeverityMap[priority] || 'info'
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('zh-CN')
+}
+
+const getDueDateClass = (dueDate: Date) => {
+  const today = new Date()
+  const due = new Date(dueDate)
+  const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  
+  if (diffDays < 0) return 'text-red-600' // 已过期
+  if (diffDays <= 3) return 'text-orange-600' // 即将到期
+  return 'text-muted-color' // 正常
+}
+
+const resetFilters = () => {
+  searchQuery.value = ''
+  statusFilter.value = ''
+  workshopFilter.value = ''
+  priorityFilter.value = ''
+}
+
+const handleCreate = () => {
+  editingOrder.value = null
+  dialogMode.value = 'create'
+  orderForm.value = {
+    order_no: `PO-${Date.now()}`,
+    product_id: '',
+    quantity: 1,
+    workshop_id: '',
+    priority: 'medium',
+    start_date: new Date(),
+    due_date: null,
     notes: ''
   }
-  showCreateModal.value = true
+  showOrderDialog.value = true
 }
 
-const handleEdit = (order: any) => {
-  orderForm.value = {
-    product_id: order.product_id || '',
-    product_code: order.product_code || '',
-    product_name: order.product_name || '',
-    quantity: order.quantity || 0,
-    workshop_id: order.workshop_id || '',
-    bom_id: order.bom_id || '',
-    priority: order.priority || 'medium',
-    plan_start_date: order.plan_start_date?.split('T')[0] || '',
-    plan_end_date: order.plan_end_date?.split('T')[0] || '',
-    notes: order.notes || ''
+const viewOrder = (order: any) => {
+  editingOrder.value = order
+  dialogMode.value = 'view'
+  Object.assign(orderForm.value, order)
+  showOrderDialog.value = true
+}
+
+const editOrder = (order: any) => {
+  editingOrder.value = order
+  dialogMode.value = 'edit'
+  Object.assign(orderForm.value, order)
+  showOrderDialog.value = true
+}
+
+const confirmOrder = async (order: any) => {
+  confirm.require({
+    message: `确定要确认订单 ${order.order_no} 吗？`,
+    header: '确认订单',
+    icon: 'pi pi-check',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockOrders.value.findIndex(o => o.id === order.id)
+        if (index !== -1) {
+          mockOrders.value[index].status = 'confirmed'
+        }
+      }
+      catch (error) {
+        console.error('确认订单失败:', error)
+      }
+    }
+  })
+}
+
+const startProduction = async (order: any) => {
+  confirm.require({
+    message: `确定要开始生产订单 ${order.order_no} 吗？`,
+    header: '开始生产',
+    icon: 'pi pi-play',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockOrders.value.findIndex(o => o.id === order.id)
+        if (index !== -1) {
+          mockOrders.value[index].status = 'producing'
+        }
+      }
+      catch (error) {
+        console.error('开始生产失败:', error)
+      }
+    }
+  })
+}
+
+const completeProduction = async (order: any) => {
+  confirm.require({
+    message: `确定要完成订单 ${order.order_no} 的生产吗？`,
+    header: '完成生产',
+    icon: 'pi pi-check',
+    accept: async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const index = mockOrders.value.findIndex(o => o.id === order.id)
+        if (index !== -1) {
+          mockOrders.value[index].status = 'completed'
+          mockOrders.value[index].produced_quantity = mockOrders.value[index].quantity
+        }
+      }
+      catch (error) {
+        console.error('完成生产失败:', error)
+      }
+    }
+  })
+}
+
+const confirmCancelOrder = (order: any) => {
+  confirm.require({
+    message: `确定要取消订单 ${order.order_no} 吗？`,
+    header: '取消订单',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      cancelOrder(order.id)
+    }
+  })
+}
+
+const cancelOrder = (orderId: string) => {
+  const index = mockOrders.value.findIndex(order => order.id === orderId)
+  if (index !== -1) {
+    mockOrders.value[index].status = 'cancelled'
   }
-  selectedOrderId.value = order.id
-  showEditModal.value = true
 }
 
-const handleDelete = (orderId: string) => {
-  selectedOrderId.value = orderId
-  showDeleteModal.value = true
+const closeOrderDialog = () => {
+  showOrderDialog.value = false
+  editingOrder.value = null
 }
 
-const submitCreate = async () => {
+const saveOrder = async () => {
+  saving.value = true
   try {
-    await createOrder(orderForm.value)
-    showCreateModal.value = false
-    await fetchOrders()
-  } catch (err) {
-    console.error('创建订单失败:', err)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    if (dialogMode.value === 'create') {
+      const newOrder = {
+        id: Date.now().toString(),
+        ...orderForm.value,
+        product_name: productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || '',
+        workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || '',
+        status: 'pending',
+        produced_quantity: 0
+      }
+      mockOrders.value.push(newOrder as any)
+    }
+    else if (dialogMode.value === 'edit') {
+      const index = mockOrders.value.findIndex(o => o.id === editingOrder.value.id)
+      if (index !== -1) {
+        mockOrders.value[index] = {
+          ...mockOrders.value[index],
+          ...orderForm.value,
+          product_name: productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || mockOrders.value[index].product_name,
+          workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || mockOrders.value[index].workshop_name
+        }
+      }
+    }
+    
+    closeOrderDialog()
+  }
+  catch (error) {
+    console.error('保存订单失败:', error)
+  }
+  finally {
+    saving.value = false
   }
 }
 
-const submitEdit = async () => {
-  try {
-    await updateOrder(selectedOrderId.value, orderForm.value)
-    showEditModal.value = false
-    await fetchOrders()
-  } catch (err) {
-    console.error('更新订单失败:', err)
-  }
-}
-
-const confirmDelete = async () => {
-  try {
-    await deleteOrder(selectedOrderId.value)
-    showDeleteModal.value = false
-    await fetchOrders()
-  } catch (err) {
-    console.error('删除订单失败:', err)
-  }
-}
-
-const handleConfirm = async (orderId: string) => {
-  try {
-    await confirmOrder(orderId)
-    await fetchOrders()
-  } catch (err) {
-    console.error('确认订单失败:', err)
-  }
-}
-
-const handleStart = async (orderId: string) => {
-  try {
-    await startOrder(orderId)
-    await fetchOrders()
-  } catch (err) {
-    console.error('开始生产失败:', err)
-  }
-}
-
-const handleComplete = async (orderId: string) => {
-  try {
-    await completeOrder(orderId)
-    await fetchOrders()
-  } catch (err) {
-    console.error('完成订单失败:', err)
-  }
-}
-
-const handleCancel = async (orderId: string) => {
-  try {
-    await cancelOrder(orderId, '用户取消')
-    await fetchOrders()
-  } catch (err) {
-    console.error('取消订单失败:', err)
-  }
-}
-
-// 页面加载时获取数据
-onMounted(async () => {
-  await Promise.all([
-    fetchOrders(),
-    fetchWorkshops()
-  ])
+// 初始化
+onMounted(() => {
+  // 这里可以加载实际数据
 })
 </script>

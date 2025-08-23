@@ -12,7 +12,7 @@
       </div>
 
       <!-- 注册表单 -->
-      <form @submit.prevent="handleRegister" class="space-y-6">
+      <form class="space-y-6" @submit.prevent="handleRegister">
         <!-- 邮箱输入 -->
         <div>
           <label for="email" class="block text-sm font-medium text-foreground mb-2">
@@ -128,19 +128,22 @@ const validateForm = () => {
   
   if (!form.value.email) {
     errors.value.email = '请输入邮箱地址'
-  } else if (!/\S+@\S+\.\S+/.test(form.value.email)) {
+  }
+  else if (!/\S+@\S+\.\S+/.test(form.value.email)) {
     errors.value.email = '请输入有效的邮箱地址'
   }
   
   if (!form.value.password) {
     errors.value.password = '请输入密码'
-  } else if (form.value.password.length < 6) {
+  }
+  else if (form.value.password.length < 6) {
     errors.value.password = '密码长度不能少于6个字符'
   }
   
   if (!form.value.confirmPassword) {
     errors.value.confirmPassword = '请确认密码'
-  } else if (form.value.password !== form.value.confirmPassword) {
+  }
+  else if (form.value.password !== form.value.confirmPassword) {
     errors.value.confirmPassword = '两次输入的密码不一致'
   }
   
@@ -160,18 +163,22 @@ const handleRegister = async () => {
     if (result.success) {
       if (result.needsEmailConfirmation) {
         success.value = '注册成功！请检查您的邮箱并点击确认链接。'
-      } else {
+      }
+      else {
         success.value = '注册成功！正在跳转...'
         setTimeout(() => {
           navigateTo('/dashboard')
         }, 1000)
       }
-    } else {
+    }
+    else {
       error.value = result.error?.message || '注册失败，请重试'
     }
-  } catch (err: any) {
+  }
+  catch (err: any) {
     error.value = err.message || '注册失败，请重试'
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }

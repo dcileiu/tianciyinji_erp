@@ -1,390 +1,661 @@
 <template>
-  <div class="container mx-auto py-6">
+  <div class="space-y-6">
     <!-- 页面标题 -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight">库存管理</h1>
-        <p class="text-muted-foreground">实时监控库存状态，管理库存变动</p>
+        <h1 class="text-3xl font-bold tracking-tight text-color">库存管理</h1>
+        <p class="text-muted-color">实时监控库存状态，管理库存变动</p>
       </div>
       <div class="flex items-center space-x-2">
-        <Button variant="outline" @click="refreshData">
-          <RefreshCw class="mr-2 h-4 w-4" />
-          刷新
-        </Button>
-        <Button @click="showAdjustDialog = true">
-          <Plus class="mr-2 h-4 w-4" />
-          库存调整
-        </Button>
+        <Button
+          label="刷新"
+          icon="pi pi-refresh"
+          outlined
+          @click="refreshData"
+        />
+        <Button
+          label="库存调整"
+          icon="pi pi-plus"
+          @click="showAdjustDialog = true"
+        />
       </div>
     </div>
 
     <!-- 库存统计卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <Card>
-        <CardContent class="p-6">
+        <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-blue-500/10 rounded-full">
-              <Package class="h-6 w-6 text-blue-600" />
+            <div class="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-full">
+              <i class="pi pi-box text-blue-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">总商品数</p>
-              <p class="text-2xl font-semibold">156</p>
+              <p class="text-sm font-medium text-muted-color">总商品数</p>
+              <p class="text-2xl font-semibold text-color">156</p>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
 
       <Card>
-        <CardContent class="p-6">
+        <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-green-500/10 rounded-full">
-              <TrendingUp class="h-6 w-6 text-green-600" />
+            <div class="p-3 bg-green-100 dark:bg-green-900/20 rounded-full">
+              <i class="pi pi-trending-up text-green-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">库存总值</p>
-              <p class="text-2xl font-semibold">¥1,234,567</p>
+              <p class="text-sm font-medium text-muted-color">库存总值</p>
+              <p class="text-2xl font-semibold text-color">¥1,234,567</p>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
 
       <Card>
-        <CardContent class="p-6">
+        <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-red-500/10 rounded-full">
-              <AlertTriangle class="h-6 w-6 text-red-600" />
+            <div class="p-3 bg-red-100 dark:bg-red-900/20 rounded-full">
+              <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">低库存预警</p>
-              <p class="text-2xl font-semibold">12</p>
+              <p class="text-sm font-medium text-muted-color">低库存预警</p>
+              <p class="text-2xl font-semibold text-color">12</p>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
 
       <Card>
-        <CardContent class="p-6">
+        <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-yellow-500/10 rounded-full">
-              <Warehouse class="h-6 w-6 text-yellow-600" />
+            <div class="p-3 bg-yellow-100 dark:bg-yellow-900/20 rounded-full">
+              <i class="pi pi-home text-yellow-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">仓库数量</p>
-              <p class="text-2xl font-semibold">3</p>
+              <p class="text-sm font-medium text-muted-color">仓库数量</p>
+              <p class="text-2xl font-semibold text-color">3</p>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
     </div>
 
     <!-- 搜索和筛选 -->
-    <Card class="mb-6">
-      <CardHeader>
-        <CardTitle>搜索筛选</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <Card>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- 搜索框 -->
           <div>
-            <Label for="search">搜索商品</Label>
-            <Input
-              id="search"
-              v-model="searchQuery"
-              placeholder="商品名称或编码"
-              class="mt-1"
+            <label class="block text-sm font-medium mb-2 text-color">搜索</label>
+            <IconField icon-position="left">
+              <InputIcon>
+                <i class="pi pi-search"></i>
+              </InputIcon>
+              <InputText
+                v-model="searchQuery"
+                placeholder="商品名称、编码..."
+                class="w-full"
+              />
+            </IconField>
+          </div>
+          
+          <!-- 仓库筛选 -->
+          <div>
+            <label class="block text-sm font-medium mb-2 text-color">仓库</label>
+            <Dropdown
+              v-model="warehouseFilter"
+              :options="warehouses"
+              option-label="name"
+              option-value="id"
+              placeholder="全部仓库"
+              show-clear
+              class="w-full"
             />
           </div>
+          
+          <!-- 分类筛选 -->
           <div>
-            <Label for="warehouse">仓库</Label>
-            <select
-              id="warehouse"
-              v-model="selectedWarehouse"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
-            >
-              <option value="">全部仓库</option>
-              <option value="1">主仓库</option>
-              <option value="2">原料仓库</option>
-              <option value="3">成品仓库</option>
-            </select>
+            <label class="block text-sm font-medium mb-2 text-color">分类</label>
+            <Dropdown
+              v-model="categoryFilter"
+              :options="categories"
+              option-label="name"
+              option-value="id"
+              placeholder="全部分类"
+              show-clear
+              class="w-full"
+            />
           </div>
+          
+          <!-- 状态筛选 -->
           <div>
-            <Label for="category">商品分类</Label>
-            <select
-              id="category"
-              v-model="selectedCategory"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
-            >
-              <option value="">全部分类</option>
-              <option value="raw_material">原材料</option>
-              <option value="finished_product">成品</option>
-              <option value="semi_finished">半成品</option>
-            </select>
-          </div>
-          <div>
-            <Label for="status">库存状态</Label>
-            <select
-              id="status"
-              v-model="selectedStatus"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
-            >
-              <option value="">全部状态</option>
-              <option value="normal">正常</option>
-              <option value="low">低库存</option>
-              <option value="out">缺货</option>
-            </select>
-          </div>
-          <div class="flex items-end">
-            <Button @click="handleSearch" class="w-full">
-              <Search class="mr-2 h-4 w-4" />
-              搜索
-            </Button>
+            <label class="block text-sm font-medium mb-2 text-color">库存状态</label>
+            <Dropdown
+              v-model="statusFilter"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              show-clear
+              class="w-full"
+            />
           </div>
         </div>
-      </CardContent>
+        
+        <div class="flex justify-between items-center mt-4">
+          <div class="flex items-center gap-2">
+            <Button
+              label="重置筛选"
+              icon="pi pi-filter-slash"
+              text
+              size="small"
+              @click="resetFilters"
+            />
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <Button
+              label="导出"
+              icon="pi pi-download"
+              outlined
+              size="small"
+              @click="exportInventory"
+            />
+          </div>
+        </div>
+      </template>
     </Card>
 
     <!-- 库存列表 -->
     <Card>
-      <CardHeader>
-        <CardTitle>库存明细</CardTitle>
-        <CardDescription>
-          共 {{ mockInventoryData.length }} 个商品
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b">
-                <th class="text-left py-3 px-4 font-medium">商品信息</th>
-                <th class="text-left py-3 px-4 font-medium">仓库</th>
-                <th class="text-left py-3 px-4 font-medium">当前库存</th>
-                <th class="text-left py-3 px-4 font-medium">可用库存</th>
-                <th class="text-left py-3 px-4 font-medium">预留库存</th>
-                <th class="text-left py-3 px-4 font-medium">安全库存</th>
-                <th class="text-left py-3 px-4 font-medium">状态</th>
-                <th class="text-left py-3 px-4 font-medium">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="item in mockInventoryData"
-                :key="item.id"
-                class="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50"
-              >
-                <td class="py-3 px-4">
-                  <div>
-                    <p class="font-medium">{{ item.product_name }}</p>
-                    <p class="text-sm text-muted-foreground">{{ item.product_no }}</p>
-                  </div>
-                </td>
-                <td class="py-3 px-4">
-                  <p class="text-sm">{{ item.warehouse_name }}</p>
-                </td>
-                <td class="py-3 px-4">
-                  <p class="font-medium">{{ item.current_stock }} {{ item.unit }}</p>
-                </td>
-                <td class="py-3 px-4">
-                  <p class="text-green-600">{{ item.available_stock }} {{ item.unit }}</p>
-                </td>
-                <td class="py-3 px-4">
-                  <p class="text-orange-600">{{ item.reserved_stock }} {{ item.unit }}</p>
-                </td>
-                <td class="py-3 px-4">
-                  <p class="text-sm">{{ item.min_stock }} {{ item.unit }}</p>
-                </td>
-                <td class="py-3 px-4">
-                  <Badge :variant="getStockStatusVariant(item.status)">
-                    {{ getStockStatusText(item.status) }}
-                  </Badge>
-                </td>
-                <td class="py-3 px-4">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal class="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem @click="viewDetail(item)">
-                        <Eye class="mr-2 h-4 w-4" />
-                        查看详情
-                      </DropdownMenuItem>
-                      <DropdownMenuItem @click="adjustStock(item)">
-                        <Edit class="mr-2 h-4 w-4" />
-                        库存调整
-                      </DropdownMenuItem>
-                      <DropdownMenuItem @click="viewLog(item)">
-                        <History class="mr-2 h-4 w-4" />
-                        库存日志
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-color">库存列表</h3>
+          <div class="text-sm text-muted-color">
+            共 {{ filteredInventory.length }} 个商品
+          </div>
         </div>
-      </CardContent>
+      </template>
+
+      <template #content>
+        <DataTable
+          :value="filteredInventory"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+        >
+          <Column field="product_code" header="商品编码" sortable>
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+                {{ slotProps.data.product_code }}
+              </code>
+            </template>
+          </Column>
+          
+          <Column field="product_name" header="商品名称" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :image="slotProps.data.image"
+                  :label="slotProps.data.product_name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <span class="font-medium">{{ slotProps.data.product_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="warehouse_name" header="仓库" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <i class="pi pi-home text-primary"></i>
+                <span class="text-sm">{{ slotProps.data.warehouse_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="category_name" header="分类" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="slotProps.data.category_name"
+                severity="info"
+              />
+            </template>
+          </Column>
+          
+          <Column field="current_stock" header="当前库存" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <span class="font-medium">{{ slotProps.data.current_stock }}</span>
+                <span class="text-sm text-muted-color">{{ slotProps.data.unit }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="available_stock" header="可用库存" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <span>{{ slotProps.data.available_stock }}</span>
+                <span class="text-sm text-muted-color">{{ slotProps.data.unit }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="reserved_stock" header="预留库存" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <span>{{ slotProps.data.reserved_stock }}</span>
+                <span class="text-sm text-muted-color">{{ slotProps.data.unit }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="stock_status" header="库存状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.stock_status)"
+                :severity="getStatusSeverity(slotProps.data.stock_status)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="last_updated" header="最后更新" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.last_updated) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <div class="flex items-center space-x-1">
+                <Button
+                  v-tooltip="'查看详情'"
+                  icon="pi pi-eye"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewInventory(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'库存调整'"
+                  icon="pi pi-pencil"
+                  rounded
+                  text
+                  size="small"
+                  @click="adjustInventory(slotProps.data)"
+                />
+                <Button
+                  v-tooltip="'变动记录'"
+                  icon="pi pi-history"
+                  rounded
+                  text
+                  size="small"
+                  @click="viewHistory(slotProps.data)"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
 
     <!-- 库存调整对话框 -->
-    <Dialog v-model:open="showAdjustDialog">
-      <DialogContent class="sm:max-w-[400px]">
-        <DialogHeader>
-          <DialogTitle>库存调整</DialogTitle>
-          <DialogDescription>调整商品库存数量</DialogDescription>
-        </DialogHeader>
-        
-        <div class="space-y-4 py-4">
-          <div>
-            <Label>商品</Label>
-            <p class="text-sm text-muted-foreground mt-1">产品A (PA001)</p>
-          </div>
-          <div>
-            <Label>当前库存</Label>
-            <p class="text-sm text-muted-foreground mt-1">150 件</p>
-          </div>
-          <div>
-            <Label for="quantity">调整数量</Label>
-            <Input
-              id="quantity"
-              type="number"
-              placeholder="请输入调整数量"
-              class="mt-1"
+    <Dialog
+      v-model:visible="showAdjustDialog"
+      header="库存调整"
+      :style="{ width: '500px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">商品 *</label>
+            <Dropdown
+              v-model="adjustForm.product_id"
+              :options="products"
+              option-label="name"
+              option-value="id"
+              placeholder="选择商品"
+              filter
+              required
             />
           </div>
-          <div>
-            <Label for="reason">调整原因</Label>
-            <Input
-              id="reason"
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">仓库 *</label>
+            <Dropdown
+              v-model="adjustForm.warehouse_id"
+              :options="warehouses"
+              option-label="name"
+              option-value="id"
+              placeholder="选择仓库"
+              required
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">调整类型 *</label>
+            <Dropdown
+              v-model="adjustForm.adjust_type"
+              :options="adjustTypes"
+              option-label="label"
+              option-value="value"
+              placeholder="选择调整类型"
+              required
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">调整数量 *</label>
+            <InputNumber
+              v-model="adjustForm.quantity"
+              placeholder="调整数量"
+              :min="1"
+              required
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">调整原因</label>
+            <Textarea
+              v-model="adjustForm.reason"
               placeholder="请输入调整原因"
-              class="mt-1"
+              :rows="3"
             />
           </div>
         </div>
-        
-        <DialogFooter>
-          <Button variant="outline" @click="showAdjustDialog = false">
-            取消
-          </Button>
-          <Button @click="handleAdjust">
-            确认调整
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeAdjustDialog"
+          />
+          <Button
+            label="确认调整"
+            icon="pi pi-check"
+            :loading="adjusting"
+            @click="confirmAdjust"
+          />
+        </div>
+      </template>
     </Dialog>
+    
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import { 
-  Plus, Search, RefreshCw, MoreHorizontal, Package, TrendingUp, 
-  AlertTriangle, Warehouse, Eye, Edit, History
-} from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Dropdown from 'primevue/dropdown'
+import Textarea from 'primevue/textarea'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import Dialog from 'primevue/dialog'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
-// 导入组件
-import Button from '~/components/ui/Button.vue'
-import Card from '~/components/ui/Card.vue'
-import Input from '~/components/ui/Input.vue'
-import Label from '~/components/ui/Label.vue'
-import Badge from '~/components/ui/Badge.vue'
-import Dialog from '~/components/ui/Dialog.vue'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '~/components/ui/dropdown-menu'
+// 页面配置
+definePageMeta({
+  layout: 'default'
+})
 
-// 响应式数据
-const searchQuery = ref('')
-const selectedWarehouse = ref('')
-const selectedCategory = ref('')
-const selectedStatus = ref('')
+useHead({
+  title: '库存管理 - ERP 管理系统'
+})
+
+// 状态管理
+const loading = ref(false)
+const adjusting = ref(false)
 const showAdjustDialog = ref(false)
+const confirm = useConfirm()
 
-// 模拟库存数据
-const mockInventoryData = ref([
+// 筛选条件
+const searchQuery = ref('')
+const warehouseFilter = ref('')
+const categoryFilter = ref('')
+const statusFilter = ref('')
+
+// 调整表单
+const adjustForm = ref({
+  product_id: '',
+  warehouse_id: '',
+  adjust_type: 'in',
+  quantity: 0,
+  reason: ''
+})
+
+// 选项数据
+const warehouses = ref([
+  { id: '1', name: '原料仓库A' },
+  { id: '2', name: '成品仓库B' },
+  { id: '3', name: '工具仓库C' }
+])
+
+const categories = ref([
+  { id: '1', name: '电子产品' },
+  { id: '2', name: '服装鞋帽' },
+  { id: '3', name: '食品饮料' },
+  { id: '4', name: '办公用品' }
+])
+
+const products = ref([
+  { id: '1', name: 'iPhone 15 Pro' },
+  { id: '2', name: '华为 Mate 60' },
+  { id: '3', name: '小米 14' }
+])
+
+const statusOptions = ref([
+  { label: '正常', value: 'normal' },
+  { label: '低库存', value: 'low' },
+  { label: '缺货', value: 'out_of_stock' },
+  { label: '超储', value: 'overstock' }
+])
+
+const adjustTypes = ref([
+  { label: '入库', value: 'in' },
+  { label: '出库', value: 'out' },
+  { label: '盘点调整', value: 'adjust' },
+  { label: '损耗', value: 'loss' }
+])
+
+// 模拟数据
+const mockInventory = ref([
   {
     id: '1',
-    product_name: '产品A',
-    product_no: 'PA001',
-    warehouse_name: '主仓库',
-    current_stock: 150,
-    available_stock: 120,
-    reserved_stock: 30,
+    product_code: 'PRD001',
+    product_name: 'iPhone 15 Pro',
+    image: null,
+    warehouse_id: '1',
+    warehouse_name: '成品仓库B',
+    category_id: '1',
+    category_name: '电子产品',
+    current_stock: 120,
+    available_stock: 100,
+    reserved_stock: 20,
+    unit: '部',
+    stock_status: 'normal',
     min_stock: 50,
-    unit: '件',
-    status: 'normal'
+    max_stock: 500,
+    last_updated: new Date('2024-01-15')
   },
   {
     id: '2',
-    product_name: '产品B',
-    product_no: 'PB001',
-    warehouse_name: '原料仓库',
-    current_stock: 25,
-    available_stock: 25,
-    reserved_stock: 0,
-    min_stock: 30,
-    unit: '箱',
-    status: 'low'
+    product_code: 'PRD002',
+    product_name: '华为 Mate 60',
+    image: null,
+    warehouse_id: '1',
+    warehouse_name: '成品仓库B',
+    category_id: '1',
+    category_name: '电子产品',
+    current_stock: 15,
+    available_stock: 10,
+    reserved_stock: 5,
+    unit: '部',
+    stock_status: 'low',
+    min_stock: 20,
+    max_stock: 200,
+    last_updated: new Date('2024-01-14')
   },
   {
     id: '3',
-    product_name: '产品C',
-    product_no: 'PC001',
-    warehouse_name: '成品仓库',
+    product_code: 'PRD003',
+    product_name: '小米 14',
+    image: null,
+    warehouse_id: '1',
+    warehouse_name: '成品仓库B',
+    category_id: '1',
+    category_name: '电子产品',
     current_stock: 0,
     available_stock: 0,
     reserved_stock: 0,
-    min_stock: 20,
-    unit: '个',
-    status: 'out'
+    unit: '部',
+    stock_status: 'out_of_stock',
+    min_stock: 30,
+    max_stock: 300,
+    last_updated: new Date('2024-01-13')
   }
 ])
 
+// 计算属性
+const filteredInventory = computed(() => {
+  let result = mockInventory.value
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(item =>
+      item.product_name.toLowerCase().includes(query)
+      || item.product_code.toLowerCase().includes(query)
+    )
+  }
+
+  if (warehouseFilter.value) {
+    result = result.filter(item => item.warehouse_id === warehouseFilter.value)
+  }
+
+  if (categoryFilter.value) {
+    result = result.filter(item => item.category_id === categoryFilter.value)
+  }
+
+  if (statusFilter.value) {
+    result = result.filter(item => item.stock_status === statusFilter.value)
+  }
+
+  return result
+})
+
+// 状态映射
+const statusMap: Record<string, string> = {
+  normal: '正常',
+  low: '低库存',
+  out_of_stock: '缺货',
+  overstock: '超储'
+}
+
+const statusSeverityMap: Record<string, string> = {
+  normal: 'success',
+  low: 'warn',
+  out_of_stock: 'danger',
+  overstock: 'info'
+}
+
 // 方法
-const refreshData = () => {
-  console.log('刷新库存数据')
+const getStatusDisplayName = (status: string) => statusMap[status] || status
+
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleString('zh-CN')
 }
 
-const handleSearch = () => {
-  console.log('搜索库存')
+const resetFilters = () => {
+  searchQuery.value = ''
+  warehouseFilter.value = ''
+  categoryFilter.value = ''
+  statusFilter.value = ''
 }
 
-const viewDetail = (item: any) => {
-  console.log('查看详情:', item)
+const refreshData = async () => {
+  loading.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  }
+  catch (error) {
+    console.error('刷新数据失败:', error)
+  }
+  finally {
+    loading.value = false
+  }
 }
 
-const adjustStock = (item: any) => {
-  console.log('调整库存:', item)
+const viewInventory = (item: any) => {
+  console.log('查看库存详情:', item)
+}
+
+const adjustInventory = (item: any) => {
+  adjustForm.value.product_id = item.id
+  adjustForm.value.warehouse_id = item.warehouse_id
+  adjustForm.value.adjust_type = 'adjust'
+  adjustForm.value.quantity = 0
+  adjustForm.value.reason = ''
   showAdjustDialog.value = true
 }
 
-const viewLog = (item: any) => {
-  console.log('查看日志:', item)
+const viewHistory = (item: any) => {
+  console.log('查看变动记录:', item)
 }
 
-const handleAdjust = () => {
-  console.log('确认调整')
+const closeAdjustDialog = () => {
   showAdjustDialog.value = false
+  Object.assign(adjustForm.value, {
+    product_id: '',
+    warehouse_id: '',
+    adjust_type: 'in',
+    quantity: 0,
+    reason: ''
+  })
 }
 
-const getStockStatusVariant = (status: string) => {
-  const variants = {
-    normal: 'default' as const,
-    low: 'secondary' as const,
-    out: 'destructive' as const
+const confirmAdjust = async () => {
+  adjusting.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    console.log('库存调整:', adjustForm.value)
+    closeAdjustDialog()
   }
-  return variants[status as keyof typeof variants] || 'default'
-}
-
-const getStockStatusText = (status: string) => {
-  const texts: Record<string, string> = {
-    normal: '正常',
-    low: '低库存',
-    out: '缺货'
+  catch (error) {
+    console.error('库存调整失败:', error)
   }
-  return texts[status] || '未知'
+  finally {
+    adjusting.value = false
+  }
 }
 
-// 页面元数据
-definePageMeta({
-  layout: 'default'
+const exportInventory = () => {
+  console.log('导出库存数据')
+}
+
+// 初始化
+onMounted(() => {
+  refreshData()
 })
 </script> 

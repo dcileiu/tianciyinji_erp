@@ -1,219 +1,140 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="min-h-screen bg-surface-0">
     <!-- 顶部导航栏 -->
-    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header class="border-b border-surface sticky top-0 z-50 bg-surface-0">
+      <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          <!-- Logo 和导航 -->
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <NuxtLink to="/dashboard" class="flex items-center">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <span class="text-white font-bold text-lg">E</span>
+          <!-- Logo 和系统名称 -->
+          <div class="flex items-center space-x-4">
+            <NuxtLink to="/dashboard" class="flex items-center space-x-2">
+              <div class="w-8 h-8 bg-primary rounded-border flex items-center justify-center">
+                <span class="text-primary-contrast font-bold text-lg">E</span>
                 </div>
-                <span class="ml-2 text-xl font-bold text-gray-900 dark:text-white">
-                  ERP系统
-                </span>
+              <span class="text-xl font-bold text-color">ERP系统</span>
               </NuxtLink>
-            </div>
-
-            <!-- 动态导航菜单 -->
-            <DynamicNavigation />
           </div>
 
-          <!-- 右侧用户信息 -->
+          <!-- 右侧操作区 -->
           <div class="flex items-center space-x-4">
-            <!-- 主题切换按钮 -->
-            <button
-              class="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700 transition-colors"
+            <!-- 主题切换 -->
+            <Button
+              icon="pi pi-sun"
+              severity="secondary"
+              text
+              rounded
+              class="theme-toggle"
               @click="toggleTheme"
-            >
-              <Sun
-                v-if="isDark"
-                class="w-5 h-5"
               />
-              <Moon
-                v-else
-                class="w-5 h-5"
-              />
-            </button>
 
-            <!-- 用户下拉菜单 -->
+            <!-- 用户菜单 -->
             <div class="relative">
-              <button
-                @click="showUserMenu = !showUserMenu"
-                class="flex items-center space-x-2 p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span class="text-white text-sm font-medium">
-                    {{ userInitials }}
-                  </span>
+              <Button
+                :label="user?.email || '用户'"
+                icon="pi pi-user"
+                severity="secondary"
+                text
+                class="user-menu-trigger"
+                @click="toggleUserMenu"
+              />
+              
+              <OverlayPanel ref="userMenuPanel" class="user-menu-panel">
+                <div class="p-4 space-y-2">
+                  <div class="flex items-center space-x-2 p-2">
+                    <i class="pi pi-user text-muted-color"></i>
+                    <span class="text-sm text-muted-color">{{ user?.email }}</span>
                 </div>
-                <span class="hidden md:block text-sm font-medium">
-                  {{ userDisplayName }}
-                </span>
-                <ChevronDown class="w-4 h-4" />
-              </button>
-
-              <!-- 下拉菜单 -->
-              <div
-                v-if="showUserMenu"
-                v-click-away="() => showUserMenu = false"
-                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50"
-              >
-                <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">
-                    {{ userDisplayName }}
-                  </p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ user?.email }}
-                  </p>
+                  <Divider />
+                  <Button
+                    label="个人设置"
+                    icon="pi pi-cog"
+                    text
+                    severity="secondary"
+                    class="w-full justify-start"
+                    @click="goToSettings"
+                  />
+                  <Button
+                    label="退出登录"
+                    icon="pi pi-sign-out"
+                    text
+                    severity="danger"
+                    class="w-full justify-start"
+                    @click="logout"
+                  />
                 </div>
-                
-                <NuxtLink
-                  to="/profile"
-                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  @click="showUserMenu = false"
-                >
-                  个人资料
-                </NuxtLink>
-                
-                <NuxtLink
-                  to="/settings"
-                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  @click="showUserMenu = false"
-                >
-                  设置
-                </NuxtLink>
-                
-                <hr class="my-1 border-gray-200 dark:border-gray-700">
-                
-                <button
-                  @click="handleLogout"
-                  class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                >
-                  退出登录
-                </button>
-              </div>
+              </OverlayPanel>
             </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- 主要内容 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 主要内容区域 -->
+    <main class="flex-1">
       <slot />
     </main>
 
-    <!-- 移动端菜单（可选） -->
-    <!-- 这里可以添加移动端抽屉菜单 -->
-    
-    <!-- 全局加载指示器 -->
+    <!-- 全局加载器 -->
     <GlobalLoader />
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-import {
-  Sun,
-  Moon,
-  User,
-  LogOut,
-  Settings,
-  ChevronDown
-} from 'lucide-vue-next'
+<script setup lang="ts">
+import Button from 'primevue/button'
+import OverlayPanel from 'primevue/overlaypanel'
+import Divider from 'primevue/divider'
 
-import GlobalLoader from '~/components/ui/GlobalLoader.vue'
-
-// 用户状态
+// 获取用户信息
 const user = useSupabaseUser()
-const { auth } = useSupabaseClient()
 
-// 主题状态
+// 主题管理
 const isDark = ref(false)
-const showUserMenu = ref(false)
 
-// 用户显示名称
-const displayName = computed(() => {
-  if (!user.value) return ''
-  return user.value.user_metadata?.full_name || 
-         user.value.user_metadata?.name || 
-         user.value.email?.split('@')[0] || 
-         '用户'
-})
-
-// 用户首字母
-const userInitials = computed(() => {
-  if (!user.value) return ''
-  const name = displayName.value
-  if (name.length === 0) return ''
-  if (name.length === 1) return name.toUpperCase()
-  
-  // 如果是中文名，取前两个字符
-  if (/[\u4e00-\u9fa5]/.test(name)) {
-    return name.slice(0, 2)
-  }
-  
-  // 如果是英文名，取首字母
-  const words = name.split(' ')
-  if (words.length >= 2) {
-    return (words[0][0] + words[1][0]).toUpperCase()
-  }
-  return name[0].toUpperCase()
-})
+// 用户菜单引用
+const userMenuPanel = ref()
 
 // 切换主题
 const toggleTheme = () => {
   isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark', isDark.value)
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-}
-
-// 登出
-const handleLogout = async () => {
-  try {
-    await auth.signOut()
-    await navigateTo('/auth/login')
-  } catch (error) {
-    console.error('登出失败:', error)
-  }
+  // 这里可以实现主题切换逻辑
+  console.log('切换主题:', isDark.value ? '深色' : '浅色')
 }
 
 // 切换用户菜单
-const toggleUserMenu = () => {
-  showUserMenu.value = !showUserMenu.value
+const toggleUserMenu = (event: Event) => {
+  userMenuPanel.value.toggle(event)
 }
 
-// 关闭用户菜单
-const closeUserMenu = () => {
-  showUserMenu.value = false
+// 前往设置页面
+const goToSettings = () => {
+  userMenuPanel.value.hide()
+  navigateTo('/system/config')
 }
 
-// Click away directive
-const vClickAway = {
-  beforeMount(el, binding) {
-    el.clickAwayEvent = function (event) {
-      if (!(el === event.target || el.contains(event.target))) {
-        binding.value()
-      }
-    }
-    document.addEventListener('click', el.clickAwayEvent)
-  },
-  unmounted(el) {
-    document.removeEventListener('click', el.clickAwayEvent)
-  }
+// 退出登录
+const logout = async () => {
+  userMenuPanel.value.hide()
+  const { auth } = useSupabaseClient()
+  await auth.signOut()
+  await navigateTo('/login')
 }
-
-// 初始化主题
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme) {
-    isDark.value = savedTheme === 'dark'
-  } else {
-    isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
-  }
-  document.documentElement.classList.toggle('dark', isDark.value)
-})
 </script>
+
+<style scoped>
+.theme-toggle :deep(.p-button) {
+  color: var(--p-text-muted-color);
+}
+
+.theme-toggle :deep(.p-button:hover) {
+  color: var(--p-text-color);
+  background-color: var(--p-content-hover-background);
+}
+
+.user-menu-trigger :deep(.p-button) {
+  color: var(--p-text-muted-color);
+}
+
+.user-menu-trigger :deep(.p-button:hover) {
+  color: var(--p-text-color);
+  background-color: var(--p-content-hover-background);
+}
+</style>

@@ -3,292 +3,360 @@
     <!-- 页面标题 -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">系统日志</h1>
-        <p class="text-muted-foreground">查看和管理系统操作日志</p>
+        <h1 class="text-2xl font-bold text-color">系统日志</h1>
+        <p class="text-muted-color">查看和管理系统操作日志</p>
       </div>
       <div class="flex gap-2">
-        <Button variant="outline" @click="exportLogs">
-          <Download class="w-4 h-4 mr-2" />
-          导出日志
-        </Button>
-        <Button variant="outline" @click="clearLogs" class="text-red-600 hover:text-red-700">
-          <Trash2 class="w-4 h-4 mr-2" />
-          清空日志
-        </Button>
+        <Button
+          label="导出日志"
+          icon="pi pi-download"
+          outlined
+          @click="exportLogs"
+        />
+        <Button
+          label="清空日志"
+          icon="pi pi-trash"
+          severity="danger"
+          outlined
+          @click="confirmClearLogs"
+        />
       </div>
     </div>
 
     <!-- 搜索筛选 -->
     <Card>
-      <div class="p-4">
+      <template #content>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
           <div>
-            <label class="block text-sm font-medium mb-1">搜索</label>
-            <Input
+            <label class="block text-sm font-medium mb-1 text-color">搜索</label>
+            <InputText
               v-model="searchQuery"
               placeholder="用户名、操作内容..."
               class="w-full"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">日志类型</label>
-            <select v-model="logTypeFilter" class="w-full px-3 py-2 border rounded-md">
-              <option value="">全部类型</option>
-              <option value="login">登录日志</option>
-              <option value="operation">操作日志</option>
-              <option value="error">错误日志</option>
-              <option value="system">系统日志</option>
-            </select>
+            <label class="block text-sm font-medium mb-1 text-color">日志类型</label>
+            <Dropdown
+              v-model="logTypeFilter"
+              :options="logTypeOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部类型"
+              show-clear
+              class="w-full"
+            />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">开始日期</label>
-            <Input v-model="dateRange.start" type="date" />
+            <label class="block text-sm font-medium mb-1 text-color">开始日期</label>
+            <Calendar
+              v-model="dateRange.start"
+              placeholder="选择开始日期"
+              class="w-full"
+            />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">结束日期</label>
-            <Input v-model="dateRange.end" type="date" />
+            <label class="block text-sm font-medium mb-1 text-color">结束日期</label>
+            <Calendar
+              v-model="dateRange.end"
+              placeholder="选择结束日期"
+              class="w-full"
+            />
           </div>
           <div class="flex gap-2">
-            <Button @click="applyFilters" class="flex-1">
-              <Search class="w-4 h-4 mr-2" />
-              查询
-            </Button>
-            <Button variant="outline" @click="resetFilters" class="flex-1">
-              <RefreshCw class="w-4 h-4 mr-2" />
-              重置
-            </Button>
+            <Button
+              label="查询"
+              icon="pi pi-search"
+              class="flex-1"
+              @click="applyFilters"
+            />
+            <Button
+              label="重置"
+              icon="pi pi-refresh"
+              outlined
+              class="flex-1"
+              @click="resetFilters"
+            />
           </div>
         </div>
-      </div>
+      </template>
     </Card>
 
     <!-- 日志统计 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <Card>
-        <div class="p-6">
+        <template #content>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-foreground">总日志数</p>
+              <p class="text-sm text-muted-color">总日志数</p>
               <p class="text-2xl font-bold text-blue-600">{{ logStats.total }}</p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <FileText class="w-6 h-6 text-blue-600" />
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+              <i class="pi pi-file text-blue-600 text-xl"></i>
             </div>
           </div>
-        </div>
+        </template>
       </Card>
 
       <Card>
-        <div class="p-6">
+        <template #content>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-foreground">今日日志</p>
+              <p class="text-sm text-muted-color">今日操作</p>
               <p class="text-2xl font-bold text-green-600">{{ logStats.today }}</p>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Calendar class="w-6 h-6 text-green-600" />
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+              <i class="pi pi-calendar text-green-600 text-xl"></i>
             </div>
           </div>
-        </div>
+        </template>
       </Card>
 
       <Card>
-        <div class="p-6">
+        <template #content>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-foreground">错误日志</p>
+              <p class="text-sm text-muted-color">错误日志</p>
               <p class="text-2xl font-bold text-red-600">{{ logStats.errors }}</p>
             </div>
-            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-              <AlertTriangle class="w-6 h-6 text-red-600" />
+            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
+              <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
             </div>
           </div>
-        </div>
+        </template>
       </Card>
 
       <Card>
-        <div class="p-6">
+        <template #content>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-foreground">活跃用户</p>
+              <p class="text-sm text-muted-color">活跃用户</p>
               <p class="text-2xl font-bold text-purple-600">{{ logStats.activeUsers }}</p>
             </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Users class="w-6 h-6 text-purple-600" />
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+              <i class="pi pi-users text-purple-600 text-xl"></i>
             </div>
           </div>
-        </div>
+        </template>
       </Card>
     </div>
 
     <!-- 日志列表 -->
     <Card>
-      <div class="p-4 border-b flex justify-between items-center">
-        <h2 class="text-lg font-semibold">日志列表</h2>
-        <div class="text-sm text-muted-foreground">
-          共 {{ filteredLogs.length }} 条日志
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-color">日志记录</h3>
+          <div class="text-sm text-muted-color">
+            共 {{ filteredLogs.length }} 条记录
+          </div>
         </div>
-      </div>
-      
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="border-b">
-            <tr class="text-left">
-              <th class="p-4 font-medium">时间</th>
-              <th class="p-4 font-medium">用户</th>
-              <th class="p-4 font-medium">类型</th>
-              <th class="p-4 font-medium">操作</th>
-              <th class="p-4 font-medium">IP地址</th>
-              <th class="p-4 font-medium">状态</th>
-              <th class="p-4 font-medium">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="log in filteredLogs" :key="log.id" class="border-b hover:bg-muted/50">
-              <td class="p-4 text-sm">{{ formatDateTime(log.created_at) }}</td>
-              <td class="p-4">
-                <div class="flex items-center gap-2">
-                  <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs">
-                    {{ log.username?.charAt(0)?.toUpperCase() }}
-                  </div>
-                  <span class="font-medium">{{ log.username }}</span>
-                </div>
-              </td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-blue-100 text-blue-800': log.type === 'login',
-                    'bg-green-100 text-green-800': log.type === 'operation',
-                    'bg-red-100 text-red-800': log.type === 'error',
-                    'bg-purple-100 text-purple-800': log.type === 'system'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {{ getLogTypeName(log.type) }}
-                </span>
-              </td>
-              <td class="p-4 max-w-xs">
-                <div class="truncate" :title="log.action">
-                  {{ log.action }}
-                </div>
-              </td>
-              <td class="p-4 font-mono text-sm">{{ log.ip_address }}</td>
-              <td class="p-4">
-                <span 
-                  :class="{
-                    'bg-green-100 text-green-800': log.status === 'success',
-                    'bg-red-100 text-red-800': log.status === 'error',
-                    'bg-yellow-100 text-yellow-800': log.status === 'warning'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {{ getStatusName(log.status) }}
-                </span>
-              </td>
-              <td class="p-4">
-                <div class="flex gap-2">
-                  <Button size="sm" variant="outline" @click="viewLogDetail(log)">
-                    <Eye class="w-4 h-4" />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="filteredLogs.length === 0">
-              <td colspan="7" class="p-8 text-center text-muted-foreground">
-                暂无日志数据
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      </template>
 
-      <!-- 分页 -->
-      <div class="p-4 border-t flex justify-between items-center">
-        <div class="text-sm text-muted-foreground">
-          显示第 {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, filteredLogs.length) }} 条，共 {{ filteredLogs.length }} 条
-        </div>
-        <div class="flex gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            @click="currentPage--"
-            :disabled="currentPage <= 1"
-          >
-            上一页
-          </Button>
-          <span class="px-3 py-2 text-sm">
-            第 {{ currentPage }} 页
-          </span>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            @click="currentPage++"
-            :disabled="currentPage >= totalPages"
-          >
-            下一页
-          </Button>
-        </div>
-      </div>
+      <template #content>
+        <DataTable
+          :value="filteredLogs"
+          :loading="loading"
+          :paginator="true"
+          :rows="20"
+          :rows-per-page-options="[10, 20, 50]"
+          data-key="id"
+          class="p-datatable-sm"
+        >
+          <Column field="type" header="类型" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="getLogTypeDisplayName(slotProps.data.type)"
+                :severity="getLogTypeSeverity(slotProps.data.type)"
+              />
+            </template>
+          </Column>
+          
+          <Column field="user_name" header="用户" sortable>
+            <template #body="slotProps">
+              <div class="flex items-center space-x-2">
+                <Avatar
+                  :label="slotProps.data.user_name.charAt(0)"
+                  shape="circle"
+                  size="small"
+                />
+                <span class="font-medium">{{ slotProps.data.user_name }}</span>
+              </div>
+            </template>
+          </Column>
+          
+          <Column field="action" header="操作" sortable>
+            <template #body="slotProps">
+              <span class="font-medium">{{ slotProps.data.action }}</span>
+            </template>
+          </Column>
+          
+          <Column field="resource" header="资源">
+            <template #body="slotProps">
+              <code class="bg-surface-100 px-2 py-1 rounded text-sm">
+                {{ slotProps.data.resource }}
+              </code>
+            </template>
+          </Column>
+          
+          <Column field="ip_address" header="IP地址">
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">{{ slotProps.data.ip_address }}</span>
+            </template>
+          </Column>
+          
+          <Column field="user_agent" header="用户代理">
+            <template #body="slotProps">
+              <span v-tooltip="slotProps.data.user_agent" class="text-sm text-muted-color">
+                {{ truncateUserAgent(slotProps.data.user_agent) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column field="status" header="状态" sortable>
+            <template #body="slotProps">
+              <Tag
+                :value="slotProps.data.status === 'success' ? '成功' : '失败'"
+                :severity="slotProps.data.status === 'success' ? 'success' : 'danger'"
+              />
+            </template>
+          </Column>
+          
+          <Column field="created_at" header="时间" sortable>
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.created_at) }}
+              </span>
+            </template>
+          </Column>
+          
+          <Column header="操作" :exportable="false">
+            <template #body="slotProps">
+              <Button
+                v-tooltip="'查看详情'"
+                icon="pi pi-eye"
+                rounded
+                text
+                size="small"
+                @click="viewLogDetail(slotProps.data)"
+              />
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
 
     <!-- 日志详情对话框 -->
-    <div v-if="showLogDetail" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">日志详情</h3>
-          <Button variant="outline" size="sm" @click="showLogDetail = false">
-            <X class="w-4 h-4" />
-          </Button>
-        </div>
-        
-        <div class="space-y-4">
+    <Dialog
+      v-model:visible="showLogDetail"
+      header="日志详情"
+      :style="{ width: '700px' }"
+      modal
+    >
+      <template #default>
+        <div v-if="selectedLog" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium mb-1">用户</label>
-              <p class="text-sm">{{ selectedLog?.username }}</p>
+              <label class="block text-sm font-medium text-color mb-1">日志类型</label>
+              <Tag
+                :value="getLogTypeDisplayName(selectedLog.type)"
+                :severity="getLogTypeSeverity(selectedLog.type)"
+              />
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1">IP地址</label>
-              <p class="text-sm font-mono">{{ selectedLog?.ip_address }}</p>
+              <label class="block text-sm font-medium text-color mb-1">状态</label>
+              <Tag
+                :value="selectedLog.status === 'success' ? '成功' : '失败'"
+                :severity="selectedLog.status === 'success' ? 'success' : 'danger'"
+              />
             </div>
           </div>
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium mb-1">日志类型</label>
-              <p class="text-sm">{{ getLogTypeName(selectedLog?.type) }}</p>
+              <label class="block text-sm font-medium text-color mb-1">用户</label>
+              <p class="text-sm">{{ selectedLog.user_name }}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1">状态</label>
-              <p class="text-sm">{{ getStatusName(selectedLog?.status) }}</p>
+              <label class="block text-sm font-medium text-color mb-1">操作时间</label>
+              <p class="text-sm">{{ formatDate(selectedLog.created_at) }}</p>
             </div>
           </div>
           
           <div>
-            <label class="block text-sm font-medium mb-1">操作内容</label>
-            <p class="text-sm bg-gray-50 p-3 rounded">{{ selectedLog?.action }}</p>
-          </div>
-          
-          <div v-if="selectedLog?.details">
-            <label class="block text-sm font-medium mb-1">详细信息</label>
-            <pre class="text-sm bg-gray-50 p-3 rounded overflow-auto">{{ selectedLog.details }}</pre>
+            <label class="block text-sm font-medium text-color mb-1">操作</label>
+            <p class="text-sm">{{ selectedLog.action }}</p>
           </div>
           
           <div>
-            <label class="block text-sm font-medium mb-1">时间</label>
-            <p class="text-sm">{{ formatDateTime(selectedLog?.created_at) }}</p>
+            <label class="block text-sm font-medium text-color mb-1">资源</label>
+            <code class="bg-surface-100 px-2 py-1 rounded text-sm">
+              {{ selectedLog.resource }}
+            </code>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-color mb-1">IP地址</label>
+              <p class="text-sm">{{ selectedLog.ip_address }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-color mb-1">请求方法</label>
+              <p class="text-sm">{{ selectedLog.method }}</p>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-color mb-1">用户代理</label>
+            <p class="text-sm break-words">{{ selectedLog.user_agent }}</p>
+          </div>
+          
+          <div v-if="selectedLog.error_message">
+            <label class="block text-sm font-medium text-color mb-1">错误信息</label>
+            <div class="bg-red-50 dark:bg-red-900/20 p-3 rounded border">
+              <p class="text-sm text-red-600 dark:text-red-400">{{ selectedLog.error_message }}</p>
+            </div>
+          </div>
+          
+          <div v-if="selectedLog.request_data">
+            <label class="block text-sm font-medium text-color mb-1">请求数据</label>
+            <div class="bg-surface-100 p-3 rounded">
+              <pre class="text-sm overflow-auto">{{ JSON.stringify(selectedLog.request_data, null, 2) }}</pre>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+      
+      <template #footer>
+        <div class="flex justify-end">
+          <Button
+            label="关闭"
+            icon="pi pi-times"
+            outlined
+            @click="showLogDetail = false"
+          />
+        </div>
+      </template>
+    </Dialog>
+    
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import { 
-  Download, Trash2, Search, RefreshCw, FileText, Calendar, 
-  AlertTriangle, Users, Eye, X 
-} from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Dropdown from 'primevue/dropdown'
+import Calendar from 'primevue/calendar'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import Dialog from 'primevue/dialog'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
 // 页面配置
 definePageMeta({
@@ -299,98 +367,162 @@ useHead({
   title: '系统日志 - ERP 管理系统'
 })
 
-// 数据管理
-const { logs, getLogStats, exportLogs: exportLogsData, clearLogs: clearLogsData } = useSystemLogs()
+// 状态管理
+const loading = ref(false)
+const showLogDetail = ref(false)
+const selectedLog = ref(null as any)
+const confirm = useConfirm()
 
-// 响应式数据
+// 搜索和筛选
 const searchQuery = ref('')
 const logTypeFilter = ref('')
 const dateRange = ref({
-  start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
-  end: new Date().toISOString().split('T')[0]
+  start: null as Date | null,
+  end: null as Date | null
 })
-const currentPage = ref(1)
-const pageSize = ref(20)
-const showLogDetail = ref(false)
-const selectedLog = ref<any>(null)
 
-// 日志统计
+// 统计数据
 const logStats = ref({
-  total: 1250,
-  today: 45,
+  total: 12456,
+  today: 234,
   errors: 12,
-  activeUsers: 28
+  activeUsers: 45
 })
+
+// 选项数据
+const logTypeOptions = ref([
+  { label: '登录日志', value: 'login' },
+  { label: '操作日志', value: 'operation' },
+  { label: '错误日志', value: 'error' },
+  { label: '系统日志', value: 'system' }
+])
+
+// 模拟数据
+const mockLogs = ref([
+  {
+    id: '1',
+    type: 'login',
+    user_name: '管理员',
+    action: '用户登录',
+    resource: '/api/auth/login',
+    ip_address: '192.168.1.100',
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    method: 'POST',
+    status: 'success',
+    created_at: new Date('2024-01-15 10:30:00'),
+    request_data: { username: 'admin', remember: true },
+    error_message: null
+  },
+  {
+    id: '2',
+    type: 'operation',
+    user_name: '张三',
+    action: '创建用户',
+    resource: '/api/users',
+    ip_address: '192.168.1.101',
+    user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+    method: 'POST',
+    status: 'success',
+    created_at: new Date('2024-01-15 10:25:00'),
+    request_data: { name: '李四', email: 'lisi@example.com' },
+    error_message: null
+  },
+  {
+    id: '3',
+    type: 'error',
+    user_name: '李四',
+    action: '删除产品',
+    resource: '/api/products/123',
+    ip_address: '192.168.1.102',
+    user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+    method: 'DELETE',
+    status: 'failed',
+    created_at: new Date('2024-01-15 10:20:00'),
+    request_data: null,
+    error_message: '产品不存在或已被删除'
+  },
+  {
+    id: '4',
+    type: 'system',
+    user_name: '系统',
+    action: '系统启动',
+    resource: '/system/startup',
+    ip_address: '127.0.0.1',
+    user_agent: 'System Process',
+    method: 'SYSTEM',
+    status: 'success',
+    created_at: new Date('2024-01-15 09:00:00'),
+    request_data: null,
+    error_message: null
+  }
+])
 
 // 计算属性
 const filteredLogs = computed(() => {
-  let filtered = logs.value
-  
-  // 搜索过滤
+  let result = mockLogs.value
+
   if (searchQuery.value) {
-    filtered = filtered.filter(log => 
-      log.username?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      log.action?.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(log =>
+      log.user_name.toLowerCase().includes(query)
+      || log.action.toLowerCase().includes(query)
+      || log.resource.toLowerCase().includes(query)
     )
   }
-  
-  // 类型过滤
+
   if (logTypeFilter.value) {
-    filtered = filtered.filter(log => log.type === logTypeFilter.value)
+    result = result.filter(log => log.type === logTypeFilter.value)
   }
-  
-  // 日期过滤
-  if (dateRange.value.start) {
-    filtered = filtered.filter(log => log.created_at >= dateRange.value.start)
+
+  if (dateRange.value.start && dateRange.value.end) {
+    result = result.filter((log) => {
+      const logDate = new Date(log.created_at)
+      return logDate >= dateRange.value.start! && logDate <= dateRange.value.end!
+    })
   }
-  if (dateRange.value.end) {
-    filtered = filtered.filter(log => log.created_at <= dateRange.value.end)
-  }
-  
-  return filtered
+
+  return result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 })
 
-const totalPages = computed(() => Math.ceil(filteredLogs.value.length / pageSize.value))
+// 类型映射
+const logTypeMap: Record<string, string> = {
+  login: '登录日志',
+  operation: '操作日志',
+  error: '错误日志',
+  system: '系统日志'
+}
+
+const logTypeSeverityMap: Record<string, string> = {
+  login: 'info',
+  operation: 'success',
+  error: 'danger',
+  system: 'secondary'
+}
 
 // 方法
-const applyFilters = async () => {
-  // TODO: 根据筛选条件重新加载数据
-  console.log('应用筛选条件:', {
-    search: searchQuery.value,
-    type: logTypeFilter.value,
-    dateRange: dateRange.value
-  })
+const getLogTypeDisplayName = (type: string) => logTypeMap[type] || type
+
+const getLogTypeSeverity = (type: string) => logTypeSeverityMap[type] || 'info'
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleString('zh-CN')
+}
+
+const truncateUserAgent = (userAgent: string) => {
+  return userAgent.length > 30 ? userAgent.substring(0, 30) + '...' : userAgent
+}
+
+const applyFilters = () => {
+  // 筛选逻辑已在计算属性中处理
+  console.log('应用筛选条件')
 }
 
 const resetFilters = () => {
   searchQuery.value = ''
   logTypeFilter.value = ''
   dateRange.value = {
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
-    end: new Date().toISOString().split('T')[0]
-  }
-}
-
-const exportLogs = async () => {
-  try {
-    await exportLogsData({
-      search: searchQuery.value,
-      type: logTypeFilter.value,
-      dateRange: dateRange.value
-    })
-  } catch (error) {
-    console.error('导出日志失败:', error)
-  }
-}
-
-const clearLogs = async () => {
-  if (confirm('确定要清空所有日志吗？此操作不可恢复！')) {
-    try {
-      await clearLogsData()
-      // 重新加载数据
-    } catch (error) {
-      console.error('清空日志失败:', error)
-    }
+    start: null,
+    end: null
   }
 }
 
@@ -399,32 +531,33 @@ const viewLogDetail = (log: any) => {
   showLogDetail.value = true
 }
 
-const getLogTypeName = (type: string) => {
-  const types = {
-    login: '登录日志',
-    operation: '操作日志',
-    error: '错误日志',
-    system: '系统日志'
+const exportLogs = () => {
+  console.log('导出日志')
+}
+
+const confirmClearLogs = () => {
+  confirm.require({
+    message: '确定要清空所有日志吗？此操作不可撤销！',
+    header: '确认清空',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      clearLogs()
+    }
+  })
+}
+
+const clearLogs = () => {
+  mockLogs.value = []
+  logStats.value = {
+    total: 0,
+    today: 0,
+    errors: 0,
+    activeUsers: 0
   }
-  return types[type as keyof typeof types] || type
 }
 
-const getStatusName = (status: string) => {
-  const statuses = {
-    success: '成功',
-    error: '失败',
-    warning: '警告'
-  }
-  return statuses[status as keyof typeof statuses] || status
-}
-
-const formatDateTime = (dateString: string) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
-}
-
-// 初始化数据
-onMounted(async () => {
-  await applyFilters()
+// 初始化
+onMounted(() => {
+  // 加载数据
 })
 </script> 

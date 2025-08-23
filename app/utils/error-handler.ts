@@ -1,5 +1,3 @@
-import { log } from './logger'
-
 // 错误类型定义
 export interface AppError {
   code: string
@@ -91,70 +89,56 @@ export function parseError(error: unknown): AppError {
 // 检查是否为 AppError
 export function isAppError(error: unknown): error is AppError {
   return (
-    error !== null &&
-    typeof error === 'object' &&
-    'code' in error &&
-    'message' in error
+    error !== null
+    && typeof error === 'object'
+    && 'code' in error
+    && 'message' in error
   )
 }
 
-// 错误处理器类
-export class ErrorHandler {
-  // 处理错误并记录日志
-  static handle(error: unknown, context?: string): AppError {
-    const appError = parseError(error)
-    
-    // 记录错误日志
-    const contextInfo = context ? ` in ${context}` : ''
-    log.error(`Error${contextInfo}:`, {
-      code: appError.code,
-      message: appError.message,
-      details: appError.details
-    })
-
-    return appError
-  }
-
-  // 处理异步操作的错误
-  static async handleAsync<T>(
-    operation: () => Promise<T>,
-    context?: string
-  ): Promise<{ success: true; data: T } | { success: false; error: AppError }> {
-    try {
-      const data = await operation()
-      return { success: true, data }
-    } catch (error) {
-      const appError = this.handle(error, context)
-      return { success: false, error: appError }
-    }
-  }
-
-  // 显示用户友好的错误消息
-  static getDisplayMessage(error: AppError): string {
-    // 根据错误代码返回用户友好的消息
-    switch (error.code) {
-      case ErrorCode.NETWORK_ERROR:
-        return '网络连接失败，请检查网络后重试'
-      case ErrorCode.AUTH_ERROR:
-        return '登录状态已过期，请重新登录'
-      case ErrorCode.PERMISSION_ERROR:
-        return '您没有权限执行此操作'
-      case ErrorCode.VALIDATION_ERROR:
-        return error.message || '输入的数据格式不正确'
-      default:
-        return error.message || '操作失败，请稍后重试'
-    }
-  }
-}
-
-// 便捷的错误处理函数
+// 处理错误并记录日志
 export function handleError(error: unknown, context?: string): AppError {
-  return ErrorHandler.handle(error, context)
+  const appError = parseError(error)
+  
+  // 记录错误日志到控制台
+  const contextInfo = context ? ` in ${context}` : ''
+  console.error(`Error${contextInfo}:`, {
+    code: appError.code,
+    message: appError.message,
+    details: appError.details
+  })
+
+  return appError
 }
 
-export function handleAsyncError<T>(
+// 处理异步操作的错误
+export async function handleAsyncError<T>(
   operation: () => Promise<T>,
   context?: string
-): Promise<{ success: true; data: T } | { success: false; error: AppError }> {
-  return ErrorHandler.handleAsync(operation, context)
+): Promise<{ success: true, data: T } | { success: false, error: AppError }> {
+  try {
+    const data = await operation()
+    return { success: true, data }
+  }
+  catch (error) {
+    const appError = handleError(error, context)
+    return { success: false, error: appError }
+  }
+}
+
+// 显示用户友好的错误消息
+export function getDisplayMessage(error: AppError): string {
+  // 根据错误代码返回用户友好的消息
+  switch (error.code) {
+    case ErrorCode.NETWORK_ERROR:
+      return '网络连接失败，请检查网络后重试'
+    case ErrorCode.AUTH_ERROR:
+      return '登录状态已过期，请重新登录'
+    case ErrorCode.PERMISSION_ERROR:
+      return '您没有权限执行此操作'
+    case ErrorCode.VALIDATION_ERROR:
+      return error.message || '输入的数据格式不正确'
+    default:
+      return error.message || '操作失败，请稍后重试'
+  }
 } 

@@ -1,190 +1,211 @@
 <template>
-  <div class="w-full max-w-md mx-auto">
-    <Card class="p-8">
-      <!-- 头部 -->
-      <div class="text-center mb-8">
-        <h1 class="text-2xl font-bold text-foreground">
-          ERP 管理系统
-        </h1>
-        <p class="text-sm text-muted-foreground mt-2">
-          请登录您的账户
-        </p>
-      </div>
-
-      <!-- 登录表单 -->
-      <form @submit.prevent="handleLogin" class="space-y-6">
-        <!-- 邮箱输入 -->
-        <div>
-          <label for="email" class="block text-sm font-medium text-foreground mb-2">
-            邮箱地址
-          </label>
-          <Input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
-            autocomplete="email"
-            :class="errors.email ? 'border-destructive' : ''"
-            placeholder="请输入您的邮箱"
-          />
-          <p v-if="errors.email" class="mt-1 text-sm text-destructive">
-            {{ errors.email }}
-          </p>
+  <div class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-primary-100 to-primary-200">
+    <Card class="w-full max-w-md shadow-2xl">
+      <template #header>
+        <div class="text-center p-6">
+          <h1 class="text-2xl font-semibold text-color mb-2">欢迎登录</h1>
+          <p class="text-sm text-muted-color">请输入您的账户信息</p>
         </div>
+      </template>
 
-        <!-- 密码输入 -->
-        <div>
-          <label for="password" class="block text-sm font-medium text-foreground mb-2">
-            密码
-          </label>
-          <Input
-            id="password"
-            v-model="form.password"
-            type="password"
-            required
-            autocomplete="current-password"
-            :class="errors.password ? 'border-destructive' : ''"
-            placeholder="请输入您的密码"
-          />
-          <p v-if="errors.password" class="mt-1 text-sm text-destructive">
-            {{ errors.password }}
-          </p>
-        </div>
-
-        <!-- 忘记密码 -->
-        <div class="text-right">
-          <NuxtLink 
-            to="/forgot-password" 
-            class="text-sm text-primary hover:text-primary/80 transition-colors"
-          >
-            忘记密码？
-          </NuxtLink>
-        </div>
-
-        <!-- 错误提示 -->
-        <div v-if="loginError" class="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <AlertTriangle class="h-5 w-5 text-destructive" />
+      <template #content>
+        <form class="flex flex-col gap-6" @submit.prevent="handleLogin">
+          <!-- 邮箱输入 -->
+          <div class="flex flex-col gap-2">
+            <label for="email" class="text-sm font-medium text-color">邮箱地址</label>
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon">
+                <i class="pi pi-envelope"></i>
+              </span>
+              <InputText
+                id="email"
+                v-model="form.email"
+                type="email"
+                placeholder="请输入邮箱地址"
+                :class="{ 'p-invalid': emailError }"
+                @blur="validateEmail"
+              />
             </div>
-            <div class="ml-3">
-              <p class="text-sm text-destructive">
-                {{ loginError }}
-              </p>
-            </div>
+            <small v-if="emailError" class="p-error">{{ emailError }}</small>
           </div>
-        </div>
 
-        <!-- 登录按钮 -->
-        <Button
-          type="submit"
-          :disabled="isLoading"
-          class="w-full"
-        >
-          <span v-if="!isLoading">登录</span>
-          <span v-else class="flex items-center justify-center">
-            <Loader2 class="animate-spin mr-2 h-4 w-4" />
-            登录中...
-          </span>
-        </Button>
-      </form>
+          <!-- 密码输入 -->
+          <div class="flex flex-col gap-2">
+            <label for="password" class="text-sm font-medium text-color">密码</label>
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon">
+                <i class="pi pi-lock"></i>
+              </span>
+              <Password
+                id="password"
+                v-model="form.password"
+                placeholder="请输入密码"
+                :feedback="false"
+                toggle-mask
+                :class="{ 'p-invalid': passwordError }"
+                @blur="validatePassword"
+              />
+            </div>
+            <small v-if="passwordError" class="p-error">{{ passwordError }}</small>
+          </div>
 
-      <!-- 注册提示 -->
-      <div class="mt-6 text-center">
-        <p class="text-sm text-muted-foreground">
-          还没有账户？
-          <NuxtLink 
-            to="/register" 
-            class="font-medium text-primary hover:text-primary/80 transition-colors"
+          <!-- 错误信息 -->
+          <InlineMessage v-if="error" severity="error" class="w-full">
+            {{ error }}
+          </InlineMessage>
+
+          <!-- 登录按钮 -->
+          <Button
+            type="submit"
+            label="登录"
+            :loading="loading"
+            class="w-full mt-2"
+            severity="primary"
+          />
+
+          <!-- 其他选项 -->
+          <div class="text-center">
+            <NuxtLink to="/forgot-password" class="text-sm text-primary hover:text-primary-emphasis no-underline hover:underline">
+              忘记密码？
+            </NuxtLink>
+          </div>
+
+          <!-- 分割线 -->
+          <Divider align="center">
+            <span class="text-sm text-muted-color bg-surface-0 px-4">或</span>
+          </Divider>
+
+          <!-- 第三方登录 -->
+          <Button
+            label="使用 Google 登录"
+            severity="secondary"
+            outlined
+            class="w-full"
+            @click="loginWithGoogle"
           >
-            立即注册
-          </NuxtLink>
-        </p>
-      </div>
+            <template #icon>
+              <i class="pi pi-google text-lg"></i>
+            </template>
+          </Button>
+
+          <!-- 注册链接 -->
+          <div class="text-center text-sm">
+            <span class="text-muted-color">还没有账户？</span>
+            <NuxtLink to="/register" class="text-primary hover:text-primary-emphasis font-medium ml-1 no-underline hover:underline">
+              立即注册
+            </NuxtLink>
+          </div>
+        </form>
+      </template>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { AlertTriangle, Loader2 } from 'lucide-vue-next'
-import Card from '~/components/ui/Card.vue'
-import Input from '~/components/ui/Input.vue'
-import Button from '~/components/ui/Button.vue'
-import type { LoginForm } from '~/types/auth'
+import Card from 'primevue/card'
+import InputText from 'primevue/inputtext'
+import Password from 'primevue/password'
+import Button from 'primevue/button'
+import InlineMessage from 'primevue/inlinemessage'
+import Divider from 'primevue/divider'
 
-// 响应式数据
-const form = reactive<LoginForm>({
+// 响应式表单数据
+const form = reactive({
   email: '',
   password: ''
 })
 
-const errors = reactive({
-  email: '',
-  password: ''
-})
+// 状态管理
+const loading = ref(false)
+const error = ref('')
+const emailError = ref('')
+const passwordError = ref('')
 
-const isLoading = ref(false)
-const loginError = ref('')
+// Supabase 客户端
+const { auth } = useSupabaseClient()
 
-// 使用认证 composable
-const { login } = useAuth()
-
-// 表单验证
-const validateForm = (): boolean => {
-  // 重置错误
-  errors.email = ''
-  errors.password = ''
-
-  let isValid = true
-
-  // 验证邮箱
+// 验证邮箱
+const validateEmail = () => {
   if (!form.email) {
-    errors.email = '请输入邮箱地址'
-    isValid = false
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = '请输入有效的邮箱地址'
-    isValid = false
+    emailError.value = '请输入邮箱地址'
+    return false
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    emailError.value = '请输入有效的邮箱地址'
+    return false
+  }
+  emailError.value = ''
+  return true
+}
 
-  // 验证密码
+// 验证密码
+const validatePassword = () => {
   if (!form.password) {
-    errors.password = '请输入密码'
-    isValid = false
-  } else if (form.password.length < 6) {
-    errors.password = '密码至少需要6个字符'
-    isValid = false
+    passwordError.value = '请输入密码'
+    return false
   }
-
-  return isValid
+  if (form.password.length < 6) {
+    passwordError.value = '密码长度至少6位'
+    return false
+  }
+  passwordError.value = ''
+  return true
 }
 
 // 处理登录
 const handleLogin = async () => {
   // 清除之前的错误
-  loginError.value = ''
-
+  error.value = ''
+  
   // 验证表单
-  if (!validateForm()) {
+  const isEmailValid = validateEmail()
+  const isPasswordValid = validatePassword()
+  
+  if (!isEmailValid || !isPasswordValid) {
     return
   }
 
-  isLoading.value = true
+  loading.value = true
 
   try {
-    const result = await login(form)
+    const { error: signInError } = await auth.signInWithPassword({
+      email: form.email,
+      password: form.password
+    })
 
-    if (result.success) {
-      // 登录成功，重定向到仪表板
-      await navigateTo('/dashboard')
-    } else {
-      loginError.value = result.error?.message || '登录失败，请重试'
+    if (signInError) {
+      throw signInError
     }
-  } catch (err) {
-    console.error('Login error:', err)
-    loginError.value = '网络错误，请检查您的网络连接'
-  } finally {
-    isLoading.value = false
+
+    // 登录成功，重定向到仪表板
+    await navigateTo('/dashboard')
+  }
+  catch (err: any) {
+    console.error('登录失败:', err)
+    error.value = err.message || '登录失败，请重试'
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+// Google 登录
+const loginWithGoogle = async () => {
+  try {
+    const { error: googleError } = await auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    })
+
+    if (googleError) {
+      throw googleError
+    }
+  }
+  catch (err: any) {
+    console.error('Google 登录失败:', err)
+    error.value = err.message || 'Google 登录失败'
   }
 }
 </script> 

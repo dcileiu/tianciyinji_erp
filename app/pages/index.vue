@@ -2,8 +2,8 @@
   <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <!-- 加载状态 -->
     <div v-if="isLoading" class="text-center">
-      <Loader2 class="h-8 w-8 animate-spin mx-auto text-primary" />
-      <p class="mt-2 text-sm text-muted-foreground">
+      <ProgressSpinner style="width: 50px; height: 50px" stroke-width="3" />
+      <p class="mt-2 text-sm text-muted-color">
         正在检查登录状态...
       </p>
     </div>
@@ -25,7 +25,7 @@
       <div class="grid md:grid-cols-2 gap-8 mb-12">
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4">
-            <ShoppingCart class="h-6 w-6 text-blue-600" />
+            <i class="pi pi-shopping-cart text-blue-600 text-xl"></i>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             销售管理
@@ -37,7 +37,7 @@
 
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4">
-            <Package class="h-6 w-6 text-green-600" />
+            <i class="pi pi-box text-green-600 text-xl"></i>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             库存管理
@@ -49,67 +49,79 @@
 
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
-            <Factory class="h-6 w-6 text-purple-600" />
+            <i class="pi pi-cog text-purple-600 text-xl"></i>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             生产管理
           </h3>
           <p class="text-gray-600 dark:text-gray-300">
-            生产计划、工单管理、工艺路线等生产过程控制
+            生产计划、工单管理、质量控制等生产流程管理
           </p>
         </div>
 
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mb-4">
-            <ShoppingBag class="h-6 w-6 text-orange-600" />
+          <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mb-4">
+            <i class="pi pi-chart-line text-red-600 text-xl"></i>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            采购管理
+            财务管理
           </h3>
           <p class="text-gray-600 dark:text-gray-300">
-            供应商管理、采购订单、到货验收等采购全流程
+            应收应付、成本核算、财务报表等财务管理功能
           </p>
         </div>
       </div>
 
       <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <NuxtLink 
-            to="/login"
-            class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-          >
-            立即登录
-          </NuxtLink>
-          <NuxtLink 
-            to="/register"
-            class="px-8 py-3 border border-gray-300 dark:border-gray-600 text-foreground rounded-lg hover:bg-muted transition-colors font-medium"
-          >
-            注册账户
-          </NuxtLink>
-          <NuxtLink 
-            to="/getting-started"
-            class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-          >
-            📋 快速入门
-          </NuxtLink>
-        </div>
+        <Button 
+          label="立即登录" 
+          icon="pi pi-sign-in"
+          class="w-full sm:w-auto"
+          @click="navigateTo('/login')"
+        />
+        <Button 
+          label="了解更多" 
+          icon="pi pi-info-circle"
+          outlined
+          class="w-full sm:w-auto"
+          @click="navigateTo('/getting-started')"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Loader2, ShoppingCart, Package, Factory, ShoppingBag } from 'lucide-vue-next'
+import { ref, onMounted } from 'vue'
+import ProgressSpinner from 'primevue/progressspinner'
+import Button from 'primevue/button'
+import { useAuth } from '~/composables/useAuth'
 
-// 使用认证布局
+// 页面元数据
 definePageMeta({
   layout: 'auth',
+  middleware: []
 })
 
-// 页面标题
 useHead({
-  title: '欢迎使用 ERP 管理系统',
+  title: 'ERP 管理系统'
 })
 
-const { isAuthenticated, isLoading } = useAuth()
+// 获取认证状态
+const { isAuthenticated, user } = useAuth()
+
+// 页面加载状态
+const isLoading = ref(true)
+
+onMounted(async () => {
+  // 模拟初始化加载
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  
+  isLoading.value = false
+  
+  // 如果已登录，跳转到仪表盘
+  if (isAuthenticated.value) {
+    await navigateTo('/dashboard')
+  }
+})
 </script>

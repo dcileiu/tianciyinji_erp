@@ -1,4 +1,6 @@
 import type { LoginForm, UserState, AuthError as CustomAuthError } from '~/types/auth'
+import type { User } from '~/types/database'
+import type { Database } from '~/types/database.types'
 import { ref, computed, readonly, watch } from 'vue'
 
 // 简单的AuthError类型定义
@@ -6,25 +8,35 @@ interface AuthError {
   message: string
 }
 
+// 注册表单接口
+export interface RegisterForm {
+  name: string
+  email: string
+  password: string
+  confirmPassword: string
+  department?: string
+  position?: string
+}
+
 // 全局用户状态
 const userState = ref<UserState>({
   user: null,
   isLoading: true,
-  isAuthenticated: false
+  isAuthenticated: false,
 })
 
 export const useAuth = () => {
-  const supabase = useSupabaseClient()
+  const supabase = useSupabaseClient<Database>()
   const router = useRouter()
 
   // 登录
   const login = async (credentials: LoginForm) => {
     try {
       userState.value.isLoading = true
-      
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: credentials.email,
-        password: credentials.password
+        password: credentials.password,
       })
 
       if (error) {
@@ -38,14 +50,17 @@ export const useAuth = () => {
       }
 
       throw new Error('登录失败')
-    } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
-          message: error.message || '登录失败，请重试' 
-        } 
+    }
+    catch (error: unknown) {
+      const err = error as Error
+      return {
+        success: false,
+        error: {
+          message: err.message || '登录失败，请重试',
+        },
       }
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -68,19 +83,21 @@ export const useAuth = () => {
         throw new Error(getAuthErrorMessage(error))
       }
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         user: data.user,
-        needsEmailConfirmation: !data.session
+        needsEmailConfirmation: !data.session,
       }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return { 
         success: false, 
         error: { 
           message: error.message || '注册失败，请重试' 
         } 
       }
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -101,14 +118,16 @@ export const useAuth = () => {
       
       await router.push('/login')
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return { 
         success: false, 
         error: { 
           message: error.message || '登出失败' 
         } 
       }
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -125,7 +144,8 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return { 
         success: false, 
         error: { 
@@ -147,7 +167,8 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return { 
         success: false, 
         error: { 
@@ -170,7 +191,8 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return { 
         success: false, 
         error: { 
@@ -190,7 +212,8 @@ export const useAuth = () => {
       }
 
       return data.session
-    } catch (error) {
+    }
+    catch (error) {
       console.error('获取会话失败:', error)
       return null
     }
@@ -211,7 +234,8 @@ export const useAuth = () => {
       }
 
       return data.session
-    } catch (error) {
+    }
+    catch (error) {
       console.error('刷新会话失败:', error)
       return null
     }
@@ -221,21 +245,22 @@ export const useAuth = () => {
   const initAuth = async () => {
     try {
       userState.value.isLoading = true
-      
       const session = await getSession()
-      
       if (session?.user) {
         userState.value.user = session.user
         userState.value.isAuthenticated = true
-      } else {
+      }
+      else {
         userState.value.user = null
         userState.value.isAuthenticated = false
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('初始化认证状态失败:', error)
       userState.value.user = null
       userState.value.isAuthenticated = false
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -244,15 +269,14 @@ export const useAuth = () => {
   const watchAuthState = () => {
     supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state changed:', event, session?.user?.email)
-      
       if (session?.user) {
         userState.value.user = session.user
         userState.value.isAuthenticated = true
-      } else {
+      }
+      else {
         userState.value.user = null
         userState.value.isAuthenticated = false
       }
-      
       userState.value.isLoading = false
     })
   }
@@ -262,7 +286,6 @@ export const useAuth = () => {
     user: readonly(computed(() => userState.value.user)),
     isLoading: readonly(computed(() => userState.value.isLoading)),
     isAuthenticated: readonly(computed(() => userState.value.isAuthenticated)),
-    
     // 方法
     login,
     register,
@@ -292,4 +315,4 @@ function getAuthErrorMessage(error: AuthError): string {
   }
 
   return errorMessages[error.message] || error.message || '操作失败，请重试'
-} 
+}

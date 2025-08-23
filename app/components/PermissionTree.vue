@@ -15,8 +15,8 @@
         <Button
           size="sm"
           variant="outline"
-          @click="expandAll"
           class="text-xs"
+          @click="expandAll"
         >
           <ChevronDown class="w-3 h-3 mr-1" />
           展开全部
@@ -25,8 +25,8 @@
         <Button
           size="sm"
           variant="outline"
-          @click="collapseAll"
           class="text-xs"
+          @click="collapseAll"
         >
           <ChevronUp class="w-3 h-3 mr-1" />
           收起全部
@@ -35,8 +35,8 @@
         <Button
           size="sm"
           variant="outline"
-          @click="selectAll"
           class="text-xs"
+          @click="selectAll"
         >
           <Check class="w-3 h-3 mr-1" />
           全选
@@ -45,8 +45,8 @@
         <Button
           size="sm"
           variant="outline"
-          @click="clearAll"
           class="text-xs"
+          @click="clearAll"
         >
           <X class="w-3 h-3 mr-1" />
           清空
@@ -147,9 +147,9 @@ const filteredTreeData = computed(() => {
     const filtered = []
     
     for (const item of items) {
-      const matchesSearch = item.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                           item.key?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                           item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
+      const matchesSearch = item.name?.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || item.key?.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
       
       let filteredChildren = []
       if (item.children && item.children.length > 0) {
@@ -212,7 +212,8 @@ const handleToggleSelection = (id, selected) => {
     if (targetItem) {
       addItemAndChildren([targetItem])
     }
-  } else {
+  }
+  else {
     // 移除选中项及其所有子项
     const removeItemAndChildren = (items) => {
       for (const item of items) {
@@ -251,7 +252,8 @@ const handleToggleSelection = (id, selected) => {
 const handleToggleExpand = (id) => {
   if (expandedIds.value.has(id)) {
     expandedIds.value.delete(id)
-  } else {
+  }
+  else {
     expandedIds.value.add(id)
   }
 }

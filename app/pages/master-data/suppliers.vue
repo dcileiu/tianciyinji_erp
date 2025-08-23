@@ -33,7 +33,7 @@
             <select
               id="status"
               v-model="selectedStatus"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
             >
               <option value="">全部状态</option>
               <option value="active">活跃</option>
@@ -45,7 +45,7 @@
             <select
               id="type"
               v-model="selectedType"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
             >
               <option value="">全部类型</option>
               <option value="raw_material">原材料</option>
@@ -55,7 +55,7 @@
             </select>
           </div>
           <div class="flex items-end">
-            <Button @click="handleSearch" class="w-full">
+            <Button class="w-full" @click="handleSearch">
               <Search class="mr-2 h-4 w-4" />
               搜索
             </Button>
@@ -127,8 +127,8 @@
                     编辑
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    @click="deleteSupplier(supplier)"
                     class="text-destructive"
+                    @click="deleteSupplier(supplier)"
                   >
                     <Trash2 class="mr-2 h-4 w-4" />
                     删除
@@ -184,7 +184,7 @@
             <select
               id="type"
               v-model="supplierForm.type"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
             >
               <option value="">请选择类型</option>
               <option value="raw_material">原材料</option>
@@ -199,7 +199,7 @@
           <Button type="button" variant="outline" @click="showSupplierDialog = false">
             取消
           </Button>
-          <Button @click="handleSubmit" :disabled="submitting">
+          <Button :disabled="submitting" @click="handleSubmit">
             <Loader2 v-if="submitting" class="mr-2 h-4 w-4 animate-spin" />
             {{ editingSupplier ? '更新' : '创建' }}
           </Button>
@@ -216,13 +216,12 @@ import {
 } from 'lucide-vue-next'
 
 // 导入组件
-import Button from '~/components/ui/Button.vue'
-import Card from '~/components/ui/Card.vue'
-import Input from '~/components/ui/Input.vue'
-import Label from '~/components/ui/Label.vue'
-import Badge from '~/components/ui/Badge.vue'
-import Dialog from '~/components/ui/Dialog.vue'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import Button from 'primevue/button'
+import Card from 'primevue/card'
+import InputText from 'primevue/inputtext'
+import Badge from 'primevue/badge'
+import Dialog from 'primevue/dialog'
+import Menu from 'primevue/menu'
 
 // 使用 composables
 const { suppliers, loading, getSuppliers } = useSuppliers()
@@ -250,8 +249,8 @@ const filteredSuppliers = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(supplier => 
-      supplier.name.toLowerCase().includes(query) ||
-      supplier.supplier_no.toLowerCase().includes(query)
+      supplier.name.toLowerCase().includes(query)
+      || supplier.supplier_no.toLowerCase().includes(query)
     )
   }
   
@@ -333,7 +332,8 @@ onMounted(async () => {
   try {
     const result = await getSuppliers()
     suppliers.value = result.data || []
-  } catch (error) {
+  }
+  catch (error) {
     console.error('获取供应商数据失败:', error)
   }
 })

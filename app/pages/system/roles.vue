@@ -1,357 +1,439 @@
 <template>
-  <div class="container mx-auto py-6">
+  <div class="space-y-6">
     <!-- 页面标题 -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight">角色管理</h1>
-        <p class="text-muted-foreground">管理系统角色和权限配置</p>
+        <h1 class="text-3xl font-bold text-color">角色管理</h1>
+        <p class="text-muted-color">管理系统角色和权限配置</p>
       </div>
       <PermissionWrapper :has-permission="canCreateRole">
-        <Button @click="openCreateDialog">
-          <Plus class="mr-2 h-4 w-4" />
-          新增角色
-        </Button>
+        <Button 
+          label="新增角色" 
+          icon="pi pi-plus"
+          @click="openCreateDialog"
+        />
       </PermissionWrapper>
     </div>
 
     <!-- 统计卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center">
-            <div class="p-3 bg-blue-500/10 rounded-full">
-              <Shield class="h-6 w-6 text-blue-600" />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <Card class="bg-blue-50 dark:bg-blue-900/20 border-blue-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-blue-600 dark:text-blue-400 text-sm font-medium">总角色数</p>
+              <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ roleStats.totalRoles }}</p>
             </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">总角色数</p>
-              <p class="text-2xl font-semibold">{{ roleStats.totalRoles }}</p>
+            <div class="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
+              <i class="pi pi-shield text-blue-600 dark:text-blue-400 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
 
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center">
-            <div class="p-3 bg-green-500/10 rounded-full">
-              <ShieldCheck class="h-6 w-6 text-green-600" />
+      <Card class="bg-green-50 dark:bg-green-900/20 border-green-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-green-600 dark:text-green-400 text-sm font-medium">活跃角色</p>
+              <p class="text-2xl font-bold text-green-900 dark:text-green-100">{{ roleStats.activeRoles }}</p>
             </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">活跃角色</p>
-              <p class="text-2xl font-semibold">{{ roleStats.activeRoles }}</p>
+            <div class="bg-green-100 dark:bg-green-800 p-3 rounded-full">
+              <i class="pi pi-check-circle text-green-600 dark:text-green-400 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
 
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center">
-            <div class="p-3 bg-yellow-500/10 rounded-full">
-              <Users class="h-6 w-6 text-yellow-600" />
+      <Card class="bg-orange-50 dark:bg-orange-900/20 border-orange-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-orange-600 dark:text-orange-400 text-sm font-medium">系统角色</p>
+              <p class="text-2xl font-bold text-orange-900 dark:text-orange-100">{{ roleStats.systemRoles }}</p>
             </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">关联用户</p>
-              <p class="text-2xl font-semibold">{{ roleStats.assignedUsers }}</p>
+            <div class="bg-orange-100 dark:bg-orange-800 p-3 rounded-full">
+              <i class="pi pi-cog text-orange-600 dark:text-orange-400 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
 
-      <Card>
-        <CardContent class="p-6">
-          <div class="flex items-center">
-            <div class="p-3 bg-red-500/10 rounded-full">
-              <Key class="h-6 w-6 text-red-600" />
+      <Card class="bg-purple-50 dark:bg-purple-900/20 border-purple-200">
+        <template #content>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-purple-600 dark:text-purple-400 text-sm font-medium">自定义角色</p>
+              <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">{{ roleStats.customRoles }}</p>
             </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-muted-foreground">权限数量</p>
-              <p class="text-2xl font-semibold">{{ roleStats.totalPermissions }}</p>
+            <div class="bg-purple-100 dark:bg-purple-800 p-3 rounded-full">
+              <i class="pi pi-user text-purple-600 dark:text-purple-400 text-xl"></i>
             </div>
           </div>
-        </CardContent>
+        </template>
       </Card>
     </div>
 
-    <!-- 搜索和筛选 -->
-    <Card class="mb-6">
-      <CardHeader>
-        <CardTitle>搜索筛选</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label for="search">搜索角色</Label>
-            <Input
-              id="search"
+    <!-- 筛选和搜索 -->
+    <Card>
+      <template #header>
+        <h3 class="text-lg font-semibold text-color">筛选条件</h3>
+      </template>
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">搜索角色</label>
+            <InputText
               v-model="searchQuery"
-              placeholder="角色名称或编码"
-              class="mt-1"
+              placeholder="角色名称、描述..."
+              class="w-full"
             />
           </div>
-          <div>
-            <Label for="status">状态</Label>
-            <select
-              id="status"
-              v-model="selectedStatus"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
-            >
-              <option value="">全部状态</option>
-              <option value="active">活跃</option>
-              <option value="inactive">停用</option>
-            </select>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">角色类型</label>
+            <Dropdown
+              v-model="selectedType"
+              :options="typeOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部类型"
+              class="w-full"
+              show-clear
+            />
           </div>
-          <div class="flex items-end">
-            <Button @click="handleSearch" class="w-full">
-              <Search class="mr-2 h-4 w-4" />
-              搜索
-            </Button>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color">状态</label>
+            <Dropdown
+              v-model="selectedStatus"
+              :options="statusOptions"
+              option-label="label"
+              option-value="value"
+              placeholder="全部状态"
+              class="w-full"
+              show-clear
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-color opacity-0">操作</label>
+            <Button
+              label="重置筛选"
+              icon="pi pi-refresh"
+              outlined
+              class="w-full"
+              @click="resetFilters"
+            />
           </div>
         </div>
-      </CardContent>
+      </template>
     </Card>
 
     <!-- 角色列表 -->
     <Card>
-      <CardHeader>
-        <CardTitle>角色列表</CardTitle>
-        <CardDescription>
-          共 {{ filteredRoles.length }} 个角色
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div v-if="loading" class="flex items-center justify-center py-8">
-          <Loader2 class="mr-2 h-4 w-4 animate-spin" />
-          加载中...
-        </div>
-        <div v-else-if="filteredRoles.length === 0" class="text-center py-8">
-          <Shield class="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-          <p class="text-muted-foreground">暂无角色数据</p>
-        </div>
-        <div v-else class="space-y-4">
-          <div
-            v-for="role in filteredRoles"
-            :key="role.id"
-            class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-          >
-            <div class="flex items-center space-x-4">
-              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
-                <Shield class="h-6 w-6 text-blue-600 dark:text-blue-400" />
+      <template #header>
+        <h3 class="text-lg font-semibold text-color">角色列表</h3>
+      </template>
+      <template #content>
+        <DataTable
+          :value="filteredRoles"
+          :loading="loading"
+          striped-rows
+          show-gridlines
+          responsive-layout="scroll"
+          paginator
+          :rows="10"
+          :rows-per-page-options="[5, 10, 20, 50]"
+          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+          current-page-report-template="显示 {first} 到 {last} 条，共 {totalRecords} 条记录"
+        >
+          <template #empty>
+            <div class="text-center py-12 text-muted-color">
+              <i class="pi pi-shield text-6xl mb-4 opacity-50"></i>
+              <h3 class="text-lg mb-2">暂无角色数据</h3>
+              <p class="mb-4">开始创建第一个角色</p>
+              <Button
+                label="新增角色"
+                icon="pi pi-plus"
+                @click="openCreateDialog"
+              />
               </div>
+          </template>
+
+          <Column field="name" header="角色信息" :sortable="true">
+            <template #body="slotProps">
               <div>
-                <h3 class="font-semibold">{{ role.name }}</h3>
-                <p class="text-sm text-muted-foreground">{{ role.code }}</p>
-                <p class="text-sm text-muted-foreground">{{ role.description }}</p>
-              </div>
-            </div>
-            <div class="flex items-center space-x-4">
-              <div class="text-right">
-                <div class="flex items-center space-x-2">
-                  <Badge :variant="role.status === 'active' ? 'default' : 'secondary'">
-                    {{ role.status === 'active' ? '活跃' : '停用' }}
-                  </Badge>
-                  <Tooltip :content="`${role.permissions?.length || 0} 个权限`">
-                    <Badge variant="outline">
-                      {{ role.permissions?.length || 0 }} 权限
-                    </Badge>
-                  </Tooltip>
+                <p class="font-medium text-color">{{ slotProps.data.name }}</p>
+                <p class="text-sm text-muted-color">{{ slotProps.data.description }}</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <Tag
+                    :value="getTypeDisplayName(slotProps.data.type)"
+                    :severity="getTypeSeverity(slotProps.data.type)"
+                    size="small"
+                  />
+                  <span class="text-xs text-muted-color">
+                    {{ slotProps.data.permissions?.length || 0 }} 项权限
+                  </span>
                 </div>
-                <p class="text-sm text-muted-foreground mt-1">
-                  {{ role.userCount || 0 }} 个用户
-                </p>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button variant="ghost" size="sm">
-                    <MoreHorizontal class="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem @click="viewRole(role)">
-                    <Eye class="mr-2 h-4 w-4" />
-                    查看详情
-                  </DropdownMenuItem>
+            </template>
+          </Column>
+
+          <Column field="status" header="状态" :sortable="true">
+            <template #body="slotProps">
+              <Tag
+                :value="getStatusDisplayName(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
+            </template>
+          </Column>
+
+          <Column field="user_count" header="关联用户">
+            <template #body="slotProps">
+              <span class="text-sm">{{ slotProps.data.user_count || 0 }} 个用户</span>
+            </template>
+          </Column>
+
+          <Column field="created_at" header="创建时间" :sortable="true">
+            <template #body="slotProps">
+              <span class="text-sm text-muted-color">
+                {{ formatDate(slotProps.data.created_at) }}
+              </span>
+            </template>
+          </Column>
+
+          <Column header="操作" style="width: 150px">
+            <template #body="slotProps">
+              <div class="flex gap-2">
+                <Button
+                  v-tooltip="'查看权限'"
+                  icon="pi pi-eye"
+                  outlined
+                  rounded
+                  size="small"
+                  @click="viewRole(slotProps.data)"
+                />
                   <PermissionWrapper :has-permission="canEditRole">
-                    <DropdownMenuItem @click="editRole(role)">
-                      <Edit class="mr-2 h-4 w-4" />
-                      编辑
-                    </DropdownMenuItem>
+                  <Button
+                    v-tooltip="'编辑'"
+                    icon="pi pi-pencil"
+                    outlined
+                    rounded
+                    size="small"
+                    @click="editRole(slotProps.data)"
+                  />
                   </PermissionWrapper>
-                  <DropdownMenuItem @click="configurePermissions(role)">
-                    <Settings class="mr-2 h-4 w-4" />
-                    配置权限
-                  </DropdownMenuItem>
                   <PermissionWrapper :has-permission="canDeleteRole">
-                    <DropdownMenuItem 
-                      @click="deleteRole(role)"
-                      class="text-destructive"
-                    >
-                      <Trash2 class="mr-2 h-4 w-4" />
-                      删除
-                    </DropdownMenuItem>
+                  <Button
+                    v-tooltip="'删除'"
+                    icon="pi pi-trash"
+                    outlined
+                    rounded
+                    size="small"
+                    severity="danger"
+                    :disabled="slotProps.data.type === 'system'"
+                    @click="confirmDeleteRole(slotProps.data)"
+                  />
                   </PermissionWrapper>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
-          </div>
-        </div>
-      </CardContent>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
     </Card>
 
-    <!-- 创建/编辑角色对话框 -->
-    <Dialog v-model:open="showRoleDialog">
-      <DialogContent class="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>{{ editingRole ? '编辑角色' : '新增角色' }}</DialogTitle>
-          <DialogDescription>
-            {{ editingRole ? '修改角色信息' : '创建新的系统角色' }}
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div class="space-y-4 py-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <Label for="role-name">角色名称 <span class="text-destructive">*</span></Label>
-              <Input
-                id="role-name"
+    <!-- 角色对话框 -->
+    <Dialog
+      v-model:visible="showRoleDialog"
+      :header="editingRole ? '编辑角色' : '新增角色'"
+      :style="{ width: '800px' }"
+      modal
+      class="p-fluid"
+    >
+      <template #default>
+        <div class="space-y-6">
+          <!-- 基本信息 -->
+          <div class="space-y-4">
+            <h4 class="text-lg font-semibold text-color border-b pb-2">基本信息</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-color">角色名称 *</label>
+                <InputText
                 v-model="roleForm.name"
                 placeholder="请输入角色名称"
-                class="mt-1"
+                  required
               />
             </div>
-            <div>
-              <Label for="role-code">角色编码 <span class="text-destructive">*</span></Label>
-              <Input
-                id="role-code"
-                v-model="roleForm.code"
-                placeholder="请输入角色编码"
-                class="mt-1"
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-color">角色类型</label>
+                <Dropdown
+                  v-model="roleForm.type"
+                  :options="typeOptions"
+                  option-label="label"
+                  option-value="value"
+                  placeholder="选择类型"
+                  :disabled="editingRole && editingRole.type === 'system'"
               />
-            </div>
           </div>
           
-          <div>
-            <Label for="description">角色描述</Label>
+              <div class="space-y-2 md:col-span-2">
+                <label class="block text-sm font-medium text-color">角色描述</label>
             <Textarea
-              id="description"
               v-model="roleForm.description"
               placeholder="请输入角色描述"
-              class="mt-1"
+                  :rows="2"
             />
           </div>
           
-          <div>
-            <Label for="status">状态</Label>
-            <select
-              id="status"
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-color">状态</label>
+                <Dropdown
               v-model="roleForm.status"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
-            >
-              <option value="active">活跃</option>
-              <option value="inactive">停用</option>
-            </select>
-          </div>
-        </div>
-        
-        <DialogFooter>
-          <Button type="button" variant="outline" @click="showRoleDialog = false">
-            取消
-          </Button>
-          <Button @click="handleSubmit" :disabled="submitting">
-            <Loader2 v-if="submitting" class="mr-2 h-4 w-4 animate-spin" />
-            {{ editingRole ? '更新' : '创建' }}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-
-    <!-- 权限配置对话框 -->
-    <Dialog v-model:open="showPermissionDialog">
-      <DialogContent class="sm:max-w-[700px]">
-        <DialogHeader>
-          <DialogTitle>配置角色权限</DialogTitle>
-          <DialogDescription>
-            为角色 "{{ selectedRole?.name }}" 配置系统权限
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div class="space-y-4 py-4 max-h-[400px] overflow-y-auto">
-          <div v-for="category in permissionCategories" :key="category.id" class="space-y-2">
-            <div class="flex items-center space-x-2">
-              <Checkbox 
-                :id="`category-${category.id}`"
-                :checked="isCategorySelected(category)"
-                @update:checked="toggleCategory(category)"
-              />
-              <Label :for="`category-${category.id}`" class="font-medium">
-                {{ category.name }}
-              </Label>
-            </div>
-            <div class="ml-6 space-y-2">
-              <div 
-                v-for="permission in category.permissions" 
-                :key="permission.id"
-                class="flex items-center space-x-2"
-              >
-                <Checkbox 
-                  :id="`permission-${permission.id}`"
-                  :checked="selectedPermissions.includes(permission.id)"
-                  @update:checked="togglePermission(permission.id)"
+                  :options="statusOptions"
+                  option-label="label"
+                  option-value="value"
+                  placeholder="选择状态"
                 />
-                <Label :for="`permission-${permission.id}`" class="text-sm">
-                  {{ permission.name }}
-                </Label>
-                <Tooltip :content="permission.description">
-                  <Badge variant="outline" size="sm">{{ permission.code }}</Badge>
-                </Tooltip>
               </div>
             </div>
           </div>
+
+          <!-- 权限配置 -->
+          <div class="space-y-4">
+            <h4 class="text-lg font-semibold text-color border-b pb-2">权限配置</h4>
+            <div class="bg-surface-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+              <Tree
+                v-model:selection-keys="selectedPermissions"
+                :value="permissionTree"
+                selection-mode="checkbox"
+                :filter="true"
+                filter-placeholder="搜索权限..."
+                class="w-full"
+              >
+                <template #default="slotProps">
+                  <div class="flex items-center">
+                    <i :class="slotProps.node.icon" class="mr-2"></i>
+                    <span>{{ slotProps.node.label }}</span>
+                    <span v-if="slotProps.node.description" class="ml-2 text-xs text-muted-color">
+                      ({{ slotProps.node.description }})
+                    </span>
+                  </div>
+                </template>
+              </Tree>
+            </div>
+          </div>
         </div>
-        
-        <DialogFooter>
-          <Button type="button" variant="outline" @click="showPermissionDialog = false">
-            取消
-          </Button>
-          <Button @click="savePermissions" :disabled="submitting">
-            <Loader2 v-if="submitting" class="mr-2 h-4 w-4 animate-spin" />
-            保存权限
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      </template>
+
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="取消"
+            icon="pi pi-times"
+            outlined
+            @click="closeRoleDialog"
+          />
+          <Button
+            label="保存"
+            icon="pi pi-check"
+            :loading="submitting"
+            @click="submitRole"
+          />
+        </div>
+      </template>
     </Dialog>
+
+    <!-- 权限查看对话框 -->
+    <Dialog
+      v-model:visible="showPermissionDialog"
+      header="角色权限详情"
+      :style="{ width: '600px' }"
+      modal
+    >
+      <template #default>
+        <div v-if="viewingRole" class="space-y-4">
+          <div>
+            <h4 class="font-semibold text-color mb-2">{{ viewingRole.name }}</h4>
+            <p class="text-sm text-muted-color">{{ viewingRole.description }}</p>
+          </div>
+
+          <Divider />
+
+          <div v-if="viewingRole.permissions && viewingRole.permissions.length > 0">
+            <h5 class="font-medium text-color mb-3">权限列表</h5>
+            <div class="space-y-2">
+              <div 
+                v-for="permission in viewingRole.permissions"
+                :key="permission"
+                class="flex items-center p-2 bg-surface-50 rounded"
+              >
+                <i class="pi pi-check text-green-600 mr-2"></i>
+                <span class="text-sm">{{ getPermissionName(permission) }}</span>
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-center py-6 text-muted-color">
+            <i class="pi pi-shield text-4xl mb-2 opacity-50"></i>
+            <p>该角色暂无权限配置</p>
+          </div>
+        </div>
+      </template>
+
+      <template #footer>
+        <Button
+          label="关闭"
+          icon="pi pi-times"
+          outlined
+          @click="showPermissionDialog = false"
+        />
+      </template>
+    </Dialog>
+
+    <!-- 确认对话框 -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import { 
-  Plus, Search, MoreHorizontal, Shield, ShieldCheck, Users, Key,
-  Eye, Edit, Settings, Trash2, Loader2 
-} from 'lucide-vue-next'
-
-// 导入组件
-import Button from '~/components/ui/Button.vue'
-import Card, { CardContent, CardHeader, CardTitle, CardDescription } from '~/components/ui/Card.vue'
-import Input from '~/components/ui/Input.vue'
-import Label from '~/components/ui/Label.vue'
-import Textarea from '~/components/ui/Textarea.vue'
-import Badge from '~/components/ui/Badge.vue'
-import Dialog, { DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '~/components/ui/Dialog.vue'
-import Checkbox from '~/components/ui/Checkbox.vue'
-import Tooltip from '~/components/ui/Tooltip.vue'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import { ref, reactive, computed, onMounted } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Dropdown from 'primevue/dropdown'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import Dialog from 'primevue/dialog'
+import Textarea from 'primevue/textarea'
+import Tree from 'primevue/tree'
+import Divider from 'primevue/divider'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
+
+// 页面配置
+definePageMeta({
+  layout: 'default'
+})
+
+useHead({
+  title: '角色管理 - ERP 管理系统'
+})
 
 // 响应式数据
 const searchQuery = ref('')
+const selectedType = ref('')
 const selectedStatus = ref('')
 const showRoleDialog = ref(false)
 const showPermissionDialog = ref(false)
-const editingRole = ref<any>(null)
-const selectedRole = ref<any>(null)
+const editingRole = ref(null as any)
+const viewingRole = ref(null as any)
 const submitting = ref(false)
 const loading = ref(false)
-const selectedPermissions = ref<string[]>([])
+const confirm = useConfirm()
+const selectedPermissions = ref({} as Record<string, any>)
 
 // 权限检查（模拟）
 const canCreateRole = ref(true)
@@ -362,270 +444,293 @@ const canDeleteRole = ref(true)
 const roleStats = reactive({
   totalRoles: 0,
   activeRoles: 0,
-  assignedUsers: 0,
-  totalPermissions: 0
+  systemRoles: 0,
+  customRoles: 0
 })
 
 // 表单数据
 const roleForm = reactive({
   name: '',
-  code: '',
   description: '',
-  status: 'active'
+  type: 'custom',
+  status: 'active',
+  permissions: []
 })
+
+// 选项数据
+const typeOptions = ref([
+  { label: '全部类型', value: '' },
+  { label: '系统角色', value: 'system' },
+  { label: '自定义角色', value: 'custom' }
+])
+
+const statusOptions = ref([
+  { label: '全部状态', value: '' },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' }
+])
+
+// 权限树数据
+const permissionTree = ref([
+  {
+    key: 'user',
+    label: '用户管理',
+    icon: 'pi pi-users',
+    children: [
+      { key: 'user:view', label: '查看用户', icon: 'pi pi-eye' },
+      { key: 'user:create', label: '新增用户', icon: 'pi pi-plus' },
+      { key: 'user:edit', label: '编辑用户', icon: 'pi pi-pencil' },
+      { key: 'user:delete', label: '删除用户', icon: 'pi pi-trash' }
+    ]
+  },
+  {
+    key: 'role',
+    label: '角色管理',
+    icon: 'pi pi-shield',
+    children: [
+      { key: 'role:view', label: '查看角色', icon: 'pi pi-eye' },
+      { key: 'role:create', label: '新增角色', icon: 'pi pi-plus' },
+      { key: 'role:edit', label: '编辑角色', icon: 'pi pi-pencil' },
+      { key: 'role:delete', label: '删除角色', icon: 'pi pi-trash' }
+    ]
+  },
+  {
+    key: 'product',
+    label: '产品管理',
+    icon: 'pi pi-box',
+    children: [
+      { key: 'product:view', label: '查看产品', icon: 'pi pi-eye' },
+      { key: 'product:create', label: '新增产品', icon: 'pi pi-plus' },
+      { key: 'product:edit', label: '编辑产品', icon: 'pi pi-pencil' },
+      { key: 'product:delete', label: '删除产品', icon: 'pi pi-trash' }
+    ]
+  }
+])
 
 // 模拟角色数据
 const roles = ref([
   {
     id: '1',
-    name: '系统管理员',
-    code: 'admin',
-    description: '拥有系统所有权限的超级管理员',
+    name: '超级管理员',
+    description: '系统最高权限管理员',
+    type: 'system',
     status: 'active',
-    userCount: 2,
-    permissions: ['user.create', 'user.read', 'user.update', 'user.delete', 'role.manage'],
-    created_at: '2024-01-15T10:00:00Z',
-    updated_at: '2024-12-26T10:00:00Z'
+    permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete'],
+    user_count: 1,
+    created_at: new Date('2024-01-01')
   },
   {
     id: '2',
-    name: '部门经理',
-    code: 'manager',
-    description: '部门管理权限，可管理本部门员工',
+    name: '业务管理员',
+    description: '业务模块管理权限',
+    type: 'custom',
     status: 'active',
-    userCount: 5,
-    permissions: ['user.read', 'user.update', 'report.read'],
-    created_at: '2024-02-20T10:00:00Z',
-    updated_at: '2024-12-25T15:30:00Z'
+    permissions: ['product:view', 'product:create', 'product:edit'],
+    user_count: 3,
+    created_at: new Date('2024-01-02')
   },
   {
     id: '3',
-    name: '普通员工',
-    code: 'employee',
-    description: '基础员工权限，可查看和操作业务数据',
+    name: '普通用户',
+    description: '基础查看权限',
+    type: 'custom',
     status: 'active',
-    userCount: 25,
-    permissions: ['user.read', 'customer.read', 'order.create'],
-    created_at: '2024-03-10T10:00:00Z',
-    updated_at: '2024-12-24T09:15:00Z'
-  },
-  {
-    id: '4',
-    name: '访客',
-    code: 'viewer',
-    description: '只读权限，可查看部分数据',
-    status: 'inactive',
-    userCount: 1,
-    permissions: ['user.read'],
-    created_at: '2024-04-05T10:00:00Z',
-    updated_at: '2024-11-20T16:45:00Z'
+    permissions: ['product:view'],
+    user_count: 10,
+    created_at: new Date('2024-01-03')
   }
-])
-
-// 权限分类数据
-const permissionCategories = ref([
-  {
-    id: 'user',
-    name: '用户管理',
-    permissions: [
-      { id: 'user.create', name: '创建用户', code: 'user:create', description: '可以创建新用户' },
-      { id: 'user.read', name: '查看用户', code: 'user:read', description: '可以查看用户信息' },
-      { id: 'user.update', name: '编辑用户', code: 'user:update', description: '可以编辑用户信息' },
-      { id: 'user.delete', name: '删除用户', code: 'user:delete', description: '可以删除用户' }
-    ]
-  },
-  {
-    id: 'role',
-    name: '角色管理',
-    permissions: [
-      { id: 'role.manage', name: '角色管理', code: 'role:manage', description: '可以管理系统角色' },
-      { id: 'role.assign', name: '分配角色', code: 'role:assign', description: '可以为用户分配角色' }
-    ]
-  },
-  {
-    id: 'customer',
-    name: '客户管理',
-    permissions: [
-      { id: 'customer.create', name: '创建客户', code: 'customer:create', description: '可以创建新客户' },
-      { id: 'customer.read', name: '查看客户', code: 'customer:read', description: '可以查看客户信息' },
-      { id: 'customer.update', name: '编辑客户', code: 'customer:update', description: '可以编辑客户信息' },
-      { id: 'customer.delete', name: '删除客户', code: 'customer:delete', description: '可以删除客户' }
-    ]
-  },
-  {
-    id: 'order',
-    name: '订单管理',
-    permissions: [
-      { id: 'order.create', name: '创建订单', code: 'order:create', description: '可以创建新订单' },
-      { id: 'order.read', name: '查看订单', code: 'order:read', description: '可以查看订单信息' },
-      { id: 'order.update', name: '编辑订单', code: 'order:update', description: '可以编辑订单信息' },
-      { id: 'order.delete', name: '删除订单', code: 'order:delete', description: '可以删除订单' }
-    ]
-  },
-  {
-    id: 'report',
-    name: '报表管理',
-    permissions: [
-      { id: 'report.read', name: '查看报表', code: 'report:read', description: '可以查看业务报表' },
-      { id: 'report.export', name: '导出报表', code: 'report:export', description: '可以导出报表数据' }
-    ]
-  }
-])
+] as any[])
 
 // 计算属性
 const filteredRoles = computed(() => {
-  let result = roles.value || []
+  return roles.value.filter((role) => {
+    const matchesSearch = !searchQuery.value 
+      || role.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      || role.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesType = !selectedType.value || role.type === selectedType.value
+    const matchesStatus = !selectedStatus.value || role.status === selectedStatus.value
   
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    result = result.filter(role => 
-      role.name.toLowerCase().includes(query) ||
-      role.code.toLowerCase().includes(query)
-    )
-  }
-  
-  if (selectedStatus.value) {
-    result = result.filter(role => role.status === selectedStatus.value)
-  }
-  
-  return result
+    return matchesSearch && matchesType && matchesStatus
+  })
 })
 
 // 方法
+const getTypeDisplayName = (type: string): string => {
+  const typeMap: Record<string, string> = {
+    system: '系统角色',
+    custom: '自定义'
+  }
+  return typeMap[type] || type
+}
+
+const getTypeSeverity = (type: string): string => {
+  const severityMap: Record<string, string> = {
+    system: 'warn',
+    custom: 'info'
+  }
+  return severityMap[type] || 'secondary'
+}
+
+const getStatusDisplayName = (status: string): string => {
+  const statusMap: Record<string, string> = {
+    active: '启用',
+    inactive: '停用'
+  }
+  return statusMap[status] || status
+}
+
+const getStatusSeverity = (status: string): string => {
+  const severityMap: Record<string, string> = {
+    active: 'success',
+    inactive: 'warn'
+  }
+  return severityMap[status] || 'secondary'
+}
+
+const formatDate = (date: Date): string => {
+  return date.toLocaleDateString('zh-CN')
+}
+
+const getPermissionName = (permission: string): string => {
+  const permissionMap: Record<string, string> = {
+    'user:view': '查看用户',
+    'user:create': '新增用户',
+    'user:edit': '编辑用户',
+    'user:delete': '删除用户',
+    'role:view': '查看角色',
+    'role:create': '新增角色',
+    'role:edit': '编辑角色',
+    'role:delete': '删除角色',
+    'product:view': '查看产品',
+    'product:create': '新增产品',
+    'product:edit': '编辑产品',
+    'product:delete': '删除产品'
+  }
+  return permissionMap[permission] || permission
+}
+
+const resetFilters = () => {
+  searchQuery.value = ''
+  selectedType.value = ''
+  selectedStatus.value = ''
+}
+
 const openCreateDialog = () => {
   editingRole.value = null
-  resetForm()
+  Object.assign(roleForm, {
+    name: '',
+    description: '',
+    type: 'custom',
+    status: 'active',
+    permissions: []
+  })
+  selectedPermissions.value = {}
   showRoleDialog.value = true
+}
+
+const closeRoleDialog = () => {
+  showRoleDialog.value = false
+  editingRole.value = null
+}
+
+const viewRole = (role: any) => {
+  viewingRole.value = role
+  showPermissionDialog.value = true
 }
 
 const editRole = (role: any) => {
   editingRole.value = role
-  Object.assign(roleForm, role)
+  Object.assign(roleForm, {
+    name: role.name,
+    description: role.description,
+    type: role.type,
+    status: role.status,
+    permissions: role.permissions || []
+  })
+  
+  // 设置权限选择状态
+  const selections: any = {}
+  if (role.permissions) {
+    role.permissions.forEach((permission: string) => {
+      selections[permission] = { checked: true, partialChecked: false }
+    })
+  }
+  selectedPermissions.value = selections
+  
   showRoleDialog.value = true
 }
 
-const viewRole = (role: any) => {
-  console.log('查看角色:', role)
-}
-
-const configurePermissions = (role: any) => {
-  selectedRole.value = role
-  selectedPermissions.value = [...(role.permissions || [])]
-  showPermissionDialog.value = true
-}
-
-const deleteRole = async (role: any) => {
-  if (confirm(`确定要删除角色 "${role.name}" 吗？`)) {
-    console.log('删除角色:', role)
-  }
-}
-
-const handleSubmit = async () => {
-  if (!roleForm.name || !roleForm.code) {
-    alert('请填写必填字段')
-    return
-  }
-  
+const submitRole = async () => {
   submitting.value = true
   try {
-    console.log('提交角色:', roleForm)
-    showRoleDialog.value = false
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // 获取选中的权限
+    const permissions = Object.keys(selectedPermissions.value).filter(key => 
+      selectedPermissions.value[key]?.checked
+    )
+    
+    if (editingRole.value) {
+      // 更新角色
+      const index = roles.value.findIndex(r => r.id === (editingRole.value as any).id)
+      if (index !== -1) {
+        Object.assign(roles.value[index], {
+          name: roleForm.name,
+          description: roleForm.description,
+          type: roleForm.type,
+          status: roleForm.status,
+          permissions
+        })
+      }
+    }
+    else {
+      // 新增角色
+      const newRole = {
+        id: Date.now().toString(),
+        ...roleForm,
+        permissions,
+        user_count: 0,
+        created_at: new Date()
+      }
+      roles.value.push(newRole)
+    }
+    
+    closeRoleDialog()
     updateStats()
-  } catch (error) {
-    alert('操作失败，请重试')
-  } finally {
+  }
+  catch (error) {
+    console.error('保存角色失败:', error)
+  }
+  finally {
     submitting.value = false
   }
 }
 
-const resetForm = () => {
-  Object.assign(roleForm, {
-    name: '',
-    code: '',
-    description: '',
-    status: 'active'
+const confirmDeleteRole = (role: any) => {
+  confirm.require({
+    message: `确定要删除角色 ${role.name} 吗？`,
+    header: '确认删除',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      deleteRole(role.id)
+    }
   })
 }
 
-const handleSearch = () => {
-  // 搜索逻辑已在 computed 中实现
+const deleteRole = (roleId: string) => {
+  roles.value = roles.value.filter(role => role.id !== roleId)
+  updateStats()
 }
 
 const updateStats = () => {
-  const items = roles.value || []
-  roleStats.totalRoles = items.length
-  roleStats.activeRoles = items.filter(role => role.status === 'active').length
-  roleStats.assignedUsers = items.reduce((sum, role) => sum + (role.userCount || 0), 0)
-  
-  // 统计所有权限数量
-  const allPermissions = new Set()
-  permissionCategories.value.forEach(category => {
-    category.permissions.forEach(permission => {
-      allPermissions.add(permission.id)
-    })
-  })
-  roleStats.totalPermissions = allPermissions.size
+  roleStats.totalRoles = roles.value.length
+  roleStats.activeRoles = roles.value.filter(r => r.status === 'active').length
+  roleStats.systemRoles = roles.value.filter(r => r.type === 'system').length
+  roleStats.customRoles = roles.value.filter(r => r.type === 'custom').length
 }
 
-const isCategorySelected = (category: any) => {
-  return category.permissions.every((permission: any) => 
-    selectedPermissions.value.includes(permission.id)
-  )
-}
-
-const toggleCategory = (category: any) => {
-  const isSelected = isCategorySelected(category)
-  
-  if (isSelected) {
-    // 取消选择该分类下的所有权限
-    category.permissions.forEach((permission: any) => {
-      const index = selectedPermissions.value.indexOf(permission.id)
-      if (index > -1) {
-        selectedPermissions.value.splice(index, 1)
-      }
-    })
-  } else {
-    // 选择该分类下的所有权限
-    category.permissions.forEach((permission: any) => {
-      if (!selectedPermissions.value.includes(permission.id)) {
-        selectedPermissions.value.push(permission.id)
-      }
-    })
-  }
-}
-
-const togglePermission = (permissionId: string) => {
-  const index = selectedPermissions.value.indexOf(permissionId)
-  if (index > -1) {
-    selectedPermissions.value.splice(index, 1)
-  } else {
-    selectedPermissions.value.push(permissionId)
-  }
-}
-
-const savePermissions = async () => {
-  submitting.value = true
-  try {
-    console.log('保存权限:', {
-      roleId: selectedRole.value?.id,
-      permissions: selectedPermissions.value
-    })
-    showPermissionDialog.value = false
-  } catch (error) {
-    alert('保存失败，请重试')
-  } finally {
-    submitting.value = false
-  }
-}
-
-// 页面加载时更新统计
+// 初始化
 onMounted(() => {
   updateStats()
-})
-
-// 页面元数据
-definePageMeta({
-  layout: 'default',
-  middleware: 'auth' as any
 })
 </script> 

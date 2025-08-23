@@ -252,7 +252,7 @@ export interface PaginationParams {
   search?: string
   sortBy?: string
   sortOrder?: 'asc' | 'desc'
-  orderBy?: { column: string; ascending: boolean }
+  orderBy?: { column: string, ascending: boolean }
   filters?: Record<string, any>
 }
 
