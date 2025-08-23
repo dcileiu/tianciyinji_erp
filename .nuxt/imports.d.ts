@@ -44,4 +44,5 @@ export { useStyle } from 'primevue/usestyle';
 export { useConfirm } from 'primevue/useconfirm';
 export { useToast } from 'primevue/usetoast';
 export { useDialog } from 'primevue/usedialog';
+export { useNuxtDevTools } from '../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_f21fe68d6a2c38ad2371ad2d40250bbf/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
 export { definePageMeta } from '../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/pages/runtime/composables';
