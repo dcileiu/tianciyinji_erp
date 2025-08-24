@@ -14,7 +14,7 @@ export enum ErrorCode {
   PERMISSION_ERROR = 'PERMISSION_ERROR',
   NOT_FOUND = 'NOT_FOUND',
   SERVER_ERROR = 'SERVER_ERROR',
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR'
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
 
 // 错误消息映射
@@ -25,20 +25,16 @@ const errorMessages: Record<string, string> = {
   [ErrorCode.PERMISSION_ERROR]: '权限不足，无法执行此操作',
   [ErrorCode.NOT_FOUND]: '请求的资源不存在',
   [ErrorCode.SERVER_ERROR]: '服务器内部错误',
-  [ErrorCode.UNKNOWN_ERROR]: '发生未知错误'
+  [ErrorCode.UNKNOWN_ERROR]: '发生未知错误',
 }
 
 // 创建应用错误
-export function createAppError(
-  code: ErrorCode, 
-  customMessage?: string, 
-  originalError?: Error
-): AppError {
+export function createAppError(code: ErrorCode, customMessage?: string, originalError?: Error): AppError {
   return {
     code,
     message: customMessage || errorMessages[code] || '未知错误',
     originalError,
-    details: originalError?.message
+    details: originalError?.message,
   }
 }
 
@@ -55,19 +51,19 @@ export function parseError(error: unknown): AppError {
     if (error.message.includes('network') || error.message.includes('fetch')) {
       return createAppError(ErrorCode.NETWORK_ERROR, undefined, error)
     }
-    
+
     if (error.message.includes('auth') || error.message.includes('unauthorized')) {
       return createAppError(ErrorCode.AUTH_ERROR, undefined, error)
     }
-    
+
     if (error.message.includes('permission') || error.message.includes('forbidden')) {
       return createAppError(ErrorCode.PERMISSION_ERROR, undefined, error)
     }
-    
+
     if (error.message.includes('not found') || error.message.includes('404')) {
       return createAppError(ErrorCode.NOT_FOUND, undefined, error)
     }
-    
+
     return createAppError(ErrorCode.UNKNOWN_ERROR, error.message, error)
   }
 
@@ -88,24 +84,19 @@ export function parseError(error: unknown): AppError {
 
 // 检查是否为 AppError
 export function isAppError(error: unknown): error is AppError {
-  return (
-    error !== null
-    && typeof error === 'object'
-    && 'code' in error
-    && 'message' in error
-  )
+  return error !== null && typeof error === 'object' && 'code' in error && 'message' in error
 }
 
 // 处理错误并记录日志
 export function handleError(error: unknown, context?: string): AppError {
   const appError = parseError(error)
-  
+
   // 记录错误日志到控制台
   const contextInfo = context ? ` in ${context}` : ''
   console.error(`Error${contextInfo}:`, {
     code: appError.code,
     message: appError.message,
-    details: appError.details
+    details: appError.details,
   })
 
   return appError
@@ -115,12 +106,11 @@ export function handleError(error: unknown, context?: string): AppError {
 export async function handleAsyncError<T>(
   operation: () => Promise<T>,
   context?: string
-): Promise<{ success: true, data: T } | { success: false, error: AppError }> {
+): Promise<{ success: true; data: T } | { success: false; error: AppError }> {
   try {
     const data = await operation()
     return { success: true, data }
-  }
-  catch (error) {
+  } catch (error) {
     const appError = handleError(error, context)
     return { success: false, error: appError }
   }
@@ -141,4 +131,4 @@ export function getDisplayMessage(error: AppError): string {
     default:
       return error.message || '操作失败，请稍后重试'
   }
-} 
+}

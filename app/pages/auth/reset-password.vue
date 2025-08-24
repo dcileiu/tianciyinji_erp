@@ -10,9 +10,7 @@
             <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Lock class="w-8 h-8 text-blue-600" />
             </div>
-            <h1 class="text-base sm:text-2xl font-bold text-foreground mb-2">
-              设置新密码
-            </h1>
+            <h1 class="text-base sm:text-2xl font-bold text-foreground mb-2">设置新密码</h1>
             <p class="text-sm text-muted-foreground">请输入您的新密码</p>
           </div>
 
@@ -86,11 +84,7 @@
             </Alert>
 
             <!-- 更新密码按钮 -->
-            <Button
-              type="submit"
-              class="w-full mb-6"
-              :disabled="!isFormValid || loading"
-            >
+            <Button type="submit" class="w-full mb-6" :disabled="!isFormValid || loading">
               <Loader2 v-if="loading" class="w-4 h-4 mr-2 animate-spin" />
               更新密码
             </Button>
@@ -107,126 +101,102 @@
 
             <!-- 其他操作 -->
             <div class="space-y-3">
-              <Button
-                variant="ghost"
-                class="w-full"
-                @click="$router.push('/login')"
-              >
-                返回登录
-              </Button>
+              <Button variant="ghost" class="w-full" @click="$router.push('/login')"> 返回登录 </Button>
             </div>
           </form>
         </CardContent>
       </Card>
 
       <!-- 版权信息 -->
-      <div class="text-center mt-8 text-sm text-gray-500">
-        © 2025 ERP管理系统. 保留所有权利.
-      </div>
+      <div class="text-center mt-8 text-sm text-gray-500">© 2025 ERP管理系统. 保留所有权利.</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  Lock,
-  Eye,
-  EyeOff,
-  AlertCircle,
-  CheckCircle,
-  Loader2
-} from 'lucide-vue-next'
-import { useAuth } from "~/composables/useAuth";
+// UI组件现在自动导入，无需手动导入
+
+import { ref, computed, onMounted } from 'vue'
+
+import { Lock, Eye, EyeOff, AlertCircle, CheckCircle, Loader2 } from 'lucide-vue-next'
+import { useAuth } from '~/composables/useAuth'
 
 // 页面配置 - 禁用布局，让密码重置页面全屏显示
 definePageMeta({
   layout: false,
-});
+})
 
 // 组合式函数
-const { updatePassword } = useAuth();
-const router = useRouter();
-const route = useRoute();
+const { updatePassword } = useAuth()
+const router = useRouter()
+const route = useRoute()
 
 // 响应式数据
-const loading = ref(false);
-const error = ref("");
-const success = ref("");
+const loading = ref(false)
+const error = ref('')
+const success = ref('')
 const form = ref({
-  password: "",
-  confirmPassword: "",
-});
+  password: '',
+  confirmPassword: '',
+})
 
-const showPassword = ref(false);
-const showConfirmPassword = ref(false);
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 // 表单验证
 const passwordError = computed(() => {
-  if (!form.value.password) return "";
-  return form.value.password.length < 6 ? "密码至少需要6个字符" : "";
-});
+  if (!form.value.password) return ''
+  return form.value.password.length < 6 ? '密码至少需要6个字符' : ''
+})
 
 const confirmPasswordError = computed(() => {
-  if (!form.value.confirmPassword) return "";
-  return form.value.password !== form.value.confirmPassword
-    ? "两次输入的密码不一致"
-    : "";
-});
+  if (!form.value.confirmPassword) return ''
+  return form.value.password !== form.value.confirmPassword ? '两次输入的密码不一致' : ''
+})
 
 const isFormValid = computed(() => {
-  return (
-    form.value.password
-    && form.value.confirmPassword
-    && !passwordError.value
-    && !confirmPasswordError.value
-  );
-});
+  return form.value.password && form.value.confirmPassword && !passwordError.value && !confirmPasswordError.value
+})
 
 // 处理密码重置
 const handleResetPassword = async () => {
-  if (!isFormValid.value) return;
+  if (!isFormValid.value) return
 
   try {
-    loading.value = true;
-    error.value = "";
-    success.value = "";
+    loading.value = true
+    error.value = ''
+    success.value = ''
 
-    const result = await updatePassword(form.value.password);
+    const result = await updatePassword(form.value.password)
 
     if (result.success) {
-      success.value = "密码更新成功！即将跳转到登录页面...";
+      success.value = '密码更新成功！即将跳转到登录页面...'
       setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+        router.push('/login')
+      }, 2000)
     } else {
-      error.value = result.error?.message || "密码更新失败，请重试";
+      error.value = result.error?.message || '密码更新失败，请重试'
     }
   } catch (err) {
-    console.error("Reset password error:", err);
-    error.value = "密码更新过程中发生错误，请重试";
+    console.error('Reset password error:', err)
+    error.value = '密码更新过程中发生错误，请重试'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 // 检查是否有有效的重置 token
 onMounted(() => {
-  const token = route.query.token || route.hash;
+  const token = route.query.token || route.hash
   if (!token) {
-    error.value = "无效的密码重置链接，请重新申请";
+    error.value = '无效的密码重置链接，请重新申请'
   }
-});
+})
 
 // 页面标题
 useHead({
-  title: "重置密码 - ERP管理系统",
-});
+  title: '重置密码 - ERP管理系统',
+})
 </script>
 
 <style scoped>

@@ -19,11 +19,7 @@
           <div class="flex-1">
             <div class="relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                v-model="searchQuery"
-                placeholder="搜索菜单名称或路径..."
-                class="pl-10"
-              />
+              <Input v-model="searchQuery" placeholder="搜索菜单名称或路径..." class="pl-10" />
             </div>
           </div>
           <div class="flex gap-2">
@@ -59,7 +55,7 @@
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           <span class="ml-2 text-gray-600 dark:text-gray-400">加载中...</span>
         </div>
-        
+
         <div v-else-if="error" class="text-center py-8">
           <p class="text-red-600 dark:text-red-400">{{ error }}</p>
           <Button variant="outline" class="mt-4" @click="loadMenus">
@@ -67,7 +63,7 @@
             重新加载
           </Button>
         </div>
-        
+
         <div v-else>
           <Table>
             <TableHeader>
@@ -191,7 +187,7 @@
             </TableBody>
           </Table>
         </div>
-       </CardContent>
+      </CardContent>
     </Card>
 
     <!-- 菜单对话框 -->
@@ -200,17 +196,12 @@
         <DialogHeader>
           <DialogTitle>{{ editingMenu ? '编辑菜单' : '新增菜单' }}</DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="menu-name">菜单名称 *</Label>
-              <Input
-                id="menu-name"
-                v-model="menuForm.name"
-                placeholder="请输入菜单名称"
-                required
-              />
+              <Input id="menu-name" v-model="menuForm.name" placeholder="请输入菜单名称" required />
             </div>
 
             <div class="space-y-2">
@@ -232,41 +223,26 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="menu-path">菜单路径</Label>
-              <Input
-                id="menu-path"
-                v-model="menuForm.path"
-                placeholder="例如: /users"
-              />
+              <Input id="menu-path" v-model="menuForm.path" placeholder="例如: /users" />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="menu-icon">菜单图标</Label>
               <div class="flex space-x-2">
-                <Input
-                  id="menu-icon"
-                  v-model="menuForm.icon"
-                  placeholder="例如: Home"
-                  class="flex-1"
-                />
+                <Input id="menu-icon" v-model="menuForm.icon" placeholder="例如: Home" class="flex-1" />
                 <div class="flex items-center justify-center w-10 h-10 border rounded">
                   <component :is="getMenuIcon(menuForm.icon)" class="w-5 h-5" />
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="sort-order">排序值</Label>
-              <Input
-                id="sort-order"
-                v-model.number="menuForm.sort_order"
-                type="number"
-                placeholder="排序值"
-                min="0"
-              />
+              <Input id="sort-order" v-model.number="menuForm.sort_order" type="number" placeholder="排序值" min="0" />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="menu-status">状态</Label>
               <Select v-model="menuForm.status">
@@ -281,86 +257,74 @@
               </Select>
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <Label for="menu-description">菜单描述</Label>
-            <Textarea
-              id="menu-description"
-              v-model="menuForm.description"
-              placeholder="请输入菜单描述"
-              :rows="3"
-            />
+            <Textarea id="menu-description" v-model="menuForm.description" placeholder="请输入菜单描述" :rows="3" />
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="menu-permission">权限标识</Label>
-              <Input
-                id="menu-permission"
-                v-model="menuForm.permission"
-                placeholder="例如: user:view"
-              />
+              <Input id="menu-permission" v-model="menuForm.permission" placeholder="例如: user:view" />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="external-url">外部链接</Label>
-              <Input
-                id="external-url"
-                v-model="menuForm.external_url"
-                placeholder="例如: https://example.com"
-              />
+              <Input id="external-url" v-model="menuForm.external_url" placeholder="例如: https://example.com" />
             </div>
           </div>
-          
+
           <div class="flex items-center space-x-4">
             <div class="flex items-center space-x-2">
-              <input
-                id="is-hidden"
-                v-model="menuForm.is_hidden"
-                type="checkbox"
-                class="rounded border-gray-300"
-              />
+              <input id="is-hidden" v-model="menuForm.is_hidden" type="checkbox" class="rounded border-gray-300" />
               <Label for="is-hidden">隐藏菜单</Label>
             </div>
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button variant="outline" @click="closeMenuDialog">
-            取消
-          </Button>
-          <Button @click="saveMenu" :disabled="saving">
-            保存
-          </Button>
+          <Button variant="outline" @click="closeMenuDialog"> 取消 </Button>
+          <Button @click="saveMenu" :disabled="saving"> 保存 </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    
-
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { Menu, Search, RefreshCw, Plus, Edit, Trash2, Home, Users, Settings, FileText, BarChart3, Package, DollarSign, Shield, Database, Building, HelpCircle } from 'lucide-vue-next'
+<script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
+import { computed, onMounted, ref } from 'vue'
+import { toast } from 'vue-sonner'
+
+import {
+  BarChart3,
+  Building,
+  Database,
+  DollarSign,
+  Edit,
+  FileText,
+  HelpCircle,
+  Home,
+  Menu,
+  Package,
+  Plus,
+  RefreshCw,
+  Search,
+  Settings,
+  Shield,
+  Trash2,
+  Users,
+} from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '菜单管理 - ERP 管理系统'
+  title: '菜单管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -388,14 +352,14 @@ const menuForm = ref({
   permission: '',
   is_external: false,
   is_hidden: false,
-  type: 'MENU', // 目录 | 菜单 | 按钮 
-  children: []
+  type: 'MENU', // 目录 | 菜单 | 按钮
+  children: [],
 })
 
 // 选项数据
 const statusOptions = ref([
   { label: '启用', value: 'active' },
-  { label: '禁用', value: 'inactive' }
+  { label: '禁用', value: 'inactive' },
 ])
 
 // 模拟数据
@@ -413,7 +377,7 @@ const mockMenus = ref([
     is_external: false,
     is_hidden: false,
     created_at: new Date('2024-01-01'),
-    children: []
+    children: [],
   },
   {
     id: '2',
@@ -441,7 +405,7 @@ const mockMenus = ref([
         permission: 'user:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date('2024-01-02')
+        created_at: new Date('2024-01-02'),
       },
       {
         id: '22',
@@ -455,7 +419,7 @@ const mockMenus = ref([
         permission: 'role:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date('2024-01-02')
+        created_at: new Date('2024-01-02'),
       },
       {
         id: '23',
@@ -469,7 +433,7 @@ const mockMenus = ref([
         permission: 'menu:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date('2024-01-02')
+        created_at: new Date('2024-01-02'),
       },
       {
         id: '24',
@@ -483,9 +447,9 @@ const mockMenus = ref([
         permission: 'department:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date('2024-01-02')
-      }
-    ]
+        created_at: new Date('2024-01-02'),
+      },
+    ],
   },
   {
     id: '3',
@@ -513,9 +477,9 @@ const mockMenus = ref([
         permission: 'inventory:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date('2024-01-03')
-      }
-    ]
+        created_at: new Date('2024-01-03'),
+      },
+    ],
   },
   {
     id: '4',
@@ -530,7 +494,7 @@ const mockMenus = ref([
     is_external: false,
     is_hidden: false,
     created_at: new Date('2024-01-04'),
-    children: []
+    children: [],
   },
   {
     id: '5',
@@ -545,22 +509,21 @@ const mockMenus = ref([
     is_external: false,
     is_hidden: false,
     created_at: new Date('2024-01-05'),
-    children: []
-  }
+    children: [],
+  },
 ])
 
 // 计算属性
 const filteredMenus = computed(() => {
   let result = mockMenus.value
-  
+
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(menu =>
-      menu.name.toLowerCase().includes(query)
-      || (menu.path && menu.path.toLowerCase().includes(query))
+    result = result.filter(
+      menu => menu.name.toLowerCase().includes(query) || (menu.path && menu.path.toLowerCase().includes(query))
     )
   }
-  
+
   if (statusFilter.value) {
     result = result.filter(menu => menu.status === statusFilter.value)
   }
@@ -573,13 +536,11 @@ const menuTreeOptions = computed(() => {
     return menus.map(menu => ({
       key: menu.id,
       label: menu.name,
-      children: menu.children ? buildTreeOptions(menu.children, level + 1) : []
+      children: menu.children ? buildTreeOptions(menu.children, level + 1) : [],
     }))
   }
-  
-  return [
-    { key: 'root', label: '根菜单', children: buildTreeOptions(mockMenus.value) }
-  ]
+
+  return [{ key: 'root', label: '根菜单', children: buildTreeOptions(mockMenus.value) }]
 })
 
 // 方法
@@ -592,12 +553,10 @@ const loadMenus = async () => {
   error.value = ''
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  catch (err) {
+  } catch (err) {
     error.value = '加载菜单失败'
     console.error('加载菜单失败:', err)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -620,7 +579,7 @@ const openCreateDialog = () => {
     description: '',
     permission: '',
     is_external: false,
-    is_hidden: false
+    is_hidden: false,
   })
   showMenuDialog.value = true
 }
@@ -637,7 +596,7 @@ const addChildMenu = (parentMenu: any) => {
     description: '',
     permission: '',
     is_external: false,
-    is_hidden: false
+    is_hidden: false,
   })
   showMenuDialog.value = true
 }
@@ -654,7 +613,7 @@ const editMenu = (menu: any) => {
     description: menu.description,
     permission: menu.permission,
     is_external: menu.is_external,
-    is_hidden: menu.is_hidden
+    is_hidden: menu.is_hidden,
   })
   showMenuDialog.value = true
 }
@@ -668,11 +627,11 @@ const saveMenu = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (editingMenu.value) {
       // 更新菜单
       const updateMenuInTree = (menus: any[]): any[] => {
-        return menus.map((menu) => {
+        return menus.map(menu => {
           if (menu.id === editingMenu.value.id) {
             return { ...menu, ...menuForm.value }
           }
@@ -683,20 +642,19 @@ const saveMenu = async () => {
         })
       }
       mockMenus.value = updateMenuInTree(mockMenus.value)
-    }
-    else {
+    } else {
       // 新增菜单
       const newMenu = {
         id: Date.now().toString(),
         ...menuForm.value,
         created_at: new Date(),
-        children: []
+        children: [],
       }
-      
+
       if (menuForm.value.parent_id) {
         // 添加为子菜单
         const addToParent = (menus: any[]): any[] => {
-          return menus.map((menu) => {
+          return menus.map(menu => {
             if (menu.id === menuForm.value.parent_id) {
               return { ...menu, children: [...(menu.children || []), newMenu] }
             }
@@ -707,19 +665,16 @@ const saveMenu = async () => {
           })
         }
         mockMenus.value = addToParent(mockMenus.value)
-      }
-      else {
+      } else {
         // 添加为根菜单
         mockMenus.value.push(newMenu)
       }
     }
-    
+
     closeMenuDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存菜单失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -732,7 +687,7 @@ const confirmDeleteMenu = (menu: any) => {
 
 const deleteMenu = (menuId: string) => {
   const deleteFromTree = (menus: any[]): any[] => {
-    return menus.filter((menu) => {
+    return menus.filter(menu => {
       if (menu.id === menuId) {
         return false
       }
@@ -742,7 +697,7 @@ const deleteMenu = (menuId: string) => {
       return true
     })
   }
-  
+
   mockMenus.value = deleteFromTree(mockMenus.value)
   toast.success('菜单删除成功')
 }
@@ -750,18 +705,18 @@ const deleteMenu = (menuId: string) => {
 // 获取菜单图标
 const getMenuIcon = (iconName: string) => {
   const iconMap: Record<string, any> = {
-    'Home': Home,
-    'Users': Users,
-    'Settings': Settings,
-    'FileText': FileText,
-    'BarChart3': BarChart3,
-    'Package': Package,
-    'DollarSign': DollarSign,
-    'Shield': Shield,
-    'Database': Database,
-    'Menu': Menu,
-    'Building': Building,
-    'HelpCircle': HelpCircle
+    Home: Home,
+    Users: Users,
+    Settings: Settings,
+    FileText: FileText,
+    BarChart3: BarChart3,
+    Package: Package,
+    DollarSign: DollarSign,
+    Shield: Shield,
+    Database: Database,
+    Menu: Menu,
+    Building: Building,
+    HelpCircle: HelpCircle,
   }
   return iconMap[iconName] || HelpCircle
 }

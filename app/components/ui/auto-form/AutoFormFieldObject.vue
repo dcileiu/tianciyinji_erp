@@ -1,8 +1,9 @@
 <script setup lang="ts" generic="T extends ZodRawShape">
+// UI组件现在自动导入，无需手动导入
+
 import type { ZodAny, ZodObject, ZodRawShape } from 'zod'
 import type { Config, ConfigItem, Shape } from './interface'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { FormItem } from '@/components/ui/form'
+
 import { FieldContextKey, useField } from 'vee-validate'
 import { computed, provide } from 'vue'
 import AutoFormField from './AutoFormField.vue'
@@ -21,17 +22,14 @@ const shapes = computed(() => {
   // @ts-expect-error ignore {} not assignable to object
   const val: { [key in keyof T]: Shape } = {}
 
-  if (!props.schema)
-    return
+  if (!props.schema) return
   const shape = getBaseSchema(props.schema)?.shape
-  if (!shape)
-    return
-  Object.keys(shape).forEach((name) => {
+  if (!shape) return
+  Object.keys(shape).forEach(name => {
     const item = shape[name] as ZodAny
     const baseItem = getBaseSchema(item) as ZodAny
-    let options = (baseItem && 'values' in baseItem._def) ? baseItem._def.values as string[] : undefined
-    if (!Array.isArray(options) && typeof options === 'object')
-      options = Object.values(options)
+    let options = baseItem && 'values' in baseItem._def ? (baseItem._def.values as string[]) : undefined
+    if (!Array.isArray(options) && typeof options === 'object') options = Object.values(options)
 
     val[name as keyof T] = {
       type: getBaseType(item),

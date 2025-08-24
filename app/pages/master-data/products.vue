@@ -21,11 +21,7 @@
         <div class="flex gap-4 items-center flex-wrap">
           <div class="flex-1 min-w-80 relative">
             <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              v-model="searchKeyword"
-              placeholder="搜索产品名称、编码..."
-              class="pl-10"
-            />
+            <Input v-model="searchKeyword" placeholder="搜索产品名称、编码..." class="pl-10" />
           </div>
 
           <div class="flex gap-4 items-center">
@@ -34,31 +30,23 @@
                 <SelectValue placeholder="产品分类" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in categoryOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in categoryOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select v-model="selectedStatus">
               <SelectTrigger class="w-40">
                 <SelectValue placeholder="产品状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in statusOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Button variant="outline" @click="resetFilters">
               <RefreshCw class="h-4 w-4 mr-2" />
               重置
@@ -79,7 +67,7 @@
           <div class="text-sm text-gray-600">总产品数</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardContent class="p-6 text-center">
           <div class="flex items-center justify-center mb-3">
@@ -89,7 +77,7 @@
           <div class="text-sm text-gray-600">在售产品</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardContent class="p-6 text-center">
           <div class="flex items-center justify-center mb-3">
@@ -99,7 +87,7 @@
           <div class="text-sm text-gray-600">库存预警</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardContent class="p-6 text-center">
           <div class="flex items-center justify-center mb-3">
@@ -124,7 +112,7 @@
           <RefreshCw class="h-6 w-6 animate-spin text-gray-400" />
           <span class="ml-2 text-gray-600">加载中...</span>
         </div>
-        
+
         <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
           <Package class="h-16 w-16 mx-auto text-gray-300 mb-4" />
           <h3 class="text-lg font-medium text-gray-900 mb-2">暂无产品</h3>
@@ -134,7 +122,7 @@
             新增产品
           </Button>
         </div>
-        
+
         <div v-else class="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -167,9 +155,7 @@
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <span class="font-semibold text-green-600">
-                    ¥{{ product.price.toLocaleString() }}
-                  </span>
+                  <span class="font-semibold text-green-600"> ¥{{ product.price.toLocaleString() }} </span>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2">
@@ -177,9 +163,7 @@
                     <Badge v-if="product.stock <= 10 && product.stock > 0" variant="destructive" class="text-xs">
                       库存不足
                     </Badge>
-                    <Badge v-if="product.stock === 0" variant="destructive" class="text-xs">
-                      缺货
-                    </Badge>
+                    <Badge v-if="product.stock === 0" variant="destructive" class="text-xs"> 缺货 </Badge>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -203,7 +187,12 @@
                     <Button variant="ghost" size="sm" @click="copyProduct(product)">
                       <Copy class="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" @click="confirmDeleteProduct(product)" class="text-red-600 hover:text-red-700">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      @click="confirmDeleteProduct(product)"
+                      class="text-red-600 hover:text-red-700"
+                    >
                       <Trash2 class="h-4 w-4" />
                     </Button>
                   </div>
@@ -215,8 +204,6 @@
       </CardContent>
     </Card>
 
-
-
     <!-- 产品详情/编辑对话框 -->
     <Dialog :open="showProductModal" @update:open="closeProductModal">
       <DialogContent class="max-w-2xl">
@@ -226,7 +213,7 @@
             {{ modalTitle }}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-6">
           <!-- 基本信息 -->
           <Card>
@@ -249,14 +236,10 @@
                 </div>
                 <div class="space-y-2">
                   <Label for="productName">产品名称</Label>
-                  <Input
-                    id="productName"
-                    v-model="currentProduct.name"
-                    placeholder="输入产品名称"
-                  />
+                  <Input id="productName" v-model="currentProduct.name" placeholder="输入产品名称" />
                 </div>
               </div>
-              
+
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <Label for="productCategory">产品分类</Label>
@@ -293,7 +276,7 @@
                   </Select>
                 </div>
               </div>
-              
+
               <div class="space-y-2">
                 <Label for="productDescription">产品描述</Label>
                 <Textarea
@@ -305,7 +288,7 @@
               </div>
             </CardContent>
           </Card>
-          
+
           <!-- 价格和库存 -->
           <Card>
             <CardHeader>
@@ -341,7 +324,7 @@
             </CardContent>
           </Card>
         </div>
-        
+
         <DialogFooter>
           <Button variant="outline" @click="closeProductModal">
             <X class="h-4 w-4 mr-2" />
@@ -359,17 +342,27 @@
 </template>
 
 <script setup lang="ts">
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Package, Plus, Search, RefreshCw, CheckCircle, AlertTriangle, XCircle, List, Eye, Edit, Copy, Trash2, Info, DollarSign, X, Check, Loader2 } from 'lucide-vue-next'
+// UI组件现在自动导入，无需手动导入
+
+import {
+  Package,
+  Plus,
+  Search,
+  RefreshCw,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  List,
+  Eye,
+  Edit,
+  Copy,
+  Trash2,
+  Info,
+  DollarSign,
+  X,
+  Check,
+  Loader2,
+} from 'lucide-vue-next'
 
 // 页面状态
 const loading = ref(false)
@@ -394,7 +387,7 @@ const currentProduct = ref({
   stock: 0,
   status: 'active',
   created_at: new Date(),
-  updated_at: new Date()
+  updated_at: new Date(),
 })
 
 // 模拟产品数据
@@ -409,7 +402,7 @@ const products = ref([
     stock: 50,
     status: 'active',
     created_at: new Date('2025-01-01'),
-    updated_at: new Date('2025-01-15')
+    updated_at: new Date('2025-01-15'),
   },
   {
     id: '2',
@@ -421,7 +414,7 @@ const products = ref([
     stock: 8,
     status: 'active',
     created_at: new Date('2025-01-02'),
-    updated_at: new Date('2025-01-16')
+    updated_at: new Date('2025-01-16'),
   },
   {
     id: '3',
@@ -433,8 +426,8 @@ const products = ref([
     stock: 0,
     status: 'inactive',
     created_at: new Date('2025-01-03'),
-    updated_at: new Date('2025-01-17')
-  }
+    updated_at: new Date('2025-01-17'),
+  },
 ])
 
 // 分类选项
@@ -443,14 +436,14 @@ const categoryOptions = [
   { label: '电子产品', value: 'electronics' },
   { label: '家具', value: 'furniture' },
   { label: '服装', value: 'clothing' },
-  { label: '食品', value: 'food' }
+  { label: '食品', value: 'food' },
 ]
 
 // 状态选项
 const statusOptions = [
   { label: '全部状态', value: '' },
   { label: '在售', value: 'active' },
-  { label: '停售', value: 'inactive' }
+  { label: '停售', value: 'inactive' },
 ]
 
 // 计算属性
@@ -458,9 +451,10 @@ const filteredProducts = computed(() => {
   let result = products.value
 
   if (searchKeyword.value) {
-    result = result.filter(product =>
-      product.name.toLowerCase().includes(searchKeyword.value.toLowerCase())
-      || product.code.toLowerCase().includes(searchKeyword.value.toLowerCase())
+    result = result.filter(
+      product =>
+        product.name.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
+        product.code.toLowerCase().includes(searchKeyword.value.toLowerCase())
     )
   }
 
@@ -496,7 +490,7 @@ const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   }).format(new Date(date))
 }
 
@@ -518,7 +512,7 @@ const openProductModal = () => {
     stock: 0,
     status: 'active',
     created_at: new Date(),
-    updated_at: new Date()
+    updated_at: new Date(),
   }
   showProductModal.value = true
 }
@@ -536,12 +530,12 @@ const viewProduct = (product: any) => {
 
 const copyProduct = (product: any) => {
   isEditing.value = false
-  currentProduct.value = { 
-    ...product, 
+  currentProduct.value = {
+    ...product,
     id: '',
     code: '',
     created_at: new Date(),
-    updated_at: new Date()
+    updated_at: new Date(),
   }
   showProductModal.value = true
 }
@@ -553,11 +547,11 @@ const confirmDeleteProduct = (product: any) => {
 }
 
 // 获取状态样式
-const getStatusVariant = (status) => {
+const getStatusVariant = status => {
   const variantMap = {
     active: 'default',
     inactive: 'secondary',
-    'out-of-stock': 'destructive'
+    'out-of-stock': 'destructive',
   }
   return variantMap[status] || 'outline'
 }
@@ -570,11 +564,9 @@ const deleteProduct = async (productId: string) => {
     if (index !== -1) {
       products.value.splice(index, 1)
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('删除产品失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -582,34 +574,31 @@ const deleteProduct = async (productId: string) => {
 const saveProduct = async () => {
   try {
     saving.value = true
-    
+
     if (isEditing.value) {
       // 更新产品
       const index = products.value.findIndex(p => p.id === currentProduct.value.id)
       if (index !== -1) {
         products.value[index] = {
           ...currentProduct.value,
-          updated_at: new Date()
+          updated_at: new Date(),
         }
       }
-    }
-    else {
+    } else {
       // 创建新产品
       const newProduct = {
         ...currentProduct.value,
         id: Date.now().toString(),
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }
       products.value.push(newProduct)
     }
-    
+
     closeProductModal()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存产品失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

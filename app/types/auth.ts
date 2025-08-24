@@ -56,4 +56,4 @@ export interface RegisterResponse {
   success: boolean
   error?: AuthError
   user?: User
-} 
+}

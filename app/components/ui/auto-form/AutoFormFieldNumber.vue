@@ -1,7 +1,8 @@
 <script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
 import type { FieldProps } from './interface'
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+
 import AutoFormLabel from './AutoFormLabel.vue'
 import { beautifyObjectName } from './utils'
 
@@ -20,7 +21,11 @@ defineProps<FieldProps>()
       </AutoFormLabel>
       <FormControl>
         <slot v-bind="slotProps">
-          <Input type="number" v-bind="{ ...slotProps.componentField, ...config?.inputProps }" :disabled="config?.inputProps?.disabled ?? disabled" />
+          <Input
+            type="number"
+            v-bind="{ ...slotProps.componentField, ...config?.inputProps }"
+            :disabled="config?.inputProps?.disabled ?? disabled"
+          />
         </slot>
       </FormControl>
       <FormDescription v-if="config?.description">

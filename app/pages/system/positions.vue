@@ -20,12 +20,7 @@
             <Label for="search-input">搜索</Label>
             <div class="relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                id="search-input"
-                v-model="searchQuery"
-                placeholder="岗位名称、编码..."
-                class="pl-10"
-              />
+              <Input id="search-input" v-model="searchQuery" placeholder="岗位名称、编码..." class="pl-10" />
             </div>
           </div>
           <div>
@@ -74,9 +69,7 @@
             <Briefcase class="w-5 h-5" />
             <span>岗位列表</span>
           </CardTitle>
-          <div class="text-sm text-gray-600">
-            共 {{ filteredPositions.length }} 个岗位
-          </div>
+          <div class="text-sm text-gray-600">共 {{ filteredPositions.length }} 个岗位</div>
         </div>
       </CardHeader>
 
@@ -84,11 +77,9 @@
         <div v-if="loading" class="flex justify-center py-8">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
-        
-        <div v-else-if="filteredPositions.length === 0" class="text-center py-8 text-gray-500">
-          暂无岗位数据
-        </div>
-        
+
+        <div v-else-if="filteredPositions.length === 0" class="text-center py-8 text-gray-500">暂无岗位数据</div>
+
         <div v-else>
           <Table>
             <TableHeader>
@@ -120,7 +111,7 @@
                 </TableCell>
                 <TableCell>
                   <div class="text-sm">
-                    {{ position.minSalary?.toLocaleString() }} - 
+                    {{ position.minSalary?.toLocaleString() }} -
                     {{ position.maxSalary?.toLocaleString() }}
                   </div>
                 </TableCell>
@@ -151,6 +142,7 @@
             </TableBody>
           </Table>
         </div>
+      </CardContent>
     </Card>
 
     <!-- 岗位对话框 -->
@@ -159,7 +151,7 @@
         <DialogHeader>
           <DialogTitle>{{ editingPosition ? '编辑岗位' : '新增岗位' }}</DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-6">
           <!-- 基本信息 -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -172,7 +164,7 @@
                 :class="{ 'border-red-500': !positionForm.code }"
               />
             </div>
-            
+
             <div>
               <Label for="position-name">岗位名称 *</Label>
               <Input
@@ -183,7 +175,7 @@
               />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label for="department-select">所属部门 *</Label>
@@ -198,7 +190,7 @@
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label for="level-select">职级 *</Label>
               <Select v-model="positionForm.level">
@@ -213,7 +205,7 @@
               </Select>
             </div>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label for="min-salary">最低薪资</Label>
@@ -226,7 +218,7 @@
                 step="1000"
               />
             </div>
-            
+
             <div>
               <Label for="max-salary">最高薪资</Label>
               <Input
@@ -239,27 +231,17 @@
               />
             </div>
           </div>
-          
+
           <div>
             <Label for="description">岗位描述</Label>
-            <Textarea
-              id="description"
-              v-model="positionForm.description"
-              placeholder="请输入岗位描述"
-              :rows="3"
-            />
+            <Textarea id="description" v-model="positionForm.description" placeholder="请输入岗位描述" :rows="3" />
           </div>
-          
+
           <div>
             <Label for="requirements">任职要求</Label>
-            <Textarea
-              id="requirements"
-              v-model="positionForm.requirements"
-              placeholder="请输入任职要求"
-              :rows="3"
-            />
+            <Textarea id="requirements" v-model="positionForm.requirements" placeholder="请输入任职要求" :rows="3" />
           </div>
-          
+
           <div>
             <Label for="status-select">状态</Label>
             <Select v-model="positionForm.status">
@@ -274,43 +256,31 @@
             </Select>
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button variant="outline" @click="closeDialog">
-            取消
-          </Button>
-          <Button @click="savePosition" :disabled="saving">
-            保存
-          </Button>
+          <Button variant="outline" @click="closeDialog"> 取消 </Button>
+          <Button @click="savePosition" :disabled="saving"> 保存 </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { Plus, Search, RefreshCw, Briefcase, Eye, Edit, Trash2 } from 'lucide-vue-next'
-import { toast } from 'sonner'
+// UI组件现在自动导入，无需手动导入
+
+import { computed, onMounted, ref } from 'vue'
+
+import { Briefcase, Edit, Eye, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '岗位管理 - ERP 管理系统'
+  title: '岗位管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -318,7 +288,6 @@ const loading = ref(false)
 const saving = ref(false)
 const showCreateDialog = ref(false)
 const editingPosition = ref(null as any)
-
 
 // 搜索和筛选
 const searchQuery = ref('')
@@ -335,13 +304,13 @@ const positionForm = ref({
   max_salary: 0,
   description: '',
   requirements: '',
-  status: 'active'
+  status: 'active',
 })
 
 // 选项数据
 const statusOptions = ref([
   { label: '启用', value: 'active' },
-  { label: '停用', value: 'inactive' }
+  { label: '停用', value: 'inactive' },
 ])
 
 const levelOptions = ref([
@@ -351,7 +320,7 @@ const levelOptions = ref([
   { label: '专家', value: 'expert' },
   { label: '主管', value: 'supervisor' },
   { label: '经理', value: 'manager' },
-  { label: '总监', value: 'director' }
+  { label: '总监', value: 'director' },
 ])
 
 // 模拟数据
@@ -360,7 +329,7 @@ const departments = ref([
   { id: '2', name: '销售部' },
   { id: '3', name: '人事部' },
   { id: '4', name: '财务部' },
-  { id: '5', name: '运营部' }
+  { id: '5', name: '运营部' },
 ])
 
 const mockPositions = ref([
@@ -377,7 +346,7 @@ const mockPositions = ref([
     requirements: '熟悉Vue.js、React等前端框架',
     employee_count: 5,
     status: 'active',
-    created_at: new Date('2024-01-01')
+    created_at: new Date('2024-01-01'),
   },
   {
     id: '2',
@@ -392,7 +361,7 @@ const mockPositions = ref([
     requirements: '熟悉Java、Python、Node.js等后端技术',
     employee_count: 3,
     status: 'active',
-    created_at: new Date('2024-01-02')
+    created_at: new Date('2024-01-02'),
   },
   {
     id: '3',
@@ -407,7 +376,7 @@ const mockPositions = ref([
     requirements: '具备良好的沟通能力和销售技巧',
     employee_count: 8,
     status: 'active',
-    created_at: new Date('2024-01-03')
+    created_at: new Date('2024-01-03'),
   },
   {
     id: '4',
@@ -422,8 +391,8 @@ const mockPositions = ref([
     requirements: '熟悉人力资源管理相关法规',
     employee_count: 2,
     status: 'active',
-    created_at: new Date('2024-01-04')
-  }
+    created_at: new Date('2024-01-04'),
+  },
 ])
 
 // 计算属性
@@ -432,9 +401,8 @@ const filteredPositions = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(position =>
-      position.name.toLowerCase().includes(query)
-      || position.code.toLowerCase().includes(query)
+    result = result.filter(
+      position => position.name.toLowerCase().includes(query) || position.code.toLowerCase().includes(query)
     )
   }
 
@@ -457,7 +425,7 @@ const levelMap: Record<string, string> = {
   expert: '专家',
   supervisor: '主管',
   manager: '经理',
-  director: '总监'
+  director: '总监',
 }
 
 const levelSeverityMap: Record<string, string> = {
@@ -467,7 +435,7 @@ const levelSeverityMap: Record<string, string> = {
   expert: 'danger',
   supervisor: 'secondary',
   manager: 'contrast',
-  director: 'primary'
+  director: 'primary',
 }
 
 // 方法
@@ -475,11 +443,11 @@ const getLevelDisplayName = (level: string) => levelMap[level] || level
 
 const getLevelSeverity = (level: string) => {
   const severityMap: Record<string, string> = {
-    'junior': 'secondary',
-    'intermediate': 'default',
-    'senior': 'outline',
-    'expert': 'destructive',
-    'manager': 'default'
+    junior: 'secondary',
+    intermediate: 'default',
+    senior: 'outline',
+    expert: 'destructive',
+    manager: 'default',
   }
   return severityMap[level] || 'secondary'
 }
@@ -520,7 +488,7 @@ const closeDialog = () => {
     max_salary: 0,
     description: '',
     requirements: '',
-    status: 'active'
+    status: 'active',
   })
 }
 
@@ -536,7 +504,7 @@ const savePosition = () => {
         id: mockPositions.value[index]?.id || '',
         employee_count: mockPositions.value[index]?.employee_count || 0,
         created_at: mockPositions.value[index]?.created_at || new Date(),
-        department_name: department?.name || ''
+        department_name: department?.name || '',
       }
     }
     toast.success('岗位更新成功')
@@ -548,12 +516,12 @@ const savePosition = () => {
       ...positionForm.value,
       department_name: department?.name || '',
       employee_count: 0,
-      created_at: new Date()
+      created_at: new Date(),
     }
     mockPositions.value.push(newPosition)
     toast.success('岗位创建成功')
   }
-  
+
   closeDialog()
 }
 

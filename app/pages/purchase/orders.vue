@@ -3,18 +3,10 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-color">
-          采购订单管理
-        </h1>
-        <p class="text-muted-color mt-1">
-          管理所有采购订单，跟踪采购进度和供应商信息
-        </p>
+        <h1 class="text-2xl font-bold text-color">采购订单管理</h1>
+        <p class="text-muted-color mt-1">管理所有采购订单，跟踪采购进度和供应商信息</p>
       </div>
-      <Button
-        label="新增采购订单"
-        icon="pi pi-plus"
-        @click="handleCreate"
-      />
+      <Button label="新增采购订单" icon="pi pi-plus" @click="handleCreate" />
     </div>
 
     <!-- 统计卡片 -->
@@ -26,9 +18,7 @@
               <i class="pi pi-shopping-bag text-blue-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">
-                本月采购订单
-              </p>
+              <p class="text-sm font-medium text-muted-color">本月采购订单</p>
               <p class="text-2xl font-semibold text-color">
                 {{ orderStats.monthlyOrders }}
               </p>
@@ -44,9 +34,7 @@
               <i class="pi pi-clock text-yellow-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">
-                待审核
-              </p>
+              <p class="text-sm font-medium text-muted-color">待审核</p>
               <p class="text-2xl font-semibold text-color">
                 {{ orderStats.pendingApproval }}
               </p>
@@ -62,9 +50,7 @@
               <i class="pi pi-check-circle text-green-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">
-                已完成
-              </p>
+              <p class="text-sm font-medium text-muted-color">已完成</p>
               <p class="text-2xl font-semibold text-color">
                 {{ orderStats.completed }}
               </p>
@@ -80,12 +66,8 @@
               <i class="pi pi-dollar text-purple-600 text-xl"></i>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">
-                本月采购金额
-              </p>
-              <p class="text-2xl font-semibold text-color">
-                ¥{{ orderStats.monthlyAmount.toLocaleString() }}
-              </p>
+              <p class="text-sm font-medium text-muted-color">本月采购金额</p>
+              <p class="text-2xl font-semibold text-color">¥{{ orderStats.monthlyAmount.toLocaleString() }}</p>
             </div>
           </div>
         </template>
@@ -103,14 +85,10 @@
               <InputIcon>
                 <i class="pi pi-search"></i>
               </InputIcon>
-              <InputText
-                v-model="searchQuery"
-                placeholder="订单号、供应商..."
-                class="w-full"
-              />
+              <InputText v-model="searchQuery" placeholder="订单号、供应商..." class="w-full" />
             </IconField>
           </div>
-          
+
           <!-- 状态筛选 -->
           <div>
             <label class="block text-sm font-medium mb-2 text-color">状态</label>
@@ -124,7 +102,7 @@
               class="w-full"
             />
           </div>
-          
+
           <!-- 供应商筛选 -->
           <div>
             <label class="block text-sm font-medium mb-2 text-color">供应商</label>
@@ -138,7 +116,7 @@
               class="w-full"
             />
           </div>
-          
+
           <!-- 日期范围 -->
           <div>
             <label class="block text-sm font-medium mb-2 text-color">日期范围</label>
@@ -150,16 +128,10 @@
               class="w-full"
             />
           </div>
-          
+
           <!-- 操作按钮 -->
           <div class="flex items-end gap-2">
-            <Button
-              label="重置"
-              icon="pi pi-refresh"
-              outlined
-              class="flex-1"
-              @click="resetFilters"
-            />
+            <Button label="重置" icon="pi pi-refresh" outlined class="flex-1" @click="resetFilters" />
           </div>
         </div>
       </template>
@@ -171,13 +143,7 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">采购订单列表</h3>
           <div class="flex items-center gap-2">
-            <Button
-              label="导出"
-              icon="pi pi-download"
-              outlined
-              size="small"
-              @click="exportOrders"
-            />
+            <Button label="导出" icon="pi pi-download" outlined size="small" @click="exportOrders" />
           </div>
         </div>
       </template>
@@ -211,28 +177,22 @@
               </code>
             </template>
           </Column>
-          
+
           <Column field="supplier_name" header="供应商" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Avatar
-                  :label="slotProps.data.supplier_name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
+                <Avatar :label="slotProps.data.supplier_name.charAt(0)" shape="circle" size="small" />
                 <span class="font-medium">{{ slotProps.data.supplier_name }}</span>
               </div>
             </template>
           </Column>
-          
+
           <Column field="total_amount" header="订单金额" sortable>
             <template #body="slotProps">
-              <span class="font-medium text-green-600">
-                ¥{{ slotProps.data.total_amount.toLocaleString() }}
-              </span>
+              <span class="font-medium text-green-600"> ¥{{ slotProps.data.total_amount.toLocaleString() }} </span>
             </template>
           </Column>
-          
+
           <Column field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
@@ -241,7 +201,7 @@
               />
             </template>
           </Column>
-          
+
           <Column field="order_date" header="订单日期" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
@@ -249,7 +209,7 @@
               </span>
             </template>
           </Column>
-          
+
           <Column field="expected_date" header="预期到货" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
@@ -257,13 +217,13 @@
               </span>
             </template>
           </Column>
-          
+
           <Column field="items_count" header="商品数量">
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.items.length }} 种商品</span>
             </template>
           </Column>
-          
+
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
@@ -323,13 +283,9 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">订单号</label>
-              <InputText
-                v-model="orderForm.order_no"
-                :disabled="dialogMode !== 'create'"
-                placeholder="系统自动生成"
-              />
+              <InputText v-model="orderForm.order_no" :disabled="dialogMode !== 'create'" placeholder="系统自动生成" />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商 *</label>
               <Dropdown
@@ -343,7 +299,7 @@
               />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">订单日期 *</label>
@@ -354,7 +310,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">预期到货日期</label>
               <Calendar
@@ -364,7 +320,7 @@
               />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">备注</label>
             <Textarea
@@ -374,7 +330,7 @@
               :disabled="dialogMode === 'view'"
             />
           </div>
-          
+
           <!-- 订单项列表 -->
           <div class="space-y-2">
             <div class="flex items-center justify-between">
@@ -388,10 +344,8 @@
                 @click="addOrderItem"
               />
             </div>
-            
-            <DataTable
-              :value="orderForm.items"
-            >
+
+            <DataTable :value="orderForm.items">
               <template #loading>
                 <div class="p-6">
                   <div v-for="i in 3" :key="i" class="flex align-items-center gap-4 mb-4">
@@ -407,19 +361,19 @@
                   <span class="font-medium">{{ slotProps.data.product_name }}</span>
                 </template>
               </Column>
-              
+
               <Column field="quantity" header="数量">
                 <template #body="slotProps">
                   <span>{{ slotProps.data.quantity }} {{ slotProps.data.unit }}</span>
                 </template>
               </Column>
-              
+
               <Column field="unit_price" header="单价">
                 <template #body="slotProps">
                   <span>¥{{ slotProps.data.unit_price.toLocaleString() }}</span>
                 </template>
               </Column>
-              
+
               <Column field="amount" header="金额">
                 <template #body="slotProps">
                   <span class="font-medium">
@@ -427,7 +381,7 @@
                   </span>
                 </template>
               </Column>
-              
+
               <Column v-if="dialogMode !== 'view'" header="操作" :exportable="false">
                 <template #body="slotProps">
                   <Button
@@ -442,38 +396,25 @@
               </Column>
             </DataTable>
           </div>
-          
+
           <!-- 总计 -->
           <div class="border-t pt-4">
             <div class="flex justify-between items-center">
               <span class="text-lg font-medium text-color">总计：</span>
-              <span class="text-xl font-bold text-green-600">
-                ¥{{ totalAmount.toLocaleString() }}
-              </span>
+              <span class="text-xl font-bold text-green-600"> ¥{{ totalAmount.toLocaleString() }} </span>
             </div>
           </div>
         </div>
       </template>
-      
+
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeOrderDialog"
-          />
-          <Button
-            v-if="dialogMode !== 'view'"
-            label="保存"
-            icon="pi pi-check"
-            :loading="saving"
-            @click="saveOrder"
-          />
+          <Button label="取消" icon="pi pi-times" outlined @click="closeOrderDialog" />
+          <Button v-if="dialogMode !== 'view'" label="保存" icon="pi pi-check" :loading="saving" @click="saveOrder" />
         </div>
       </template>
     </Dialog>
-    
+
     <!-- 确认对话框 -->
     <ConfirmDialog />
   </div>
@@ -500,11 +441,11 @@ import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '采购订单管理 - ERP 管理系统'
+  title: '采购订单管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -527,7 +468,7 @@ const orderForm = ref({
   order_date: new Date(),
   expected_date: null,
   remark: '',
-  items: [] as Array<{product_name: string, quantity: number, unit: string, unit_price: number}>
+  items: [] as Array<{ product_name: string; quantity: number; unit: string; unit_price: number }>,
 })
 
 // 统计数据
@@ -535,7 +476,7 @@ const orderStats = ref({
   monthlyOrders: 156,
   pendingApproval: 23,
   completed: 89,
-  monthlyAmount: 2456789
+  monthlyAmount: 2456789,
 })
 
 // 选项数据
@@ -545,13 +486,13 @@ const statusOptions = ref([
   { label: '已批准', value: 'approved' },
   { label: '进行中', value: 'in_progress' },
   { label: '已完成', value: 'completed' },
-  { label: '已取消', value: 'cancelled' }
+  { label: '已取消', value: 'cancelled' },
 ])
 
 const suppliers = ref([
   { id: '1', name: '供应商A' },
   { id: '2', name: '供应商B' },
-  { id: '3', name: '供应商C' }
+  { id: '3', name: '供应商C' },
 ])
 
 // 模拟数据
@@ -567,9 +508,9 @@ const mockOrders = ref([
     expected_date: new Date('2024-01-25'),
     items: [
       { product_name: '商品A', quantity: 100, unit: '个', unit_price: 50 },
-      { product_name: '商品B', quantity: 200, unit: '个', unit_price: 30 }
+      { product_name: '商品B', quantity: 200, unit: '个', unit_price: 30 },
     ],
-    remark: '紧急采购'
+    remark: '紧急采购',
   },
   {
     id: '2',
@@ -580,11 +521,9 @@ const mockOrders = ref([
     status: 'approved',
     order_date: new Date('2024-01-14'),
     expected_date: new Date('2024-01-24'),
-    items: [
-      { product_name: '商品C', quantity: 150, unit: '箱', unit_price: 45 }
-    ],
-    remark: ''
-  }
+    items: [{ product_name: '商品C', quantity: 150, unit: '箱', unit_price: 45 }],
+    remark: '',
+  },
 ])
 
 // 计算属性
@@ -593,9 +532,8 @@ const filteredOrders = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(order =>
-      order.order_no.toLowerCase().includes(query)
-      || order.supplier_name.toLowerCase().includes(query)
+    result = result.filter(
+      order => order.order_no.toLowerCase().includes(query) || order.supplier_name.toLowerCase().includes(query)
     )
   }
 
@@ -612,7 +550,7 @@ const filteredOrders = computed(() => {
 
 const totalAmount = computed(() => {
   return orderForm.value.items.reduce((sum: number, item: any) => {
-    return sum + (item.quantity * item.unit_price)
+    return sum + item.quantity * item.unit_price
   }, 0)
 })
 
@@ -623,7 +561,7 @@ const statusMap: Record<string, string> = {
   approved: '已批准',
   in_progress: '进行中',
   completed: '已完成',
-  cancelled: '已取消'
+  cancelled: '已取消',
 }
 
 const statusSeverityMap: Record<string, string> = {
@@ -632,7 +570,7 @@ const statusSeverityMap: Record<string, string> = {
   approved: 'info',
   in_progress: 'primary',
   completed: 'success',
-  cancelled: 'danger'
+  cancelled: 'danger',
 }
 
 // 方法
@@ -659,7 +597,7 @@ const handleCreate = () => {
     order_date: new Date(),
     expected_date: null,
     remark: '',
-    items: []
+    items: [],
   }
   showOrderDialog.value = true
 }
@@ -691,11 +629,10 @@ const approveOrder = async (order: any) => {
         if (index !== -1 && mockOrders.value[index]) {
           mockOrders.value[index]!.status = 'approved'
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('审核失败:', error)
       }
-    }
+    },
   })
 }
 
@@ -706,7 +643,7 @@ const confirmDeleteOrder = (order: any) => {
     icon: 'pi pi-exclamation-triangle',
     accept: () => {
       deleteOrder(order.id)
-    }
+    },
   })
 }
 
@@ -722,7 +659,7 @@ const saveOrder = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (dialogMode.value === 'create') {
       const newOrder = {
         id: Date.now().toString(),
@@ -730,11 +667,10 @@ const saveOrder = async () => {
         supplier_name: suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
         total_amount: totalAmount.value,
         status: 'draft',
-        expected_date: orderForm.value.expected_date || new Date()
+        expected_date: orderForm.value.expected_date || new Date(),
       }
       mockOrders.value.push(newOrder)
-    }
-    else if (dialogMode.value === 'edit') {
+    } else if (dialogMode.value === 'edit') {
       const index = mockOrders.value.findIndex(o => o.id === editingOrder.value?.id)
       if (index !== -1 && mockOrders.value[index]) {
         mockOrders.value[index] = {
@@ -743,17 +679,15 @@ const saveOrder = async () => {
           id: mockOrders.value[index]!.id,
           supplier_name: suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
           total_amount: totalAmount.value,
-          expected_date: orderForm.value.expected_date || new Date()
+          expected_date: orderForm.value.expected_date || new Date(),
         }
       }
     }
-    
+
     closeOrderDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存订单失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -763,7 +697,7 @@ const addOrderItem = () => {
     product_name: '新商品',
     quantity: 1,
     unit: '个',
-    unit_price: 0
+    unit_price: 0,
   })
 }
 

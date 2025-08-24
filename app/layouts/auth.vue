@@ -2,9 +2,15 @@
   <div class="min-h-screen bg-background">
     <!-- 背景装饰 -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-32 w-80 h-80 bg-secondary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent/5 rounded-full mix-blend-multiply filter blur-2xl opacity-50"></div>
+      <div
+        class="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"
+      ></div>
+      <div
+        class="absolute -bottom-40 -left-32 w-80 h-80 bg-secondary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent/5 rounded-full mix-blend-multiply filter blur-2xl opacity-50"
+      ></div>
     </div>
 
     <!-- 头部 -->
@@ -26,11 +32,7 @@
 
           <!-- 主题切换按钮 -->
           <div class="flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              @click="toggleTheme"
-            >
+            <Button variant="ghost" size="icon" @click="toggleTheme">
               <Sun v-if="isDark" class="h-4 w-4" />
               <Moon v-else class="h-4 w-4" />
             </Button>
@@ -48,9 +50,7 @@
     <footer class="relative z-10 border-t bg-card/50 backdrop-blur">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="text-center">
-          <p class="text-sm text-muted-foreground">
-            © 2025 ERP 管理系统. 保留所有权利.
-          </p>
+          <p class="text-sm text-muted-foreground">© 2025 ERP 管理系统. 保留所有权利.</p>
         </div>
       </div>
     </footer>
@@ -58,7 +58,8 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+// UI组件现在自动导入，无需手动导入
+
 import { Building2, Sun, Moon } from 'lucide-vue-next'
 
 // 主题管理

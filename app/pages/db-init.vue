@@ -7,7 +7,7 @@
           <p class="text-muted-color">初始化系统数据库和基础配置</p>
         </div>
       </template>
-      
+
       <template #content>
         <div class="p-6">
           <!-- 连接状态检查 -->
@@ -21,16 +21,24 @@
                       <div
                         :class="[
                           'w-3 h-3 border-circle',
-                          connectionStatus === 'connected' ? 'bg-green-500' 
-                          : connectionStatus === 'checking' ? 'bg-yellow-500' : 'bg-red-500',
+                          connectionStatus === 'connected'
+                            ? 'bg-green-500'
+                            : connectionStatus === 'checking'
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500',
                         ]"
                       ></div>
                     </div>
                     <div>
                       <p class="font-medium text-color">数据库连接</p>
                       <p class="text-sm text-muted-color">
-                        {{ connectionStatus === 'connected' ? '已连接' 
-                           : connectionStatus === 'checking' ? '检查中...' : '连接失败' }}
+                        {{
+                          connectionStatus === 'connected'
+                            ? '已连接'
+                            : connectionStatus === 'checking'
+                              ? '检查中...'
+                              : '连接失败'
+                        }}
                       </p>
                     </div>
                   </div>
@@ -44,16 +52,24 @@
                       <div
                         :class="[
                           'w-3 h-3 rounded-full',
-                          connectionStatus === 'connected' ? 'bg-green-500' 
-                          : connectionStatus === 'checking' ? 'bg-yellow-500' : 'bg-red-500',
+                          connectionStatus === 'connected'
+                            ? 'bg-green-500'
+                            : connectionStatus === 'checking'
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500',
                         ]"
                       ></div>
                     </div>
                     <div>
                       <p class="font-medium text-color">认证服务</p>
                       <p class="text-sm text-muted-color">
-                        {{ connectionStatus === 'connected' ? '已连接' 
-                           : connectionStatus === 'checking' ? '检查中...' : '连接失败' }}
+                        {{
+                          connectionStatus === 'connected'
+                            ? '已连接'
+                            : connectionStatus === 'checking'
+                              ? '检查中...'
+                              : '连接失败'
+                        }}
                       </p>
                     </div>
                   </div>
@@ -67,24 +83,30 @@
                       <div
                         :class="[
                           'w-3 h-3 border-circle',
-                          connectionStatus === 'connected' ? 'bg-green-500' 
-                          : connectionStatus === 'checking' ? 'bg-yellow-500' : 'bg-red-500',
+                          connectionStatus === 'connected'
+                            ? 'bg-green-500'
+                            : connectionStatus === 'checking'
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500',
                         ]"
                       ></div>
                     </div>
                     <div>
                       <p class="font-medium text-color">管理员角色</p>
                       <p class="text-sm text-muted-color">
-                        {{ connectionStatus === 'connected' ? '已配置' 
-                           : connectionStatus === 'checking' ? '检查中...' : '未配置' }}
+                        {{
+                          connectionStatus === 'connected'
+                            ? '已配置'
+                            : connectionStatus === 'checking'
+                              ? '检查中...'
+                              : '未配置'
+                        }}
                       </p>
                     </div>
                   </div>
                 </template>
               </Card>
             </div>
-            
-
           </div>
 
           <!-- 初始化步骤 -->
@@ -97,12 +119,18 @@
                   <div
                     :class="[
                       'w-6 h-6 rounded-full flex items-center justify-center text-white text-sm',
-                      steps['check-connection']?.status === 'completed' ? 'bg-green-500'
-                      : steps['check-connection']?.status === 'running' ? 'bg-blue-500' : 'bg-gray-400',
+                      steps['check-connection']?.status === 'completed'
+                        ? 'bg-green-500'
+                        : steps['check-connection']?.status === 'running'
+                          ? 'bg-blue-500'
+                          : 'bg-gray-400',
                     ]"
                   >
                     <i v-if="steps['check-connection']?.status === 'completed'" class="pi pi-check text-xs"></i>
-                    <ProgressSpinner v-else-if="steps['check-connection']?.status === 'running'" style="width: 16px; height: 16px" />
+                    <ProgressSpinner
+                      v-else-if="steps['check-connection']?.status === 'running'"
+                      style="width: 16px; height: 16px"
+                    />
                     <span v-else>1</span>
                   </div>
                   <div>
@@ -113,8 +141,8 @@
                     </div>
                   </div>
                 </div>
-                <Button 
-                  :disabled="steps['check-connection']?.status === 'running'" 
+                <Button
+                  :disabled="steps['check-connection']?.status === 'running'"
                   :label="steps['check-connection']?.status === 'completed' ? '重新检查' : '开始检查'"
                   outlined
                   @click="checkConnection"
@@ -127,12 +155,18 @@
                   <div
                     :class="[
                       'w-6 h-6 border-circle flex align-items-center justify-content-center text-white text-sm',
-                      steps['check-tables']?.status === 'completed' ? 'bg-green-500'
-                      : steps['check-tables']?.status === 'running' ? 'bg-blue-500' : 'bg-gray-400',
+                      steps['check-tables']?.status === 'completed'
+                        ? 'bg-green-500'
+                        : steps['check-tables']?.status === 'running'
+                          ? 'bg-blue-500'
+                          : 'bg-gray-400',
                     ]"
                   >
                     <i v-if="steps['check-tables']?.status === 'completed'" class="pi pi-check text-xs"></i>
-                    <ProgressSpinner v-else-if="steps['check-tables']?.status === 'running'" style="width: 16px; height: 16px" />
+                    <ProgressSpinner
+                      v-else-if="steps['check-tables']?.status === 'running'"
+                      style="width: 16px; height: 16px"
+                    />
                     <span v-else>2</span>
                   </div>
                   <div>
@@ -143,8 +177,8 @@
                     </div>
                   </div>
                 </div>
-                <Button 
-                  :disabled="steps['check-tables']?.status === 'running'" 
+                <Button
+                  :disabled="steps['check-tables']?.status === 'running'"
                   :label="steps['check-tables']?.status === 'completed' ? '重新检查' : '开始检查'"
                   outlined
                   @click="checkTables"
@@ -157,12 +191,18 @@
                   <div
                     :class="[
                       'w-6 h-6 rounded-full flex items-center justify-center text-white text-sm',
-                      steps['check-admin-role']?.status === 'completed' ? 'bg-green-500'
-                      : steps['check-admin-role']?.status === 'running' ? 'bg-blue-500' : 'bg-gray-400',
+                      steps['check-admin-role']?.status === 'completed'
+                        ? 'bg-green-500'
+                        : steps['check-admin-role']?.status === 'running'
+                          ? 'bg-blue-500'
+                          : 'bg-gray-400',
                     ]"
                   >
                     <i v-if="steps['check-admin-role']?.status === 'completed'" class="pi pi-check text-xs"></i>
-                    <ProgressSpinner v-else-if="steps['check-admin-role']?.status === 'running'" style="width: 16px; height: 16px" />
+                    <ProgressSpinner
+                      v-else-if="steps['check-admin-role']?.status === 'running'"
+                      style="width: 16px; height: 16px"
+                    />
                     <span v-else>3</span>
                   </div>
                   <div>
@@ -173,8 +213,8 @@
                     </div>
                   </div>
                 </div>
-                <Button 
-                  :disabled="steps['check-admin-role']?.status === 'running'" 
+                <Button
+                  :disabled="steps['check-admin-role']?.status === 'running'"
                   :label="steps['check-admin-role']?.status === 'completed' ? '重新检查' : '开始检查'"
                   outlined
                   @click="checkAdminRole"
@@ -187,12 +227,18 @@
                   <div
                     :class="[
                       'w-6 h-6 rounded-full flex items-center justify-center text-white text-sm',
-                      steps['create-admin']?.status === 'completed' ? 'bg-green-500'
-                      : steps['create-admin']?.status === 'running' ? 'bg-blue-500' : 'bg-gray-400',
+                      steps['create-admin']?.status === 'completed'
+                        ? 'bg-green-500'
+                        : steps['create-admin']?.status === 'running'
+                          ? 'bg-blue-500'
+                          : 'bg-gray-400',
                     ]"
                   >
                     <i v-if="steps['create-admin']?.status === 'completed'" class="pi pi-check text-xs"></i>
-                    <ProgressSpinner v-else-if="steps['create-admin']?.status === 'running'" style="width: 16px; height: 16px" />
+                    <ProgressSpinner
+                      v-else-if="steps['create-admin']?.status === 'running'"
+                      style="width: 16px; height: 16px"
+                    />
                     <span v-else>4</span>
                   </div>
                   <div>
@@ -203,8 +249,8 @@
                     </div>
                   </div>
                 </div>
-                <Button 
-                  :disabled="steps['create-admin']?.status === 'running'" 
+                <Button
+                  :disabled="steps['create-admin']?.status === 'running'"
                   :label="steps['create-admin']?.status === 'completed' ? '重新创建' : '开始创建'"
                   outlined
                   @click="createAdmin"
@@ -217,12 +263,18 @@
                   <div
                     :class="[
                       'w-6 h-6 rounded-full flex items-center justify-center text-white text-sm',
-                      steps['assign-role']?.status === 'completed' ? 'bg-green-500'
-                      : steps['assign-role']?.status === 'running' ? 'bg-blue-500' : 'bg-gray-400',
+                      steps['assign-role']?.status === 'completed'
+                        ? 'bg-green-500'
+                        : steps['assign-role']?.status === 'running'
+                          ? 'bg-blue-500'
+                          : 'bg-gray-400',
                     ]"
                   >
                     <i v-if="steps['assign-role']?.status === 'completed'" class="pi pi-check text-xs"></i>
-                    <ProgressSpinner v-else-if="steps['assign-role']?.status === 'running'" style="width: 16px; height: 16px" />
+                    <ProgressSpinner
+                      v-else-if="steps['assign-role']?.status === 'running'"
+                      style="width: 16px; height: 16px"
+                    />
                     <span v-else>5</span>
                   </div>
                   <div>
@@ -233,8 +285,8 @@
                     </div>
                   </div>
                 </div>
-                <Button 
-                  :disabled="steps['assign-role']?.status === 'running'" 
+                <Button
+                  :disabled="steps['assign-role']?.status === 'running'"
                   :label="steps['assign-role']?.status === 'completed' ? '重新分配' : '开始分配'"
                   outlined
                   @click="assignAdminRole"
@@ -247,42 +299,22 @@
           <div class="mb-8">
             <h2 class="text-xl font-semibold text-color mb-4">快速操作</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <Button 
-                :disabled="isInitializing" 
-                severity="info"
-                class="w-full"
-                @click="checkConnection"
-              >
+              <Button :disabled="isInitializing" severity="info" class="w-full" @click="checkConnection">
                 <i class="pi pi-wifi mr-2"></i>
                 检查数据库连接
               </Button>
-              
-              <Button 
-                :disabled="isInitializing" 
-                severity="info"
-                class="w-full"
-                @click="checkTables"
-              >
+
+              <Button :disabled="isInitializing" severity="info" class="w-full" @click="checkTables">
                 <i class="pi pi-table mr-2"></i>
                 检查表结构
               </Button>
-              
-              <Button 
-                :disabled="isInitializing" 
-                severity="info"
-                class="w-full"
-                @click="checkAdminRole"
-              >
+
+              <Button :disabled="isInitializing" severity="info" class="w-full" @click="checkAdminRole">
                 <i class="pi pi-shield mr-2"></i>
                 检查管理员角色
               </Button>
-              
-              <Button 
-                :disabled="isInitializing" 
-                severity="warning"
-                class="w-full"
-                @click="validateAdminPermissions"
-              >
+
+              <Button :disabled="isInitializing" severity="warning" class="w-full" @click="validateAdminPermissions">
                 <i class="pi pi-verified mr-2"></i>
                 验证管理员权限
               </Button>
@@ -300,7 +332,7 @@
                     自动执行所有必要的初始化操作，包括表结构检查、管理员创建和基础数据导入
                   </p>
                 </div>
-                <Button 
+                <Button
                   :disabled="isInitializing"
                   :loading="isInitializing"
                   label="一键初始化"
@@ -308,7 +340,7 @@
                   @click="initializeAll"
                 />
               </div>
-              
+
               <!-- 初始化进度 -->
               <div v-if="isInitializing" class="mt-4">
                 <div class="flex items-center justify-between mb-2">
@@ -330,7 +362,10 @@
                   <span class="text-gray-500 flex-shrink-0">[{{ formatTime(log.timestamp) }}]</span>
                   <div class="flex-1">
                     <span :class="getLogClass(log.level)">{{ log.message }}</span>
-                    <div v-if="log.details && Object.keys(log.details).length > 0" class="text-gray-400 text-xs mt-1 pl-2 border-l border-gray-600">
+                    <div
+                      v-if="log.details && Object.keys(log.details).length > 0"
+                      class="text-gray-400 text-xs mt-1 pl-2 border-l border-gray-600"
+                    >
                       <div v-for="(value, key) in log.details" :key="key">
                         {{ key }}: {{ typeof value === 'object' ? JSON.stringify(value) : value }}
                       </div>
@@ -338,14 +373,12 @@
                   </div>
                 </div>
               </div>
-              <div v-if="logs.length === 0" class="text-gray-500">
-                等待初始化操作...
-              </div>
+              <div v-if="logs.length === 0" class="text-gray-500">等待初始化操作...</div>
               <div v-if="currentUser" class="text-blue-400 text-xs mt-2 pt-2 border-t border-gray-700">
                 当前用户: {{ currentUser.email || '未登录' }}
               </div>
             </div>
-            </div>
+          </div>
 
           <!-- 初始化完成状态 -->
           <div v-if="allStepsCompleted" class="bg-green-50 border border-green-200 p-6 rounded-lg">
@@ -355,22 +388,10 @@
               </div>
               <div class="ml-3">
                 <h3 class="text-lg font-medium text-green-800">初始化完成！</h3>
-                <p class="text-green-700 mt-1">
-                  数据库已成功初始化，您现在可以使用管理员账户登录系统。
-                </p>
+                <p class="text-green-700 mt-1">数据库已成功初始化，您现在可以使用管理员账户登录系统。</p>
                 <div class="mt-4">
-                  <Button 
-                    label="前往登录"
-                    icon="pi pi-sign-in"
-                    class="mr-2"
-                    @click="goToLogin"
-                  />
-                  <Button 
-                    label="查看系统状态"
-                    icon="pi pi-chart-bar"
-                    outlined
-                    @click="goToDashboard"
-                  />
+                  <Button label="前往登录" icon="pi pi-sign-in" class="mr-2" @click="goToLogin" />
+                  <Button label="查看系统状态" icon="pi pi-chart-bar" outlined @click="goToDashboard" />
                 </div>
               </div>
             </div>
@@ -404,7 +425,7 @@ const {
   assignAdminRole,
   initializeAll,
   checkUserPermission,
-  validateAdminPermissions
+  validateAdminPermissions,
 } = useDbInit()
 
 // 计算属性
@@ -413,10 +434,8 @@ const allStepsCompleted = computed(() => {
 })
 
 const totalSteps = computed(() => Object.keys(steps.value).length)
-const completedSteps = computed(() => 
-  Object.values(steps.value).filter(step => step.status === 'completed').length
-)
-const initProgress = computed(() => 
+const completedSteps = computed(() => Object.values(steps.value).filter(step => step.status === 'completed').length)
+const initProgress = computed(() =>
   isInitializing.value ? initializationProgress.value : Math.round((completedSteps.value / totalSteps.value) * 100)
 )
 
@@ -428,7 +447,7 @@ const currentStep = computed(() => {
       'check-tables': '检查数据库表结构',
       'check-admin-role': '检查管理员角色',
       'create-admin': '创建管理员用户',
-      'assign-role': '分配管理员角色'
+      'assign-role': '分配管理员角色',
     }
     return stepNames[runningStep[0]] || '正在处理...'
   }
@@ -436,16 +455,20 @@ const currentStep = computed(() => {
 })
 
 // 方法
-const formatTime = (date) => {
+const formatTime = date => {
   return date.toLocaleTimeString()
 }
 
-const getLogClass = (level) => {
+const getLogClass = level => {
   switch (level) {
-    case 'error': return 'text-red-400'
-    case 'warning': return 'text-yellow-400'
-    case 'success': return 'text-green-400'
-    default: return 'text-green-400'
+    case 'error':
+      return 'text-red-400'
+    case 'warning':
+      return 'text-yellow-400'
+    case 'success':
+      return 'text-green-400'
+    default:
+      return 'text-green-400'
   }
 }
 

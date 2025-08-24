@@ -3,18 +3,10 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-color">
-          客户档案管理
-        </h1>
-        <p class="text-muted-color mt-1">
-          管理客户基础信息，维护客户关系和联系方式
-        </p>
+        <h1 class="text-3xl font-bold text-color">客户档案管理</h1>
+        <p class="text-muted-color mt-1">管理客户基础信息，维护客户关系和联系方式</p>
       </div>
-      <Button 
-        label="新增客户"
-        icon="pi pi-plus"
-        @click="openCreateForm"
-      />
+      <Button label="新增客户" icon="pi pi-plus" @click="openCreateForm" />
     </div>
 
     <!-- 搜索和筛选 -->
@@ -26,26 +18,18 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- 搜索框 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              搜索客户
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 搜索客户 </label>
             <IconField icon-position="left">
               <InputIcon>
                 <i class="pi pi-search"></i>
               </InputIcon>
-              <InputText
-                v-model="searchQuery"
-                placeholder="客户名称、编号..."
-                class="w-full"
-              />
+              <InputText v-model="searchQuery" placeholder="客户名称、编号..." class="w-full" />
             </IconField>
           </div>
 
           <!-- 客户类型筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              客户类型
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 客户类型 </label>
             <Dropdown
               v-model="typeFilter"
               :options="typeOptions"
@@ -59,9 +43,7 @@
 
           <!-- 地区筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              所在地区
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 所在地区 </label>
             <Dropdown
               v-model="regionFilter"
               :options="regionOptions"
@@ -75,9 +57,7 @@
 
           <!-- 状态筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              客户状态
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 客户状态 </label>
             <Dropdown
               v-model="statusFilter"
               :options="statusOptions"
@@ -119,7 +99,9 @@
               <p class="text-sm text-muted-color">活跃客户</p>
               <p class="text-2xl font-bold text-green-600">{{ customerStats.active }}</p>
               <div class="mt-2">
-                <span class="text-xs text-green-600">{{ Math.round((customerStats.active / customerStats.total) * 100) }}%</span>
+                <span class="text-xs text-green-600"
+                  >{{ Math.round((customerStats.active / customerStats.total) * 100) }}%</span
+                >
                 <span class="text-xs text-muted-color ml-2">活跃率</span>
               </div>
             </div>
@@ -137,7 +119,9 @@
               <p class="text-sm text-muted-color">企业客户</p>
               <p class="text-2xl font-bold text-purple-600">{{ customerStats.enterprise }}</p>
               <div class="mt-2">
-                <span class="text-xs text-purple-600">{{ Math.round((customerStats.enterprise / customerStats.total) * 100) }}%</span>
+                <span class="text-xs text-purple-600"
+                  >{{ Math.round((customerStats.enterprise / customerStats.total) * 100) }}%</span
+                >
                 <span class="text-xs text-muted-color ml-2">占比</span>
               </div>
             </div>
@@ -155,7 +139,9 @@
               <p class="text-sm text-muted-color">潜在客户</p>
               <p class="text-2xl font-bold text-orange-600">{{ customerStats.potential }}</p>
               <div class="mt-2">
-                <span class="text-xs text-orange-600">{{ Math.round((customerStats.potential / customerStats.total) * 100) }}%</span>
+                <span class="text-xs text-orange-600"
+                  >{{ Math.round((customerStats.potential / customerStats.total) * 100) }}%</span
+                >
                 <span class="text-xs text-muted-color ml-2">占比</span>
               </div>
             </div>
@@ -173,18 +159,8 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">客户列表</h3>
           <div class="flex items-center gap-2">
-            <Button
-              label="批量操作"
-              icon="pi pi-cog"
-              outlined
-              size="small"
-            />
-            <Button
-              label="导出数据"
-              icon="pi pi-download"
-              outlined
-              size="small"
-            />
+            <Button label="批量操作" icon="pi pi-cog" outlined size="small" />
+            <Button label="导出数据" icon="pi pi-download" outlined size="small" />
           </div>
         </div>
       </template>
@@ -215,7 +191,7 @@
             </div>
           </template>
           <Column selection-mode="multiple" :exportable="false"></Column>
-          
+
           <Column field="customer_no" header="客户编号" sortable>
             <template #body="slotProps">
               <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
@@ -223,15 +199,11 @@
               </code>
             </template>
           </Column>
-          
+
           <Column field="name" header="客户名称" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Avatar
-                  :label="slotProps.data.name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
+                <Avatar :label="slotProps.data.name.charAt(0)" shape="circle" size="small" />
                 <div>
                   <span class="font-medium">{{ slotProps.data.name }}</span>
                   <p class="text-xs text-muted-color">{{ slotProps.data.contact_person }}</p>
@@ -239,48 +211,43 @@
               </div>
             </template>
           </Column>
-          
+
           <Column field="type" header="客户类型" sortable>
             <template #body="slotProps">
-              <Tag
-                :value="getTypeDisplayName(slotProps.data.type)"
-                :severity="getTypeSeverity(slotProps.data.type)"
-              />
+              <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
           </Column>
-          
+
           <Column field="phone" header="联系电话" sortable>
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.phone }}</span>
             </template>
           </Column>
-          
+
           <Column field="email" header="邮箱" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">{{ slotProps.data.email }}</span>
             </template>
           </Column>
-          
+
           <Column field="region" header="地区" sortable>
             <template #body="slotProps">
               <span class="text-sm">{{ getRegionDisplayName(slotProps.data.region) }}</span>
             </template>
           </Column>
-          
+
           <Column field="total_orders" header="订单总数" sortable>
             <template #body="slotProps">
               <span class="font-medium text-blue-600">{{ slotProps.data.total_orders }}</span>
             </template>
           </Column>
-          
+
           <Column field="total_amount" header="累计金额" sortable>
             <template #body="slotProps">
-              <span class="font-medium text-green-600">
-                ¥{{ slotProps.data.total_amount.toLocaleString() }}
-              </span>
+              <span class="font-medium text-green-600"> ¥{{ slotProps.data.total_amount.toLocaleString() }} </span>
             </template>
           </Column>
-          
+
           <Column field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
@@ -289,7 +256,7 @@
               />
             </template>
           </Column>
-          
+
           <Column field="created_at" header="创建时间" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
@@ -297,7 +264,7 @@
               </span>
             </template>
           </Column>
-          
+
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
@@ -373,13 +340,9 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户编号</label>
-              <InputText
-                v-model="customerForm.customer_no"
-                :disabled="true"
-                placeholder="系统自动生成"
-              />
+              <InputText v-model="customerForm.customer_no" :disabled="true" placeholder="系统自动生成" />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户名称 *</label>
               <InputText
@@ -390,7 +353,7 @@
               />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户类型 *</label>
@@ -404,7 +367,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">所在地区</label>
               <Dropdown
@@ -417,7 +380,7 @@
               />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系人</label>
@@ -427,27 +390,19 @@
                 :disabled="dialogMode === 'view'"
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系电话</label>
-              <InputText
-                v-model="customerForm.phone"
-                placeholder="请输入联系电话"
-                :disabled="dialogMode === 'view'"
-              />
+              <InputText v-model="customerForm.phone" placeholder="请输入联系电话" :disabled="dialogMode === 'view'" />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">邮箱地址</label>
-              <InputText
-                v-model="customerForm.email"
-                placeholder="请输入邮箱地址"
-                :disabled="dialogMode === 'view'"
-              />
+              <InputText v-model="customerForm.email" placeholder="请输入邮箱地址" :disabled="dialogMode === 'view'" />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户状态</label>
               <Dropdown
@@ -460,7 +415,7 @@
               />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">详细地址</label>
             <Textarea
@@ -470,7 +425,7 @@
               :disabled="dialogMode === 'view'"
             />
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">备注信息</label>
             <Textarea
@@ -482,15 +437,10 @@
           </div>
         </div>
       </template>
-      
+
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeCustomerDialog"
-          />
+          <Button label="取消" icon="pi pi-times" outlined @click="closeCustomerDialog" />
           <Button
             v-if="dialogMode !== 'view'"
             label="保存"
@@ -522,11 +472,11 @@ import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '客户档案管理 - ERP 管理系统'
+  title: '客户档案管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -554,27 +504,27 @@ const customerForm = ref({
   email: '',
   address: '',
   status: 'active',
-  notes: ''
+  notes: '',
 })
 
 // 选项数据
 const typeOptions = ref([
   { label: '企业客户', value: 'enterprise' },
   { label: '个人客户', value: 'individual' },
-  { label: '经销商', value: 'distributor' }
+  { label: '经销商', value: 'distributor' },
 ])
 
 const regionOptions = ref([
   { label: '华北地区', value: 'north' },
   { label: '华东地区', value: 'east' },
   { label: '华南地区', value: 'south' },
-  { label: '西南地区', value: 'southwest' }
+  { label: '西南地区', value: 'southwest' },
 ])
 
 const statusOptions = ref([
   { label: '活跃', value: 'active' },
   { label: '不活跃', value: 'inactive' },
-  { label: '潜在客户', value: 'potential' }
+  { label: '潜在客户', value: 'potential' },
 ])
 
 // 统计数据
@@ -582,7 +532,7 @@ const customerStats = ref({
   total: 1248,
   active: 985,
   enterprise: 456,
-  potential: 123
+  potential: 123,
 })
 
 // 模拟数据
@@ -601,7 +551,7 @@ const mockCustomers = ref([
     total_amount: 580000,
     status: 'active',
     created_at: new Date('2024-01-15'),
-    notes: '重要客户，长期合作伙伴'
+    notes: '重要客户，长期合作伙伴',
   },
   {
     id: '2',
@@ -617,8 +567,8 @@ const mockCustomers = ref([
     total_amount: 420000,
     status: 'active',
     created_at: new Date('2024-01-10'),
-    notes: '新兴客户，发展潜力大'
-  }
+    notes: '新兴客户，发展潜力大',
+  },
 ])
 
 // 计算属性
@@ -627,10 +577,11 @@ const filteredCustomers = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(customer =>
-      customer.customer_no.toLowerCase().includes(query)
-      || customer.name.toLowerCase().includes(query)
-      || customer.contact_person.toLowerCase().includes(query)
+    result = result.filter(
+      customer =>
+        customer.customer_no.toLowerCase().includes(query) ||
+        customer.name.toLowerCase().includes(query) ||
+        customer.contact_person.toLowerCase().includes(query)
     )
   }
 
@@ -653,32 +604,32 @@ const filteredCustomers = computed(() => {
 const typeMap: Record<string, string> = {
   enterprise: '企业客户',
   individual: '个人客户',
-  distributor: '经销商'
+  distributor: '经销商',
 }
 
 const typeSeverityMap: Record<string, string> = {
   enterprise: 'info',
   individual: 'success',
-  distributor: 'warning'
+  distributor: 'warning',
 }
 
 const regionMap: Record<string, string> = {
   north: '华北地区',
   east: '华东地区',
   south: '华南地区',
-  southwest: '西南地区'
+  southwest: '西南地区',
 }
 
 const statusMap: Record<string, string> = {
   active: '活跃',
   inactive: '不活跃',
-  potential: '潜在客户'
+  potential: '潜在客户',
 }
 
 const statusSeverityMap: Record<string, string> = {
   active: 'success',
   inactive: 'danger',
-  potential: 'warning'
+  potential: 'warning',
 }
 
 // 方法
@@ -705,7 +656,7 @@ const openCreateForm = () => {
     email: '',
     address: '',
     status: 'active',
-    notes: ''
+    notes: '',
   }
   showCustomerDialog.value = true
 }
@@ -739,8 +690,7 @@ const toggleStatus = async (customer: any, newStatus: string) => {
     if (index !== -1 && mockCustomers.value[index]) {
       mockCustomers.value[index]!.status = newStatus
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('操作失败:', error)
   }
 }
@@ -754,18 +704,17 @@ const saveCustomer = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (dialogMode.value === 'create') {
       const newCustomer = {
         id: Date.now().toString(),
         ...customerForm.value,
         total_orders: 0,
         total_amount: 0,
-        created_at: new Date()
+        created_at: new Date(),
       }
       mockCustomers.value.push(newCustomer)
-    }
-    else if (dialogMode.value === 'edit') {
+    } else if (dialogMode.value === 'edit') {
       const index = mockCustomers.value.findIndex(c => c.id === editingCustomer.value?.id)
       if (index !== -1 && mockCustomers.value[index]) {
         mockCustomers.value[index] = {
@@ -774,17 +723,15 @@ const saveCustomer = async () => {
           id: mockCustomers.value[index]!.id,
           total_orders: mockCustomers.value[index]!.total_orders,
           total_amount: mockCustomers.value[index]!.total_amount,
-          created_at: mockCustomers.value[index]!.created_at
+          created_at: mockCustomers.value[index]!.created_at,
         }
       }
     }
-    
+
     closeCustomerDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存客户失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

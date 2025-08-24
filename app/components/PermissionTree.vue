@@ -6,73 +6,47 @@
         <h4 class="text-sm font-medium text-gray-900 dark:text-white">
           {{ title }}
         </h4>
-        <div class="text-xs text-gray-500">
-          已选择 {{ selectedCount }} / {{ totalCount }} 项
-        </div>
+        <div class="text-xs text-gray-500">已选择 {{ selectedCount }} / {{ totalCount }} 项</div>
       </div>
-      
+
       <div class="flex items-center space-x-2">
-        <Button
-          size="sm"
-          variant="outline"
-          class="text-xs"
-          @click="expandAll"
-        >
+        <Button size="sm" variant="outline" class="text-xs" @click="expandAll">
           <ChevronDown class="w-3 h-3 mr-1" />
           展开全部
         </Button>
-        
-        <Button
-          size="sm"
-          variant="outline"
-          class="text-xs"
-          @click="collapseAll"
-        >
+
+        <Button size="sm" variant="outline" class="text-xs" @click="collapseAll">
           <ChevronUp class="w-3 h-3 mr-1" />
           收起全部
         </Button>
-        
-        <Button
-          size="sm"
-          variant="outline"
-          class="text-xs"
-          @click="selectAll"
-        >
+
+        <Button size="sm" variant="outline" class="text-xs" @click="selectAll">
           <Check class="w-3 h-3 mr-1" />
           全选
         </Button>
-        
-        <Button
-          size="sm"
-          variant="outline"
-          class="text-xs"
-          @click="clearAll"
-        >
+
+        <Button size="sm" variant="outline" class="text-xs" @click="clearAll">
           <X class="w-3 h-3 mr-1" />
           清空
         </Button>
       </div>
     </div>
-    
+
     <!-- 搜索框 -->
     <div class="mb-4">
       <div class="relative">
         <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-        <Input
-          v-model="searchQuery"
-          placeholder="搜索权限项..."
-          class="pl-10 w-full"
-        />
+        <Input v-model="searchQuery" placeholder="搜索权限项..." class="pl-10 w-full" />
       </div>
     </div>
-    
+
     <!-- 权限树 -->
     <div class="border border-gray-200 dark:border-gray-700 rounded-lg max-h-96 overflow-y-auto">
       <div v-if="filteredTreeData.length === 0" class="p-8 text-center text-gray-500">
         <div class="text-4xl mb-2">🔍</div>
         <div>{{ searchQuery ? '未找到匹配的权限项' : '暂无权限数据' }}</div>
       </div>
-      
+
       <div v-else class="p-2">
         <PermissionTreeNode
           v-for="item in filteredTreeData"
@@ -90,30 +64,31 @@
 </template>
 
 <script setup>
+// UI组件现在自动导入，无需手动导入
+
 import { ref, computed, watch } from 'vue'
 import { ChevronDown, ChevronUp, Check, X, Search } from 'lucide-vue-next'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+
 import PermissionTreeNode from './PermissionTreeNode.vue'
 
 // Props
 const props = defineProps({
   title: {
     type: String,
-    default: '权限配置'
+    default: '权限配置',
   },
   treeData: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   selectedIds: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   disabled: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 // Emits
@@ -127,7 +102,7 @@ const expandedIds = ref(new Set())
 const selectedCount = computed(() => props.selectedIds.length)
 
 const totalCount = computed(() => {
-  const countItems = (items) => {
+  const countItems = items => {
     let count = 0
     for (const item of items) {
       count++
@@ -144,49 +119,50 @@ const filteredTreeData = computed(() => {
   if (!searchQuery.value.trim()) {
     return props.treeData
   }
-  
-  const filterItems = (items) => {
+
+  const filterItems = items => {
     const filtered = []
-    
+
     for (const item of items) {
-      const matchesSearch = item.name?.toLowerCase().includes(searchQuery.value.toLowerCase())
-        || item.key?.toLowerCase().includes(searchQuery.value.toLowerCase())
-        || item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
-      
+      const matchesSearch =
+        item.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.key?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
+
       let filteredChildren = []
       if (item.children && item.children.length > 0) {
         filteredChildren = filterItems(item.children)
       }
-      
+
       // 如果当前项匹配或有匹配的子项，则包含此项
       if (matchesSearch || filteredChildren.length > 0) {
         filtered.push({
           ...item,
-          children: filteredChildren
+          children: filteredChildren,
         })
-        
+
         // 自动展开包含搜索结果的节点
         if (filteredChildren.length > 0) {
           expandedIds.value.add(item.id)
         }
       }
     }
-    
+
     return filtered
   }
-  
+
   return filterItems(props.treeData)
 })
 
 // 方法
 const handleToggleSelection = (id, selected) => {
   if (props.disabled) return
-  
+
   const newSelectedIds = [...props.selectedIds]
-  
+
   if (selected) {
     // 添加选中项及其所有子项
-    const addItemAndChildren = (items) => {
+    const addItemAndChildren = items => {
       for (const item of items) {
         if (!newSelectedIds.includes(item.id)) {
           newSelectedIds.push(item.id)
@@ -196,7 +172,7 @@ const handleToggleSelection = (id, selected) => {
         }
       }
     }
-    
+
     const findItem = (items, targetId) => {
       for (const item of items) {
         if (item.id === targetId) {
@@ -209,15 +185,14 @@ const handleToggleSelection = (id, selected) => {
       }
       return null
     }
-    
+
     const targetItem = findItem(props.treeData, id)
     if (targetItem) {
       addItemAndChildren([targetItem])
     }
-  }
-  else {
+  } else {
     // 移除选中项及其所有子项
-    const removeItemAndChildren = (items) => {
+    const removeItemAndChildren = items => {
       for (const item of items) {
         const index = newSelectedIds.indexOf(item.id)
         if (index > -1) {
@@ -228,7 +203,7 @@ const handleToggleSelection = (id, selected) => {
         }
       }
     }
-    
+
     const findItem = (items, targetId) => {
       for (const item of items) {
         if (item.id === targetId) {
@@ -241,27 +216,26 @@ const handleToggleSelection = (id, selected) => {
       }
       return null
     }
-    
+
     const targetItem = findItem(props.treeData, id)
     if (targetItem) {
       removeItemAndChildren([targetItem])
     }
   }
-  
+
   emit('update:selectedIds', newSelectedIds)
 }
 
-const handleToggleExpand = (id) => {
+const handleToggleExpand = id => {
   if (expandedIds.value.has(id)) {
     expandedIds.value.delete(id)
-  }
-  else {
+  } else {
     expandedIds.value.add(id)
   }
 }
 
 const expandAll = () => {
-  const getAllIds = (items) => {
+  const getAllIds = items => {
     const ids = []
     for (const item of items) {
       ids.push(item.id)
@@ -271,7 +245,7 @@ const expandAll = () => {
     }
     return ids
   }
-  
+
   expandedIds.value = new Set(getAllIds(props.treeData))
 }
 
@@ -281,8 +255,8 @@ const collapseAll = () => {
 
 const selectAll = () => {
   if (props.disabled) return
-  
-  const getAllIds = (items) => {
+
+  const getAllIds = items => {
     const ids = []
     for (const item of items) {
       ids.push(item.id)
@@ -292,7 +266,7 @@ const selectAll = () => {
     }
     return ids
   }
-  
+
   emit('update:selectedIds', getAllIds(props.treeData))
 }
 
@@ -302,7 +276,7 @@ const clearAll = () => {
 }
 
 // 监听搜索变化，自动展开相关节点
-watch(searchQuery, (newQuery) => {
+watch(searchQuery, newQuery => {
   if (newQuery.trim()) {
     // 搜索时自动展开所有匹配的父节点
     // 这个逻辑已经在 filteredTreeData 中处理了
@@ -316,11 +290,15 @@ const initializeExpanded = () => {
 }
 
 // 监听数据变化
-watch(() => props.treeData, () => {
-  if (props.treeData.length > 0 && expandedIds.value.size === 0) {
-    initializeExpanded()
-  }
-}, { immediate: true })
+watch(
+  () => props.treeData,
+  () => {
+    if (props.treeData.length > 0 && expandedIds.value.size === 0) {
+      initializeExpanded()
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>

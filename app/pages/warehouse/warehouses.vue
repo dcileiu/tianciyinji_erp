@@ -6,11 +6,7 @@
         <h1 class="text-3xl font-bold text-color">仓库管理</h1>
         <p class="text-muted-color mt-2">管理仓库基础信息和库位设置</p>
       </div>
-      <Button
-        label="新建仓库"
-        icon="pi pi-plus"
-        @click="openWarehouseDialog()"
-      />
+      <Button label="新建仓库" icon="pi pi-plus" @click="openWarehouseDialog()" />
     </div>
 
     <!-- 筛选区域 -->
@@ -47,26 +43,12 @@
               <InputIcon>
                 <i class="pi pi-search"></i>
               </InputIcon>
-              <InputText
-                v-model="filters.search"
-                placeholder="搜索仓库名称、编码..."
-                class="w-full"
-              />
+              <InputText v-model="filters.search" placeholder="搜索仓库名称、编码..." class="w-full" />
             </IconField>
           </div>
           <div class="flex items-end gap-2">
-            <Button
-              label="刷新"
-              icon="pi pi-refresh"
-              outlined
-              @click="loadWarehouses"
-            />
-            <Button
-              label="导出"
-              icon="pi pi-download"
-              outlined
-              @click="exportWarehouses"
-            />
+            <Button label="刷新" icon="pi pi-refresh" outlined @click="loadWarehouses" />
+            <Button label="导出" icon="pi pi-download" outlined @click="exportWarehouses" />
           </div>
         </div>
       </template>
@@ -77,9 +59,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">仓库列表</h3>
-          <div class="flex items-center gap-2 text-sm text-muted-color">
-            共 {{ totalCount }} 个仓库
-          </div>
+          <div class="flex items-center gap-2 text-sm text-muted-color">共 {{ totalCount }} 个仓库</div>
         </div>
       </template>
 
@@ -112,7 +92,7 @@
               </code>
             </template>
           </Column>
-          
+
           <Column field="name" header="仓库名称" sortable>
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
@@ -121,16 +101,13 @@
               </div>
             </template>
           </Column>
-          
+
           <Column field="type" header="类型" sortable>
             <template #body="slotProps">
-              <Tag
-                :value="getTypeDisplayName(slotProps.data.type)"
-                :severity="getTypeSeverity(slotProps.data.type)"
-              />
+              <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
           </Column>
-          
+
           <Column field="location" header="位置">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
@@ -139,13 +116,13 @@
               </div>
             </template>
           </Column>
-          
+
           <Column field="manager" header="负责人">
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.manager || '-' }}</span>
             </template>
           </Column>
-          
+
           <Column field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
@@ -154,7 +131,7 @@
               />
             </template>
           </Column>
-          
+
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
@@ -211,23 +188,15 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">仓库编码 *</label>
-              <InputText
-                v-model="warehouseForm.warehouse_no"
-                placeholder="请输入仓库编码"
-                required
-              />
+              <InputText v-model="warehouseForm.warehouse_no" placeholder="请输入仓库编码" required />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">仓库名称 *</label>
-              <InputText
-                v-model="warehouseForm.name"
-                placeholder="请输入仓库名称"
-                required
-              />
+              <InputText v-model="warehouseForm.name" placeholder="请输入仓库名称" required />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">仓库类型 *</label>
@@ -240,7 +209,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">状态</label>
               <Dropdown
@@ -252,43 +221,27 @@
               />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">仓库地址</label>
-            <InputText
-              v-model="warehouseForm.location"
-              placeholder="请输入仓库地址"
-            />
+            <InputText v-model="warehouseForm.location" placeholder="请输入仓库地址" />
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">负责人</label>
-            <InputText
-              v-model="warehouseForm.manager"
-              placeholder="请输入负责人姓名"
-            />
+            <InputText v-model="warehouseForm.manager" placeholder="请输入负责人姓名" />
           </div>
         </div>
       </template>
-      
+
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeDialog"
-          />
-          <Button
-            label="保存"
-            icon="pi pi-check"
-            :loading="saving"
-            @click="saveWarehouse"
-          />
+          <Button label="取消" icon="pi pi-times" outlined @click="closeDialog" />
+          <Button label="保存" icon="pi pi-check" :loading="saving" @click="saveWarehouse" />
         </div>
       </template>
     </Dialog>
-    
+
     <!-- 确认对话框 -->
     <ConfirmDialog />
   </div>
@@ -315,11 +268,11 @@ import type { Warehouse } from '~/types/database'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '仓库管理 - ERP 管理系统'
+  title: '仓库管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -333,7 +286,7 @@ const confirm = useConfirm()
 const filters = ref({
   type: '',
   status: '',
-  search: ''
+  search: '',
 })
 
 // 表单数据
@@ -343,7 +296,7 @@ const warehouseForm = ref({
   type: 'raw_material' as 'main' | 'raw_material' | 'finished_goods' | 'backup',
   location: '',
   manager: '',
-  status: 'active' as 'active' | 'inactive'
+  status: 'active' as 'active' | 'inactive',
 })
 
 // 选项数据
@@ -351,12 +304,12 @@ const typeOptions = ref([
   { label: '主仓库', value: 'main' },
   { label: '原料仓', value: 'raw_material' },
   { label: '成品仓', value: 'finished_goods' },
-  { label: '备用仓', value: 'backup' }
+  { label: '备用仓', value: 'backup' },
 ])
 
 const statusOptions = ref([
   { label: '启用', value: 'active' },
-  { label: '停用', value: 'inactive' }
+  { label: '停用', value: 'inactive' },
 ])
 
 // 模拟数据
@@ -370,7 +323,7 @@ const mockWarehouses = ref<Warehouse[]>([
     manager: '张三',
     status: 'active',
     created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-01-01T00:00:00Z'
+    updated_at: '2024-01-01T00:00:00Z',
   },
   {
     id: '2',
@@ -381,7 +334,7 @@ const mockWarehouses = ref<Warehouse[]>([
     manager: '李四',
     status: 'active',
     created_at: '2024-01-02T00:00:00Z',
-    updated_at: '2024-01-02T00:00:00Z'
+    updated_at: '2024-01-02T00:00:00Z',
   },
   {
     id: '3',
@@ -392,8 +345,8 @@ const mockWarehouses = ref<Warehouse[]>([
     manager: '王五',
     status: 'inactive',
     created_at: '2024-01-03T00:00:00Z',
-    updated_at: '2024-01-03T00:00:00Z'
-  }
+    updated_at: '2024-01-03T00:00:00Z',
+  },
 ])
 
 // 计算属性
@@ -402,9 +355,8 @@ const filteredWarehouses = computed(() => {
 
   if (filters.value.search) {
     const query = filters.value.search.toLowerCase()
-    result = result.filter(warehouse =>
-      warehouse.name.toLowerCase().includes(query)
-      || warehouse.warehouse_no.toLowerCase().includes(query)
+    result = result.filter(
+      warehouse => warehouse.name.toLowerCase().includes(query) || warehouse.warehouse_no.toLowerCase().includes(query)
     )
   }
 
@@ -426,24 +378,24 @@ const typeMap: Record<string, string> = {
   main: '主仓库',
   raw_material: '原料仓',
   finished_goods: '成品仓',
-  backup: '备用仓'
+  backup: '备用仓',
 }
 
 const statusMap: Record<string, string> = {
   active: '启用',
-  inactive: '停用'
+  inactive: '停用',
 }
 
 const typeSeverityMap: Record<string, string> = {
   main: 'info',
   raw_material: 'info',
   finished_goods: 'success',
-  backup: 'secondary'
+  backup: 'secondary',
 }
 
 const statusSeverityMap: Record<string, string> = {
   active: 'success',
-  inactive: 'danger'
+  inactive: 'danger',
 }
 
 // 方法
@@ -459,11 +411,9 @@ const loadWarehouses = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('加载仓库失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -477,10 +427,9 @@ const openWarehouseDialog = (warehouse: any = null) => {
       type: warehouse.type,
       location: warehouse.location,
       manager: warehouse.manager,
-      status: warehouse.status
+      status: warehouse.status,
     })
-  }
-  else {
+  } else {
     editingWarehouse.value = null
     Object.assign(warehouseForm.value, {
       warehouse_no: '',
@@ -488,7 +437,7 @@ const openWarehouseDialog = (warehouse: any = null) => {
       type: 'raw_material',
       location: '',
       manager: '',
-      status: 'active'
+      status: 'active',
     })
   }
   showDialog.value = true
@@ -515,7 +464,7 @@ const saveWarehouse = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (editingWarehouse.value) {
       // 更新仓库
       const index = mockWarehouses.value.findIndex(w => w.id === editingWarehouse.value.id)
@@ -531,12 +480,11 @@ const saveWarehouse = async () => {
             manager: warehouseForm.value.manager,
             status: warehouseForm.value.status,
             created_at: existingWarehouse.created_at, // 保持原创建时间
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           }
         }
       }
-    }
-    else {
+    } else {
       // 新增仓库
       const newWarehouse: Warehouse = {
         id: Date.now().toString(),
@@ -547,17 +495,15 @@ const saveWarehouse = async () => {
         manager: warehouseForm.value.manager,
         status: warehouseForm.value.status,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       }
       mockWarehouses.value.push(newWarehouse)
     }
-    
+
     closeDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存仓库失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -569,7 +515,7 @@ const confirmDeleteWarehouse = (warehouse: any) => {
     icon: 'pi pi-exclamation-triangle',
     accept: () => {
       deleteWarehouse(warehouse.id)
-    }
+    },
   })
 }
 

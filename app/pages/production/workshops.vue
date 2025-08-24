@@ -7,18 +7,15 @@
         <p class="text-muted-color">管理生产车间和工作中心，监控设备状态和产能</p>
       </div>
       <div>
-        <Button
-          label="新建车间"
-          icon="pi pi-plus"
-          class="create-btn"
-          @click="showCreateDialog = true"
-        />
+        <Button label="新建车间" icon="pi pi-plus" class="create-btn" @click="showCreateDialog = true" />
       </div>
     </div>
 
     <!-- 车间概览统计 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+      <Card
+        class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary"
+      >
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
@@ -29,14 +26,18 @@
                 <span>+2</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-border flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-border flex items-center justify-center text-white"
+            >
               <i class="pi pi-home text-xl"></i>
             </div>
           </div>
         </template>
       </Card>
 
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+      <Card
+        class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary"
+      >
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
@@ -47,14 +48,18 @@
                 <span>正常</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-border flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-border flex items-center justify-center text-white"
+            >
               <i class="pi pi-check-circle text-xl"></i>
             </div>
           </div>
         </template>
       </Card>
 
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+      <Card
+        class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary"
+      >
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
@@ -65,14 +70,18 @@
                 <span>需关注</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-border flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-border flex items-center justify-center text-white"
+            >
               <i class="pi pi-exclamation-triangle text-xl"></i>
             </div>
           </div>
         </template>
       </Card>
 
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
+      <Card
+        class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary"
+      >
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
@@ -83,7 +92,9 @@
                 <span>+5</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-border flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-border flex items-center justify-center text-white"
+            >
               <i class="pi pi-cog text-xl"></i>
             </div>
           </div>
@@ -107,9 +118,9 @@
               option-value="value"
               placeholder="选择状态"
               show-clear
-          />
-        </div>
-          
+            />
+          </div>
+
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-color">车间类型</label>
             <Dropdown
@@ -120,7 +131,7 @@
               placeholder="选择类型"
               show-clear
             />
-        </div>
+          </div>
 
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-color">负责人</label>
@@ -132,16 +143,13 @@
               placeholder="选择负责人"
               show-clear
             />
-        </div>
+          </div>
 
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-color">搜索</label>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <InputText
-                v-model="searchQuery"
-                placeholder="搜索车间名称、编码..."
-          />
+              <InputText v-model="searchQuery" placeholder="搜索车间名称、编码..." />
             </span>
           </div>
         </div>
@@ -181,17 +189,13 @@
               </div>
             </div>
           </template>
-        >
+          >
           <template #empty>
             <div class="text-center py-12 text-muted-color">
               <i class="pi pi-home text-6xl mb-4 opacity-50"></i>
               <h3 class="text-lg mb-2">暂无车间数据</h3>
               <p class="mb-4">开始创建您的第一个车间</p>
-              <Button
-                label="新建车间"
-                icon="pi pi-plus"
-                @click="showCreateDialog = true"
-              />
+              <Button label="新建车间" icon="pi pi-plus" @click="showCreateDialog = true" />
             </div>
           </template>
 
@@ -205,16 +209,13 @@
                   <div class="font-medium text-color mb-1">{{ slotProps.data.name }}</div>
                   <div class="text-sm text-muted-color font-mono">{{ slotProps.data.code }}</div>
                 </div>
-                </div>
+              </div>
             </template>
           </Column>
 
           <Column field="type" header="车间类型" :sortable="true">
             <template #body="slotProps">
-              <Tag
-                :value="getTypeText(slotProps.data.type)"
-                :severity="getTypeSeverity(slotProps.data.type)"
-              />
+              <Tag :value="getTypeText(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
           </Column>
 
@@ -228,7 +229,7 @@
                   class="bg-surface-200 text-surface-700"
                 />
                 <span class="font-medium">{{ slotProps.data.manager || '未指定' }}</span>
-                </div>
+              </div>
             </template>
           </Column>
 
@@ -237,7 +238,7 @@
               <div class="flex items-center gap-2">
                 <span class="font-semibold text-lg">{{ slotProps.data.equipment_count }}</span>
                 <span class="text-sm text-muted-color">台</span>
-                </div>
+              </div>
             </template>
           </Column>
 
@@ -260,16 +261,13 @@
                   }"
                 />
                 <span class="text-sm font-medium">{{ slotProps.data.utilization }}%</span>
-                </div>
+              </div>
             </template>
           </Column>
 
           <Column field="status" header="状态" :sortable="true">
             <template #body="slotProps">
-              <Tag
-                :value="getStatusText(slotProps.data.status)"
-                :severity="getStatusSeverity(slotProps.data.status)"
-              />
+              <Tag :value="getStatusText(slotProps.data.status)" :severity="getStatusSeverity(slotProps.data.status)" />
             </template>
           </Column>
 
@@ -309,7 +307,7 @@
                   severity="danger"
                   @click="confirmDelete(slotProps.data)"
                 />
-                </div>
+              </div>
             </template>
           </Column>
         </DataTable>
@@ -333,16 +331,12 @@
               placeholder="输入车间编码"
               :disabled="!!editingWorkshop"
             />
-                </div>
+          </div>
           <div class="flex flex-col gap-2">
             <label for="workshopName" class="text-sm font-medium text-color">车间名称</label>
-            <InputText
-              id="workshopName"
-              v-model="workshopForm.name"
-              placeholder="输入车间名称"
-            />
-                  </div>
-                </div>
+            <InputText id="workshopName" v-model="workshopForm.name" placeholder="输入车间名称" />
+          </div>
+        </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
@@ -366,61 +360,35 @@
               option-value="value"
               placeholder="选择状态"
             />
-      </div>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
             <label for="workshopManager" class="text-sm font-medium text-color">负责人</label>
-            <InputText
-              id="workshopManager"
-              v-model="workshopForm.manager"
-              placeholder="输入负责人姓名"
-            />
+            <InputText id="workshopManager" v-model="workshopForm.manager" placeholder="输入负责人姓名" />
           </div>
           <div class="flex flex-col gap-2">
             <label for="workshopCapacity" class="text-sm font-medium text-color">设计产能（件/日）</label>
-            <InputNumber
-              id="workshopCapacity"
-              v-model="workshopForm.capacity"
-              placeholder="输入设计产能"
-              :min="0"
-            />
+            <InputNumber id="workshopCapacity" v-model="workshopForm.capacity" placeholder="输入设计产能" :min="0" />
           </div>
         </div>
 
         <div class="flex flex-col gap-2">
           <label for="workshopLocation" class="text-sm font-medium text-color">车间位置</label>
-          <InputText
-            id="workshopLocation"
-            v-model="workshopForm.location"
-            placeholder="输入车间位置"
-          />
+          <InputText id="workshopLocation" v-model="workshopForm.location" placeholder="输入车间位置" />
         </div>
 
         <div class="flex flex-col gap-2">
           <label for="workshopDescription" class="text-sm font-medium text-color">描述</label>
-          <Textarea
-            id="workshopDescription"
-            v-model="workshopForm.description"
-            placeholder="输入车间描述"
-            rows="3"
-          />
+          <Textarea id="workshopDescription" v-model="workshopForm.description" placeholder="输入车间描述" rows="3" />
         </div>
       </div>
 
       <template #footer>
         <div class="flex justify-end gap-3">
-          <Button
-            label="取消"
-            outlined
-            @click="closeCreateDialog"
-          />
-          <Button
-            :label="editingWorkshop ? '更新' : '创建'"
-            :loading="saving"
-            @click="saveWorkshop"
-          />
+          <Button label="取消" outlined @click="closeCreateDialog" />
+          <Button :label="editingWorkshop ? '更新' : '创建'" :loading="saving" @click="saveWorkshop" />
         </div>
       </template>
     </Dialog>
@@ -469,7 +437,7 @@ const workshopForm = ref({
   manager: '',
   capacity: 0,
   location: '',
-  description: ''
+  description: '',
 })
 
 // 统计数据
@@ -477,14 +445,14 @@ const stats = ref({
   totalWorkshops: 12,
   activeWorkshops: 8,
   maintenanceWorkshops: 2,
-  totalEquipment: 156
+  totalEquipment: 156,
 })
 
 // 状态选项
 const statusOptions = ref([
   { label: '运行中', value: 'active' },
   { label: '维护中', value: 'maintenance' },
-  { label: '停产', value: 'inactive' }
+  { label: '停产', value: 'inactive' },
 ])
 
 // 类型选项
@@ -493,7 +461,7 @@ const typeOptions = ref([
   { label: '装配', value: 'assembly' },
   { label: '检测', value: 'testing' },
   { label: '包装', value: 'packaging' },
-  { label: '喷涂', value: 'painting' }
+  { label: '喷涂', value: 'painting' },
 ])
 
 // 负责人选项
@@ -501,7 +469,7 @@ const managerOptions = ref([
   { label: '张三', value: '张三' },
   { label: '李四', value: '李四' },
   { label: '王五', value: '王五' },
-  { label: '赵六', value: '赵六' }
+  { label: '赵六', value: '赵六' },
 ])
 
 // 模拟车间数据
@@ -517,7 +485,7 @@ const workshops = ref([
     capacity: 500,
     utilization: 85,
     location: '1号厂房',
-    description: '主要负责金属零件的精密加工'
+    description: '主要负责金属零件的精密加工',
   },
   {
     id: '2',
@@ -530,7 +498,7 @@ const workshops = ref([
     capacity: 300,
     utilization: 72,
     location: '2号厂房',
-    description: '产品最终装配和调试'
+    description: '产品最终装配和调试',
   },
   {
     id: '3',
@@ -543,7 +511,7 @@ const workshops = ref([
     capacity: 200,
     utilization: 45,
     location: '3号厂房',
-    description: '产品质量检测和认证'
+    description: '产品质量检测和认证',
   },
   {
     id: '4',
@@ -556,8 +524,8 @@ const workshops = ref([
     capacity: 800,
     utilization: 90,
     location: '4号厂房',
-    description: '产品包装和发货准备'
-  }
+    description: '产品包装和发货准备',
+  },
 ])
 
 // 计算属性
@@ -565,9 +533,10 @@ const filteredWorkshops = computed(() => {
   let result = workshops.value
 
   if (searchQuery.value) {
-    result = result.filter(workshop =>
-      workshop.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      || workshop.code.toLowerCase().includes(searchQuery.value.toLowerCase())
+    result = result.filter(
+      workshop =>
+        workshop.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        workshop.code.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
 
@@ -593,7 +562,7 @@ const getTypeText = (type: string) => {
     assembly: '装配',
     testing: '检测',
     packaging: '包装',
-    painting: '喷涂'
+    painting: '喷涂',
   }
   return typeMap[type] || type
 }
@@ -604,7 +573,7 @@ const getTypeSeverity = (type: string) => {
     assembly: 'success',
     testing: 'warn',
     packaging: 'secondary',
-    painting: 'help'
+    painting: 'help',
   }
   return severityMap[type] || 'secondary'
 }
@@ -613,7 +582,7 @@ const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
     active: '运行中',
     maintenance: '维护中',
-    inactive: '停产'
+    inactive: '停产',
   }
   return statusMap[status] || status
 }
@@ -622,7 +591,7 @@ const getStatusSeverity = (status: string) => {
   const severityMap: Record<string, string> = {
     active: 'success',
     maintenance: 'warn',
-    inactive: 'danger'
+    inactive: 'danger',
   }
   return severityMap[status] || 'secondary'
 }
@@ -642,7 +611,7 @@ const editWorkshop = (workshop: any) => {
     manager: workshop.manager,
     capacity: workshop.capacity,
     location: workshop.location,
-    description: workshop.description
+    description: workshop.description,
   })
   showCreateDialog.value = true
 }
@@ -659,7 +628,7 @@ const confirmDelete = (workshop: any) => {
     icon: 'pi pi-exclamation-triangle',
     accept: () => {
       deleteWorkshop(workshop.id)
-    }
+    },
   })
 }
 
@@ -681,7 +650,7 @@ const closeCreateDialog = () => {
     manager: '',
     capacity: 0,
     location: '',
-    description: ''
+    description: '',
   }
 }
 
@@ -702,11 +671,10 @@ const saveWorkshop = async () => {
           manager: workshopForm.value.manager,
           capacity: workshopForm.value.capacity,
           location: workshopForm.value.location,
-          description: workshopForm.value.description
+          description: workshopForm.value.description,
         }
       }
-    }
-    else {
+    } else {
       // 新增车间
       const newWorkshop = {
         id: Date.now().toString(),
@@ -719,17 +687,14 @@ const saveWorkshop = async () => {
         capacity: workshopForm.value.capacity,
         utilization: 0,
         location: workshopForm.value.location,
-        description: workshopForm.value.description
+        description: workshopForm.value.description,
       }
       workshops.value.push(newWorkshop)
     }
-    
+
     closeCreateDialog()
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
 </script>
-
-

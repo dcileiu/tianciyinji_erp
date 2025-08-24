@@ -10,8 +10,12 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:lint": "prettier --write . && eslint . --fix",
     "type-check": "nuxt typecheck",
-    "clean": "nuxt cleanup"
+    "clean": "nuxt cleanup",
+    "check-all": "pnpm type-check && pnpm lint && pnpm format:check"
   },
   "dependencies": {
     "@nuxtjs/supabase": "^1.6.0",
@@ -47,6 +51,7 @@
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
     "eslint": "9.33.0",
+    "prettier": "^3.4.2",
     "typescript": "^5.9.2"
   }
 }

@@ -1,7 +1,9 @@
 <template>
   <div class="space-y-6 p-6 min-h-screen bg-background">
     <!-- 页面头部 -->
-    <div class="bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 rounded-2xl p-8 text-white relative overflow-hidden">
+    <div
+      class="bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 rounded-2xl p-8 text-white relative overflow-hidden"
+    >
       <div class="absolute inset-0 bg-black/10"></div>
       <div class="absolute -top-4 -right-4 w-32 h-32 bg-white/5 rounded-full"></div>
       <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white/5 rounded-full"></div>
@@ -151,11 +153,7 @@
             <Label class="text-sm font-medium text-gray-700">搜索产品</Label>
             <div class="relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                v-model="searchQuery"
-                placeholder="搜索产品名称或编码"
-                class="pl-10"
-              />
+              <Input v-model="searchQuery" placeholder="搜索产品名称或编码" class="pl-10" />
             </div>
           </div>
 
@@ -168,11 +166,7 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部仓库</SelectItem>
-                <SelectItem
-                  v-for="warehouse in warehouses"
-                  :key="warehouse.id"
-                  :value="warehouse.id"
-                >
+                <SelectItem v-for="warehouse in warehouses" :key="warehouse.id" :value="warehouse.id">
                   {{ warehouse.name }}
                 </SelectItem>
               </SelectContent>
@@ -188,11 +182,7 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部分类</SelectItem>
-                <SelectItem
-                  v-for="category in categories"
-                  :key="category.id"
-                  :value="category.id"
-                >
+                <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
                   {{ category.name }}
                 </SelectItem>
               </SelectContent>
@@ -208,11 +198,7 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部状态</SelectItem>
-                <SelectItem
-                  v-for="status in statusOptions"
-                  :key="status.value"
-                  :value="status.value"
-                >
+                <SelectItem v-for="status in statusOptions" :key="status.value" :value="status.value">
                   {{ status.label }}
                 </SelectItem>
               </SelectContent>
@@ -222,27 +208,15 @@
 
         <!-- 操作按钮 -->
         <div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200">
-          <Button
-            @click="resetFilters"
-            variant="outline"
-            class="flex items-center gap-2"
-          >
+          <Button @click="resetFilters" variant="outline" class="flex items-center gap-2">
             <FilterX class="h-4 w-4" />
             重置筛选
           </Button>
-          <Button
-            @click="exportInventory"
-            variant="outline"
-            class="flex items-center gap-2"
-          >
+          <Button @click="exportInventory" variant="outline" class="flex items-center gap-2">
             <Download class="h-4 w-4" />
             导出数据
           </Button>
-          <Button
-            @click="refreshData"
-            :disabled="loading"
-            class="flex items-center gap-2"
-          >
+          <Button @click="refreshData" :disabled="loading" class="flex items-center gap-2">
             <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
             刷新数据
           </Button>
@@ -279,7 +253,7 @@
             <p class="text-muted-foreground">正在加载库存数据...</p>
           </div>
         </div>
-        
+
         <div v-else-if="filteredInventory.length === 0" class="flex flex-col items-center justify-center py-12">
           <Package class="h-16 w-16 text-muted-foreground/50 mb-4" />
           <h4 class="text-lg font-semibold text-foreground mb-2">暂无库存数据</h4>
@@ -392,7 +366,7 @@
             库存调整
           </DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-6">
           <!-- 基本信息 -->
           <Card>
@@ -411,17 +385,13 @@
                       <SelectValue placeholder="选择商品" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem
-                        v-for="product in products"
-                        :key="product.id"
-                        :value="product.id"
-                      >
+                      <SelectItem v-for="product in products" :key="product.id" :value="product.id">
                         {{ product.name }}
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div class="space-y-2">
                   <Label>仓库 *</Label>
                   <Select v-model="adjustForm.warehouse_id">
@@ -429,11 +399,7 @@
                       <SelectValue placeholder="选择仓库" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem
-                        v-for="warehouse in warehouses"
-                        :key="warehouse.id"
-                        :value="warehouse.id"
-                      >
+                      <SelectItem v-for="warehouse in warehouses" :key="warehouse.id" :value="warehouse.id">
                         {{ warehouse.name }}
                       </SelectItem>
                     </SelectContent>
@@ -460,44 +426,29 @@
                       <SelectValue placeholder="选择调整类型" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem
-                        v-for="type in adjustTypes"
-                        :key="type.value"
-                        :value="type.value"
-                      >
+                      <SelectItem v-for="type in adjustTypes" :key="type.value" :value="type.value">
                         {{ type.label }}
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div class="space-y-2">
                   <Label>调整数量 *</Label>
-                  <Input
-                    v-model.number="adjustForm.quantity"
-                    type="number"
-                    placeholder="调整数量"
-                    min="1"
-                  />
+                  <Input v-model.number="adjustForm.quantity" type="number" placeholder="调整数量" min="1" />
                 </div>
               </div>
-              
+
               <div class="space-y-2">
                 <Label>调整原因</Label>
-                <Textarea
-                  v-model="adjustForm.reason"
-                  placeholder="请输入调整原因..."
-                  rows="3"
-                />
+                <Textarea v-model="adjustForm.reason" placeholder="请输入调整原因..." rows="3" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeAdjustDialog">
-            取消
-          </Button>
+          <Button variant="outline" @click="closeAdjustDialog"> 取消 </Button>
           <Button :disabled="adjusting" @click="confirmAdjust">
             <Loader2 v-if="adjusting" class="h-4 w-4 mr-2 animate-spin" />
             确认调整
@@ -505,24 +456,17 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    
+
     <!-- 确认对话框 -->
     <ConfirmDialog />
   </div>
 </template>
 
 <script setup>
+// UI组件现在自动导入，无需手动导入
+
 import { ref, computed, onMounted } from 'vue'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Skeleton } from '@/components/ui/skeleton'
+
 import { Package, Upload, Plus, TrendingUp, AlertTriangle, Warehouse, Search, FilterX, Download, RefreshCw, Loader2, Settings, Eye, Edit, History, ArrowRightLeft, Info } from 'lucide-vue-next'
 
 // 页面配置
@@ -734,7 +678,7 @@ const totalInventoryValue = computed(() => {
 })
 
 const lowStockCount = computed(() => {
-  return mockInventory.value.filter(item => 
+  return mockInventory.value.filter(item =>
     item.stock_status === 'low' || item.stock_status === 'out_of_stock'
   ).length
 })
@@ -772,7 +716,7 @@ const formatTimeAgo = (date: Date) => {
   const now = new Date()
   const diffTime = now.getTime() - new Date(date).getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  
+
   if (diffDays === 0) return '今天'
   if (diffDays === 1) return '昨天'
   if (diffDays < 7) return `${diffDays}天前`
@@ -857,6 +801,3 @@ onMounted(() => {
   refreshData()
 })
 </script>
-
- 
-

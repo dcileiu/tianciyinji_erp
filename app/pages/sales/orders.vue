@@ -1,7 +1,9 @@
 <template>
   <div class="sales-orders-container p-6 flex flex-column gap-6 bg-surface-50 min-h-full">
     <!-- 页面头部 -->
-    <div class="page-header bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden">
+    <div
+      class="page-header bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden"
+    >
       <div class="absolute inset-0 bg-black opacity-10"></div>
       <div class="absolute -top-4 -right-4 w-32 h-32 bg-white opacity-5 rounded-full"></div>
       <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white opacity-5 rounded-full"></div>
@@ -54,11 +56,7 @@
                 <InputIcon>
                   <i class="pi pi-search"></i>
                 </InputIcon>
-                <InputText
-                  v-model="searchKeyword"
-                  placeholder="搜索订单号、客户名称..."
-                  class="w-full"
-                />
+                <InputText v-model="searchKeyword" placeholder="搜索订单号、客户名称..." class="w-full" />
               </IconField>
             </div>
 
@@ -90,19 +88,8 @@
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold text-surface-900 opacity-0">操作</label>
               <div class="flex gap-2">
-                <Button
-                  label="重置"
-                  icon="pi pi-refresh"
-                  outlined
-                  class="flex-1"
-                  @click="resetFilters"
-                />
-                <Button
-                  v-tooltip="'导出数据'"
-                  icon="pi pi-download"
-                  outlined
-                  @click="exportData"
-                />
+                <Button label="重置" icon="pi pi-refresh" outlined class="flex-1" @click="resetFilters" />
+                <Button v-tooltip="'导出数据'" icon="pi pi-download" outlined @click="exportData" />
               </div>
             </div>
           </div>
@@ -201,7 +188,9 @@
                 <i class="pi pi-list mr-2 text-primary-600"></i>
                 订单列表
               </h3>
-              <p class="text-surface-600">当前共有 {{ filteredOrders.length }} 个订单，总金额 ¥{{ totalAmount.toLocaleString() }}</p>
+              <p class="text-surface-600">
+                当前共有 {{ filteredOrders.length }} 个订单，总金额 ¥{{ totalAmount.toLocaleString() }}
+              </p>
             </div>
             <div class="flex items-center gap-2">
               <Dropdown
@@ -212,14 +201,7 @@
                 class="w-32"
                 size="small"
               />
-              <Button
-                v-tooltip="'刷新数据'"
-                icon="pi pi-refresh"
-                outlined
-                rounded
-                size="small"
-                @click="refreshData"
-              />
+              <Button v-tooltip="'刷新数据'" icon="pi pi-refresh" outlined rounded size="small" @click="refreshData" />
             </div>
           </div>
         </div>
@@ -262,12 +244,7 @@
                 <p class="text-surface-600 mb-6 max-w-md mx-auto">
                   您还没有创建任何订单。点击下方按钮开始创建您的第一个订单。
                 </p>
-                <Button
-                  label="新建订单"
-                  icon="pi pi-plus"
-                  class="px-6 py-3"
-                  @click="openOrderModal"
-                />
+                <Button label="新建订单" icon="pi pi-plus" class="px-6 py-3" @click="openOrderModal" />
               </div>
             </template>
 
@@ -471,7 +448,7 @@
                   />
                 </div>
               </div>
-              
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div class="flex flex-col gap-2">
                   <label class="text-sm font-semibold text-surface-900">订单日期</label>
@@ -510,26 +487,16 @@
             <div class="p-4 pt-0">
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-semibold text-surface-900">订单备注</label>
-                <Textarea 
-                  v-model="currentOrder.remarks"
-                  placeholder="输入订单备注信息..."
-                  :rows="4"
-                  class="w-full"
-                />
+                <Textarea v-model="currentOrder.remarks" placeholder="输入订单备注信息..." :rows="4" class="w-full" />
               </div>
             </div>
           </template>
         </Card>
       </div>
-            
+
       <template #footer>
         <div class="flex justify-end gap-3 pt-4 border-t border-surface-200">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeOrderModal"
-          />
+          <Button label="取消" icon="pi pi-times" outlined @click="closeOrderModal" />
           <Button
             :label="isEditing ? '更新订单' : '创建订单'"
             :icon="isEditing ? 'pi pi-check' : 'pi pi-plus'"
@@ -566,11 +533,11 @@ import { useConfirm } from 'primevue/useconfirm'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '销售订单 - 智能ERP管理系统'
+  title: '销售订单 - 智能ERP管理系统',
 })
 
 // 页面状态
@@ -585,7 +552,7 @@ const pageSize = ref(10)
 const pageSizeOptions = [
   { label: '10条/页', value: 10 },
   { label: '20条/页', value: 20 },
-  { label: '50条/页', value: 50 }
+  { label: '50条/页', value: 50 },
 ]
 
 // 对话框状态
@@ -604,7 +571,7 @@ const currentOrder = ref({
   deliveryDate: new Date(),
   remarks: '',
   created_at: new Date(),
-  updated_at: new Date()
+  updated_at: new Date(),
 })
 
 // 模拟订单数据
@@ -619,7 +586,7 @@ const orders = ref([
     deliveryDate: new Date('2025-01-25'),
     remarks: '加急订单，请尽快处理',
     created_at: new Date('2025-01-15'),
-    updated_at: new Date('2025-01-15')
+    updated_at: new Date('2025-01-15'),
   },
   {
     id: '2',
@@ -631,7 +598,7 @@ const orders = ref([
     deliveryDate: new Date('2025-01-30'),
     remarks: '常规订单',
     created_at: new Date('2025-01-16'),
-    updated_at: new Date('2025-01-16')
+    updated_at: new Date('2025-01-16'),
   },
   {
     id: '3',
@@ -643,7 +610,7 @@ const orders = ref([
     deliveryDate: new Date('2025-01-27'),
     remarks: '',
     created_at: new Date('2025-01-17'),
-    updated_at: new Date('2025-01-17')
+    updated_at: new Date('2025-01-17'),
   },
   {
     id: '4',
@@ -655,7 +622,7 @@ const orders = ref([
     deliveryDate: new Date('2025-02-05'),
     remarks: '大批量订单，分批交付',
     created_at: new Date('2025-01-18'),
-    updated_at: new Date('2025-01-18')
+    updated_at: new Date('2025-01-18'),
   },
   {
     id: '5',
@@ -667,8 +634,8 @@ const orders = ref([
     deliveryDate: new Date('2025-01-28'),
     remarks: '已完成交付，客户满意',
     created_at: new Date('2025-01-19'),
-    updated_at: new Date('2025-01-19')
-  }
+    updated_at: new Date('2025-01-19'),
+  },
 ])
 
 // 状态选项
@@ -679,7 +646,7 @@ const statusOptions = [
   { label: '生产中', value: 'production' },
   { label: '已发货', value: 'shipped' },
   { label: '已完成', value: 'delivered' },
-  { label: '已取消', value: 'cancelled' }
+  { label: '已取消', value: 'cancelled' },
 ]
 
 // 客户选项
@@ -688,24 +655,25 @@ const customerOptions = [
   { label: '上海浦东制造有限公司', value: '上海浦东制造有限公司' },
   { label: '北京智能设备有限公司', value: '北京智能设备有限公司' },
   { label: '深圳创新科技有限公司', value: '深圳创新科技有限公司' },
-  { label: '广州精密制造有限公司', value: '广州精密制造有限公司' }
+  { label: '广州精密制造有限公司', value: '广州精密制造有限公司' },
 ]
 
 // 计算属性
 const filteredOrders = computed(() => {
   let result = orders.value
-  
+
   if (searchKeyword.value) {
-    result = result.filter(order =>
-      order.orderNo.toLowerCase().includes(searchKeyword.value.toLowerCase())
-      || order.customerName.toLowerCase().includes(searchKeyword.value.toLowerCase())
+    result = result.filter(
+      order =>
+        order.orderNo.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
+        order.customerName.toLowerCase().includes(searchKeyword.value.toLowerCase())
     )
   }
-  
+
   if (selectedStatus.value) {
     result = result.filter(order => order.status === selectedStatus.value)
   }
-  
+
   return result
 })
 
@@ -729,7 +697,7 @@ const getStatusText = (status: string) => {
     production: '生产中',
     shipped: '已发货',
     delivered: '已完成',
-    cancelled: '已取消'
+    cancelled: '已取消',
   }
   return statusMap[status] || status
 }
@@ -741,7 +709,7 @@ const getStatusSeverity = (status: string) => {
     production: 'secondary',
     shipped: 'primary',
     delivered: 'success',
-    cancelled: 'danger'
+    cancelled: 'danger',
   }
   return severityMap[status] || 'secondary'
 }
@@ -753,7 +721,7 @@ const getStatusProgress = (status: string) => {
     production: '生产中',
     shipped: '运输中',
     delivered: '已完成',
-    cancelled: '已取消'
+    cancelled: '已取消',
   }
   return progressMap[status] || ''
 }
@@ -762,7 +730,7 @@ const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   }).format(new Date(date))
 }
 
@@ -770,7 +738,7 @@ const formatTimeAgo = (date: Date) => {
   const now = new Date()
   const diffTime = now.getTime() - new Date(date).getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  
+
   if (diffDays === 0) return '今天'
   if (diffDays === 1) return '昨天'
   if (diffDays < 7) return `${diffDays}天前`
@@ -816,7 +784,7 @@ const openOrderModal = () => {
     deliveryDate: new Date(),
     remarks: '',
     created_at: new Date(),
-    updated_at: new Date()
+    updated_at: new Date(),
   }
   showOrderModal.value = true
 }
@@ -841,7 +809,7 @@ const duplicateOrder = (order: any) => {
     orderDate: new Date(),
     status: 'pending',
     created_at: new Date(),
-    updated_at: new Date()
+    updated_at: new Date(),
   }
   showOrderModal.value = true
 }
@@ -855,7 +823,7 @@ const confirmDelete = (order: any) => {
     rejectLabel: '取消',
     accept: () => {
       deleteOrder(order.id)
-    }
+    },
   })
 }
 
@@ -877,14 +845,14 @@ const deleteOrder = async (orderId: string) => {
 const saveOrder = async () => {
   try {
     saving.value = true
-    
+
     if (isEditing.value) {
       // 更新订单
       const index = orders.value.findIndex(o => o.id === currentOrder.value.id)
       if (index !== -1) {
         orders.value[index] = {
           ...currentOrder.value,
-          updated_at: new Date()
+          updated_at: new Date(),
         }
       }
     } else {
@@ -893,11 +861,11 @@ const saveOrder = async () => {
         ...currentOrder.value,
         id: Date.now().toString(),
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }
       orders.value.push(newOrder)
     }
-    
+
     closeOrderModal()
   } catch (error) {
     console.error('保存订单失败:', error)
@@ -911,5 +879,3 @@ const closeOrderModal = () => {
   isEditing.value = false
 }
 </script>
-
-

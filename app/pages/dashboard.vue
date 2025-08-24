@@ -218,19 +218,17 @@
 </template>
 
 <script setup>
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+// UI组件现在自动导入，无需手动导入
 import {
-  Download,
-  Plus,
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
-  ShoppingCart,
-  Package,
-  Users,
   BarChart3,
-  FileText
+  DollarSign,
+  Download,
+  FileText,
+  Package,
+  Plus,
+  ShoppingCart,
+  TrendingDown,
+  TrendingUp,
+  Users,
 } from 'lucide-vue-next'
 </script>

@@ -7,11 +7,7 @@
         <p class="text-muted-color">管理系统用户账户、角色权限和访问控制</p>
       </div>
       <PermissionWrapper :has-permission="canCreateUser">
-        <Button 
-          label="新增用户" 
-          icon="pi pi-plus"
-          @click="openCreateDialog"
-        />
+        <Button label="新增用户" icon="pi pi-plus" @click="openCreateDialog" />
       </PermissionWrapper>
     </div>
 
@@ -83,11 +79,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color">搜索用户</label>
-            <InputText
-              v-model="searchQuery"
-              placeholder="用户名、邮箱..."
-              class="w-full"
-            />
+            <InputText v-model="searchQuery" placeholder="用户名、邮箱..." class="w-full" />
           </div>
 
           <div class="flex flex-column gap-2">
@@ -118,13 +110,7 @@
 
           <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color opacity-0">操作</label>
-            <Button
-              label="重置筛选"
-              icon="pi pi-refresh"
-              outlined
-              class="w-full"
-              @click="resetFilters"
-            />
+            <Button label="重置筛选" icon="pi pi-refresh" outlined class="w-full" @click="resetFilters" />
           </div>
         </div>
       </template>
@@ -167,11 +153,7 @@
               <i class="pi pi-users text-6xl mb-4 opacity-50"></i>
               <h3 class="text-lg mb-2">暂无用户数据</h3>
               <p class="mb-4">开始创建第一个用户</p>
-              <Button
-                label="新增用户"
-                icon="pi pi-plus"
-                @click="openCreateDialog"
-              />
+              <Button label="新增用户" icon="pi pi-plus" @click="openCreateDialog" />
             </div>
           </template>
 
@@ -194,10 +176,7 @@
 
           <Column field="role" header="角色">
             <template #body="slotProps">
-              <Tag
-                :value="getRoleDisplayName(slotProps.data.role)"
-                :severity="getRoleSeverity(slotProps.data.role)"
-              />
+              <Tag :value="getRoleDisplayName(slotProps.data.role)" :severity="getRoleSeverity(slotProps.data.role)" />
             </template>
           </Column>
 
@@ -239,7 +218,7 @@
                     @click="viewUser(slotProps.data)"
                   />
                 </PermissionWrapper>
-                  <PermissionWrapper :has-permission="canEditUser">
+                <PermissionWrapper :has-permission="canEditUser">
                   <Button
                     v-tooltip="'编辑'"
                     icon="pi pi-pencil"
@@ -248,8 +227,8 @@
                     size="small"
                     @click="editUser(slotProps.data)"
                   />
-                  </PermissionWrapper>
-                  <PermissionWrapper :has-permission="canDeleteUser">
+                </PermissionWrapper>
+                <PermissionWrapper :has-permission="canDeleteUser">
                   <Button
                     v-tooltip="'删除'"
                     icon="pi pi-trash"
@@ -259,8 +238,8 @@
                     severity="danger"
                     @click="confirmDeleteUser(slotProps.data)"
                   />
-                  </PermissionWrapper>
-            </div>
+                </PermissionWrapper>
+              </div>
             </template>
           </Column>
         </DataTable>
@@ -280,23 +259,14 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">用户名 *</label>
-              <InputText
-                v-model="userForm.name"
-                placeholder="请输入用户名"
-                required
-              />
+              <InputText v-model="userForm.name" placeholder="请输入用户名" required />
             </div>
 
             <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">邮箱 *</label>
-              <InputText
-                v-model="userForm.email"
-                type="email"
-                placeholder="请输入邮箱"
-                required
-              />
-          </div>
-          
+              <InputText v-model="userForm.email" type="email" placeholder="请输入邮箱" required />
+            </div>
+
             <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">角色 *</label>
               <Dropdown
@@ -331,32 +301,18 @@
               />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">备注</label>
-            <Textarea
-              v-model="userForm.remark"
-              placeholder="请输入备注信息"
-              :rows="3"
-            />
+            <Textarea v-model="userForm.remark" placeholder="请输入备注信息" :rows="3" />
           </div>
         </form>
       </template>
 
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeUserDialog"
-          />
-          <Button
-            label="保存"
-            icon="pi pi-check"
-            :loading="submitting"
-            @click="submitUser"
-          />
+          <Button label="取消" icon="pi pi-times" outlined @click="closeUserDialog" />
+          <Button label="保存" icon="pi pi-check" :loading="submitting" @click="submitUser" />
         </div>
       </template>
     </Dialog>
@@ -386,11 +342,11 @@ import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '用户管理 - ERP 管理系统'
+  title: '用户管理 - ERP 管理系统',
 })
 
 // 响应式数据
@@ -413,7 +369,7 @@ const userStats = reactive({
   totalUsers: 0,
   activeUsers: 0,
   adminUsers: 0,
-  inactiveUsers: 0
+  inactiveUsers: 0,
 })
 
 // 表单数据
@@ -423,7 +379,7 @@ const userForm = reactive({
   role: '',
   status: 'active',
   password: '',
-  remark: ''
+  remark: '',
 })
 
 // 选项数据
@@ -433,14 +389,14 @@ const roleOptions = ref([
   { label: '系统管理员', value: 'admin' },
   { label: '业务管理员', value: 'business_admin' },
   { label: '普通用户', value: 'user' },
-  { label: '只读用户', value: 'readonly' }
+  { label: '只读用户', value: 'readonly' },
 ])
 
 const statusOptions = ref([
   { label: '全部状态', value: '' },
   { label: '正常', value: 'active' },
   { label: '停用', value: 'inactive' },
-  { label: '锁定', value: 'locked' }
+  { label: '锁定', value: 'locked' },
 ])
 
 // 模拟用户数据
@@ -454,7 +410,7 @@ const users = ref([
     last_login: new Date('2024-01-15T10:30:00'),
     created_at: new Date('2024-01-01'),
     avatar: null,
-    remark: ''
+    remark: '',
   },
   {
     id: '2',
@@ -465,7 +421,7 @@ const users = ref([
     last_login: new Date('2024-01-14T16:45:00'),
     created_at: new Date('2024-01-02'),
     avatar: null,
-    remark: ''
+    remark: '',
   },
   {
     id: '3',
@@ -476,7 +432,7 @@ const users = ref([
     last_login: new Date('2024-01-13T09:15:00'),
     created_at: new Date('2024-01-03'),
     avatar: null,
-    remark: ''
+    remark: '',
   },
   {
     id: '4',
@@ -487,19 +443,20 @@ const users = ref([
     last_login: new Date('2024-01-10T14:20:00'),
     created_at: new Date('2024-01-04'),
     avatar: null,
-    remark: ''
-  }
+    remark: '',
+  },
 ] as any[])
 
 // 计算属性
 const filteredUsers = computed(() => {
-  return users.value.filter((user) => {
-    const matchesSearch = !searchQuery.value 
-      || user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      || user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return users.value.filter(user => {
+    const matchesSearch =
+      !searchQuery.value ||
+      user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesRole = !selectedRole.value || user.role === selectedRole.value
     const matchesStatus = !selectedStatus.value || user.status === selectedStatus.value
-    
+
     return matchesSearch && matchesRole && matchesStatus
   })
 })
@@ -511,7 +468,7 @@ const getRoleDisplayName = (role: string): string => {
     admin: '系统管理员',
     business_admin: '业务管理员',
     user: '普通用户',
-    readonly: '只读用户'
+    readonly: '只读用户',
   }
   return roleMap[role] || role
 }
@@ -522,7 +479,7 @@ const getRoleSeverity = (role: string): string => {
     admin: 'warn',
     business_admin: 'info',
     user: 'success',
-    readonly: 'secondary'
+    readonly: 'secondary',
   }
   return severityMap[role] || 'secondary'
 }
@@ -531,7 +488,7 @@ const getStatusDisplayName = (status: string): string => {
   const statusMap: Record<string, string> = {
     active: '正常',
     inactive: '停用',
-    locked: '锁定'
+    locked: '锁定',
   }
   return statusMap[status] || status
 }
@@ -540,7 +497,7 @@ const getStatusSeverity = (status: string): string => {
   const severityMap: Record<string, string> = {
     active: 'success',
     inactive: 'warn',
-    locked: 'danger'
+    locked: 'danger',
   }
   return severityMap[status] || 'secondary'
 }
@@ -553,17 +510,14 @@ const formatLastLogin = (date: Date): string => {
   const now = new Date()
   const diff = now.getTime() - date.getTime()
   const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-  
+
   if (days === 0) {
     return '今天'
-  }
-  else if (days === 1) {
+  } else if (days === 1) {
     return '昨天'
-  }
-  else if (days < 7) {
+  } else if (days < 7) {
     return `${days}天前`
-  }
-  else {
+  } else {
     return date.toLocaleDateString('zh-CN')
   }
 }
@@ -582,7 +536,7 @@ const openCreateDialog = () => {
     role: '',
     status: 'active',
     password: '',
-    remark: ''
+    remark: '',
   })
   showUserDialog.value = true
 }
@@ -603,7 +557,7 @@ const editUser = (user: any) => {
     email: user.email,
     role: user.role,
     status: user.status,
-    remark: user.remark || ''
+    remark: user.remark || '',
   })
   showUserDialog.value = true
 }
@@ -612,7 +566,7 @@ const submitUser = async () => {
   submitting.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (editingUser.value) {
       // 更新用户
       const index = users.value.findIndex(u => u.id === (editingUser.value as any).id)
@@ -622,29 +576,26 @@ const submitUser = async () => {
           email: userForm.email,
           role: userForm.role,
           status: userForm.status,
-          remark: userForm.remark
+          remark: userForm.remark,
         })
       }
-    }
-    else {
+    } else {
       // 新增用户
       const newUser = {
         id: Date.now().toString(),
         ...userForm,
         last_login: new Date(),
         created_at: new Date(),
-        avatar: null
+        avatar: null,
       }
       users.value.push(newUser)
     }
-    
+
     closeUserDialog()
     updateStats()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存用户失败:', error)
-  }
-  finally {
+  } finally {
     submitting.value = false
   }
 }
@@ -656,7 +607,7 @@ const confirmDeleteUser = (user: any) => {
     icon: 'pi pi-exclamation-triangle',
     accept: () => {
       deleteUser(user.id)
-    }
+    },
   })
 }
 

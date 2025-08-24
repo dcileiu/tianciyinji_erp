@@ -7,7 +7,19 @@
         <h1 class="text-2xl font-bold text-gray-900">数据字典管理</h1>
       </div>
       <Button
-        @click="showCreateDialog = true; editingDictionary = false; currentDictionary = { id: '', code: '', name: '', type: 'system', status: 'active', description: '', items: [] }"
+        @click="
+          showCreateDialog = true
+          editingDictionary = false
+          currentDictionary = {
+            id: '',
+            code: '',
+            name: '',
+            type: 'system',
+            status: 'active',
+            description: '',
+            items: [],
+          }
+        "
         class="bg-blue-600 hover:bg-blue-700"
       >
         <Plus class="h-4 w-4 mr-2" />
@@ -21,11 +33,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="relative">
             <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              v-model="searchQuery"
-              placeholder="搜索字典名称、编码..."
-              class="pl-10"
-            />
+            <Input v-model="searchQuery" placeholder="搜索字典名称、编码..." class="pl-10" />
           </div>
           <Select v-model="typeFilter">
             <SelectTrigger>
@@ -48,11 +56,7 @@
               </SelectItem>
             </SelectContent>
           </Select>
-          <Button
-            @click="resetFilters"
-            variant="outline"
-            class="w-full"
-          >
+          <Button @click="resetFilters" variant="outline" class="w-full">
             <RefreshCw class="h-4 w-4 mr-2" />
             重置
           </Button>
@@ -116,25 +120,13 @@
               </TableCell>
               <TableCell>
                 <div class="flex items-center space-x-2">
-                  <Button
-                    @click="viewDictionaryItems(dictionary)"
-                    variant="ghost"
-                    size="sm"
-                  >
+                  <Button @click="viewDictionaryItems(dictionary)" variant="ghost" size="sm">
                     <List class="h-4 w-4" />
                   </Button>
-                  <Button
-                    @click="editDictionary(dictionary)"
-                    variant="ghost"
-                    size="sm"
-                  >
+                  <Button @click="editDictionary(dictionary)" variant="ghost" size="sm">
                     <Edit class="h-4 w-4" />
                   </Button>
-                  <Button
-                    @click="confirmDeleteDictionary(dictionary)"
-                    variant="ghost"
-                    size="sm"
-                  >
+                  <Button @click="confirmDeleteDictionary(dictionary)" variant="ghost" size="sm">
                     <Trash2 class="h-4 w-4" />
                   </Button>
                 </div>
@@ -154,19 +146,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <Label>字典编码 *</Label>
-            <Input
-              v-model="currentDictionary.code"
-              placeholder="请输入字典编码"
-              :disabled="editingDictionary"
-            />
+            <Input v-model="currentDictionary.code" placeholder="请输入字典编码" :disabled="editingDictionary" />
           </div>
 
           <div class="space-y-2">
             <Label>字典名称 *</Label>
-            <Input
-              v-model="currentDictionary.name"
-              placeholder="请输入字典名称"
-            />
+            <Input v-model="currentDictionary.name" placeholder="请输入字典名称" />
           </div>
 
           <div class="space-y-2">
@@ -199,25 +184,13 @@
 
           <div class="space-y-2 md:col-span-2">
             <Label>描述</Label>
-            <Textarea
-              v-model="currentDictionary.description"
-              placeholder="请输入字典描述"
-              rows="3"
-            />
+            <Textarea v-model="currentDictionary.description" placeholder="请输入字典描述" rows="3" />
           </div>
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            @click="showCreateDialog = false"
-          >
-            取消
-          </Button>
-          <Button
-            :disabled="saving"
-            @click="saveDictionary"
-          >
+          <Button variant="outline" @click="showCreateDialog = false"> 取消 </Button>
+          <Button :disabled="saving" @click="saveDictionary">
             {{ editingDictionary ? '更新' : '创建' }}
           </Button>
         </DialogFooter>
@@ -233,10 +206,7 @@
         <div class="space-y-4">
           <div class="flex justify-between items-center">
             <h4 class="text-lg font-medium text-gray-900">字典项目列表</h4>
-            <Button
-              @click="addNewItem"
-              size="sm"
-            >
+            <Button @click="addNewItem" size="sm">
               <Plus class="h-4 w-4 mr-2" />
               添加项目
             </Button>
@@ -250,28 +220,17 @@
             >
               <div class="space-y-2">
                 <Label>值</Label>
-                <Input
-                  v-model="item.value"
-                  placeholder="项目值"
-                />
+                <Input v-model="item.value" placeholder="项目值" />
               </div>
 
               <div class="space-y-2">
                 <Label>标签</Label>
-                <Input
-                  v-model="item.label"
-                  placeholder="显示标签"
-                />
+                <Input v-model="item.label" placeholder="显示标签" />
               </div>
 
               <div class="space-y-2">
                 <Label>排序</Label>
-                <Input
-                  v-model="item.sort"
-                  type="number"
-                  min="1"
-                  max="999"
-                />
+                <Input v-model="item.sort" type="number" min="1" max="999" />
               </div>
 
               <div class="space-y-2">
@@ -290,12 +249,7 @@
 
               <div class="space-y-2">
                 <Label>操作</Label>
-                <Button
-                  @click="removeItem(index)"
-                  variant="destructive"
-                  size="sm"
-                  class="w-full"
-                >
+                <Button @click="removeItem(index)" variant="destructive" size="sm" class="w-full">
                   <Trash2 class="h-4 w-4" />
                 </Button>
               </div>
@@ -309,37 +263,19 @@
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            @click="showItemsDialog = false"
-          >
-            取消
-          </Button>
-          <Button
-            :disabled="saving"
-            @click="saveDictionaryItems"
-          >
-            保存
-          </Button>
+          <Button variant="outline" @click="showItemsDialog = false"> 取消 </Button>
+          <Button :disabled="saving" @click="saveDictionaryItems"> 保存 </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { BookOpen, Search, RefreshCw, Plus, List, Edit, Trash2 } from 'lucide-vue-next'
-import { toast } from 'sonner'
+// UI组件现在自动导入，无需手动导入
+
+import { BookOpen, Edit, List, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 
 // 页面状态
 const loading = ref(false)
@@ -353,7 +289,6 @@ const showCreateDialog = ref(false)
 const showItemsDialog = ref(false)
 const editingDictionary = ref(false)
 
-
 // 当前编辑的字典
 const currentDictionary = ref({
   id: '',
@@ -362,7 +297,7 @@ const currentDictionary = ref({
   type: 'system',
   status: 'active',
   description: '',
-  items: [] as any[]
+  items: [] as any[],
 })
 
 // 选中的字典和项目
@@ -381,10 +316,10 @@ const dictionaries = ref([
     items: [
       { value: 'active', label: '启用', sort: 1, status: 'active' },
       { value: 'inactive', label: '禁用', sort: 2, status: 'active' },
-      { value: 'locked', label: '锁定', sort: 3, status: 'active' }
+      { value: 'locked', label: '锁定', sort: 3, status: 'active' },
     ],
     createdAt: new Date('2025-01-15'),
-    updatedAt: new Date('2025-01-15')
+    updatedAt: new Date('2025-01-15'),
   },
   {
     id: '2',
@@ -398,10 +333,10 @@ const dictionaries = ref([
       { value: 'confirmed', label: '已确认', sort: 2, status: 'active' },
       { value: 'shipped', label: '已发货', sort: 3, status: 'active' },
       { value: 'delivered', label: '已完成', sort: 4, status: 'active' },
-      { value: 'cancelled', label: '已取消', sort: 5, status: 'active' }
+      { value: 'cancelled', label: '已取消', sort: 5, status: 'active' },
     ],
     createdAt: new Date('2025-01-16'),
-    updatedAt: new Date('2025-01-16')
+    updatedAt: new Date('2025-01-16'),
   },
   {
     id: '3',
@@ -413,34 +348,34 @@ const dictionaries = ref([
     items: [
       { value: 'electronics', label: '电子产品', sort: 1, status: 'active' },
       { value: 'machinery', label: '机械设备', sort: 2, status: 'active' },
-      { value: 'materials', label: '原材料', sort: 3, status: 'active' }
+      { value: 'materials', label: '原材料', sort: 3, status: 'active' },
     ],
     createdAt: new Date('2025-01-17'),
-    updatedAt: new Date('2025-01-17')
-  }
+    updatedAt: new Date('2025-01-17'),
+  },
 ])
 
 // 选项数据
 const typeOptions = [
   { label: '系统', value: 'system' },
   { label: '业务', value: 'business' },
-  { label: '配置', value: 'config' }
+  { label: '配置', value: 'config' },
 ]
 
 const statusOptions = [
   { label: '启用', value: 'active' },
-  { label: '禁用', value: 'inactive' }
+  { label: '禁用', value: 'inactive' },
 ]
 
 const statusFilterOptions = [
   { label: '全部状态', value: '' },
   { label: '启用', value: 'active' },
-  { label: '禁用', value: 'inactive' }
+  { label: '禁用', value: 'inactive' },
 ]
 
 const itemStatusOptions = [
   { label: '启用', value: 'active' },
-  { label: '禁用', value: 'inactive' }
+  { label: '禁用', value: 'inactive' },
 ]
 
 // 计算属性
@@ -449,10 +384,11 @@ const filteredDictionaries = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(dict =>
-      dict.name.toLowerCase().includes(query)
-      || dict.code.toLowerCase().includes(query)
-      || dict.description?.toLowerCase().includes(query)
+    result = result.filter(
+      dict =>
+        dict.name.toLowerCase().includes(query) ||
+        dict.code.toLowerCase().includes(query) ||
+        dict.description?.toLowerCase().includes(query)
     )
   }
 
@@ -472,7 +408,7 @@ const getTypeText = (type: string) => {
   const typeMap: Record<string, string> = {
     system: '系统',
     business: '业务',
-    config: '配置'
+    config: '配置',
   }
   return typeMap[type] || type
 }
@@ -481,7 +417,7 @@ const getTypeSeverity = (type: string) => {
   const severityMap: Record<string, string> = {
     system: 'info',
     business: 'success',
-    config: 'warn'
+    config: 'warn',
   }
   return severityMap[type] || 'secondary'
 }
@@ -492,7 +428,7 @@ const formatDateTime = (date: Date) => {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   }).format(new Date(date))
 }
 
@@ -528,11 +464,9 @@ const deleteDictionary = async (dictionaryId: string) => {
       dictionaries.value.splice(index, 1)
     }
     toast.success('字典删除成功')
-  }
-  catch (error) {
+  } catch (error) {
     console.error('删除字典失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -541,25 +475,24 @@ const saveDictionary = async () => {
   try {
     saving.value = true
 
-          if (editingDictionary.value) {
-        // 更新字典
-        const index = dictionaries.value.findIndex(d => d.id === currentDictionary.value.id)
-        if (index !== -1 && dictionaries.value[index]) {
-          dictionaries.value[index] = {
-            ...dictionaries.value[index],
-            ...currentDictionary.value,
-            createdAt: dictionaries.value[index].createdAt || new Date(),
-            updatedAt: new Date()
-          }
+    if (editingDictionary.value) {
+      // 更新字典
+      const index = dictionaries.value.findIndex(d => d.id === currentDictionary.value.id)
+      if (index !== -1 && dictionaries.value[index]) {
+        dictionaries.value[index] = {
+          ...dictionaries.value[index],
+          ...currentDictionary.value,
+          createdAt: dictionaries.value[index].createdAt || new Date(),
+          updatedAt: new Date(),
         }
       }
-    else {
+    } else {
       // 创建新字典
       const newDictionary = {
         ...currentDictionary.value,
         id: Date.now().toString(),
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
       dictionaries.value.push(newDictionary)
     }
@@ -567,11 +500,9 @@ const saveDictionary = async () => {
     showCreateDialog.value = false
     editingDictionary.value = false
     toast.success('字典保存成功')
-  }
-  catch (error: any) {
+  } catch (error: any) {
     console.error('保存字典失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -581,7 +512,7 @@ const addNewItem = () => {
     value: '',
     label: '',
     sort: currentItems.value.length + 1,
-    status: 'active'
+    status: 'active',
   })
 }
 
@@ -589,26 +520,24 @@ const removeItem = (index: number) => {
   currentItems.value.splice(index, 1)
 }
 
-  const saveDictionaryItems = async () => {
-    try {
-      saving.value = true
-      if (selectedDictionary.value) {
-        const index = dictionaries.value.findIndex(d => d.id === selectedDictionary.value!.id)
-        if (index !== -1 && dictionaries.value[index]) {
-          dictionaries.value[index]!.items = [...currentItems.value]
-          dictionaries.value[index]!.updatedAt = new Date()
-        }
+const saveDictionaryItems = async () => {
+  try {
+    saving.value = true
+    if (selectedDictionary.value) {
+      const index = dictionaries.value.findIndex(d => d.id === selectedDictionary.value!.id)
+      if (index !== -1 && dictionaries.value[index]) {
+        dictionaries.value[index]!.items = [...currentItems.value]
+        dictionaries.value[index]!.updatedAt = new Date()
       }
-      showItemsDialog.value = false
-      toast.success('字典项目保存成功')
     }
-    catch (error: any) {
-      console.error('保存字典项目失败:', error)
-    }
-    finally {
-      saving.value = false
-    }
+    showItemsDialog.value = false
+    toast.success('字典项目保存成功')
+  } catch (error: any) {
+    console.error('保存字典项目失败:', error)
+  } finally {
+    saving.value = false
   }
+}
 
 // 初始化
 onMounted(() => {

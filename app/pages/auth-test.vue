@@ -8,7 +8,7 @@
             <p class="text-surface-600 mt-2">测试所有 Supabase 认证功能</p>
           </div>
         </template>
-        
+
         <template #content>
           <div class="p-6">
             <!-- 当前状态 -->
@@ -38,37 +38,21 @@
 
             <!-- 功能测试区域 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              
               <!-- 登录测试 -->
               <div class="flex flex-column gap-4">
                 <h3 class="text-lg font-semibold text-surface-900">🔐 登录测试</h3>
                 <div class="flex flex-column gap-3">
                   <FloatLabel>
-                    <InputText 
-                      id="loginEmail"
-                      v-model="loginForm.email" 
-                      type="email"
-                      class="w-full"
-                    />
+                    <InputText id="loginEmail" v-model="loginForm.email" type="email" class="w-full" />
                     <label for="loginEmail">邮箱</label>
                   </FloatLabel>
-                  
+
                   <FloatLabel>
-                    <Password 
-                      v-model="loginForm.password"
-                      class="w-full"
-                      input-class="w-full"
-                      toggle-mask
-                    />
+                    <Password v-model="loginForm.password" class="w-full" input-class="w-full" toggle-mask />
                     <label>密码</label>
                   </FloatLabel>
-                  
-                  <Button 
-                    :loading="testing.login"
-                    label="测试登录"
-                    class="w-full"
-                    @click="testLogin"
-                  />
+
+                  <Button :loading="testing.login" label="测试登录" class="w-full" @click="testLogin" />
                 </div>
               </div>
 
@@ -77,40 +61,21 @@
                 <h3 class="text-lg font-semibold text-surface-900">📝 注册测试</h3>
                 <div class="flex flex-column gap-3">
                   <FloatLabel>
-                    <InputText 
-                      id="registerName"
-                      v-model="registerForm.name" 
-                      class="w-full"
-                    />
+                    <InputText id="registerName" v-model="registerForm.name" class="w-full" />
                     <label for="registerName">姓名</label>
                   </FloatLabel>
-                  
+
                   <FloatLabel>
-                    <InputText 
-                      id="registerEmail"
-                      v-model="registerForm.email" 
-                      type="email"
-                      class="w-full"
-                    />
+                    <InputText id="registerEmail" v-model="registerForm.email" type="email" class="w-full" />
                     <label for="registerEmail">邮箱</label>
                   </FloatLabel>
-                  
+
                   <FloatLabel>
-                    <Password 
-                      v-model="registerForm.password"
-                      class="w-full"
-                      input-class="w-full"
-                      toggle-mask
-                    />
+                    <Password v-model="registerForm.password" class="w-full" input-class="w-full" toggle-mask />
                     <label>密码</label>
                   </FloatLabel>
-                  
-                  <Button 
-                    :loading="testing.register"
-                    label="测试注册"
-                    class="w-full"
-                    @click="testRegister"
-                  />
+
+                  <Button :loading="testing.register" label="测试注册" class="w-full" @click="testRegister" />
                 </div>
               </div>
 
@@ -119,21 +84,11 @@
                 <h3 class="text-lg font-semibold text-surface-900">🔄 忘记密码测试</h3>
                 <div class="flex flex-column gap-3">
                   <FloatLabel>
-                    <InputText 
-                      id="resetEmail"
-                      v-model="resetForm.email" 
-                      type="email"
-                      class="w-full"
-                    />
+                    <InputText id="resetEmail" v-model="resetForm.email" type="email" class="w-full" />
                     <label for="resetEmail">邮箱</label>
                   </FloatLabel>
-                  
-                  <Button 
-                    :loading="testing.reset"
-                    label="发送重置邮件"
-                    class="w-full"
-                    @click="testResetPassword"
-                  />
+
+                  <Button :loading="testing.reset" label="发送重置邮件" class="w-full" @click="testResetPassword" />
                 </div>
               </div>
 
@@ -141,23 +96,23 @@
               <div class="flex flex-column gap-4">
                 <h3 class="text-lg font-semibold text-surface-900">🔧 会话管理测试</h3>
                 <div class="flex flex-column gap-3">
-                  <Button 
+                  <Button
                     :loading="testing.session"
                     label="获取当前会话"
                     class="w-full"
                     outlined
                     @click="testGetSession"
                   />
-                  
-                  <Button 
+
+                  <Button
                     :loading="testing.refresh"
                     label="刷新会话"
                     class="w-full"
                     outlined
                     @click="testRefreshSession"
                   />
-                  
-                  <Button 
+
+                  <Button
                     :loading="testing.logout"
                     label="登出"
                     class="w-full"
@@ -171,14 +126,12 @@
 
             <!-- 测试结果 -->
             <div class="mt-8">
-                              <h3 class="text-lg font-semibold text-surface-900 mb-4">📋 测试结果</h3>
+              <h3 class="text-lg font-semibold text-surface-900 mb-4">📋 测试结果</h3>
               <div class="bg-surface-100 border-round-lg p-4 max-h-96 overflow-y-auto">
-                <div v-if="testResults.length === 0" class="text-surface-500 text-center py-8">
-                  暂无测试结果
-                </div>
+                <div v-if="testResults.length === 0" class="text-surface-500 text-center py-8">暂无测试结果</div>
                 <div v-else class="flex flex-column gap-2">
-                  <div 
-                    v-for="(result, index) in testResults" 
+                  <div
+                    v-for="(result, index) in testResults"
                     :key="index"
                     class="p-3 border-round border-1 border-surface"
                     :class="result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'"
@@ -193,7 +146,7 @@
                   </div>
                 </div>
               </div>
-              <Button 
+              <Button
                 v-if="testResults.length > 0"
                 label="清空结果"
                 outlined
@@ -228,32 +181,23 @@ useHead({
 })
 
 // 认证状态
-const { 
-  user, 
-  isAuthenticated, 
-  isLoading, 
-  login, 
-  register, 
-  resetPassword, 
-  logout,
-  getSession,
-  refreshSession
-} = useAuth()
+const { user, isAuthenticated, isLoading, login, register, resetPassword, logout, getSession, refreshSession } =
+  useAuth()
 
 // 表单数据
 const loginForm = ref({
   email: 'test@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 const registerForm = ref({
   name: '测试用户',
   email: 'newuser@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 const resetForm = ref({
-  email: 'test@example.com'
+  email: 'test@example.com',
 })
 
 // 测试状态
@@ -263,23 +207,25 @@ const testing = ref({
   reset: false,
   logout: false,
   session: false,
-  refresh: false
+  refresh: false,
 })
 
 // 测试结果
-const testResults = ref<Array<{
-  action: string
-  success: boolean
-  message: string
-  timestamp: string
-}>>([])
+const testResults = ref<
+  Array<{
+    action: string
+    success: boolean
+    message: string
+    timestamp: string
+  }>
+>([])
 
 const addResult = (action: string, success: boolean, message: string) => {
   testResults.value.unshift({
     action,
     success,
     message,
-    timestamp: new Date().toLocaleTimeString()
+    timestamp: new Date().toLocaleTimeString(),
   })
 }
 
@@ -304,7 +250,7 @@ const testRegister = async () => {
   testing.value.register = true
   try {
     const result = await register(registerForm.value.email, registerForm.value.password, {
-      name: registerForm.value.name
+      name: registerForm.value.name,
     })
     if (result.success) {
       if (result.needsEmailConfirmation) {
@@ -390,5 +336,3 @@ const clearResults = () => {
   testResults.value = []
 }
 </script>
-
- 

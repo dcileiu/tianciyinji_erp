@@ -4,6 +4,10 @@ declare global {
   const ErrorCode: typeof import('../../app/utils/error-handler')['ErrorCode']
   const LoadingMessages: typeof import('../../app/composables/useGlobalLoading')['LoadingMessages']
   const LoadingTasks: typeof import('../../app/composables/useGlobalLoading')['LoadingTasks']
+  const OrderStatus: typeof import('../../app/types/common')['OrderStatus']
+  const PaymentStatus: typeof import('../../app/types/common')['PaymentStatus']
+  const Status: typeof import('../../app/types/common')['Status']
+  const WarehouseType: typeof import('../../app/types/common')['WarehouseType']
   const abortNavigation: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/router')['abortNavigation']
   const addRouteMiddleware: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']
   const callOnce: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/once')['callOnce']
@@ -127,6 +131,7 @@ declare global {
   const useModel: typeof import('vue')['useModel']
   const useNuxtApp: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']
   const useNuxtData: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']
+  const useNuxtDevTools: typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']
   const usePreviewMode: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']
   const useProductionReports: typeof import('../../app/composables/useProductionReports')['useProductionReports']
   const useProducts: typeof import('../../app/composables/useSupabase')['useProducts']
@@ -200,14 +205,26 @@ declare global {
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { RegisterForm } from '../../app/composables/useAuth'
-  import('../../app/composables/useAuth')
-  // @ts-ignore
   export type { InitStep, InitLog, RetryConfig } from '../../app/composables/useDbInit'
   import('../../app/composables/useDbInit')
   // @ts-ignore
   export type { ErrorCode, AppError } from '../../app/utils/error-handler'
   import('../../app/utils/error-handler')
+  // @ts-ignore
+  export type { UserMetadata, LoginForm, RegisterForm, UserState, AuthError, LoginResponse, RegisterResponse } from '../../app/types/auth'
+  import('../../app/types/auth')
+  // @ts-ignore
+  export type { Status, OrderStatus, PaymentStatus, WarehouseType, ListResponse, FormState, BaseFilters, BaseEntity, UserInfo, Address, ContactInfo, AmountInfo, ValidationFunction, FormValidationRules, ValidationResult } from '../../app/types/common'
+  import('../../app/types/common')
+  // @ts-ignore
+  export type { User, Customer, Supplier, Product, Warehouse, Inventory, SalesOrder, SalesOrderItem, PurchaseOrder, PurchaseOrderItem, InventoryMovement, Transfer, TransferItem, Department, Role, Dictionary, SystemLog, PaginationParams, PaginationResponse, ApiResponse } from '../../app/types/database'
+  import('../../app/types/database')
+  // @ts-ignore
+  export type { UserRole, ProductionStatus } from '../../app/types/database.types'
+  import('../../app/types/database.types')
+  // @ts-ignore
+  export type { Json, Database } from '../../app/types/supabase.types'
+  import('../../app/types/supabase.types')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -216,6 +233,10 @@ declare module 'vue' {
     readonly ErrorCode: UnwrapRef<typeof import('../../app/utils/error-handler')['ErrorCode']>
     readonly LoadingMessages: UnwrapRef<typeof import('../../app/composables/useGlobalLoading')['LoadingMessages']>
     readonly LoadingTasks: UnwrapRef<typeof import('../../app/composables/useGlobalLoading')['LoadingTasks']>
+    readonly OrderStatus: UnwrapRef<typeof import('../../app/types/common')['OrderStatus']>
+    readonly PaymentStatus: UnwrapRef<typeof import('../../app/types/common')['PaymentStatus']>
+    readonly Status: UnwrapRef<typeof import('../../app/types/common')['Status']>
+    readonly WarehouseType: UnwrapRef<typeof import('../../app/types/common')['WarehouseType']>
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
     readonly callOnce: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/once')['callOnce']>
@@ -339,6 +360,7 @@ declare module 'vue' {
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
+    readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
     readonly useProductionReports: UnwrapRef<typeof import('../../app/composables/useProductionReports')['useProductionReports']>
     readonly useProducts: UnwrapRef<typeof import('../../app/composables/useSupabase')['useProducts']>

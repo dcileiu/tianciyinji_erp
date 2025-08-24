@@ -20,6 +20,7 @@
 **🎉 开发完成度: 100%**
 
 本ERP系统是一个功能完整的企业级管理平台，包含：
+
 - ✅ 完整的用户认证和权限管理系统
 - ✅ 30+ 现代化UI组件库
 - ✅ 36个业务页面，覆盖全流程ERP功能
@@ -30,11 +31,13 @@
 ## 📋 系统功能模块
 
 ### 🏠 仪表盘
+
 - **总览面板**: `pages/dashboard.vue` - 业务关键指标展示
 - **快速导航**: 各模块入口和数据统计
 - **数据可视化**: 图表展示和趋势分析
 
 ### 👥 用户权限管理
+
 - **用户管理**: `pages/users.vue` - 用户账户管理和角色分配
 - **角色管理**: `pages/system/roles.vue` - 角色创建和权限配置
 - **权限配置**: `pages/system/role-permissions.vue` - 权限树管理
@@ -42,16 +45,19 @@
 - **权限中间件**: 路由级和组件级权限控制
 
 ### 💰 销售管理
+
 - **客户管理**: `pages/master-data/customers.vue` + `pages/sales/customers.vue`
 - **销售订单**: `pages/sales/orders.vue` - 订单全生命周期管理
 - **销售报表**: `pages/reports/sales.vue` - 多维度销售分析
 
 ### 🛒 采购管理
+
 - **供应商管理**: `pages/master-data/suppliers.vue` + `pages/purchase/suppliers.vue`
 - **采购订单**: `pages/purchase/orders.vue` - 采购流程管理
 - **采购报表**: `pages/reports/purchase.vue` - 采购数据分析
 
 ### 🏭 生产管理
+
 - **生产订单**: `pages/production/orders.vue` - 生产任务管理
 - **生产计划**: `pages/production/plans.vue` - 生产计划制定
 - **物料清单**: `pages/production/bom.vue` - BOM管理
@@ -59,22 +65,26 @@
 - **生产报表**: `pages/reports/production.vue` - 生产效率分析
 
 ### 📦 仓库管理
+
 - **库存管理**: `pages/warehouse/inventory.vue` - 实时库存监控
 - **库存调拨**: `pages/warehouse/transfers.vue` - 库存转移管理
 - **仓库设置**: `pages/warehouse/warehouses.vue` - 仓库基础信息
 - **库存报表**: `pages/reports/inventory.vue` - 库存分析
 
 ### 💳 财务管理
+
 - **收款管理**: `pages/finance/receipts.vue` - 客户收款
 - **付款管理**: `pages/finance/payments.vue` - 供应商付款
 - **发票管理**: `pages/finance/invoices.vue` - 发票处理
 
 ### 📊 基础数据
+
 - **产品管理**: `pages/master-data/products.vue` + `pages/master-data/products-new.vue`
 - **客户档案**: 客户主数据维护
 - **供应商档案**: 供应商信息管理
 
 ### 🛠️ 系统设置
+
 - **系统配置**: `pages/system/config.vue` - 参数配置
 - **部门管理**: `pages/system/departments.vue` - 组织架构
 - **岗位管理**: `pages/system/positions.vue` - 岗位设置
@@ -103,18 +113,21 @@
 ## 🚀 技术特色
 
 ### 现代化架构
+
 - **Nuxt 4**: 最新的全栈框架
 - **Vue 3 Composition API**: 响应式组合式开发
 - **TypeScript 100%**: 完整的类型安全
 - **shadcn-vue**: 高质量UI组件库
 
 ### 企业级功能
+
 - **权限管理**: 三层权限控制（路由、组件、数据）
 - **表单验证**: vee-validate + zod 强类型验证
 - **错误处理**: 统一的错误处理和日志系统
 - **性能优化**: 全局加载状态和错误边界
 
 ### 开发体验
+
 - **热重载**: 快速开发迭代
 - **类型提示**: 完整的 IDE 支持
 - **代码规范**: ESLint + TypeScript 规范
@@ -123,24 +136,28 @@
 ## 🚀 开始使用
 
 ### 环境要求
-- Node.js 18+ 
+
+- Node.js 18+
 - pnpm 8+
 - Supabase 项目
 
 ### 安装步骤
 
 1. **克隆项目**
+
 ```bash
 git clone <repository-url>
 cd erp
 ```
 
 2. **安装依赖**
+
 ```bash
 pnpm install
 ```
 
 3. **环境配置**
+
 ```bash
 # 复制环境变量文件
 cp .env.example .env
@@ -152,18 +169,19 @@ NUXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 4. **数据库初始化**
+
 ```bash
 # 运行数据库迁移文件
 # supabase/migrations/ 目录下的所有SQL文件
 ```
 
 5. **启动开发服务器**
+
 ```bash
 pnpm dev
 ```
 
-6. **访问应用**
-打开浏览器访问 `http://localhost:3000`
+6. **访问应用** 打开浏览器访问 `http://localhost:3000`
 
 ### 生产部署
 
@@ -229,6 +247,7 @@ erp/
 ## 🔧 开发指南
 
 ### 权限系统使用
+
 ```vue
 <!-- 页面级权限控制 -->
 <PermissionWrapper required-permission="user:view">
@@ -242,26 +261,25 @@ erp/
 ```
 
 ### 表单验证
+
 ```typescript
 // 使用 zod 定义验证架构
 const userSchema = z.object({
   name: z.string().min(1, '姓名不能为空'),
-  email: z.string().email('邮箱格式不正确')
+  email: z.string().email('邮箱格式不正确'),
 })
 
 // 在组件中使用
 const { handleSubmit } = useForm({
-  validationSchema: toTypedSchema(userSchema)
+  validationSchema: toTypedSchema(userSchema),
 })
 ```
 
 ### 数据操作
+
 ```typescript
 // 使用 composables 进行数据操作
-const { data, loading, error, refresh } = await useSupabase()
-  .from('users')
-  .select('*')
-  .execute()
+const { data, loading, error, refresh } = await useSupabase().from('users').select('*').execute()
 ```
 
 ## 📊 技术指标
@@ -292,6 +310,7 @@ const { data, loading, error, refresh } = await useSupabase()
 欢迎提交 Issue 和 Pull Request 来改善这个项目。
 
 ### 开发规范
+
 - 使用 TypeScript 进行类型安全开发
 - 遵循 ESLint 代码规范
 - 使用 Composition API 编写组件
@@ -300,6 +319,7 @@ const { data, loading, error, refresh } = await useSupabase()
 ## 📞 联系支持
 
 如有问题或建议，请通过以下方式联系：
+
 - 提交 GitHub Issue
 - 查看项目文档 (`docs/` 目录)
 
@@ -307,4 +327,4 @@ const { data, loading, error, refresh } = await useSupabase()
 
 **ERP 管理系统** - 现代化企业资源规划的完整解决方案！
 
-*最后更新: 2025-01-20 | 版本: v1.0.0 | 状态: 开发完成*
+_最后更新: 2025-01-20 | 版本: v1.0.0 | 状态: 开发完成_

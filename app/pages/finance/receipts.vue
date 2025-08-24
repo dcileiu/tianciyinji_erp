@@ -27,7 +27,7 @@
           </div>
         </CardContent>
       </Card>
-      
+
       <Card class="bg-orange-50 border-orange-200">
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
@@ -41,7 +41,7 @@
           </div>
         </CardContent>
       </Card>
-      
+
       <Card class="bg-green-50 border-green-200">
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
@@ -55,7 +55,7 @@
           </div>
         </CardContent>
       </Card>
-      
+
       <Card class="bg-purple-50 border-purple-200">
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
@@ -82,14 +82,10 @@
             <Label class="text-sm font-medium">搜索</Label>
             <div class="relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                v-model="searchQuery"
-                placeholder="单据号、客户名称..."
-                class="pl-10"
-              />
+              <Input v-model="searchQuery" placeholder="单据号、客户名称..." class="pl-10" />
             </div>
           </div>
-          
+
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">状态</Label>
             <Select v-model="statusFilter">
@@ -104,7 +100,7 @@
               </SelectContent>
             </Select>
           </div>
-          
+
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">收款方式</Label>
             <Select v-model="paymentMethodFilter">
@@ -121,32 +117,20 @@
               </SelectContent>
             </Select>
           </div>
-          
+
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">开始日期</Label>
-            <Input
-              v-model="startDate"
-              type="date"
-              placeholder="开始日期"
-            />
+            <Input v-model="startDate" type="date" placeholder="开始日期" />
           </div>
-          
+
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">结束日期</Label>
-            <Input
-              v-model="endDate"
-              type="date"
-              placeholder="结束日期"
-            />
+            <Input v-model="endDate" type="date" placeholder="结束日期" />
           </div>
-          
+
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium opacity-0">操作</Label>
-            <Button
-              variant="outline"
-              class="w-full"
-              @click="resetFilters"
-            >
+            <Button variant="outline" class="w-full" @click="resetFilters">
               <RefreshCw class="w-4 h-4 mr-2" />
               重置
             </Button>
@@ -167,7 +151,7 @@
         <div v-if="loading" class="flex justify-center py-8">
           <Loader2 class="w-6 h-6 animate-spin" />
         </div>
-        
+
         <div v-else-if="filteredReceipts.length === 0" class="text-center py-12 text-gray-500">
           <FileText class="w-16 h-16 mx-auto mb-4 opacity-50" />
           <h3 class="text-lg mb-2">暂无收款单数据</h3>
@@ -177,7 +161,7 @@
             新建收款单
           </Button>
         </div>
-        
+
         <div v-else class="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -215,9 +199,7 @@
                 </TableCell>
                 <TableCell>
                   <div>
-                    <span class="font-semibold text-green-600 text-lg">
-                      ¥{{ formatCurrency(receipt.amount) }}
-                    </span>
+                    <span class="font-semibold text-green-600 text-lg"> ¥{{ formatCurrency(receipt.amount) }} </span>
                     <div class="text-sm text-gray-500">
                       {{ getPaymentMethodName(receipt.payment_method) }}
                     </div>
@@ -241,11 +223,7 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      @click="viewReceipt(receipt)"
-                    >
+                    <Button variant="outline" size="sm" @click="viewReceipt(receipt)">
                       <Eye class="w-4 h-4" />
                     </Button>
                     <Button
@@ -287,7 +265,7 @@
         <DialogHeader>
           <DialogTitle>{{ editingReceipt ? '编辑收款单' : '新增收款单' }}</DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-6">
           <!-- 基本信息 -->
           <div class="space-y-4">
@@ -295,22 +273,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>收款单号 *</Label>
-                <Input
-                  v-model="receiptForm.receipt_no"
-                  placeholder="系统自动生成"
-                  :disabled="!!editingReceipt"
-                />
+                <Input v-model="receiptForm.receipt_no" placeholder="系统自动生成" :disabled="!!editingReceipt" />
               </div>
-              
+
               <div class="space-y-2">
                 <Label>收款日期 *</Label>
-                <Input
-                  v-model="receiptForm.receipt_date"
-                  type="date"
-                  placeholder="选择日期"
-                />
+                <Input v-model="receiptForm.receipt_date" type="date" placeholder="选择日期" />
               </div>
-              
+
               <div class="space-y-2">
                 <Label>客户 *</Label>
                 <Select v-model="receiptForm.customer_id">
@@ -324,7 +294,7 @@
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div class="space-y-2">
                 <Label>状态 *</Label>
                 <Select v-model="receiptForm.status">
@@ -340,22 +310,16 @@
               </div>
             </div>
           </div>
-              
+
           <!-- 收款信息 -->
           <div class="space-y-4">
             <h4 class="text-lg font-semibold border-b pb-2">收款信息</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>收款金额 *</Label>
-                <Input
-                  v-model="receiptForm.amount"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                />
+                <Input v-model="receiptForm.amount" type="number" step="0.01" min="0" placeholder="0.00" />
               </div>
-              
+
               <div class="space-y-2">
                 <Label>收款方式 *</Label>
                 <Select v-model="receiptForm.payment_method">
@@ -363,37 +327,32 @@
                     <SelectValue placeholder="请选择方式" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem v-for="option in paymentMethodOptions.slice(1)" :key="option.value" :value="option.value">
+                    <SelectItem
+                      v-for="option in paymentMethodOptions.slice(1)"
+                      :key="option.value"
+                      :value="option.value"
+                    >
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
-            
+
             <div class="space-y-2">
               <Label>收款账户</Label>
-              <Input
-                v-model="receiptForm.receiver_account"
-                placeholder="请输入收款账户"
-              />
+              <Input v-model="receiptForm.receiver_account" placeholder="请输入收款账户" />
             </div>
-            
+
             <div class="space-y-2">
               <Label>备注</Label>
-              <Textarea
-                v-model="receiptForm.remark"
-                placeholder="请输入备注信息"
-                rows="3"
-              />
+              <Textarea v-model="receiptForm.remark" placeholder="请输入备注信息" rows="3" />
             </div>
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button variant="outline" @click="closeCreateDialog">
-            取消
-          </Button>
+          <Button variant="outline" @click="closeCreateDialog"> 取消 </Button>
           <Button :disabled="saving" @click="saveReceipt">
             <Loader2 v-if="saving" class="w-4 h-4 mr-2 animate-spin" />
             保存
@@ -404,26 +363,33 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Plus, Search, RefreshCw, CreditCard, Clock, CheckCircle, DollarSign, Eye, Edit, Trash2, Loader2, FileText } from 'lucide-vue-next'
+<script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
+import { computed, onMounted, ref } from 'vue'
+
+import {
+  CheckCircle,
+  Clock,
+  CreditCard,
+  DollarSign,
+  Edit,
+  Eye,
+  FileText,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+} from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '收款单管理 - ERP 管理系统'
+  title: '收款单管理 - ERP 管理系统',
 })
 
 // 响应式数据
@@ -444,7 +410,7 @@ const initReceiptForm = () => ({
   status: 'draft',
   remark: '',
   created_at: new Date(),
-  updated_at: new Date()
+  updated_at: new Date(),
 })
 
 // 搜索筛选
@@ -459,7 +425,7 @@ const statusOptions = ref([
   { label: '全部状态', value: '' },
   { label: '草稿', value: 'draft' },
   { label: '已确认', value: 'confirmed' },
-  { label: '已取消', value: 'cancelled' }
+  { label: '已取消', value: 'cancelled' },
 ])
 
 // 收款方式选项
@@ -469,7 +435,7 @@ const paymentMethodOptions = ref([
   { label: '现金', value: 'cash' },
   { label: '支票', value: 'check' },
   { label: '支付宝', value: 'alipay' },
-  { label: '微信', value: 'wechat' }
+  { label: '微信', value: 'wechat' },
 ])
 
 // 收款单表单
@@ -488,7 +454,7 @@ const receipts = ref([
     receiver_account: '6222021234567890',
     status: 'confirmed',
     remark: '销售订单回款',
-    created_at: '2025-01-15T10:00:00Z'
+    created_at: '2025-01-15T10:00:00Z',
   },
   {
     id: '2',
@@ -501,43 +467,42 @@ const receipts = ref([
     receiver_account: '',
     status: 'draft',
     remark: '现金收款',
-    created_at: '2025-01-16T14:30:00Z'
-  }
+    created_at: '2025-01-16T14:30:00Z',
+  },
 ])
 
 const customers = ref([
   { id: 'C001', name: '苏州华智科技有限公司' },
   { id: 'C002', name: '上海浦东制造有限公司' },
-  { id: 'C003', name: '北京智能设备有限公司' }
+  { id: 'C003', name: '北京智能设备有限公司' },
 ])
 
 const receiptStats = ref({
   totalReceipts: 189,
   draftReceipts: 12,
   confirmedReceipts: 165,
-  totalAmount: 3280000
+  totalAmount: 3280000,
 })
 
 // 计算属性
 const filteredReceipts = computed(() => {
   let result = receipts.value
-  
+
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(receipt =>
-      receipt.receipt_no.toLowerCase().includes(query)
-      || receipt.customer_name.toLowerCase().includes(query)
+    result = result.filter(
+      receipt => receipt.receipt_no.toLowerCase().includes(query) || receipt.customer_name.toLowerCase().includes(query)
     )
   }
 
   if (statusFilter.value) {
     result = result.filter(receipt => receipt.status === statusFilter.value)
   }
-  
+
   if (paymentMethodFilter.value) {
     result = result.filter(receipt => receipt.payment_method === paymentMethodFilter.value)
   }
-  
+
   return result
 })
 
@@ -555,7 +520,7 @@ const formatDate = (date: string) => {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   }).format(new Date(date))
 }
 
@@ -563,7 +528,7 @@ const getStatusName = (status: string) => {
   const nameMap: Record<string, string> = {
     draft: '草稿',
     confirmed: '已确认',
-    cancelled: '已取消'
+    cancelled: '已取消',
   }
   return nameMap[status] || status
 }
@@ -575,7 +540,7 @@ const getPaymentMethodName = (method: string) => {
     check: '支票',
     alipay: '支付宝',
     wechat: '微信',
-    other: '其他'
+    other: '其他',
   }
   return nameMap[method] || method
 }
@@ -584,7 +549,7 @@ const getStatusVariant = (status: string) => {
   const variantMap: Record<string, string> = {
     draft: 'secondary',
     confirmed: 'default',
-    cancelled: 'destructive'
+    cancelled: 'destructive',
   }
   return variantMap[status] || 'secondary'
 }
@@ -596,12 +561,10 @@ const getPaymentMethodVariant = (method: string) => {
     bank_transfer: 'secondary',
     alipay: 'outline',
     wechat: 'default',
-    other: 'secondary'
+    other: 'secondary',
   }
   return variantMap[method] || 'secondary'
 }
-
-
 
 // 收款单操作
 const viewReceipt = (receipt: any) => {
@@ -654,7 +617,7 @@ const saveReceipt = async () => {
   try {
     // 模拟保存操作
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (editingReceipt.value) {
       // 更新现有收款单
       const index = receipts.value.findIndex(r => r.id === editingReceipt.value.id)
@@ -669,12 +632,12 @@ const saveReceipt = async () => {
         id: Date.now(),
         receipt_no: `REC${Date.now()}`,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }
       receipts.value.unshift(newReceipt)
       console.log('收款单创建成功')
     }
-    
+
     closeCreateDialog()
   } catch (error) {
     console.error('保存收款单失败:', error)

@@ -2,61 +2,112 @@
 import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt({
-  ignores: [
-    'node_modules/**',
-    '.nuxt/**',
-    '.output/**',
-    'dist/**',
-    'public/**',
-    'supabase/migrations/**'
-  ],
+  ignores: ['node_modules/**', '.nuxt/**', '.output/**', 'dist/**', 'public/**', 'supabase/migrations/**'],
   rules: {
+    // TypeScript 规则
     '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/prefer-const': 'error',
+    '@typescript-eslint/no-var-requires': 'error',
+
+    // Vue 规则
     'vue/multi-word-component-names': 'off',
     'vue/no-multiple-template-root': 'off',
-    '@stylistic/comma-dangle': 'off',
-    '@stylistic/semi': 'off',
+    'vue/attribute-hyphenation': 'off',
+    'vue/v-on-event-hyphenation': 'off',
+    'vue/require-default-prop': 'off',
+    'vue/require-explicit-emits': 'off',
+    'vue/html-self-closing': [
+      'error',
+      {
+        html: {
+          void: 'always',
+          normal: 'never',
+          component: 'always',
+        },
+        svg: 'always',
+        math: 'always',
+      },
+    ],
+
+    // 代码风格规则 (由 Prettier 处理)
+    indent: 'off',
+    quotes: 'off',
+    semi: 'off',
     'comma-dangle': 'off',
-    'semi': 'off',
-    // 允许变量声明后空行的格式
-    '@stylistic/padding-line-between-statements': 'off',
-    'padding-line-between-statements': 'off',
-    '@typescript-eslint/padding-line-between-statements': 'off',
-    // 允许空行的相关规则
-    '@stylistic/no-multiple-empty-lines': 'off',
+    'max-len': 'off',
+    'object-curly-spacing': 'off',
+    'array-bracket-spacing': 'off',
+    'space-before-function-paren': 'off',
+    'keyword-spacing': 'off',
+    'space-infix-ops': 'off',
     'no-multiple-empty-lines': 'off',
-    // 允许多空格，用于对齐
-    '@stylistic/no-multi-spaces': 'off',
-    'no-multi-spaces': 'off',
-    // 允许行尾空格
-    '@stylistic/no-trailing-spaces': 'off',
     'no-trailing-spaces': 'off',
-    // 文件末尾换行符保持启用，允许自动修复
-    '@stylistic/eol-last': 'error',
-    'eol-last': 'error',
-    // Vue相关格式化规则
+    'eol-last': 'off',
+
+    // @stylistic 规则关闭 (由 Prettier 处理)
+    '@stylistic/indent': 'off',
+    '@stylistic/quotes': 'off',
+    '@stylistic/semi': 'off',
+    '@stylistic/comma-dangle': 'off',
+    '@stylistic/max-len': 'off',
+    '@stylistic/object-curly-spacing': 'off',
+    '@stylistic/array-bracket-spacing': 'off',
+    '@stylistic/space-before-function-paren': 'off',
+    '@stylistic/keyword-spacing': 'off',
+    '@stylistic/space-infix-ops': 'off',
+    '@stylistic/no-multiple-empty-lines': 'off',
+    '@stylistic/no-trailing-spaces': 'off',
+    '@stylistic/eol-last': 'off',
+    '@stylistic/brace-style': 'off',
+    '@stylistic/padding-line-between-statements': 'off',
+    '@stylistic/no-multi-spaces': 'off',
+
+    // Vue 格式化规则关闭 (由 Prettier 处理)
     'vue/html-indent': 'off',
+    'vue/html-quotes': 'off',
     'vue/max-attributes-per-line': 'off',
     'vue/singleline-html-element-content-newline': 'off',
     'vue/multiline-html-element-content-newline': 'off',
-    'vue/html-self-closing': 'off',
     'vue/html-closing-bracket-newline': 'off',
     'vue/html-closing-bracket-spacing': 'off',
-    // TypeScript格式化规则
+    'vue/script-indent': 'off',
+
+    // TypeScript 格式化规则关闭 (由 Prettier 处理)
     '@typescript-eslint/indent': 'off',
     '@typescript-eslint/object-curly-spacing': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',
-    // 大括号风格规则关闭
-    '@stylistic/brace-style': 'off',
-    'brace-style': 'off',
-    // 其他格式化规则
-    '@stylistic/indent': 'off',
-    '@stylistic/quotes': 'off',
-    '@stylistic/space-before-function-paren': 'off',
-    '@stylistic/object-curly-spacing': 'off',
-    // TypeScript类型相关规则 - 改为警告，不阻止运行
-    '@typescript-eslint/no-explicit-any': 'warn',
-    // 禁用Vue属性连字符检查
-    'vue/attribute-hyphenation': 'off',
-  }
+    '@typescript-eslint/comma-dangle': 'off',
+    '@typescript-eslint/semi': 'off',
+    '@typescript-eslint/quotes': 'off',
+    '@typescript-eslint/padding-line-between-statements': 'off',
+
+    // 代码质量规则
+    'no-console': 'warn',
+    'no-debugger': 'error',
+    'no-alert': 'warn',
+    'prefer-const': 'error',
+    'no-var': 'error',
+    'no-duplicate-imports': 'error',
+    'no-unused-expressions': 'warn',
+    curly: ['error', 'multi-line'],
+    eqeqeq: ['error', 'always'],
+    'no-eval': 'error',
+    'no-implied-eval': 'error',
+    'no-new-func': 'error',
+    'no-script-url': 'error',
+    yoda: 'error',
+
+    // 导入规则
+    'sort-imports': [
+      'error',
+      {
+        ignoreCase: false,
+        ignoreDeclarationSort: true,
+        ignoreMemberSort: false,
+        memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+        allowSeparatedGroups: false,
+      },
+    ],
+  },
 })

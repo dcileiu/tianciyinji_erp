@@ -20,11 +20,7 @@
             <Label class="text-sm font-medium">搜索</Label>
             <div class="relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                v-model="searchKeyword"
-                placeholder="搜索单号、供应商..."
-                class="pl-10"
-              />
+              <Input v-model="searchKeyword" placeholder="搜索单号、供应商..." class="pl-10" />
             </div>
           </div>
 
@@ -35,11 +31,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in statusOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -53,11 +45,7 @@
                 <SelectValue placeholder="全部方式" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in methodOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in methodOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -66,11 +54,7 @@
 
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">日期范围</Label>
-            <Input
-              v-model="dateRange"
-              type="date"
-              placeholder="选择日期范围"
-            />
+            <Input v-model="dateRange" type="date" placeholder="选择日期范围" />
           </div>
 
           <div class="flex flex-col gap-2">
@@ -128,7 +112,7 @@
         </CardContent>
       </Card>
     </div>
-            
+
     <!-- 支付列表 -->
     <Card>
       <CardHeader>
@@ -218,16 +202,12 @@
         <DialogHeader>
           <DialogTitle>{{ modalTitle }}</DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">支付单号</Label>
-              <Input
-                v-model="currentPayment.paymentNo"
-                placeholder="自动生成"
-                :disabled="isEditing"
-              />
+              <Input v-model="currentPayment.paymentNo" placeholder="自动生成" :disabled="isEditing" />
             </div>
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">供应商</Label>
@@ -247,11 +227,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">支付金额</Label>
-              <Input
-                v-model="currentPayment.amount"
-                type="number"
-                placeholder="输入支付金额"
-              />
+              <Input v-model="currentPayment.amount" type="number" placeholder="输入支付金额" />
             </div>
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">支付方式</Label>
@@ -267,15 +243,11 @@
               </Select>
             </div>
           </div>
-            
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">支付日期</Label>
-              <Input
-                v-model="currentPayment.paymentDate"
-                type="date"
-                placeholder="选择支付日期"
-              />
+              <Input v-model="currentPayment.paymentDate" type="date" placeholder="选择支付日期" />
             </div>
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">状态</Label>
@@ -291,21 +263,15 @@
               </Select>
             </div>
           </div>
-            
+
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">描述</Label>
-            <Textarea 
-              v-model="currentPayment.description"
-              placeholder="输入支付描述"
-              :rows="3"
-            />
+            <Textarea v-model="currentPayment.description" placeholder="输入支付描述" :rows="3" />
           </div>
         </div>
-            
+
         <DialogFooter>
-          <Button variant="outline" @click="closePaymentModal">
-            取消
-          </Button>
+          <Button variant="outline" @click="closePaymentModal"> 取消 </Button>
           <Button @click="savePayment" :disabled="saving">
             <Loader2 v-if="saving" class="w-4 h-4 mr-2 animate-spin" />
             {{ isEditing ? '更新' : '创建' }}
@@ -320,16 +286,10 @@
 </template>
 
 <script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
 import { ref, computed } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
-import { Textarea } from '~/components/ui/textarea'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
-import { Badge } from '~/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+
 import { Plus, Search, RefreshCw, CreditCard, Clock, DollarSign, Eye, Edit, Trash2, Loader2 } from 'lucide-vue-next'
 
 // 页面状态
@@ -358,7 +318,7 @@ const initCurrentPayment = () => ({
   paymentMethod: '',
   status: 'pending',
   paymentDate: '',
-  description: ''
+  description: '',
 })
 
 currentPayment.value = initCurrentPayment()
@@ -375,7 +335,7 @@ const payments = ref([
     paymentDate: new Date('2025-01-15'),
     description: '采购钢材货款',
     created_at: new Date('2025-01-15'),
-    updated_at: new Date('2025-01-15')
+    updated_at: new Date('2025-01-15'),
   },
   {
     id: '2',
@@ -387,7 +347,7 @@ const payments = ref([
     paymentDate: new Date('2025-01-16'),
     description: '电子元件采购',
     created_at: new Date('2025-01-16'),
-    updated_at: new Date('2025-01-16')
+    updated_at: new Date('2025-01-16'),
   },
   {
     id: '3',
@@ -399,8 +359,8 @@ const payments = ref([
     paymentDate: new Date('2025-01-17'),
     description: '运输费用',
     created_at: new Date('2025-01-17'),
-    updated_at: new Date('2025-01-17')
-  }
+    updated_at: new Date('2025-01-17'),
+  },
 ])
 
 // 状态选项
@@ -409,7 +369,7 @@ const statusOptions = [
   { label: '待支付', value: 'pending' },
   { label: '处理中', value: 'processing' },
   { label: '已完成', value: 'completed' },
-  { label: '已取消', value: 'cancelled' }
+  { label: '已取消', value: 'cancelled' },
 ]
 
 // 支付方式选项
@@ -419,35 +379,36 @@ const methodOptions = [
   { label: '信用卡', value: 'credit_card' },
   { label: '支付宝', value: 'alipay' },
   { label: '微信支付', value: 'wechat_pay' },
-  { label: '现金', value: 'cash' }
+  { label: '现金', value: 'cash' },
 ]
 
 // 供应商选项
 const supplierOptions = [
   { label: '钢材供应商A', value: '钢材供应商A' },
   { label: '电子器件供应商B', value: '电子器件供应商B' },
-  { label: '物流公司C', value: '物流公司C' }
+  { label: '物流公司C', value: '物流公司C' },
 ]
 
 // 计算属性
 const filteredPayments = computed(() => {
   let result = payments.value
-  
+
   if (searchKeyword.value) {
-    result = result.filter(payment =>
-      payment.paymentNo.toLowerCase().includes(searchKeyword.value.toLowerCase())
-      || payment.supplier.toLowerCase().includes(searchKeyword.value.toLowerCase())
+    result = result.filter(
+      payment =>
+        payment.paymentNo.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
+        payment.supplier.toLowerCase().includes(searchKeyword.value.toLowerCase())
     )
   }
-  
+
   if (selectedStatus.value) {
     result = result.filter(payment => payment.status === selectedStatus.value)
   }
-  
+
   if (selectedMethod.value) {
     result = result.filter(payment => payment.paymentMethod === selectedMethod.value)
   }
-  
+
   return result
 })
 
@@ -469,7 +430,7 @@ const getStatusText = (status: string) => {
     pending: '待支付',
     processing: '处理中',
     completed: '已完成',
-    cancelled: '已取消'
+    cancelled: '已取消',
   }
   return statusMap[status] || status
 }
@@ -479,7 +440,7 @@ const getStatusVariant = (status: string) => {
     pending: 'secondary',
     processing: 'outline',
     completed: 'default',
-    cancelled: 'destructive'
+    cancelled: 'destructive',
   }
   return variantMap[status] || 'outline'
 }
@@ -490,7 +451,7 @@ const getMethodText = (method: string) => {
     credit_card: '信用卡',
     alipay: '支付宝',
     wechat_pay: '微信支付',
-    cash: '现金'
+    cash: '现金',
   }
   return methodMap[method] || method
 }
@@ -501,7 +462,7 @@ const getMethodVariant = (method: string) => {
     credit_card: 'secondary',
     alipay: 'default',
     wechat_pay: 'default',
-    cash: 'outline'
+    cash: 'outline',
   }
   return variantMap[method] || 'outline'
 }
@@ -510,7 +471,7 @@ const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   }).format(new Date(date))
 }
 
@@ -533,7 +494,7 @@ const openPaymentModal = () => {
     paymentDate: new Date(),
     description: '',
     created_at: new Date(),
-    updated_at: new Date()
+    updated_at: new Date(),
   }
   showPaymentModal.value = true
 }
@@ -560,13 +521,13 @@ const deletePayment = async (payment: any) => {
     loading.value = true
     // 这里应该调用API删除支付记录
     // await paymentApi.delete(payment.id)
-    
+
     // 模拟删除
     const index = payments.value.findIndex(p => p.id === payment.id)
     if (index > -1) {
       payments.value.splice(index, 1)
     }
-    
+
     console.log('支付记录已删除')
   } catch (error) {
     console.error('删除支付记录失败:', error)
@@ -578,7 +539,7 @@ const deletePayment = async (payment: any) => {
 const savePayment = async () => {
   try {
     saving.value = true
-    
+
     if (isEditing.value) {
       // 更新现有支付记录
       const index = payments.value.findIndex(p => p.id === currentPayment.value.id)
@@ -592,11 +553,11 @@ const savePayment = async () => {
         id: Date.now().toString(),
         paymentNo: `PAY${Date.now()}`,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }
       payments.value.unshift(newPayment)
     }
-    
+
     closePaymentModal()
     console.log('支付记录保存成功')
   } catch (error) {

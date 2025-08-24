@@ -1,14 +1,11 @@
 <template>
   <div class="min-h-screen bg-background flex">
     <!-- 侧边栏 -->
-    <aside 
+    <aside
       class="transition-all duration-300 ease-in-out z-40 fixed top-0 left-0 h-screen overflow-hidden border-r bg-card"
       :class="sidebarCollapsed ? 'w-16' : 'w-64'"
     >
-      <SidebarMenu 
-        :sidebar-collapsed="sidebarCollapsed"
-        @toggle-sidebar="toggleSidebar"
-      />
+      <SidebarMenu :sidebar-collapsed="sidebarCollapsed" @toggle-sidebar="toggleSidebar" />
     </aside>
 
     <!-- 主要内容区域 -->
@@ -22,11 +19,7 @@
           <!-- 面包屑导航 -->
           <nav class="flex items-center space-x-1 text-sm text-muted-foreground">
             <template v-for="(item, index) in breadcrumbItems" :key="index">
-              <NuxtLink 
-                v-if="item.route" 
-                :to="item.route" 
-                class="hover:text-foreground transition-colors"
-              >
+              <NuxtLink v-if="item.route" :to="item.route" class="hover:text-foreground transition-colors">
                 {{ item.label }}
               </NuxtLink>
               <span v-else class="text-foreground font-medium">{{ item.label }}</span>
@@ -39,23 +32,13 @@
             <!-- 搜索 -->
             <div class="relative">
               <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                v-model="globalSearch"
-                placeholder="全局搜索..."
-                class="w-64 pl-8"
-                type="search"
-              />
+              <Input v-model="globalSearch" placeholder="全局搜索..." class="w-64 pl-8" type="search" />
             </div>
 
             <!-- 通知 -->
-            <Button
-              variant="ghost"
-              size="icon"
-              class="relative"
-              @click="toggleNotifications"
-            >
+            <Button variant="ghost" size="icon" class="relative" @click="toggleNotifications">
               <Bell class="h-4 w-4" />
-              <Badge 
+              <Badge
                 class="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
                 variant="destructive"
               >
@@ -64,21 +47,13 @@
             </Button>
 
             <!-- 主题切换 -->
-            <Button
-              variant="ghost"
-              size="icon"
-              @click="toggleTheme"
-            >
+            <Button variant="ghost" size="icon" @click="toggleTheme">
               <Sun v-if="isDark" class="h-4 w-4" />
               <Moon v-else class="h-4 w-4" />
             </Button>
 
             <!-- 全屏 -->
-            <Button
-              variant="ghost"
-              size="icon"
-              @click="toggleFullscreen"
-            >
+            <Button variant="ghost" size="icon" @click="toggleFullscreen">
               <Minimize v-if="isFullscreen" class="h-4 w-4" />
               <Maximize v-else class="h-4 w-4" />
             </Button>
@@ -100,18 +75,9 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { 
-  Search, 
-  Bell, 
-  Sun, 
-  Moon, 
-  Minimize, 
-  Maximize, 
-  ChevronRight 
-} from 'lucide-vue-next'
+// UI组件现在自动导入，无需手动导入
+
+import { Search, Bell, Sun, Moon, Minimize, Maximize, ChevronRight } from 'lucide-vue-next'
 
 // 获取路由信息
 const route = useRoute()
@@ -126,44 +92,44 @@ const globalSearch = ref('')
 const breadcrumbItems = computed(() => {
   const pathSegments = route.path.split('/').filter(Boolean)
   const items = [{ label: '首页', route: '/dashboard' }]
-  
+
   let currentPath = ''
   pathSegments.forEach((segment, index) => {
     currentPath += `/${segment}`
     const isLast = index === pathSegments.length - 1
-    
+
     // 路径映射
     const pathLabels: Record<string, string> = {
-      "dashboard": '仪表盘',
-      "sales": '销售管理',
-      "purchase": '采购管理',
-      "warehouse": '库存管理',
-      "production": '生产管理',
-      "finance": '财务管理',
+      dashboard: '仪表盘',
+      sales: '销售管理',
+      purchase: '采购管理',
+      warehouse: '库存管理',
+      production: '生产管理',
+      finance: '财务管理',
       'master-data': '基础数据',
-      "reports": '报表分析',
-      "system": '系统设置',
-      "orders": '订单管理',
-      "customers": '客户管理',
-      "suppliers": '供应商管理',
-      "inventory": '库存管理',
-      "products": '产品管理',
-      "invoices": '发票管理',
-      "payments": '付款管理',
-      "receipts": '收款管理',
-      "plans": '计划管理',
-      "bom": '物料清单',
-      "config": '系统配置',
-      "users": '用户管理',
-      "roles": '角色权限'
+      reports: '报表分析',
+      system: '系统设置',
+      orders: '订单管理',
+      customers: '客户管理',
+      suppliers: '供应商管理',
+      inventory: '库存管理',
+      products: '产品管理',
+      invoices: '发票管理',
+      payments: '付款管理',
+      receipts: '收款管理',
+      plans: '计划管理',
+      bom: '物料清单',
+      config: '系统配置',
+      users: '用户管理',
+      roles: '角色权限',
     }
-    
+
     items.push({
       label: pathLabels[segment] ?? segment,
-      route: isLast ? '' : currentPath
+      route: isLast ? '' : currentPath,
     })
   })
-  
+
   return items
 })
 
@@ -199,5 +165,3 @@ onMounted(() => {
   })
 })
 </script>
-
-

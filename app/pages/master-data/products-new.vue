@@ -88,11 +88,7 @@
         <div class="flex flex-col md:flex-row gap-4">
           <div class="flex-1 relative">
             <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              v-model="searchQuery"
-              placeholder="搜索产品名称、编码或规格..."
-              class="pl-10"
-            />
+            <Input v-model="searchQuery" placeholder="搜索产品名称、编码或规格..." class="pl-10" />
           </div>
           <div class="flex gap-2">
             <Select v-model="selectedCategory">
@@ -103,16 +99,12 @@
                 <SelectItem value="">
                   <span class="text-muted-foreground">全部分类</span>
                 </SelectItem>
-                <SelectItem
-                  v-for="option in categoryOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in categoryOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select v-model="selectedStockStatus">
               <SelectTrigger class="w-32">
                 <SelectValue placeholder="库存状态" />
@@ -121,16 +113,12 @@
                 <SelectItem value="">
                   <span class="text-muted-foreground">全部</span>
                 </SelectItem>
-                <SelectItem
-                  v-for="option in stockStatusOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in stockStatusOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select v-model="selectedStatus">
               <SelectTrigger class="w-32">
                 <SelectValue placeholder="产品状态" />
@@ -139,22 +127,13 @@
                 <SelectItem value="">
                   <span class="text-muted-foreground">全部</span>
                 </SelectItem>
-                <SelectItem
-                  v-for="option in statusOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              @click="resetFilters"
-              title="重置筛选"
-            >
+
+            <Button variant="outline" size="icon" @click="resetFilters" title="重置筛选">
               <FilterX class="h-4 w-4" />
             </Button>
           </div>
@@ -190,7 +169,7 @@
             </div>
           </div>
         </div>
-        
+
         <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
           <Package class="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h3 class="text-lg font-semibold mb-2">暂无产品数据</h3>
@@ -200,7 +179,7 @@
             新增产品
           </Button>
         </div>
-        
+
         <div v-else>
           <Table>
             <TableHeader>
@@ -247,9 +226,7 @@
                   <div class="font-medium">{{ product.current_stock }}</div>
                   <div class="text-sm text-muted-foreground">{{ product.unit }}</div>
                 </TableCell>
-                <TableCell class="text-right font-medium">
-                  ¥{{ formatCurrency(product.unit_price) }}
-                </TableCell>
+                <TableCell class="text-right font-medium"> ¥{{ formatCurrency(product.unit_price) }} </TableCell>
                 <TableCell class="text-right text-muted-foreground">
                   ¥{{ formatCurrency(product.cost_price) }}
                 </TableCell>
@@ -277,9 +254,9 @@
                     <Button variant="ghost" size="sm" @click="showStockDetails(product)">
                       <BarChart3 class="h-4 w-4" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       @click="toggleStatus(product, product.status === 'active' ? 'inactive' : 'active')"
                     >
                       <component :is="product.status === 'active' ? Pause : Play" class="h-4 w-4" />
@@ -307,14 +284,14 @@
             {{ editingProduct ? '编辑产品' : '新增产品' }}
           </DialogTitle>
         </DialogHeader>
-        
+
         <Tabs default-value="basic" class="w-full">
           <TabsList class="grid w-full grid-cols-3">
             <TabsTrigger value="basic">基本信息</TabsTrigger>
             <TabsTrigger value="pricing">价格库存</TabsTrigger>
             <TabsTrigger value="other">其他信息</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="basic" class="space-y-6 mt-6">
             <Card>
               <CardHeader>
@@ -327,23 +304,15 @@
                 <div class="grid grid-cols-2 gap-4">
                   <div class="space-y-2">
                     <Label>产品编码</Label>
-                    <Input
-                      v-model="productForm.product_no"
-                      disabled
-                      placeholder="系统自动生成"
-                    />
+                    <Input v-model="productForm.product_no" disabled placeholder="系统自动生成" />
                   </div>
-                  
+
                   <div class="space-y-2">
                     <Label>产品名称 <span class="text-destructive">*</span></Label>
-                    <Input
-                      v-model="productForm.name"
-                      placeholder="请输入产品名称"
-                      :disabled="dialogMode === 'view'"
-                    />
+                    <Input v-model="productForm.name" placeholder="请输入产品名称" :disabled="dialogMode === 'view'" />
                   </div>
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-4">
                   <div class="space-y-2">
                     <Label>产品分类 <span class="text-destructive">*</span></Label>
@@ -352,17 +321,13 @@
                         <SelectValue placeholder="选择产品分类" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem
-                          v-for="option in categoryOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
+                        <SelectItem v-for="option in categoryOptions" :key="option.value" :value="option.value">
                           {{ option.label }}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div class="space-y-2">
                     <Label>计量单位 <span class="text-destructive">*</span></Label>
                     <Select v-model="productForm.unit" :disabled="dialogMode === 'view'">
@@ -370,18 +335,14 @@
                         <SelectValue placeholder="选择计量单位" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem
-                          v-for="option in unitOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
+                        <SelectItem v-for="option in unitOptions" :key="option.value" :value="option.value">
                           {{ option.label }}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-                
+
                 <div class="space-y-2">
                   <Label>产品规格</Label>
                   <Input
@@ -390,7 +351,7 @@
                     :disabled="dialogMode === 'view'"
                   />
                 </div>
-                
+
                 <div class="space-y-2">
                   <Label>产品描述</Label>
                   <Textarea
@@ -403,7 +364,7 @@
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="pricing" class="space-y-6 mt-6">
             <Card>
               <CardHeader>
@@ -425,7 +386,7 @@
                       :disabled="dialogMode === 'view'"
                     />
                   </div>
-                  
+
                   <div class="space-y-2">
                     <Label>成本价 <span class="text-destructive">*</span></Label>
                     <Input
@@ -437,7 +398,7 @@
                       :disabled="dialogMode === 'view'"
                     />
                   </div>
-                  
+
                   <div class="space-y-2">
                     <Label>当前库存</Label>
                     <Input
@@ -449,7 +410,7 @@
                     />
                   </div>
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-4">
                   <div class="space-y-2">
                     <Label>最小库存</Label>
@@ -461,7 +422,7 @@
                       :disabled="dialogMode === 'view'"
                     />
                   </div>
-                  
+
                   <div class="space-y-2">
                     <Label>最大库存</Label>
                     <Input
@@ -476,7 +437,7 @@
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="other" class="space-y-6 mt-6">
             <Card>
               <CardHeader>
@@ -494,17 +455,13 @@
                         <SelectValue placeholder="选择产品状态" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem
-                          v-for="option in statusOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
+                        <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
                           {{ option.label }}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div class="space-y-2">
                     <Label>供应商</Label>
                     <Input
@@ -514,7 +471,7 @@
                     />
                   </div>
                 </div>
-                
+
                 <div class="space-y-2">
                   <Label>备注</Label>
                   <Textarea
@@ -528,7 +485,7 @@
             </Card>
           </TabsContent>
         </Tabs>
-        
+
         <DialogFooter class="mt-6">
           <Button variant="outline" @click="closeProductDialog">
             <X class="h-4 w-4 mr-2" />
@@ -542,34 +499,48 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    
-
   </div>
 </template>
 
 <script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
 import { ref, computed, onMounted } from 'vue'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Textarea } from '@/components/ui/textarea'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Package, Upload, Plus, TrendingUp, AlertTriangle, XCircle, Search, FilterX, List, Settings, Download, Eye, Edit, Copy, BarChart3, Pause, Play, Trash2, Info, DollarSign, X, Check, Loader2 } from 'lucide-vue-next'
+
+import {
+  Package,
+  Upload,
+  Plus,
+  TrendingUp,
+  AlertTriangle,
+  XCircle,
+  Search,
+  FilterX,
+  List,
+  Settings,
+  Download,
+  Eye,
+  Edit,
+  Copy,
+  BarChart3,
+  Pause,
+  Play,
+  Trash2,
+  Info,
+  DollarSign,
+  X,
+  Check,
+  Loader2,
+} from 'lucide-vue-next'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '产品管理 - ERP 管理系统'
+  title: '产品管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -604,7 +575,7 @@ const productForm = ref({
   max_stock: 0,
   status: 'active',
   supplier: '',
-  notes: ''
+  notes: '',
 })
 
 // 统计数据
@@ -612,7 +583,7 @@ const productStats = ref({
   totalProducts: 1258,
   stockValue: 2850000,
   lowStockCount: 23,
-  outOfStockCount: 5
+  outOfStockCount: 5,
 })
 
 // 选项数据
@@ -620,7 +591,7 @@ const categoryOptions = ref([
   { label: '原材料', value: 'raw_material' },
   { label: '半成品', value: 'semi_finished' },
   { label: '成品', value: 'finished_product' },
-  { label: '配件', value: 'accessory' }
+  { label: '配件', value: 'accessory' },
 ])
 
 const unitOptions = ref([
@@ -628,18 +599,18 @@ const unitOptions = ref([
   { label: '个', value: 'piece' },
   { label: '套', value: 'set' },
   { label: '米', value: 'm' },
-  { label: '千克', value: 'kg' }
+  { label: '千克', value: 'kg' },
 ])
 
 const stockStatusOptions = ref([
   { label: '正常', value: 'normal' },
   { label: '低库存', value: 'low' },
-  { label: '缺货', value: 'out' }
+  { label: '缺货', value: 'out' },
 ])
 
 const statusOptions = ref([
   { label: '启用', value: 'active' },
-  { label: '停用', value: 'inactive' }
+  { label: '停用', value: 'inactive' },
 ])
 
 // 模拟数据
@@ -661,7 +632,7 @@ const mockProducts = ref([
     created_at: new Date('2024-01-15'),
     image: null,
     description: '高质量OLED显示屏',
-    notes: '主要用于旗舰手机'
+    notes: '主要用于旗舰手机',
   },
   {
     id: '2',
@@ -680,8 +651,8 @@ const mockProducts = ref([
     created_at: new Date('2024-01-10'),
     image: null,
     description: '锂电池组件',
-    notes: '符合安全标准'
-  }
+    notes: '符合安全标准',
+  },
 ])
 
 // 计算属性
@@ -690,9 +661,8 @@ const filteredProducts = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(product =>
-      product.product_no.toLowerCase().includes(query)
-      || product.name.toLowerCase().includes(query)
+    result = result.filter(
+      product => product.product_no.toLowerCase().includes(query) || product.name.toLowerCase().includes(query)
     )
   }
 
@@ -701,7 +671,7 @@ const filteredProducts = computed(() => {
   }
 
   if (stockStatusFilter.value) {
-    result = result.filter((product) => {
+    result = result.filter(product => {
       if (stockStatusFilter.value === 'low') {
         return product.current_stock <= product.min_stock
       }
@@ -724,24 +694,24 @@ const categoryMap: Record<string, string> = {
   raw_material: '原材料',
   semi_finished: '半成品',
   finished_product: '成品',
-  accessory: '配件'
+  accessory: '配件',
 }
 
 const categorySeverityMap: Record<string, string> = {
   raw_material: 'info',
   semi_finished: 'warning',
   finished_product: 'success',
-  accessory: 'secondary'
+  accessory: 'secondary',
 }
 
 const statusMap: Record<string, string> = {
   active: '启用',
-  inactive: '停用'
+  inactive: '停用',
 }
 
 const statusSeverityMap: Record<string, string> = {
   active: 'success',
-  inactive: 'danger'
+  inactive: 'danger',
 }
 
 // 方法
@@ -750,8 +720,8 @@ const getCategorySeverity = (category: string) => categorySeverityMap[category] 
 const getStatusDisplayName = (status: string) => statusMap[status] || status
 const getStatusVariant = (status: string) => {
   const variantMap = {
-    'active': 'default',
-    'inactive': 'secondary'
+    active: 'default',
+    inactive: 'secondary',
   }
   return variantMap[status] || 'outline'
 }
@@ -794,7 +764,7 @@ const openCreateDialog = () => {
     max_stock: 0,
     status: 'active',
     supplier: '',
-    notes: ''
+    notes: '',
   }
   showProductDialog.value = true
 }
@@ -819,7 +789,7 @@ const duplicateProduct = (product: any) => {
   Object.assign(productForm.value, {
     ...product,
     product_no: `PRD-${Date.now()}`,
-    name: `${product.name} (副本)`
+    name: `${product.name} (副本)`,
   })
   showProductDialog.value = true
 }
@@ -838,8 +808,7 @@ const toggleStatus = async (product: any, newStatus: string) => {
           mockProducts.value[index]!.status = newStatus
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('操作失败:', error)
     }
   }
@@ -864,33 +833,30 @@ const saveProduct = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (dialogMode.value === 'create') {
       const newProduct = {
         id: Date.now().toString(),
         ...productForm.value,
         created_at: new Date(),
-        image: null
+        image: null,
       }
       mockProducts.value.push(newProduct as any)
-    }
-    else if (dialogMode.value === 'edit') {
+    } else if (dialogMode.value === 'edit') {
       const index = mockProducts.value.findIndex(p => p.id === editingProduct.value?.id)
       if (index !== -1 && mockProducts.value[index]) {
         mockProducts.value[index] = {
           ...mockProducts.value[index],
           ...productForm.value,
-          id: mockProducts.value[index]!.id
+          id: mockProducts.value[index]!.id,
         }
       }
     }
-    
+
     closeProductDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存产品失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

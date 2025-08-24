@@ -3,43 +3,23 @@
 // 手动添加的自定义类型
 
 // 订单状态类型
-export type OrderStatus
-  = | "draft"
-    | "pending"
-    | "confirmed"
-    | "in_progress"
-    | "completed"
-    | "cancelled";
+export type OrderStatus = 'draft' | 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
 
 // 支付状态类型
-export type PaymentStatus
-  = | "pending"
-    | "paid"
-    | "partial"
-    | "overdue"
-    | "cancelled";
+export type PaymentStatus = 'pending' | 'paid' | 'partial' | 'overdue' | 'cancelled'
 
 // 用户角色类型
-export type UserRole = "admin" | "manager" | "employee" | "viewer";
+export type UserRole = 'admin' | 'manager' | 'employee' | 'viewer'
 
 // 仓库类型
-export type WarehouseType
-  = | "raw_materials"
-    | "finished_goods"
-    | "semi_finished"
-    | "tools";
+export type WarehouseType = 'raw_materials' | 'finished_goods' | 'semi_finished' | 'tools'
 
 // 生产状态类型
-export type ProductionStatus
-  = | "pending"
-    | "in_progress"
-    | "completed"
-    | "cancelled"
-    | "paused";
+export type ProductionStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled' | 'paused'
 
 // 导出所有需要的类型
 export type {} from // 不再导出ProcessRoute和ProcessStep，因为它们未被使用
-"./production";
+'./production'
 
 // 数据库表结构类型定义
 export interface Database {
@@ -55,7 +35,7 @@ export interface Database {
           position_id?: string
           phone?: string
           avatar?: string
-          status: "active" | "inactive"
+          status: 'active' | 'inactive'
           last_login?: string
           created_at: string
           updated_at: string
@@ -69,7 +49,7 @@ export interface Database {
           position_id?: string
           phone?: string
           avatar?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           last_login?: string
           created_at?: string
           updated_at?: string
@@ -83,7 +63,7 @@ export interface Database {
           position_id?: string
           phone?: string
           avatar?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           last_login?: string
           created_at?: string
           updated_at?: string
@@ -99,7 +79,7 @@ export interface Database {
           parent_id?: string
           level: number
           description?: string
-          status: "active" | "inactive"
+          status: 'active' | 'inactive'
           created_at: string
           updated_at: string
         }
@@ -111,7 +91,7 @@ export interface Database {
           parent_id?: string
           level?: number
           description?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -123,7 +103,7 @@ export interface Database {
           parent_id?: string
           level?: number
           description?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -139,7 +119,7 @@ export interface Database {
           description?: string
           requirements?: string
           salary_range?: string
-          status: "active" | "inactive"
+          status: 'active' | 'inactive'
           created_at: string
           updated_at: string
         }
@@ -152,7 +132,7 @@ export interface Database {
           description?: string
           requirements?: string
           salary_range?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -165,7 +145,7 @@ export interface Database {
           description?: string
           requirements?: string
           salary_range?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -178,7 +158,7 @@ export interface Database {
           code: string
           description?: string
           permissions: string[]
-          status: "active" | "inactive"
+          status: 'active' | 'inactive'
           created_at: string
           updated_at: string
         }
@@ -188,7 +168,7 @@ export interface Database {
           code: string
           description?: string
           permissions?: string[]
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -198,7 +178,7 @@ export interface Database {
           code?: string
           description?: string
           permissions?: string[]
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -243,11 +223,11 @@ export interface Database {
           contact_phone: string
           email?: string
           address?: string
-          customer_type: "enterprise" | "individual" | "government" | "other"
+          customer_type: 'enterprise' | 'individual' | 'government' | 'other'
           region: string
           credit_limit?: number
           payment_terms?: string
-          status: "active" | "inactive"
+          status: 'active' | 'inactive'
           created_at: string
           updated_at: string
         }
@@ -259,11 +239,11 @@ export interface Database {
           contact_phone: string
           email?: string
           address?: string
-          customer_type: "enterprise" | "individual" | "government" | "other"
+          customer_type: 'enterprise' | 'individual' | 'government' | 'other'
           region: string
           credit_limit?: number
           payment_terms?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -275,11 +255,11 @@ export interface Database {
           contact_phone?: string
           email?: string
           address?: string
-          customer_type?: "enterprise" | "individual" | "government" | "other"
+          customer_type?: 'enterprise' | 'individual' | 'government' | 'other'
           region?: string
           credit_limit?: number
           payment_terms?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -294,10 +274,10 @@ export interface Database {
           contact_phone: string
           email?: string
           address?: string
-          supplier_type: "manufacturer" | "distributor" | "service" | "other"
-          rating?: "A" | "B" | "C" | "D"
+          supplier_type: 'manufacturer' | 'distributor' | 'service' | 'other'
+          rating?: 'A' | 'B' | 'C' | 'D'
           payment_terms?: string
-          status: "active" | "inactive"
+          status: 'active' | 'inactive'
           created_at: string
           updated_at: string
         }
@@ -309,10 +289,10 @@ export interface Database {
           contact_phone: string
           email?: string
           address?: string
-          supplier_type: "manufacturer" | "distributor" | "service" | "other"
-          rating?: "A" | "B" | "C" | "D"
+          supplier_type: 'manufacturer' | 'distributor' | 'service' | 'other'
+          rating?: 'A' | 'B' | 'C' | 'D'
           payment_terms?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -324,10 +304,10 @@ export interface Database {
           contact_phone?: string
           email?: string
           address?: string
-          supplier_type?: "manufacturer" | "distributor" | "service" | "other"
-          rating?: "A" | "B" | "C" | "D"
+          supplier_type?: 'manufacturer' | 'distributor' | 'service' | 'other'
+          rating?: 'A' | 'B' | 'C' | 'D'
           payment_terms?: string
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           created_at?: string
           updated_at?: string
         }
@@ -346,7 +326,7 @@ export interface Database {
           min_stock?: number
           max_stock?: number
           current_stock?: number
-          status: "active" | "inactive" | "discontinued"
+          status: 'active' | 'inactive' | 'discontinued'
           created_at: string
           updated_at: string
         }
@@ -362,7 +342,7 @@ export interface Database {
           min_stock?: number
           max_stock?: number
           current_stock?: number
-          status?: "active" | "inactive" | "discontinued"
+          status?: 'active' | 'inactive' | 'discontinued'
           created_at?: string
           updated_at?: string
         }
@@ -378,7 +358,7 @@ export interface Database {
           min_stock?: number
           max_stock?: number
           current_stock?: number
-          status?: "active" | "inactive" | "discontinued"
+          status?: 'active' | 'inactive' | 'discontinued'
           created_at?: string
           updated_at?: string
         }
@@ -393,7 +373,7 @@ export interface Database {
           location: string
           manager: string
           capacity?: number
-          status: "active" | "inactive"
+          status: 'active' | 'inactive'
           description?: string
           created_at: string
           updated_at: string
@@ -406,7 +386,7 @@ export interface Database {
           location: string
           manager: string
           capacity?: number
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           description?: string
           created_at?: string
           updated_at?: string
@@ -419,7 +399,7 @@ export interface Database {
           location?: string
           manager?: string
           capacity?: number
-          status?: "active" | "inactive"
+          status?: 'active' | 'inactive'
           description?: string
           created_at?: string
           updated_at?: string
@@ -541,16 +521,16 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never;
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never;
+      [_ in never]: never
     }
     Enums: {
-      [_ in never]: never;
+      [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never;
+      [_ in never]: never
     }
   }
 }

@@ -21,12 +21,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <Label for="search">搜索供应商</Label>
-            <Input
-              id="search"
-              v-model="searchQuery"
-              placeholder="输入供应商名称或编码"
-              class="mt-1"
-            />
+            <Input id="search" v-model="searchQuery" placeholder="输入供应商名称或编码" class="mt-1" />
           </div>
           <div>
             <Label for="status">状态</Label>
@@ -68,9 +63,7 @@
     <Card>
       <CardHeader>
         <CardTitle>供应商列表</CardTitle>
-        <CardDescription>
-          共 {{ filteredSuppliers.length }} 个供应商
-        </CardDescription>
+        <CardDescription> 共 {{ filteredSuppliers.length }} 个供应商 </CardDescription>
       </CardHeader>
       <CardContent>
         <div v-if="loading" class="flex items-center justify-center py-8">
@@ -126,10 +119,7 @@
                     <Edit class="mr-2 h-4 w-4" />
                     编辑
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    class="text-destructive"
-                    @click="deleteSupplier(supplier)"
-                  >
+                  <DropdownMenuItem class="text-destructive" @click="deleteSupplier(supplier)">
                     <Trash2 class="mr-2 h-4 w-4" />
                     删除
                   </DropdownMenuItem>
@@ -147,18 +137,13 @@
         <DialogHeader>
           <DialogTitle>{{ editingSupplier ? '编辑供应商' : '新增供应商' }}</DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-4 py-4">
           <div>
             <Label for="supplier-name">供应商名称 <span class="text-destructive">*</span></Label>
-            <Input
-              id="supplier-name"
-              v-model="supplierForm.name"
-              placeholder="请输入供应商名称"
-              class="mt-1"
-            />
+            <Input id="supplier-name" v-model="supplierForm.name" placeholder="请输入供应商名称" class="mt-1" />
           </div>
-          
+
           <div>
             <Label for="contact-person">联系人 <span class="text-destructive">*</span></Label>
             <Input
@@ -168,17 +153,12 @@
               class="mt-1"
             />
           </div>
-          
+
           <div>
             <Label for="phone">联系电话 <span class="text-destructive">*</span></Label>
-            <Input
-              id="phone"
-              v-model="supplierForm.phone"
-              placeholder="请输入联系电话"
-              class="mt-1"
-            />
+            <Input id="phone" v-model="supplierForm.phone" placeholder="请输入联系电话" class="mt-1" />
           </div>
-          
+
           <div>
             <Label for="type">供应商类型 <span class="text-destructive">*</span></Label>
             <select
@@ -194,11 +174,9 @@
             </select>
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button type="button" variant="outline" @click="showSupplierDialog = false">
-            取消
-          </Button>
+          <Button type="button" variant="outline" @click="showSupplierDialog = false"> 取消 </Button>
           <Button :disabled="submitting" @click="handleSubmit">
             <Loader2 v-if="submitting" class="mr-2 h-4 w-4 animate-spin" />
             {{ editingSupplier ? '更新' : '创建' }}
@@ -210,20 +188,12 @@
 </template>
 
 <script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
 import { ref, reactive, computed, onMounted } from 'vue'
-import { 
-  Plus, Search, MoreHorizontal, Truck, 
-  Eye, Edit, Trash2, Loader2 
-} from 'lucide-vue-next'
+import { Plus, Search, MoreHorizontal, Truck, Eye, Edit, Trash2, Loader2 } from 'lucide-vue-next'
 
 // 导入组件
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 
 // 响应式数据
 const suppliers = ref([])
@@ -240,29 +210,28 @@ const supplierForm = reactive({
   name: '',
   contact_person: '',
   phone: '',
-  type: ''
+  type: '',
 })
 
 // 计算属性
 const filteredSuppliers = computed(() => {
   let result = suppliers.value || []
-  
+
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(supplier => 
-      supplier.name.toLowerCase().includes(query)
-      || supplier.supplier_no.toLowerCase().includes(query)
+    result = result.filter(
+      supplier => supplier.name.toLowerCase().includes(query) || supplier.supplier_no.toLowerCase().includes(query)
     )
   }
-  
+
   if (selectedStatus.value) {
     result = result.filter(supplier => supplier.status === selectedStatus.value)
   }
-  
+
   if (selectedType.value) {
     result = result.filter(supplier => supplier.supplier_type === selectedType.value)
   }
-  
+
   return result
 })
 
@@ -299,7 +268,7 @@ const resetForm = () => {
     name: '',
     contact_person: '',
     phone: '',
-    type: ''
+    type: '',
   })
 }
 
@@ -313,7 +282,7 @@ const getStatusText = (status: string) => {
     inactive: '停用',
     suspended: '暂停',
     terminated: '终止',
-    potential: '潜在'
+    potential: '潜在',
   }
   return texts[status] || status
 }
@@ -323,7 +292,7 @@ const getTypeText = (type: string) => {
     raw_material: '原材料',
     equipment: '设备',
     service: '服务',
-    logistics: '物流'
+    logistics: '物流',
   }
   return texts[type] || type
 }
@@ -340,7 +309,7 @@ const mockSuppliers = [
     supplier_type: 'equipment',
     status: 'active',
     address: '深圳市龙岗区华为基地',
-    created_at: '2024-01-15'
+    created_at: '2024-01-15',
   },
   {
     id: 2,
@@ -352,7 +321,7 @@ const mockSuppliers = [
     supplier_type: 'raw_material',
     status: 'active',
     address: '北京市朝阳区中石化大厦',
-    created_at: '2024-01-10'
+    created_at: '2024-01-10',
   },
   {
     id: 3,
@@ -364,8 +333,8 @@ const mockSuppliers = [
     supplier_type: 'logistics',
     status: 'inactive',
     address: '广东省深圳市顺丰总部',
-    created_at: '2024-01-05'
-  }
+    created_at: '2024-01-05',
+  },
 ]
 
 // 页面加载时获取数据
@@ -384,6 +353,6 @@ onMounted(async () => {
 
 // 页面元数据
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 </script>

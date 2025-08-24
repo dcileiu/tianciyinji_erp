@@ -22,7 +22,7 @@
         <TabsTrigger value="email">邮件配置</TabsTrigger>
         <TabsTrigger value="backup">备份配置</TabsTrigger>
       </TabsList>
-      
+
       <!-- 基础配置 -->
       <TabsContent value="basic">
         <Card>
@@ -32,49 +32,33 @@
               基础信息配置
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>公司名称</Label>
-                <Input
-                  v-model="basicConfig.companyName"
-                  placeholder="请输入公司名称"
-                />
+                <Input v-model="basicConfig.companyName" placeholder="请输入公司名称" />
               </div>
               <div class="space-y-2">
                 <Label>系统名称</Label>
-                <Input
-                  v-model="basicConfig.systemName"
-                  placeholder="请输入系统名称"
-                />
+                <Input v-model="basicConfig.systemName" placeholder="请输入系统名称" />
               </div>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>系统版本</Label>
-                <Input
-                  v-model="basicConfig.version"
-                  placeholder="如: v1.0.0"
-                />
+                <Input v-model="basicConfig.version" placeholder="如: v1.0.0" />
               </div>
               <div class="space-y-2">
                 <Label>管理员邮箱</Label>
-                <Input
-                  v-model="basicConfig.adminEmail"
-                  type="email"
-                  placeholder="admin@company.com"
-                />
+                <Input v-model="basicConfig.adminEmail" type="email" placeholder="admin@company.com" />
               </div>
             </div>
-            
+
             <div class="space-y-2">
               <Label>公司地址</Label>
-              <Input
-                v-model="basicConfig.address"
-                placeholder="请输入公司地址"
-              />
+              <Input v-model="basicConfig.address" placeholder="请输入公司地址" />
             </div>
 
             <div class="flex justify-end">
@@ -97,7 +81,7 @@
               业务参数配置
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
@@ -107,11 +91,7 @@
                     <SelectValue placeholder="选择默认货币" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem
-                      v-for="option in currencyOptions"
-                      :key="option.value"
-                      :value="option.value"
-                    >
+                    <SelectItem v-for="option in currencyOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>
@@ -128,7 +108,7 @@
                 />
               </div>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>税率 (%)</Label>
@@ -154,10 +134,7 @@
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="autoApproval"
-                  v-model="businessConfig.autoApproval"
-                />
+                <Checkbox id="autoApproval" v-model="businessConfig.autoApproval" />
                 <Label for="autoApproval">启用自动审批</Label>
               </div>
             </div>
@@ -182,7 +159,7 @@
               安全参数配置
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
@@ -206,7 +183,7 @@
                 />
               </div>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>会话超时时间 (分钟)</Label>
@@ -232,20 +209,14 @@
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="passwordComplexity"
-                  v-model="securityConfig.requirePasswordComplexity"
-                />
+                <Checkbox id="passwordComplexity" v-model="securityConfig.requirePasswordComplexity" />
                 <Label for="passwordComplexity">密码复杂度要求</Label>
               </div>
             </div>
-            
+
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="twoFactor"
-                  v-model="securityConfig.enableTwoFactor"
-                />
+                <Checkbox id="twoFactor" v-model="securityConfig.enableTwoFactor" />
                 <Label for="twoFactor">启用双因子认证</Label>
               </div>
             </div>
@@ -270,78 +241,49 @@
               邮件服务配置
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>SMTP服务器</Label>
-                <Input
-                  v-model="emailConfig.smtpHost"
-                  placeholder="如: smtp.qq.com"
-                />
+                <Input v-model="emailConfig.smtpHost" placeholder="如: smtp.qq.com" />
               </div>
               <div class="space-y-2">
                 <Label>SMTP端口</Label>
-                <Input
-                  v-model.number="emailConfig.smtpPort"
-                  type="number"
-                  min="1"
-                  max="65535"
-                  placeholder="端口号"
-                />
+                <Input v-model.number="emailConfig.smtpPort" type="number" min="1" max="65535" placeholder="端口号" />
               </div>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>发件人邮箱</Label>
-                <Input
-                  v-model="emailConfig.fromEmail"
-                  type="email"
-                  placeholder="system@company.com"
-                />
+                <Input v-model="emailConfig.fromEmail" type="email" placeholder="system@company.com" />
               </div>
               <div class="space-y-2">
                 <Label>发件人名称</Label>
-                <Input
-                  v-model="emailConfig.fromName"
-                  placeholder="ERP系统"
-                />
+                <Input v-model="emailConfig.fromName" placeholder="ERP系统" />
               </div>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>SMTP用户名</Label>
-                <Input
-                  v-model="emailConfig.smtpUsername"
-                  placeholder="SMTP登录用户名"
-                />
+                <Input v-model="emailConfig.smtpUsername" placeholder="SMTP登录用户名" />
               </div>
               <div class="space-y-2">
                 <Label>SMTP密码</Label>
-                <Input
-                  v-model="emailConfig.smtpPassword"
-                  type="password"
-                  placeholder="SMTP登录密码"
-                />
+                <Input v-model="emailConfig.smtpPassword" type="password" placeholder="SMTP登录密码" />
               </div>
             </div>
 
             <div class="space-y-4">
               <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="enableSSL"
-                  v-model="emailConfig.enableSSL"
-                />
+                <Checkbox id="enableSSL" v-model="emailConfig.enableSSL" />
                 <Label for="enableSSL">启用SSL加密</Label>
               </div>
-              
+
               <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="enableTLS"
-                  v-model="emailConfig.enableTLS"
-                />
+                <Checkbox id="enableTLS" v-model="emailConfig.enableTLS" />
                 <Label for="enableTLS">启用TLS加密</Label>
               </div>
             </div>
@@ -352,7 +294,7 @@
                 <span v-if="testing">测试中...</span>
                 <span v-else>测试邮件连接</span>
               </Button>
-              
+
               <Button :disabled="saving" @click="saveEmailConfig">
                 <Save class="w-4 h-4 mr-2" />
                 <span v-if="saving">保存中...</span>
@@ -372,7 +314,7 @@
               数据备份配置
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
@@ -382,11 +324,7 @@
                     <SelectValue placeholder="选择备份频率" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem
-                      v-for="option in backupFrequencyOptions"
-                      :key="option.value"
-                      :value="option.value"
-                    >
+                    <SelectItem v-for="option in backupFrequencyOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>
@@ -403,31 +341,22 @@
                 />
               </div>
             </div>
-            
+
             <div class="space-y-2">
               <Label>备份路径</Label>
-              <Input
-                v-model="backupConfig.backupPath"
-                placeholder="/backup/erp"
-              />
+              <Input v-model="backupConfig.backupPath" placeholder="/backup/erp" />
             </div>
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="enableAutoBackup"
-                  v-model="backupConfig.enableAutoBackup"
-                />
+                <Checkbox id="enableAutoBackup" v-model="backupConfig.enableAutoBackup" />
                 <Label for="enableAutoBackup">启用自动备份</Label>
               </div>
             </div>
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="compressBackup"
-                  v-model="backupConfig.compressBackup"
-                />
+                <Checkbox id="compressBackup" v-model="backupConfig.compressBackup" />
                 <Label for="compressBackup">压缩备份文件</Label>
               </div>
             </div>
@@ -452,24 +381,20 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Settings, Save, Briefcase, Shield, Mail, Database, CheckCircle, Send, Download } from 'lucide-vue-next'
-import { toast } from 'sonner'
+// UI组件现在自动导入，无需手动导入
+
+import { onMounted, ref } from 'vue'
+
+import { Briefcase, Database, Download, Mail, Save, Send, Settings, Shield } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '系统配置 - ERP 管理系统'
+  title: '系统配置 - ERP 管理系统',
 })
 
 // 状态管理
@@ -483,7 +408,7 @@ const basicConfig = ref({
   systemName: 'ERP管理系统',
   version: 'v1.0.0',
   adminEmail: 'admin@company.com',
-  address: '北京市朝阳区某某街道123号'
+  address: '北京市朝阳区某某街道123号',
 })
 
 // 业务配置
@@ -492,7 +417,7 @@ const businessConfig = ref({
   decimalPlaces: 2,
   taxRate: 13.0,
   stockWarningThreshold: 10,
-  autoApproval: false
+  autoApproval: false,
 })
 
 // 安全配置
@@ -502,7 +427,7 @@ const securityConfig = ref({
   sessionTimeout: 120,
   lockoutDuration: 30,
   requirePasswordComplexity: true,
-  enableTwoFactor: false
+  enableTwoFactor: false,
 })
 
 // 邮件配置
@@ -514,7 +439,7 @@ const emailConfig = ref({
   smtpUsername: '',
   smtpPassword: '',
   enableSSL: false,
-  enableTLS: true
+  enableTLS: true,
 })
 
 // 备份配置
@@ -523,7 +448,7 @@ const backupConfig = ref({
   retentionDays: 30,
   backupPath: '/var/backups/erp',
   enableAutoBackup: true,
-  compressBackup: true
+  compressBackup: true,
 })
 
 // 选项数据
@@ -531,14 +456,14 @@ const currencyOptions = ref([
   { label: '人民币 (CNY)', value: 'CNY' },
   { label: '美元 (USD)', value: 'USD' },
   { label: '欧元 (EUR)', value: 'EUR' },
-  { label: '日元 (JPY)', value: 'JPY' }
+  { label: '日元 (JPY)', value: 'JPY' },
 ])
 
 const backupFrequencyOptions = ref([
   { label: '每日', value: 'daily' },
   { label: '每周', value: 'weekly' },
   { label: '每月', value: 'monthly' },
-  { label: '手动', value: 'manual' }
+  { label: '手动', value: 'manual' },
 ])
 
 // 方法
@@ -551,13 +476,11 @@ const saveAllConfigs = async () => {
       business: businessConfig.value,
       security: securityConfig.value,
       email: emailConfig.value,
-      backup: backupConfig.value
+      backup: backupConfig.value,
     })
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存配置失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

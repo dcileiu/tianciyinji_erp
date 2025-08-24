@@ -3,18 +3,10 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-color">
-          供应商管理
-        </h1>
-        <p class="text-muted-color mt-1">
-          管理供应商基础信息，维护供应商关系和合作协议
-        </p>
+        <h1 class="text-2xl font-bold text-color">供应商管理</h1>
+        <p class="text-muted-color mt-1">管理供应商基础信息，维护供应商关系和合作协议</p>
       </div>
-      <Button 
-        label="新增供应商"
-        icon="pi pi-plus"
-        @click="openCreateForm"
-      />
+      <Button label="新增供应商" icon="pi pi-plus" @click="openCreateForm" />
     </div>
 
     <!-- 搜索和筛选 -->
@@ -23,26 +15,18 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- 搜索框 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              搜索供应商
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 搜索供应商 </label>
             <IconField icon-position="left">
               <InputIcon>
                 <i class="pi pi-search"></i>
               </InputIcon>
-              <InputText
-                v-model="searchQuery"
-                placeholder="供应商名称、编号..."
-                class="w-full"
-              />
+              <InputText v-model="searchQuery" placeholder="供应商名称、编号..." class="w-full" />
             </IconField>
           </div>
 
           <!-- 供应商类型筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              供应商类型
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 供应商类型 </label>
             <Dropdown
               v-model="typeFilter"
               :options="typeOptions"
@@ -56,9 +40,7 @@
 
           <!-- 合作状态筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              合作状态
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 合作状态 </label>
             <Dropdown
               v-model="statusFilter"
               :options="statusOptions"
@@ -72,9 +54,7 @@
 
           <!-- 评级筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2">
-              供应商评级
-            </label>
+            <label class="block text-sm font-medium text-color mb-2"> 供应商评级 </label>
             <Dropdown
               v-model="ratingFilter"
               :options="ratingOptions"
@@ -154,18 +134,8 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">供应商列表</h3>
           <div class="flex items-center gap-2">
-            <Button
-              label="批量操作"
-              icon="pi pi-cog"
-              outlined
-              size="small"
-            />
-            <Button
-              label="导出数据"
-              icon="pi pi-download"
-              outlined
-              size="small"
-            />
+            <Button label="批量操作" icon="pi pi-cog" outlined size="small" />
+            <Button label="导出数据" icon="pi pi-download" outlined size="small" />
           </div>
         </div>
       </template>
@@ -195,7 +165,7 @@
             </div>
           </template>
           <Column selection-mode="multiple" :exportable="false"></Column>
-          
+
           <Column field="supplier_no" header="供应商编号" sortable>
             <template #body="slotProps">
               <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
@@ -203,15 +173,11 @@
               </code>
             </template>
           </Column>
-          
+
           <Column field="name" header="供应商名称" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Avatar
-                  :label="slotProps.data.name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
+                <Avatar :label="slotProps.data.name.charAt(0)" shape="circle" size="small" />
                 <div>
                   <span class="font-medium">{{ slotProps.data.name }}</span>
                   <p class="text-xs text-muted-color">{{ slotProps.data.contact_person }}</p>
@@ -219,59 +185,46 @@
               </div>
             </template>
           </Column>
-          
+
           <Column field="type" header="供应商类型" sortable>
             <template #body="slotProps">
-              <Tag
-                :value="getTypeDisplayName(slotProps.data.type)"
-                :severity="getTypeSeverity(slotProps.data.type)"
-              />
+              <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
           </Column>
-          
+
           <Column field="phone" header="联系电话" sortable>
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.phone }}</span>
             </template>
           </Column>
-          
+
           <Column field="email" header="邮箱" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">{{ slotProps.data.email }}</span>
             </template>
           </Column>
-          
+
           <Column field="rating" header="评级" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Tag
-                  :value="slotProps.data.rating + '级'"
-                  :severity="getRatingSeverity(slotProps.data.rating)"
-                />
-                <Rating
-                  :model-value="getRatingValue(slotProps.data.rating)"
-                  readonly
-                  :stars="5"
-                  size="small"
-                />
+                <Tag :value="slotProps.data.rating + '级'" :severity="getRatingSeverity(slotProps.data.rating)" />
+                <Rating :model-value="getRatingValue(slotProps.data.rating)" readonly :stars="5" size="small" />
               </div>
             </template>
           </Column>
-          
+
           <Column field="total_orders" header="订单总数" sortable>
             <template #body="slotProps">
               <span class="font-medium text-blue-600">{{ slotProps.data.total_orders }}</span>
             </template>
           </Column>
-          
+
           <Column field="total_amount" header="累计金额" sortable>
             <template #body="slotProps">
-              <span class="font-medium text-green-600">
-                ¥{{ slotProps.data.total_amount.toLocaleString() }}
-              </span>
+              <span class="font-medium text-green-600"> ¥{{ slotProps.data.total_amount.toLocaleString() }} </span>
             </template>
           </Column>
-          
+
           <Column field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
@@ -280,7 +233,7 @@
               />
             </template>
           </Column>
-          
+
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
@@ -356,13 +309,9 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商编号</label>
-              <InputText
-                v-model="supplierForm.supplier_no"
-                :disabled="true"
-                placeholder="系统自动生成"
-              />
+              <InputText v-model="supplierForm.supplier_no" :disabled="true" placeholder="系统自动生成" />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商名称 *</label>
               <InputText
@@ -373,7 +322,7 @@
               />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商类型 *</label>
@@ -387,7 +336,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">评级</label>
               <Dropdown
@@ -400,7 +349,7 @@
               />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系人</label>
@@ -410,27 +359,19 @@
                 :disabled="dialogMode === 'view'"
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系电话</label>
-              <InputText
-                v-model="supplierForm.phone"
-                placeholder="请输入联系电话"
-                :disabled="dialogMode === 'view'"
-              />
+              <InputText v-model="supplierForm.phone" placeholder="请输入联系电话" :disabled="dialogMode === 'view'" />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">邮箱地址</label>
-              <InputText
-                v-model="supplierForm.email"
-                placeholder="请输入邮箱地址"
-                :disabled="dialogMode === 'view'"
-              />
+              <InputText v-model="supplierForm.email" placeholder="请输入邮箱地址" :disabled="dialogMode === 'view'" />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">合作状态</label>
               <Dropdown
@@ -443,7 +384,7 @@
               />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">详细地址</label>
             <Textarea
@@ -453,7 +394,7 @@
               :disabled="dialogMode === 'view'"
             />
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">备注信息</label>
             <Textarea
@@ -465,15 +406,10 @@
           </div>
         </div>
       </template>
-      
+
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeSupplierDialog"
-          />
+          <Button label="取消" icon="pi pi-times" outlined @click="closeSupplierDialog" />
           <Button
             v-if="dialogMode !== 'view'"
             label="保存"
@@ -506,11 +442,11 @@ import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '供应商管理 - ERP 管理系统'
+  title: '供应商管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -538,7 +474,7 @@ const supplierForm = ref({
   email: '',
   address: '',
   status: 'active',
-  notes: ''
+  notes: '',
 })
 
 // 选项数据
@@ -546,21 +482,21 @@ const typeOptions = ref([
   { label: '原材料供应商', value: 'raw_material' },
   { label: '设备供应商', value: 'equipment' },
   { label: '服务供应商', value: 'service' },
-  { label: '物流供应商', value: 'logistics' }
+  { label: '物流供应商', value: 'logistics' },
 ])
 
 const statusOptions = ref([
   { label: '正常合作', value: 'active' },
   { label: '暂停合作', value: 'suspended' },
   { label: '终止合作', value: 'terminated' },
-  { label: '潜在供应商', value: 'potential' }
+  { label: '潜在供应商', value: 'potential' },
 ])
 
 const ratingOptions = ref([
   { label: 'A级', value: 'A' },
   { label: 'B级', value: 'B' },
   { label: 'C级', value: 'C' },
-  { label: 'D级', value: 'D' }
+  { label: 'D级', value: 'D' },
 ])
 
 // 统计数据
@@ -568,7 +504,7 @@ const stats = ref({
   totalSuppliers: 156,
   activeSuppliers: 128,
   aGradeSuppliers: 45,
-  newThisMonth: 8
+  newThisMonth: 8,
 })
 
 // 模拟数据
@@ -587,7 +523,7 @@ const mockSuppliers = ref([
     total_amount: 850000,
     status: 'active',
     created_at: new Date('2024-01-15'),
-    notes: '优质供应商，长期合作伙伴'
+    notes: '优质供应商，长期合作伙伴',
   },
   {
     id: '2',
@@ -603,8 +539,8 @@ const mockSuppliers = ref([
     total_amount: 650000,
     status: 'active',
     created_at: new Date('2024-01-10'),
-    notes: '设备质量稳定，价格合理'
-  }
+    notes: '设备质量稳定，价格合理',
+  },
 ])
 
 // 计算属性
@@ -613,10 +549,11 @@ const filteredSuppliers = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(supplier =>
-      supplier.supplier_no.toLowerCase().includes(query)
-      || supplier.name.toLowerCase().includes(query)
-      || supplier.contact_person.toLowerCase().includes(query)
+    result = result.filter(
+      supplier =>
+        supplier.supplier_no.toLowerCase().includes(query) ||
+        supplier.name.toLowerCase().includes(query) ||
+        supplier.contact_person.toLowerCase().includes(query)
     )
   }
 
@@ -640,35 +577,35 @@ const typeMap: Record<string, string> = {
   raw_material: '原材料供应商',
   equipment: '设备供应商',
   service: '服务供应商',
-  logistics: '物流供应商'
+  logistics: '物流供应商',
 }
 
 const typeSeverityMap: Record<string, string> = {
   raw_material: 'info',
   equipment: 'success',
   service: 'warning',
-  logistics: 'secondary'
+  logistics: 'secondary',
 }
 
 const statusMap: Record<string, string> = {
   active: '正常合作',
   suspended: '暂停合作',
   terminated: '终止合作',
-  potential: '潜在供应商'
+  potential: '潜在供应商',
 }
 
 const statusSeverityMap: Record<string, string> = {
   active: 'success',
   suspended: 'warning',
   terminated: 'danger',
-  potential: 'info'
+  potential: 'info',
 }
 
 const ratingSeverityMap: Record<string, string> = {
   A: 'success',
   B: 'info',
   C: 'warning',
-  D: 'danger'
+  D: 'danger',
 }
 
 // 方法
@@ -696,7 +633,7 @@ const openCreateForm = () => {
     email: '',
     address: '',
     status: 'active',
-    notes: ''
+    notes: '',
   }
   showSupplierDialog.value = true
 }
@@ -730,8 +667,7 @@ const toggleStatus = async (supplier: any, newStatus: string) => {
     if (index !== -1 && mockSuppliers.value[index]) {
       mockSuppliers.value[index]!.status = newStatus
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('操作失败:', error)
   }
 }
@@ -745,18 +681,17 @@ const saveSupplier = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (dialogMode.value === 'create') {
       const newSupplier = {
         id: Date.now().toString(),
         ...supplierForm.value,
         total_orders: 0,
         total_amount: 0,
-        created_at: new Date()
+        created_at: new Date(),
       }
       mockSuppliers.value.push(newSupplier)
-    }
-    else if (dialogMode.value === 'edit') {
+    } else if (dialogMode.value === 'edit') {
       const index = mockSuppliers.value.findIndex(s => s.id === editingSupplier.value?.id)
       if (index !== -1 && mockSuppliers.value[index]) {
         mockSuppliers.value[index] = {
@@ -765,17 +700,15 @@ const saveSupplier = async () => {
           id: mockSuppliers.value[index]!.id,
           total_orders: mockSuppliers.value[index]!.total_orders,
           total_amount: mockSuppliers.value[index]!.total_amount,
-          created_at: mockSuppliers.value[index]!.created_at
+          created_at: mockSuppliers.value[index]!.created_at,
         }
       }
     }
-    
+
     closeSupplierDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存供应商失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

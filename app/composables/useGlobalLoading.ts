@@ -47,8 +47,7 @@ export const useGlobalLoading = () => {
       startLoading(taskId, message)
       const result = await fn()
       return result
-    }
-    finally {
+    } finally {
       stopLoading(taskId)
     }
   }
@@ -58,7 +57,7 @@ export const useGlobalLoading = () => {
     isLoading: isLoading.value,
     message: currentMessage.value,
     tasks: Array.from(loadingTasks.value),
-    taskCount: loadingTasks.value.size
+    taskCount: loadingTasks.value.size,
   })
 
   return {
@@ -69,7 +68,7 @@ export const useGlobalLoading = () => {
     updateMessage,
     clearAll,
     withLoading,
-    getLoadingState
+    getLoadingState,
   }
 }
 
@@ -81,7 +80,7 @@ export const LoadingTasks = {
   FILE_UPLOAD: 'file-upload',
   API_REQUEST: 'api-request',
   USER_LOGIN: 'user-login',
-  USER_LOGOUT: 'user-logout'
+  USER_LOGOUT: 'user-logout',
 } as const
 
 // 预定义加载消息
@@ -95,5 +94,5 @@ export const LoadingMessages = {
   SIGNING_IN: '登录中...',
   SIGNING_OUT: '退出中...',
   VALIDATING: '验证中...',
-  CONNECTING: '连接中...'
-} as const 
+  CONNECTING: '连接中...',
+} as const

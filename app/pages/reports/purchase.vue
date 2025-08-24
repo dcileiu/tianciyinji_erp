@@ -24,19 +24,11 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
             <label class="block text-sm font-medium mb-2">开始日期</label>
-            <Input 
-              v-model="dateRange.start"
-              type="date"
-              class="w-full"
-            />
+            <Input v-model="dateRange.start" type="date" class="w-full" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">结束日期</label>
-            <Input 
-              v-model="dateRange.end"
-              type="date"
-              class="w-full"
-            />
+            <Input v-model="dateRange.end" type="date" class="w-full" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">供应商筛选</label>
@@ -222,62 +214,57 @@
                 </TableRow>
               </template>
               <TableRow v-for="item in purchaseDetails" :key="item.id">
-                  <TableCell>
-                    <code class="bg-muted px-2 py-1 rounded text-sm font-mono">
-                      {{ item.order_no }}
-                    </code>
-                  </TableCell>
-                  <TableCell>
-                    <div class="flex items-center space-x-2">
-                      <Avatar>
-                        <AvatarFallback>{{ item.supplier_name.charAt(0) }}</AvatarFallback>
-                      </Avatar>
-                      <span class="font-medium">{{ item.supplier_name }}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span class="font-medium">{{ item.product_name }}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span class="font-medium">{{ item.quantity.toLocaleString() }}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span class="text-sm text-muted-foreground">
-                      ¥{{ item.unit_price.toLocaleString() }}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span class="font-bold text-red-600">
-                      ¥{{ item.total_amount.toLocaleString() }}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge :variant="getStatusVariant(item.status)">
-                      {{ getStatusDisplayName(item.status) }}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <span class="text-sm text-muted-foreground">
-                      {{ formatDate(item.order_date) }}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span class="text-sm text-muted-foreground">
-                      {{ formatDate(item.delivery_date) }}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div class="flex items-center space-x-1">
-                      <Button variant="ghost" size="sm" @click="viewDetail(item)">
-                        <Eye class="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" @click="printOrder(item)">
-                        <Printer class="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </template>
+                <TableCell>
+                  <code class="bg-muted px-2 py-1 rounded text-sm font-mono">
+                    {{ item.order_no }}
+                  </code>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center space-x-2">
+                    <Avatar>
+                      <AvatarFallback>{{ item.supplier_name.charAt(0) }}</AvatarFallback>
+                    </Avatar>
+                    <span class="font-medium">{{ item.supplier_name }}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <span class="font-medium">{{ item.product_name }}</span>
+                </TableCell>
+                <TableCell>
+                  <span class="font-medium">{{ item.quantity.toLocaleString() }}</span>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm text-muted-foreground"> ¥{{ item.unit_price.toLocaleString() }} </span>
+                </TableCell>
+                <TableCell>
+                  <span class="font-bold text-red-600"> ¥{{ item.total_amount.toLocaleString() }} </span>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(item.status)">
+                    {{ getStatusDisplayName(item.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm text-muted-foreground">
+                    {{ formatDate(item.order_date) }}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm text-muted-foreground">
+                    {{ formatDate(item.delivery_date) }}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center space-x-1">
+                    <Button variant="ghost" size="sm" @click="viewDetail(item)">
+                      <Eye class="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="printOrder(item)">
+                      <Printer class="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </div>
@@ -310,24 +297,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Download, RefreshCw, Search, TrendingDown, ShoppingBag, Calculator, Users, LineChart, PieChart, FileSpreadsheet, Eye, Printer } from 'lucide-vue-next'
+// UI组件现在自动导入，无需手动导入
+
+import { computed, onMounted, ref } from 'vue'
+
+import {
+  Calculator,
+  Download,
+  Eye,
+  FileSpreadsheet,
+  LineChart,
+  PieChart,
+  Printer,
+  RefreshCw,
+  Search,
+  ShoppingBag,
+  TrendingDown,
+  Users,
+} from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '采购报表 - ERP 管理系统'
+  title: '采购报表 - ERP 管理系统',
 })
 
 // 状态管理
@@ -336,7 +331,7 @@ const loading = ref(false)
 // 筛选条件
 const dateRange = ref({
   start: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-  end: new Date()
+  end: new Date(),
 })
 const supplierFilter = ref('')
 
@@ -344,7 +339,7 @@ const supplierFilter = ref('')
 const supplierOptions = ref([
   { label: 'ABC供应商', value: 'supplier-1' },
   { label: 'XYZ材料厂', value: 'supplier-2' },
-  { label: '优质零件公司', value: 'supplier-3' }
+  { label: '优质零件公司', value: 'supplier-3' },
 ])
 
 // 统计数据
@@ -352,7 +347,7 @@ const purchaseStats = ref({
   totalAmount: 2850000,
   totalOrders: 156,
   avgOrderAmount: 18269,
-  activeSuppliers: 23
+  activeSuppliers: 23,
 })
 
 // 模拟数据
@@ -367,7 +362,7 @@ const purchaseDetails = ref([
     total_amount: 25000,
     status: 'completed',
     order_date: new Date('2024-01-15'),
-    delivery_date: new Date('2024-01-20')
+    delivery_date: new Date('2024-01-20'),
   },
   {
     id: '2',
@@ -379,8 +374,8 @@ const purchaseDetails = ref([
     total_amount: 60000,
     status: 'pending',
     order_date: new Date('2024-01-18'),
-    delivery_date: new Date('2024-01-25')
-  }
+    delivery_date: new Date('2024-01-25'),
+  },
 ])
 
 // 计算属性
@@ -398,7 +393,7 @@ const statusMap: Record<string, string> = {
   confirmed: '已确认',
   shipped: '已发货',
   completed: '已完成',
-  cancelled: '已取消'
+  cancelled: '已取消',
 }
 
 const statusSeverityMap: Record<string, string> = {
@@ -406,19 +401,25 @@ const statusSeverityMap: Record<string, string> = {
   confirmed: 'info',
   shipped: 'info',
   completed: 'success',
-  cancelled: 'danger'
+  cancelled: 'danger',
 }
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status
 const getStatusVariant = (status: string) => {
   switch (status) {
-    case 'pending': return 'secondary'
-    case 'confirmed': return 'default'
-    case 'shipped': return 'default'
-    case 'delivered': return 'default'
-    case 'cancelled': return 'destructive'
-    default: return 'default'
+    case 'pending':
+      return 'secondary'
+    case 'confirmed':
+      return 'default'
+    case 'shipped':
+      return 'default'
+    case 'delivered':
+      return 'default'
+    case 'cancelled':
+      return 'destructive'
+    default:
+      return 'default'
   }
 }
 

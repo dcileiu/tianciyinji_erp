@@ -24,11 +24,7 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部类型</SelectItem>
-                <SelectItem 
-                  v-for="option in invoiceTypeOptions" 
-                  :key="option.value" 
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in invoiceTypeOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -42,11 +38,7 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部状态</SelectItem>
-                <SelectItem 
-                  v-for="option in statusOptions" 
-                  :key="option.value" 
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -56,11 +48,7 @@
             <Label class="text-sm font-medium mb-2 block">搜索</Label>
             <div class="relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                v-model="filters.search"
-                placeholder="搜索发票号、客户/供应商..."
-                class="pl-10"
-              />
+              <Input v-model="filters.search" placeholder="搜索发票号、客户/供应商..." class="pl-10" />
             </div>
           </div>
           <div class="flex items-end gap-2">
@@ -82,9 +70,7 @@
       <CardHeader>
         <div class="flex items-center justify-between">
           <CardTitle class="text-lg font-semibold">发票列表</CardTitle>
-          <div class="flex items-center gap-2 text-sm text-gray-600">
-            共 {{ totalCount }} 条记录
-          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-600">共 {{ totalCount }} 条记录</div>
         </div>
       </CardHeader>
 
@@ -100,7 +86,7 @@
             <div class="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
           </div>
         </div>
-        
+
         <div v-else class="rounded-md border">
           <Table>
             <TableHeader>
@@ -131,26 +117,22 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                    <div
+                      class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium"
+                    >
                       {{ invoice.customer_name.charAt(0) }}
                     </div>
                     <span class="font-medium">{{ invoice.customer_name }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span class="font-medium text-green-600">
-                    ¥{{ invoice.amount.toLocaleString() }}
-                  </span>
+                  <span class="font-medium text-green-600"> ¥{{ invoice.amount.toLocaleString() }} </span>
                 </TableCell>
                 <TableCell>
-                  <span class="text-sm text-gray-600">
-                    ¥{{ invoice.tax_amount.toLocaleString() }}
-                  </span>
+                  <span class="text-sm text-gray-600"> ¥{{ invoice.tax_amount.toLocaleString() }} </span>
                 </TableCell>
                 <TableCell>
-                  <span class="font-bold text-blue-600">
-                    ¥{{ invoice.total_amount.toLocaleString() }}
-                  </span>
+                  <span class="font-bold text-blue-600"> ¥{{ invoice.total_amount.toLocaleString() }} </span>
                 </TableCell>
                 <TableCell>
                   <Badge :variant="getStatusSeverity(invoice.status)">
@@ -169,34 +151,16 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      @click="viewInvoice(invoice)"
-                    >
+                    <Button variant="ghost" size="sm" @click="viewInvoice(invoice)">
                       <Eye class="w-4 h-4" />
                     </Button>
-                    <Button
-                      v-if="invoice.status === 'draft'"
-                      variant="ghost"
-                      size="sm"
-                      @click="editInvoice(invoice)"
-                    >
+                    <Button v-if="invoice.status === 'draft'" variant="ghost" size="sm" @click="editInvoice(invoice)">
                       <Edit class="w-4 h-4" />
                     </Button>
-                    <Button
-                      v-if="invoice.status === 'draft'"
-                      variant="ghost"
-                      size="sm"
-                      @click="sendInvoice(invoice)"
-                    >
+                    <Button v-if="invoice.status === 'draft'" variant="ghost" size="sm" @click="sendInvoice(invoice)">
                       <Send class="w-4 h-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      @click="printInvoice(invoice)"
-                    >
+                    <Button variant="ghost" size="sm" @click="printInvoice(invoice)">
                       <Printer class="w-4 h-4" />
                     </Button>
                     <Button
@@ -212,9 +176,9 @@
               </TableRow>
             </TableBody>
           </Table>
-         </div>
-       </CardContent>
-     </Card>
+        </div>
+      </CardContent>
+    </Card>
 
     <!-- 发票对话框 -->
     <Dialog v-model:open="invoiceDialogVisible">
@@ -222,22 +186,17 @@
         <DialogHeader>
           <DialogTitle>{{ editingInvoice ? '编辑发票' : '新建发票' }}</DialogTitle>
         </DialogHeader>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
           <!-- 基本信息 -->
           <div class="space-y-4">
             <h3 class="text-lg font-semibold mb-4">基本信息</h3>
-            
+
             <div class="space-y-2">
               <Label for="invoice_no">发票号</Label>
-              <Input
-                id="invoice_no"
-                v-model="invoiceForm.invoice_no"
-                placeholder="请输入发票号"
-                :disabled="saving"
-              />
+              <Input id="invoice_no" v-model="invoiceForm.invoice_no" placeholder="请输入发票号" :disabled="saving" />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="type">发票类型</Label>
               <Select v-model="invoiceForm.type" :disabled="saving">
@@ -245,17 +204,13 @@
                   <SelectValue placeholder="请选择发票类型" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem
-                    v-for="type in invoiceTypes"
-                    :key="type.value"
-                    :value="type.value"
-                  >
+                  <SelectItem v-for="type in invoiceTypes" :key="type.value" :value="type.value">
                     {{ type.label }}
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div class="space-y-2">
               <Label for="status">状态</Label>
               <Select v-model="invoiceForm.status" :disabled="saving">
@@ -263,17 +218,13 @@
                   <SelectValue placeholder="请选择状态" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem
-                    v-for="status in invoiceStatuses"
-                    :key="status.value"
-                    :value="status.value"
-                  >
+                  <SelectItem v-for="status in invoiceStatuses" :key="status.value" :value="status.value">
                     {{ status.label }}
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div class="space-y-2">
               <Label for="customer_name">客户/供应商</Label>
               <Input
@@ -284,31 +235,21 @@
               />
             </div>
           </div>
-          
+
           <!-- 日期和备注 -->
           <div class="space-y-4">
             <h3 class="text-lg font-semibold mb-4">日期信息</h3>
-            
+
             <div class="space-y-2">
               <Label for="invoice_date">开票日期</Label>
-              <Input
-                id="invoice_date"
-                v-model="invoiceForm.invoice_date"
-                type="date"
-                :disabled="saving"
-              />
+              <Input id="invoice_date" v-model="invoiceForm.invoice_date" type="date" :disabled="saving" />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="due_date">到期日期</Label>
-              <Input
-                id="due_date"
-                v-model="invoiceForm.due_date"
-                type="date"
-                :disabled="saving"
-              />
+              <Input id="due_date" v-model="invoiceForm.due_date" type="date" :disabled="saving" />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="notes">备注</Label>
               <Textarea
@@ -321,148 +262,116 @@
             </div>
           </div>
         </div>
-          
-          <!-- 发票项目列表 -->
-          <div class="space-y-4 col-span-full">
-            <div class="flex justify-between items-center">
-              <h4 class="text-lg font-semibold">发票项目</h4>
-              <Button
-                size="sm"
-                @click="addInvoiceItem"
-                :disabled="saving"
-              >
-                <Plus class="h-4 w-4 mr-2" />
-                添加项目
-              </Button>
-            </div>
-            
-            <div class="border rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead class="min-w-[200px]">项目描述</TableHead>
-                    <TableHead class="min-w-[100px]">数量</TableHead>
-                    <TableHead class="min-w-[120px]">单价</TableHead>
-                    <TableHead class="min-w-[120px]">金额</TableHead>
-                    <TableHead class="w-[80px]">操作</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow v-for="(item, index) in invoiceForm.items" :key="index">
-                    <TableCell>
-                      <Input
-                        v-model="item.description"
-                        placeholder="请输入项目描述"
-                        :disabled="saving"
-                        @input="calculateItemAmount(index)"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        v-model.number="item.quantity"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        :disabled="saving"
-                        @input="calculateItemAmount(index)"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        v-model.number="item.unit_price"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        :disabled="saving"
-                        @input="calculateItemAmount(index)"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <span class="font-medium text-green-600">
-                        ¥{{ (item.amount || 0).toLocaleString() }}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        @click="removeInvoiceItem(index)"
-                        :disabled="saving"
-                      >
-                        <Trash2 class="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
+
+        <!-- 发票项目列表 -->
+        <div class="space-y-4 col-span-full">
+          <div class="flex justify-between items-center">
+            <h4 class="text-lg font-semibold">发票项目</h4>
+            <Button size="sm" @click="addInvoiceItem" :disabled="saving">
+              <Plus class="h-4 w-4 mr-2" />
+              添加项目
+            </Button>
           </div>
-          
-          <!-- 金额统计 -->
-          <div class="border-t pt-4 space-y-2 col-span-full">
+
+          <div class="border rounded-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead class="min-w-[200px]">项目描述</TableHead>
+                  <TableHead class="min-w-[100px]">数量</TableHead>
+                  <TableHead class="min-w-[120px]">单价</TableHead>
+                  <TableHead class="min-w-[120px]">金额</TableHead>
+                  <TableHead class="w-[80px]">操作</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="(item, index) in invoiceForm.items" :key="index">
+                  <TableCell>
+                    <Input
+                      v-model="item.description"
+                      placeholder="请输入项目描述"
+                      :disabled="saving"
+                      @input="calculateItemAmount(index)"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      v-model.number="item.quantity"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      :disabled="saving"
+                      @input="calculateItemAmount(index)"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      v-model.number="item.unit_price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      :disabled="saving"
+                      @input="calculateItemAmount(index)"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <span class="font-medium text-green-600"> ¥{{ (item.amount || 0).toLocaleString() }} </span>
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="ghost" size="sm" @click="removeInvoiceItem(index)" :disabled="saving">
+                      <Trash2 class="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+
+        <!-- 金额统计 -->
+        <div class="border-t pt-4 space-y-2 col-span-full">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">小计：</span>
+            <span class="font-medium">¥{{ subtotal.toLocaleString() }}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">税额 ({{ taxRate }}%)：</span>
+            <span class="font-medium">¥{{ taxAmount.toLocaleString() }}</span>
+          </div>
+          <div class="border-t pt-2">
             <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">小计：</span>
-              <span class="font-medium">¥{{ subtotal.toLocaleString() }}</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">税额 ({{ taxRate }}%)：</span>
-              <span class="font-medium">¥{{ taxAmount.toLocaleString() }}</span>
-            </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between items-center">
-                <span class="text-lg font-bold">总计：</span>
-                <span class="text-xl font-bold text-blue-600">
-                  ¥{{ totalAmount.toLocaleString() }}
-                </span>
-              </div>
+              <span class="text-lg font-bold">总计：</span>
+              <span class="text-xl font-bold text-blue-600"> ¥{{ totalAmount.toLocaleString() }} </span>
             </div>
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button
-            variant="outline"
-            @click="closeInvoiceDialog"
-            :disabled="saving"
-          >
-            取消
-          </Button>
-          <Button
-            v-if="dialogMode !== 'view'"
-            @click="saveInvoice"
-            :disabled="saving"
-          >
+          <Button variant="outline" @click="closeInvoiceDialog" :disabled="saving"> 取消 </Button>
+          <Button v-if="dialogMode !== 'view'" @click="saveInvoice" :disabled="saving">
             <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
             保存
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    
-
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Plus, Search, RefreshCw, Download, Eye, Edit, Send, Printer, Trash2, Loader2 } from 'lucide-vue-next'
+<script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
+import { computed, onMounted, ref } from 'vue'
+
+import { Download, Edit, Eye, Loader2, Plus, Printer, RefreshCw, Search, Send, Trash2 } from 'lucide-vue-next'
 
 definePageMeta({
   title: '发票管理',
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '发票管理 - ERP系统'
+  title: '发票管理 - ERP系统',
 })
 
 // 响应式状态
@@ -475,7 +384,7 @@ const editingInvoice = ref(null)
 const filters = ref({
   type: '',
   status: '',
-  search: ''
+  search: '',
 })
 
 // 发票表单数据
@@ -490,20 +399,20 @@ const invoiceForm = ref({
   invoice_date: '',
   due_date: '',
   notes: '',
-  items: []
+  items: [],
 })
 
 // 选项数据
 const invoiceTypeOptions = ref([
   { label: '销售发票', value: 'sales' },
-  { label: '采购发票', value: 'purchase' }
+  { label: '采购发票', value: 'purchase' },
 ])
 
 const statusOptions = ref([
   { label: '草稿', value: 'draft' },
   { label: '已发送', value: 'sent' },
   { label: '已付款', value: 'paid' },
-  { label: '逾期', value: 'overdue' }
+  { label: '逾期', value: 'overdue' },
 ])
 
 // 模拟数据
@@ -523,8 +432,8 @@ const mockInvoices = ref([
     notes: '销售发票备注',
     items: [
       { description: '产品A', quantity: 10, unit_price: 5000, amount: 50000 },
-      { description: '产品B', quantity: 7, unit_price: 5000, amount: 35000 }
-    ]
+      { description: '产品B', quantity: 7, unit_price: 5000, amount: 35000 },
+    ],
   },
   {
     id: '2',
@@ -539,10 +448,8 @@ const mockInvoices = ref([
     invoice_date: new Date('2024-01-10'),
     due_date: new Date('2024-02-10'),
     notes: '采购发票备注',
-    items: [
-      { description: '原料C', quantity: 15, unit_price: 3000, amount: 45000 }
-    ]
-  }
+    items: [{ description: '原料C', quantity: 15, unit_price: 3000, amount: 45000 }],
+  },
 ])
 
 // 计算属性
@@ -551,9 +458,8 @@ const filteredInvoices = computed(() => {
 
   if (filters.value.search) {
     const query = filters.value.search.toLowerCase()
-    result = result.filter(invoice =>
-      invoice.invoice_no.toLowerCase().includes(query)
-      || invoice.customer_name.toLowerCase().includes(query)
+    result = result.filter(
+      invoice => invoice.invoice_no.toLowerCase().includes(query) || invoice.customer_name.toLowerCase().includes(query)
     )
   }
 
@@ -585,7 +491,7 @@ const subtotalAmount = computed(() => {
 const taxRate = ref(13) // 13% 税率
 
 const taxAmount = computed(() => {
-  return Math.round(subtotalAmount.value * taxRate.value / 100)
+  return Math.round((subtotalAmount.value * taxRate.value) / 100)
 })
 
 const totalAmount = computed(() => {
@@ -595,26 +501,26 @@ const totalAmount = computed(() => {
 // 类型映射
 const typeMap: Record<string, string> = {
   sales: '销售发票',
-  purchase: '采购发票'
+  purchase: '采购发票',
 }
 
 const typeSeverityMap: Record<string, string> = {
   sales: 'success',
-  purchase: 'info'
+  purchase: 'info',
 }
 
 const statusMap: Record<string, string> = {
   draft: '草稿',
   sent: '已发送',
   paid: '已付款',
-  overdue: '逾期'
+  overdue: '逾期',
 }
 
 const statusSeverityMap: Record<string, string> = {
   draft: 'secondary',
   sent: 'info',
   paid: 'success',
-  overdue: 'danger'
+  overdue: 'danger',
 }
 
 // 方法
@@ -631,11 +537,9 @@ const loadInvoices = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('加载发票失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -645,10 +549,9 @@ const openInvoiceDialog = (invoice: any = null) => {
     editingInvoice.value = invoice
     Object.assign(invoiceForm.value, {
       ...invoice,
-      items: [...invoice.items]
+      items: [...invoice.items],
     })
-  }
-  else {
+  } else {
     editingInvoice.value = null
     invoiceForm.value = {
       invoice_no: '',
@@ -661,7 +564,7 @@ const openInvoiceDialog = (invoice: any = null) => {
       invoice_date: '',
       due_date: '',
       notes: '',
-      items: []
+      items: [],
     }
   }
   invoiceDialogVisible.value = true
@@ -671,7 +574,7 @@ const viewInvoice = (invoice: any) => {
   editingInvoice.value = invoice
   Object.assign(invoiceForm.value, {
     ...invoice,
-    items: [...invoice.items]
+    items: [...invoice.items],
   })
   invoiceDialogVisible.value = true
 }
@@ -688,8 +591,7 @@ const sendInvoice = async (invoice: any) => {
       if (index !== -1 && mockInvoices.value[index]) {
         mockInvoices.value[index]!.status = 'sent'
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('发送失败:', error)
     }
   }
@@ -718,41 +620,38 @@ const saveInvoice = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     // 计算金额
     const calculatedInvoice = {
       ...invoiceForm.value,
       amount: subtotalAmount.value,
       tax_amount: taxAmount.value,
-      total_amount: totalAmount.value
+      total_amount: totalAmount.value,
     }
-    
+
     if (!editingInvoice.value) {
       const newInvoice = {
         id: Date.now().toString(),
         ...calculatedInvoice,
-        due_date: calculatedInvoice.due_date || new Date()
+        due_date: calculatedInvoice.due_date || new Date(),
       }
       mockInvoices.value.push(newInvoice)
-    }
-    else {
+    } else {
       const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value?.id)
       if (index !== -1) {
         mockInvoices.value[index] = {
           ...mockInvoices.value[index],
           ...calculatedInvoice,
           id: mockInvoices.value[index]?.id || '',
-          due_date: calculatedInvoice.due_date || new Date()
+          due_date: calculatedInvoice.due_date || new Date(),
         }
       }
     }
-    
+
     closeInvoiceDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存发票失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -762,7 +661,7 @@ const addInvoiceItem = () => {
     description: '',
     quantity: 1,
     unit_price: 0,
-    amount: 0
+    amount: 0,
   })
 }
 

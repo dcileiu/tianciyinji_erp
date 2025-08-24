@@ -6,35 +6,27 @@
         <h1 class="text-2xl font-bold text-color">生产订单管理</h1>
         <p class="text-muted-color mt-1">管理和跟踪生产订单的执行情况</p>
       </div>
-      <Button 
-        label="新建订单"
-        icon="pi pi-plus"
-        @click="handleCreate"
-      />
+      <Button label="新建订单" icon="pi pi-plus" @click="handleCreate" />
     </div>
 
     <!-- 搜索和筛选 -->
     <Card>
       <template #content>
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div>
             <label class="block text-sm font-medium text-color mb-2">订单号/产品名称</label>
             <IconField icon-position="left">
               <InputIcon>
                 <i class="pi pi-search"></i>
               </InputIcon>
-              <InputText
-              v-model="searchQuery"
-              placeholder="搜索订单号或产品名称"
-                class="w-full"
-            />
+              <InputText v-model="searchQuery" placeholder="搜索订单号或产品名称" class="w-full" />
             </IconField>
-        </div>
-        
-        <div>
+          </div>
+
+          <div>
             <label class="block text-sm font-medium text-color mb-2">订单状态</label>
             <Dropdown
-            v-model="statusFilter"
+              v-model="statusFilter"
               :options="statusOptions"
               option-label="label"
               option-value="value"
@@ -42,12 +34,12 @@
               show-clear
               class="w-full"
             />
-        </div>
-        
-        <div>
+          </div>
+
+          <div>
             <label class="block text-sm font-medium text-color mb-2">车间</label>
             <Dropdown
-            v-model="workshopFilter"
+              v-model="workshopFilter"
               :options="workshopOptions"
               option-label="label"
               option-value="value"
@@ -55,12 +47,12 @@
               show-clear
               class="w-full"
             />
-        </div>
-        
-        <div>
+          </div>
+
+          <div>
             <label class="block text-sm font-medium text-color mb-2">优先级</label>
             <Dropdown
-            v-model="priorityFilter"
+              v-model="priorityFilter"
               :options="priorityOptions"
               option-label="label"
               option-value="value"
@@ -68,16 +60,10 @@
               show-clear
               class="w-full"
             />
-        </div>
-        
-        <div class="flex items-end">
-            <Button
-              label="重置筛选"
-              icon="pi pi-filter-slash"
-              outlined
-              class="w-full"
-              @click="resetFilters"
-            />
+          </div>
+
+          <div class="flex items-end">
+            <Button label="重置筛选" icon="pi pi-filter-slash" outlined class="w-full" @click="resetFilters" />
           </div>
         </div>
       </template>
@@ -87,56 +73,56 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <Card>
         <template #content>
-        <div class="flex items-center justify-between">
-          <div>
+          <div class="flex items-center justify-between">
+            <div>
               <p class="text-sm font-medium text-muted-color">今日新增</p>
               <p class="text-2xl font-bold text-color">{{ orderStats.todayNew }}</p>
-          </div>
-          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <i class="pi pi-plus text-blue-600 text-xl"></i>
             </div>
           </div>
         </template>
       </Card>
-      
+
       <Card>
         <template #content>
-        <div class="flex items-center justify-between">
-          <div>
+          <div class="flex items-center justify-between">
+            <div>
               <p class="text-sm font-medium text-muted-color">生产中</p>
               <p class="text-2xl font-bold text-color">{{ orderStats.producing }}</p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
               <i class="pi pi-cog text-green-600 text-xl"></i>
-          </div>
+            </div>
           </div>
         </template>
       </Card>
-      
+
       <Card>
         <template #content>
-        <div class="flex items-center justify-between">
-          <div>
+          <div class="flex items-center justify-between">
+            <div>
               <p class="text-sm font-medium text-muted-color">已完工</p>
               <p class="text-2xl font-bold text-color">{{ orderStats.completed }}</p>
             </div>
             <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
               <i class="pi pi-check-circle text-purple-600 text-xl"></i>
-          </div>
+            </div>
           </div>
         </template>
       </Card>
-      
+
       <Card>
         <template #content>
-        <div class="flex items-center justify-between">
-          <div>
+          <div class="flex items-center justify-between">
+            <div>
               <p class="text-sm font-medium text-muted-color">延期订单</p>
               <p class="text-2xl font-bold text-red-600">{{ orderStats.delayed }}</p>
             </div>
             <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
               <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
-          </div>
+            </div>
           </div>
         </template>
       </Card>
@@ -147,9 +133,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">生产订单列表</h3>
-          <div class="flex items-center gap-2 text-sm text-muted-color">
-            共 {{ totalCount }} 条记录
-          </div>
+          <div class="flex items-center gap-2 text-sm text-muted-color">共 {{ totalCount }} 条记录</div>
         </div>
       </template>
 
@@ -183,31 +167,27 @@
               </code>
             </template>
           </Column>
-          
+
           <Column field="product_name" header="产品名称" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Avatar
-                  :label="slotProps.data.product_name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
+                <Avatar :label="slotProps.data.product_name.charAt(0)" shape="circle" size="small" />
                 <span class="font-medium">{{ slotProps.data.product_name }}</span>
               </div>
             </template>
           </Column>
-          
+
           <Column field="quantity" header="计划数量" sortable>
             <template #body="slotProps">
               <span class="font-medium">{{ slotProps.data.quantity.toLocaleString() }}</span>
             </template>
           </Column>
-          
+
           <Column field="produced_quantity" header="已生产" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
                 <span class="font-medium">{{ slotProps.data.produced_quantity.toLocaleString() }}</span>
-                <ProgressBar 
+                <ProgressBar
                   :value="(slotProps.data.produced_quantity / slotProps.data.quantity) * 100"
                   class="w-16"
                   :show-value="false"
@@ -215,16 +195,13 @@
               </div>
             </template>
           </Column>
-          
+
           <Column field="workshop_name" header="车间" sortable>
             <template #body="slotProps">
-              <Tag
-                :value="slotProps.data.workshop_name"
-                severity="info"
-              />
+              <Tag :value="slotProps.data.workshop_name" severity="info" />
             </template>
           </Column>
-          
+
           <Column field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
@@ -233,7 +210,7 @@
               />
             </template>
           </Column>
-          
+
           <Column field="priority" header="优先级" sortable>
             <template #body="slotProps">
               <Tag
@@ -242,7 +219,7 @@
               />
             </template>
           </Column>
-          
+
           <Column field="start_date" header="开始日期" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
@@ -250,7 +227,7 @@
               </span>
             </template>
           </Column>
-          
+
           <Column field="due_date" header="预期完成日期" sortable>
             <template #body="slotProps">
               <span class="text-sm" :class="getDueDateClass(slotProps.data.due_date)">
@@ -258,7 +235,7 @@
               </span>
             </template>
           </Column>
-          
+
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
@@ -336,13 +313,9 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">订单号</label>
-              <InputText
-                v-model="orderForm.order_no"
-                :disabled="true"
-                placeholder="系统自动生成"
-              />
+              <InputText v-model="orderForm.order_no" :disabled="true" placeholder="系统自动生成" />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">产品名称 *</label>
               <Dropdown
@@ -354,8 +327,8 @@
                 :disabled="dialogMode === 'view'"
                 required
               />
-      </div>
-    </div>
+            </div>
+          </div>
 
           <div class="grid grid-cols-3 gap-4">
             <div class="space-y-2">
@@ -369,7 +342,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">车间 *</label>
               <Dropdown
@@ -382,7 +355,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">优先级</label>
               <Dropdown
@@ -394,9 +367,9 @@
                 :disabled="dialogMode === 'view'"
               />
             </div>
-            </div>
-          
-            <div class="grid grid-cols-2 gap-4">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">开始日期 *</label>
               <Calendar
@@ -406,7 +379,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">预期完成日期 *</label>
               <Calendar
@@ -415,8 +388,8 @@
                 :disabled="dialogMode === 'view'"
                 required
               />
-      </div>
-    </div>
+            </div>
+          </div>
 
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">订单说明</label>
@@ -429,26 +402,15 @@
           </div>
         </div>
       </template>
-      
+
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeOrderDialog"
-          />
-          <Button
-            v-if="dialogMode !== 'view'"
-            label="保存"
-            icon="pi pi-check"
-            :loading="saving"
-            @click="saveOrder"
-          />
-      </div>
+          <Button label="取消" icon="pi pi-times" outlined @click="closeOrderDialog" />
+          <Button v-if="dialogMode !== 'view'" label="保存" icon="pi pi-check" :loading="saving" @click="saveOrder" />
+        </div>
       </template>
     </Dialog>
-    
+
     <!-- 确认对话框 -->
     <ConfirmDialog />
   </div>
@@ -477,11 +439,11 @@ import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '生产订单管理 - ERP 管理系统'
+  title: '生产订单管理 - ERP 管理系统',
 })
 
 // 状态管理
@@ -507,7 +469,7 @@ const orderForm = ref({
   priority: 'medium',
   start_date: new Date(),
   due_date: null as Date | null,
-  notes: ''
+  notes: '',
 })
 
 // 选项数据
@@ -516,27 +478,27 @@ const statusOptions = ref([
   { label: '已确认', value: 'confirmed' },
   { label: '生产中', value: 'producing' },
   { label: '已完工', value: 'completed' },
-  { label: '已取消', value: 'cancelled' }
+  { label: '已取消', value: 'cancelled' },
 ])
 
 const workshopOptions = ref([
   { label: '装配车间', value: 'assembly' },
   { label: '机加工车间', value: 'machining' },
   { label: '喷涂车间', value: 'painting' },
-  { label: '包装车间', value: 'packaging' }
+  { label: '包装车间', value: 'packaging' },
 ])
 
 const priorityOptions = ref([
   { label: '低', value: 'low' },
   { label: '中', value: 'medium' },
   { label: '高', value: 'high' },
-  { label: '紧急', value: 'urgent' }
+  { label: '紧急', value: 'urgent' },
 ])
 
 const productOptions = ref([
   { label: '产品A', value: 'product-a' },
   { label: '产品B', value: 'product-b' },
-  { label: '产品C', value: 'product-c' }
+  { label: '产品C', value: 'product-c' },
 ])
 
 // 统计数据
@@ -544,7 +506,7 @@ const orderStats = ref({
   todayNew: 8,
   producing: 15,
   completed: 42,
-  delayed: 3
+  delayed: 3,
 })
 
 // 模拟数据
@@ -560,7 +522,7 @@ const mockOrders = ref([
     priority: 'high',
     start_date: new Date('2024-01-15'),
     due_date: new Date('2024-01-25'),
-    notes: '紧急订单，需优先生产'
+    notes: '紧急订单，需优先生产',
   },
   {
     id: '2',
@@ -573,8 +535,8 @@ const mockOrders = ref([
     priority: 'medium',
     start_date: new Date('2024-01-10'),
     due_date: new Date('2024-01-20'),
-    notes: '常规生产订单'
-  }
+    notes: '常规生产订单',
+  },
 ])
 
 // 计算属性
@@ -583,9 +545,8 @@ const filteredOrders = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(order =>
-      order.order_no.toLowerCase().includes(query)
-      || order.product_name.toLowerCase().includes(query)
+    result = result.filter(
+      order => order.order_no.toLowerCase().includes(query) || order.product_name.toLowerCase().includes(query)
     )
   }
 
@@ -612,7 +573,7 @@ const statusMap: Record<string, string> = {
   confirmed: '已确认',
   producing: '生产中',
   completed: '已完工',
-  cancelled: '已取消'
+  cancelled: '已取消',
 }
 
 const statusSeverityMap: Record<string, string> = {
@@ -620,21 +581,21 @@ const statusSeverityMap: Record<string, string> = {
   confirmed: 'info',
   producing: 'success',
   completed: 'success',
-  cancelled: 'danger'
+  cancelled: 'danger',
 }
 
 const priorityMap: Record<string, string> = {
   low: '低',
   medium: '中',
   high: '高',
-  urgent: '紧急'
+  urgent: '紧急',
 }
 
 const prioritySeverityMap: Record<string, string> = {
   low: 'secondary',
   medium: 'info',
   high: 'warning',
-  urgent: 'danger'
+  urgent: 'danger',
 }
 
 // 方法
@@ -651,7 +612,7 @@ const getDueDateClass = (dueDate: Date) => {
   const today = new Date()
   const due = new Date(dueDate)
   const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-  
+
   if (diffDays < 0) return 'text-red-600' // 已过期
   if (diffDays <= 3) return 'text-orange-600' // 即将到期
   return 'text-muted-color' // 正常
@@ -675,7 +636,7 @@ const handleCreate = () => {
     priority: 'medium',
     start_date: new Date(),
     due_date: null,
-    notes: ''
+    notes: '',
   }
   showOrderDialog.value = true
 }
@@ -706,11 +667,10 @@ const confirmOrder = async (order: any) => {
         if (index !== -1 && mockOrders.value[index]) {
           mockOrders.value[index]!.status = 'confirmed'
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('确认订单失败:', error)
       }
-    }
+    },
   })
 }
 
@@ -726,11 +686,10 @@ const startProduction = async (order: any) => {
         if (index !== -1 && mockOrders.value[index]) {
           mockOrders.value[index]!.status = 'producing'
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('开始生产失败:', error)
       }
-    }
+    },
   })
 }
 
@@ -747,11 +706,10 @@ const completeProduction = async (order: any) => {
           mockOrders.value[index]!.status = 'completed'
           mockOrders.value[index]!.produced_quantity = mockOrders.value[index]!.quantity
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('完成生产失败:', error)
       }
-    }
+    },
   })
 }
 
@@ -762,7 +720,7 @@ const confirmCancelOrder = (order: any) => {
     icon: 'pi pi-exclamation-triangle',
     accept: () => {
       cancelOrder(order.id)
-    }
+    },
   })
 }
 
@@ -782,7 +740,7 @@ const saveOrder = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (dialogMode.value === 'create') {
       const newOrder = {
         id: Date.now().toString(),
@@ -791,29 +749,30 @@ const saveOrder = async () => {
         workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || '',
         status: 'pending',
         produced_quantity: 0,
-        due_date: orderForm.value.due_date || new Date()
+        due_date: orderForm.value.due_date || new Date(),
       }
       mockOrders.value.push(newOrder as any)
-    }
-    else if (dialogMode.value === 'edit') {
+    } else if (dialogMode.value === 'edit') {
       const index = mockOrders.value.findIndex(o => o.id === editingOrder.value?.id)
       if (index !== -1 && mockOrders.value[index]) {
         mockOrders.value[index] = {
           ...mockOrders.value[index],
           ...orderForm.value,
-          product_name: productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || mockOrders.value[index]!.product_name,
-          workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || mockOrders.value[index]!.workshop_name,
-          due_date: orderForm.value.due_date || new Date()
+          product_name:
+            productOptions.value.find(p => p.value === orderForm.value.product_id)?.label ||
+            mockOrders.value[index]!.product_name,
+          workshop_name:
+            workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label ||
+            mockOrders.value[index]!.workshop_name,
+          due_date: orderForm.value.due_date || new Date(),
         }
       }
     }
-    
+
     closeOrderDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存订单失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

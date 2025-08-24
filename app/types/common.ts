@@ -45,7 +45,7 @@ export enum Status {
   Approved = 'approved',
   Rejected = 'rejected',
   Draft = 'draft',
-  Published = 'published'
+  Published = 'published',
 }
 
 // 订单状态
@@ -55,7 +55,7 @@ export enum OrderStatus {
   Confirmed = 'confirmed',
   InProgress = 'in_progress',
   Completed = 'completed',
-  Cancelled = 'cancelled'
+  Cancelled = 'cancelled',
 }
 
 // 支付状态
@@ -64,7 +64,7 @@ export enum PaymentStatus {
   Paid = 'paid',
   Partial = 'partial',
   Overdue = 'overdue',
-  Cancelled = 'cancelled'
+  Cancelled = 'cancelled',
 }
 
 // 仓库类型
@@ -72,7 +72,7 @@ export enum WarehouseType {
   RawMaterials = 'raw_materials',
   FinishedGoods = 'finished_goods',
   SemiFinished = 'semi_finished',
-  Tools = 'tools'
+  Tools = 'tools',
 }
 
 // 基础实体接口
@@ -133,4 +133,4 @@ export interface FormValidationRules {
 export interface ValidationResult {
   isValid: boolean
   errors: Record<string, string>
-} 
+}

@@ -51,8 +51,7 @@ export const useAuth = () => {
       }
 
       throw new Error('登录失败')
-    }
-    catch (error: unknown) {
+    } catch (error: unknown) {
       const err = error as Error
       return {
         success: false,
@@ -60,8 +59,7 @@ export const useAuth = () => {
           message: err.message || '登录失败，请重试',
         },
       }
-    }
-    finally {
+    } finally {
       userState.value.isLoading = false
     }
   }
@@ -76,8 +74,8 @@ export const useAuth = () => {
         password,
         options: {
           data: metadata,
-          emailRedirectTo: `${$config.public.siteUrl}/auth/callback`
-        }
+          emailRedirectTo: `${$config.public.siteUrl}/auth/callback`,
+        },
       })
 
       if (error) {
@@ -89,16 +87,14 @@ export const useAuth = () => {
         user: data.user,
         needsEmailConfirmation: !data.session,
       }
-    }
-    catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
-          message: error.message || '注册失败，请重试' 
-        } 
+    } catch (error: any) {
+      return {
+        success: false,
+        error: {
+          message: error.message || '注册失败，请重试',
+        },
       }
-    }
-    finally {
+    } finally {
       userState.value.isLoading = false
     }
   }
@@ -107,28 +103,26 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       userState.value.isLoading = true
-      
+
       const { error } = await supabase.auth.signOut()
-      
+
       if (error) {
         throw error
       }
 
       userState.value.user = null
       userState.value.isAuthenticated = false
-      
+
       await router.push('/login')
       return { success: true }
-    }
-    catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
-          message: error.message || '登出失败' 
-        } 
+    } catch (error: any) {
+      return {
+        success: false,
+        error: {
+          message: error.message || '登出失败',
+        },
       }
-    }
-    finally {
+    } finally {
       userState.value.isLoading = false
     }
   }
@@ -137,7 +131,7 @@ export const useAuth = () => {
   const resetPassword = async (email: string) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${$config.public.siteUrl}/auth/reset-password`
+        redirectTo: `${$config.public.siteUrl}/auth/reset-password`,
       })
 
       if (error) {
@@ -145,13 +139,12 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    }
-    catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
-          message: error.message || '重置密码邮件发送失败' 
-        } 
+    } catch (error: any) {
+      return {
+        success: false,
+        error: {
+          message: error.message || '重置密码邮件发送失败',
+        },
       }
     }
   }
@@ -160,7 +153,7 @@ export const useAuth = () => {
   const updatePassword = async (newPassword: string) => {
     try {
       const { error } = await supabase.auth.updateUser({
-        password: newPassword
+        password: newPassword,
       })
 
       if (error) {
@@ -168,22 +161,18 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    }
-    catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
-          message: error.message || '密码更新失败' 
-        } 
+    } catch (error: any) {
+      return {
+        success: false,
+        error: {
+          message: error.message || '密码更新失败',
+        },
       }
     }
   }
 
   // 更新用户信息
-  const updateProfile = async (updates: {
-    email?: string
-    data?: Record<string, any>
-  }) => {
+  const updateProfile = async (updates: { email?: string; data?: Record<string, any> }) => {
     try {
       const { error } = await supabase.auth.updateUser(updates)
 
@@ -192,13 +181,12 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    }
-    catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
-          message: error.message || '更新用户信息失败' 
-        } 
+    } catch (error: any) {
+      return {
+        success: false,
+        error: {
+          message: error.message || '更新用户信息失败',
+        },
       }
     }
   }
@@ -207,14 +195,13 @@ export const useAuth = () => {
   const getSession = async () => {
     try {
       const { data, error } = await supabase.auth.getSession()
-      
+
       if (error) {
         throw error
       }
 
       return data.session
-    }
-    catch (error) {
+    } catch (error) {
       console.error('获取会话失败:', error)
       return null
     }
@@ -224,7 +211,7 @@ export const useAuth = () => {
   const refreshSession = async () => {
     try {
       const { data, error } = await supabase.auth.refreshSession()
-      
+
       if (error) {
         throw error
       }
@@ -235,8 +222,7 @@ export const useAuth = () => {
       }
 
       return data.session
-    }
-    catch (error) {
+    } catch (error) {
       console.error('刷新会话失败:', error)
       return null
     }
@@ -250,18 +236,15 @@ export const useAuth = () => {
       if (session?.user) {
         userState.value.user = session.user
         userState.value.isAuthenticated = true
-      }
-      else {
+      } else {
         userState.value.user = null
         userState.value.isAuthenticated = false
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('初始化认证状态失败:', error)
       userState.value.user = null
       userState.value.isAuthenticated = false
-    }
-    finally {
+    } finally {
       userState.value.isLoading = false
     }
   }
@@ -273,8 +256,7 @@ export const useAuth = () => {
       if (session?.user) {
         userState.value.user = session.user
         userState.value.isAuthenticated = true
-      }
-      else {
+      } else {
         userState.value.user = null
         userState.value.isAuthenticated = false
       }
@@ -297,7 +279,7 @@ export const useAuth = () => {
     getSession,
     refreshSession,
     initAuth,
-    watchAuthState
+    watchAuthState,
   }
 }
 
@@ -312,7 +294,7 @@ function getAuthErrorMessage(error: AuthError): string {
     'Invalid email': '邮箱格式不正确',
     'Email rate limit exceeded': '邮件发送频率过高，请稍后再试',
     'Session not found': '会话已过期，请重新登录',
-    'User not found': '用户不存在'
+    'User not found': '用户不存在',
   }
 
   return errorMessages[error.message] || error.message || '操作失败，请重试'

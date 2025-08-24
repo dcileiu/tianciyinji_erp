@@ -6,4 +6,4 @@ export default defineNuxtPlugin(async () => {
 
   // 监听认证状态变化
   watchAuthState()
-}) 
+})

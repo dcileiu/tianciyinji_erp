@@ -4,22 +4,17 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">资源管理</h1>
-        <p class="text-gray-600 mt-1">
-          管理系统中的各种资源权限，包括页面、功能、数据等
-        </p>
+        <p class="text-gray-600 mt-1">管理系统中的各种资源权限，包括页面、功能、数据等</p>
       </div>
-      
+
       <div class="flex items-center gap-3">
-        <Button
-          v-if="canCreate"
-          @click="openCreateDialog"
-        >
+        <Button v-if="canCreate" @click="openCreateDialog">
           <Plus class="h-4 w-4 mr-2" />
           添加资源
         </Button>
       </div>
     </div>
-    
+
     <!-- 搜索和筛选 -->
     <Card>
       <CardContent>
@@ -27,13 +22,9 @@
           <!-- 搜索框 -->
           <div class="md:col-span-2 relative">
             <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              v-model="searchQuery"
-              placeholder="搜索资源名称、键值或描述..."
-              class="pl-10"
-            />
+            <Input v-model="searchQuery" placeholder="搜索资源名称、键值或描述..." class="pl-10" />
           </div>
-          
+
           <!-- 资源类型筛选 -->
           <div>
             <Select v-model="typeFilter">
@@ -41,17 +32,13 @@
                 <SelectValue placeholder="全部类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in typeOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in typeOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
-          
+
           <!-- 状态筛选 -->
           <div>
             <Select v-model="statusFilter">
@@ -59,31 +46,22 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in statusOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
-      
+
         <!-- 筛选操作 -->
         <div class="flex items-center justify-between mt-4">
           <div class="flex items-center gap-2">
-            <Button
-              v-if="hasSelected"
-              variant="destructive"
-              size="sm"
-              @click="handleBatchDelete"
-            >
+            <Button v-if="hasSelected" variant="destructive" size="sm" @click="handleBatchDelete">
               <Trash2 class="h-4 w-4 mr-2" />
               批量删除 ({{ selectedResources.length }})
             </Button>
-            
+
             <Button
               v-if="searchQuery || typeFilter !== 'all' || statusFilter !== 'all'"
               variant="ghost"
@@ -94,21 +72,13 @@
               清空筛选
             </Button>
           </div>
-          
+
           <div class="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              @click="exportResources"
-            >
+            <Button variant="outline" size="sm" @click="exportResources">
               <Download class="h-4 w-4 mr-2" />
               导出
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              @click="loadResources"
-            >
+            <Button variant="outline" size="sm" @click="loadResources">
               <RefreshCw class="h-4 w-4 mr-2" />
               刷新
             </Button>
@@ -116,7 +86,7 @@
         </div>
       </CardContent>
     </Card>
-    
+
     <!-- 资源列表 -->
     <Card>
       <CardHeader>
@@ -125,21 +95,17 @@
             <Database class="h-5 w-5" />
             资源列表
           </CardTitle>
-          <div class="text-sm text-gray-600">
-            共 {{ filteredResources.length }} 个资源
-          </div>
+          <div class="text-sm text-gray-600">共 {{ filteredResources.length }} 个资源</div>
         </div>
       </CardHeader>
-      
+
       <CardContent>
         <div v-if="loading" class="flex items-center justify-center py-8">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
-        
-        <div v-else-if="filteredResources.length === 0" class="text-center py-8 text-gray-500">
-          暂无资源数据
-        </div>
-        
+
+        <div v-else-if="filteredResources.length === 0" class="text-center py-8 text-gray-500">暂无资源数据</div>
+
         <Table v-else>
           <TableHeader>
             <TableRow>
@@ -160,77 +126,63 @@
               <TableCell>
                 <input type="checkbox" class="rounded" />
               </TableCell>
-              
+
               <TableCell>
                 <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">
                   {{ resource.key }}
                 </code>
               </TableCell>
-              
+
               <TableCell>
                 <div class="flex items-center space-x-2">
                   <component :is="getResourceIcon(resource.type)" class="h-4 w-4 text-blue-600" />
                   <span class="font-medium">{{ resource.name }}</span>
                 </div>
               </TableCell>
-              
+
               <TableCell>
                 <Badge :variant="getTypeSeverity(resource.type)">
                   {{ getTypeDisplayName(resource.type) }}
                 </Badge>
               </TableCell>
-              
+
               <TableCell>
                 <span class="text-gray-600 text-sm">
                   {{ resource.description || '-' }}
                 </span>
               </TableCell>
-              
+
               <TableCell>
                 <Badge :variant="resource.status === 'active' ? 'default' : 'secondary'">
                   {{ resource.status === 'active' ? '启用' : '禁用' }}
                 </Badge>
               </TableCell>
-              
+
               <TableCell>
                 <span class="text-sm text-gray-600">
                   {{ formatDate(resource.created_at) }}
                 </span>
               </TableCell>
-              
+
               <TableCell>
                 <div class="flex items-center space-x-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    @click="viewResource(resource)"
-                  >
+                  <Button variant="ghost" size="sm" @click="viewResource(resource)">
                     <Eye class="h-4 w-4" />
                   </Button>
-                  <Button
-                     v-if="canEdit"
-                     variant="ghost"
-                     size="sm"
-                     @click="editResource(resource)"
-                   >
-                     <Edit class="h-4 w-4" />
-                   </Button>
-                   <Button
-                     v-if="canDelete"
-                     variant="ghost"
-                     size="sm"
-                     @click="confirmDeleteResource(resource)"
-                   >
-                     <Trash2 class="h-4 w-4 text-red-500" />
-                   </Button>
-                 </div>
-               </TableCell>
-             </TableRow>
-           </TableBody>
-         </Table>
-       </CardContent>
-     </Card>
-    
+                  <Button v-if="canEdit" variant="ghost" size="sm" @click="editResource(resource)">
+                    <Edit class="h-4 w-4" />
+                  </Button>
+                  <Button v-if="canDelete" variant="ghost" size="sm" @click="confirmDeleteResource(resource)">
+                    <Trash2 class="h-4 w-4 text-red-500" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+
     <!-- 资源对话框 -->
     <Dialog v-model:open="showDialog">
       <DialogContent class="max-w-2xl">
@@ -239,26 +191,20 @@
             {{ editingResource ? '编辑资源' : '添加资源' }}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label>资源键值 *</Label>
-              <Input
-                v-model="resourceForm.key"
-                placeholder="例如: user:create"
-              />
+              <Input v-model="resourceForm.key" placeholder="例如: user:create" />
             </div>
-            
+
             <div class="space-y-2">
               <Label>资源名称 *</Label>
-              <Input
-                v-model="resourceForm.name"
-                placeholder="例如: 创建用户"
-              />
+              <Input v-model="resourceForm.name" placeholder="例如: 创建用户" />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label>资源类型 *</Label>
@@ -267,17 +213,13 @@
                   <SelectValue placeholder="选择资源类型" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem
-                    v-for="type in resourceTypes"
-                    :key="type.value"
-                    :value="type.value"
-                  >
+                  <SelectItem v-for="type in resourceTypes" :key="type.value" :value="type.value">
                     {{ type.label }}
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div class="space-y-2">
               <Label>状态</Label>
               <Select v-model="resourceForm.status">
@@ -285,35 +227,24 @@
                   <SelectValue placeholder="选择状态" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem
-                    v-for="status in statusOptions"
-                    :key="status.value"
-                    :value="status.value"
-                  >
+                  <SelectItem v-for="status in statusOptions" :key="status.value" :value="status.value">
                     {{ status.label }}
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-    
+
           <div class="space-y-2">
             <Label>描述</Label>
-            <Textarea
-              v-model="resourceForm.description"
-              placeholder="请输入资源描述"
-              :rows="3"
-            />
+            <Textarea v-model="resourceForm.description" placeholder="请输入资源描述" :rows="3" />
           </div>
-          
+
           <div class="space-y-2">
             <Label>路径</Label>
-            <Input
-              v-model="resourceForm.path"
-              placeholder="例如: /api/users"
-            />
+            <Input v-model="resourceForm.path" placeholder="例如: /api/users" />
           </div>
-          
+
           <div class="space-y-2">
             <Label>HTTP方法</Label>
             <Select v-model="resourceForm.methods" multiple>
@@ -321,62 +252,41 @@
                 <SelectValue placeholder="选择HTTP方法" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="method in methodOptions"
-                  :key="method.value"
-                  :value="method.value"
-                >
+                <SelectItem v-for="method in methodOptions" :key="method.value" :value="method.value">
                   {{ method.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button
-            variant="outline"
-            @click="closeDialog"
-          >
-            取消
-          </Button>
-          <Button
-            :disabled="saving"
-            @click="saveResource"
-          >
-            保存
-          </Button>
+          <Button variant="outline" @click="closeDialog"> 取消 </Button>
+          <Button :disabled="saving" @click="saveResource"> 保存 </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    
+
     <!-- 确认对话框 -->
     <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Plus, Search, Trash2, RefreshCw, Download, Database, Eye, Edit } from 'lucide-vue-next'
+// UI组件现在自动导入，无需手动导入
+
+import { computed, onMounted, ref } from 'vue'
+import { toast } from 'vue-sonner'
+
+import { Database, Download, Edit, Eye, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '资源管理 - ERP 管理系统'
+  title: '资源管理 - ERP 管理系统',
 })
 
 // 权限检查
@@ -390,11 +300,6 @@ const saving = ref(false)
 const showDialog = ref(false)
 const editingResource = ref(null as any)
 const selectedResources = ref([])
-// 权限控制
-const canAdd = ref(true)
-const canEdit = ref(true)
-const canDelete = ref(true)
-const canExport = ref(true)
 
 // 模拟数据搜索和筛选
 const searchQuery = ref('')
@@ -409,7 +314,7 @@ const resourceForm = ref({
   description: '',
   path: '',
   methods: [],
-  status: 'active'
+  status: 'active',
 })
 
 // 选项数据
@@ -420,13 +325,13 @@ const typeOptions = ref([
   { label: '数据', value: 'data' },
   { label: 'API', value: 'api' },
   { label: '按钮', value: 'button' },
-  { label: '菜单', value: 'menu' }
+  { label: '菜单', value: 'menu' },
 ])
 
 const statusOptions = ref([
   { label: '全部状态', value: 'all' },
   { label: '启用', value: 'active' },
-  { label: '禁用', value: 'inactive' }
+  { label: '禁用', value: 'inactive' },
 ])
 
 const methodOptions = ref([
@@ -434,7 +339,7 @@ const methodOptions = ref([
   { label: 'POST', value: 'POST' },
   { label: 'PUT', value: 'PUT' },
   { label: 'DELETE', value: 'DELETE' },
-  { label: 'PATCH', value: 'PATCH' }
+  { label: 'PATCH', value: 'PATCH' },
 ])
 
 // 模拟数据
@@ -448,7 +353,7 @@ const mockResources = ref([
     path: '/api/users',
     methods: ['GET'],
     status: 'active',
-    created_at: new Date('2024-01-01')
+    created_at: new Date('2024-01-01'),
   },
   {
     id: '2',
@@ -459,7 +364,7 @@ const mockResources = ref([
     path: '/api/users',
     methods: ['POST'],
     status: 'active',
-    created_at: new Date('2024-01-02')
+    created_at: new Date('2024-01-02'),
   },
   {
     id: '3',
@@ -470,7 +375,7 @@ const mockResources = ref([
     path: '/api/users/:id',
     methods: ['PUT', 'PATCH'],
     status: 'active',
-    created_at: new Date('2024-01-03')
+    created_at: new Date('2024-01-03'),
   },
   {
     id: '4',
@@ -481,7 +386,7 @@ const mockResources = ref([
     path: '/api/users/:id',
     methods: ['DELETE'],
     status: 'active',
-    created_at: new Date('2024-01-04')
+    created_at: new Date('2024-01-04'),
   },
   {
     id: '5',
@@ -492,31 +397,32 @@ const mockResources = ref([
     path: '/dashboard',
     methods: [],
     status: 'active',
-    created_at: new Date('2024-01-05')
-  }
+    created_at: new Date('2024-01-05'),
+  },
 ])
 
 // 计算属性
 const filteredResources = computed(() => {
   let result = mockResources.value
-  
+
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(resource =>
-      resource.key.toLowerCase().includes(query)
-      || resource.name.toLowerCase().includes(query)
-      || (resource.description && resource.description.toLowerCase().includes(query))
+    result = result.filter(
+      resource =>
+        resource.key.toLowerCase().includes(query) ||
+        resource.name.toLowerCase().includes(query) ||
+        (resource.description && resource.description.toLowerCase().includes(query))
     )
   }
-  
+
   if (typeFilter.value && typeFilter.value !== 'all') {
     result = result.filter(resource => resource.type === typeFilter.value)
   }
-  
+
   if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(resource => resource.status === statusFilter.value)
   }
-  
+
   return result
 })
 
@@ -529,7 +435,7 @@ const typeMap: Record<string, string> = {
   data: '数据',
   api: 'API',
   button: '按钮',
-  menu: '菜单'
+  menu: '菜单',
 }
 
 const severityMap: Record<string, string> = {
@@ -538,7 +444,7 @@ const severityMap: Record<string, string> = {
   data: 'warn',
   api: 'danger',
   button: 'secondary',
-  menu: 'contrast'
+  menu: 'contrast',
 }
 
 // 方法
@@ -549,7 +455,7 @@ const getResourceIcon = (type: string) => {
     data: 'pi pi-database',
     api: 'pi pi-server',
     button: 'pi pi-circle',
-    menu: 'pi pi-bars'
+    menu: 'pi pi-bars',
   }
   return iconMap[type] || 'pi pi-circle'
 }
@@ -563,7 +469,7 @@ const getStatusSeverity = (status: string) => {
   const severityMap: Record<string, string> = {
     active: 'default',
     inactive: 'destructive',
-    pending: 'secondary'
+    pending: 'secondary',
   }
   return severityMap[status] || 'outline'
 }
@@ -576,11 +482,9 @@ const loadResources = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('加载资源失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -594,7 +498,7 @@ const openCreateDialog = () => {
     description: '',
     path: '',
     methods: [],
-    status: 'active'
+    status: 'active',
   })
   showDialog.value = true
 }
@@ -608,7 +512,7 @@ const editResource = (resource: any) => {
     description: resource.description,
     path: resource.path,
     methods: resource.methods,
-    status: resource.status
+    status: resource.status,
   })
   showDialog.value = true
 }
@@ -627,7 +531,7 @@ const saveResource = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (editingResource.value) {
       // 更新资源
       const index = mockResources.value.findIndex(r => r.id === editingResource.value.id)
@@ -643,24 +547,21 @@ const saveResource = async () => {
         }
       }
       toast.success('资源更新成功')
-    }
-    else {
+    } else {
       // 新增资源
       const newResource = {
         id: Date.now().toString(),
         ...resourceForm.value,
-        created_at: new Date()
+        created_at: new Date(),
       }
       mockResources.value.push(newResource)
       toast.success('资源添加成功')
     }
-    
+
     closeDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存资源失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -684,7 +585,7 @@ const handleBatchDelete = () => {
     toast.warning('请选择要删除的资源')
     return
   }
-  
+
   if (confirm(`确定要删除选中的 ${selectedResources.value.length} 个资源吗？`)) {
     const selectedIds = selectedResources.value.map((r: any) => r.id)
     mockResources.value = mockResources.value.filter(resource => !selectedIds.includes(resource.id))

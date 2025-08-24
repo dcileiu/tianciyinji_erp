@@ -72,44 +72,32 @@
           <div class="flex flex-col md:flex-row gap-4 flex-1">
             <div class="flex-1 relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                v-model="searchQuery"
-                placeholder="搜索角色名称或描述..."
-                class="pl-10"
-              />
+              <Input v-model="searchQuery" placeholder="搜索角色名称或描述..." class="pl-10" />
             </div>
-            
+
             <Select v-model="selectedType">
               <SelectTrigger class="w-full md:w-48">
                 <SelectValue placeholder="选择类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in typeOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in typeOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select v-model="selectedStatus">
               <SelectTrigger class="w-full md:w-48">
                 <SelectValue placeholder="选择状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="option in statusOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
-          
+
           <div class="flex gap-2">
             <Button variant="outline" @click="resetFilters">
               <FilterX class="w-4 h-4 mr-2" />
@@ -139,7 +127,7 @@
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent>
         <div v-if="loading" class="space-y-4">
           <div v-for="i in 5" :key="i" class="flex items-center space-x-4 p-4">
@@ -150,12 +138,12 @@
             </div>
           </div>
         </div>
-        
+
         <div v-else-if="filteredRoles.length === 0" class="text-center py-8">
           <Shield class="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <p class="text-muted-foreground">暂无角色数据</p>
         </div>
-        
+
         <div v-else>
           <Table>
             <TableHeader>
@@ -210,9 +198,9 @@
                       </Button>
                     </PermissionWrapper>
                     <PermissionWrapper :has-permission="canDeleteRole">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         :disabled="role.type === 'system'"
                         @click="confirmDeleteRole(role)"
                       >
@@ -234,7 +222,7 @@
         <DialogHeader>
           <DialogTitle>{{ editingRole ? '编辑角色' : '新增角色' }}</DialogTitle>
         </DialogHeader>
-        
+
         <div class="space-y-6">
           <!-- 基本信息 -->
           <Card>
@@ -245,18 +233,12 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <Label>角色名称 *</Label>
-                  <Input
-                    v-model="roleForm.name"
-                    placeholder="请输入角色名称"
-                  />
+                  <Input v-model="roleForm.name" placeholder="请输入角色名称" />
                 </div>
 
                 <div class="space-y-2">
                   <Label>角色类型</Label>
-                  <Select 
-                    v-model="roleForm.type" 
-                    :disabled="editingRole && editingRole.type === 'system'"
-                  >
+                  <Select v-model="roleForm.type" :disabled="editingRole && editingRole.type === 'system'">
                     <SelectTrigger>
                       <SelectValue placeholder="选择类型" />
                     </SelectTrigger>
@@ -271,16 +253,12 @@
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div class="space-y-2 md:col-span-2">
                   <Label>角色描述</Label>
-                  <Textarea
-                    v-model="roleForm.description"
-                    placeholder="请输入角色描述"
-                    :rows="2"
-                  />
+                  <Textarea v-model="roleForm.description" placeholder="请输入角色描述" :rows="2" />
                 </div>
-                
+
                 <div class="space-y-2">
                   <Label>状态</Label>
                   <Select v-model="roleForm.status">
@@ -364,22 +342,26 @@
         <DialogHeader>
           <DialogTitle>权限详情</DialogTitle>
         </DialogHeader>
-        
+
         <div v-if="viewingRole" class="space-y-6">
           <div class="text-center space-y-2">
             <h3 class="text-xl font-semibold">{{ viewingRole.name }}</h3>
             <p class="text-muted-foreground">{{ viewingRole.description }}</p>
           </div>
-          
+
           <Separator />
-          
+
           <Card>
             <CardHeader>
               <CardTitle class="text-lg">已分配权限</CardTitle>
             </CardHeader>
             <CardContent>
               <div class="space-y-3">
-                <div v-for="permission in viewingRole.permissions" :key="permission" class="flex items-center space-x-2">
+                <div
+                  v-for="permission in viewingRole.permissions"
+                  :key="permission"
+                  class="flex items-center space-x-2"
+                >
                   <Check class="w-4 h-4 text-green-500" />
                   <span>{{ getPermissionName(permission) }}</span>
                 </div>
@@ -395,29 +377,34 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Plus, Shield, CheckCircle, Settings, Users, Search, FilterX, Download, RefreshCw, Eye, Edit, Trash2, Check, X } from 'lucide-vue-next'
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref } from 'vue'
+// UI组件现在自动导入，无需手动导入
+import {
+  Check,
+  CheckCircle,
+  Download,
+  Edit,
+  Eye,
+  FilterX,
+  Plus,
+  RefreshCw,
+  Search,
+  Settings,
+  Shield,
+  Trash2,
+  Users,
+  X,
+} from 'lucide-vue-next'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '角色管理 - ERP 管理系统'
+  title: '角色管理 - ERP 管理系统',
 })
 
 // 响应式数据
@@ -431,22 +418,22 @@ const viewingRole = ref(null as any)
 const submitting = ref(false)
 const loading = ref(false)
 // 图标组件映射
-const getIconComponent = (iconName) => {
+const getIconComponent = iconName => {
   const iconMap = {
-    'Users': Users,
-    'Shield': Shield,
-    'Settings': Settings,
-    'Eye': Eye,
-    'Edit': Edit,
-    'Check': Check,
-    'Plus': Plus,
-    'Trash2': Trash2
+    Users: Users,
+    Shield: Shield,
+    Settings: Settings,
+    Eye: Eye,
+    Edit: Edit,
+    Check: Check,
+    Plus: Plus,
+    Trash2: Trash2,
   }
   return iconMap[iconName] || Shield
 }
 
 // 切换权限组
-const toggleGroupPermissions = (group) => {
+const toggleGroupPermissions = group => {
   const allSelected = group.children.every(child => selectedPermissions.value[child.key])
   group.children.forEach(child => {
     selectedPermissions.value[child.key] = !allSelected
@@ -464,7 +451,7 @@ const roleStats = reactive({
   totalRoles: 0,
   activeRoles: 0,
   systemRoles: 0,
-  customRoles: 0
+  customRoles: 0,
 })
 
 // 表单数据
@@ -473,20 +460,20 @@ const roleForm = reactive({
   description: '',
   type: 'custom',
   status: 'active',
-  permissions: []
+  permissions: [],
 })
 
 // 选项数据
 const typeOptions = ref([
   { label: '全部类型', value: '' },
   { label: '系统角色', value: 'system' },
-  { label: '自定义角色', value: 'custom' }
+  { label: '自定义角色', value: 'custom' },
 ])
 
 const statusOptions = ref([
   { label: '全部状态', value: '' },
   { label: '启用', value: 'active' },
-  { label: '停用', value: 'inactive' }
+  { label: '停用', value: 'inactive' },
 ])
 
 // 权限树数据
@@ -499,8 +486,8 @@ const permissionTree = ref([
       { key: 'user:view', label: '查看用户', icon: 'Eye' },
       { key: 'user:create', label: '新增用户', icon: 'Plus' },
       { key: 'user:edit', label: '编辑用户', icon: 'Edit' },
-      { key: 'user:delete', label: '删除用户', icon: 'Trash2' }
-    ]
+      { key: 'user:delete', label: '删除用户', icon: 'Trash2' },
+    ],
   },
   {
     key: 'role',
@@ -510,8 +497,8 @@ const permissionTree = ref([
       { key: 'role:view', label: '查看角色', icon: 'Eye' },
       { key: 'role:create', label: '新增角色', icon: 'Plus' },
       { key: 'role:edit', label: '编辑角色', icon: 'Edit' },
-      { key: 'role:delete', label: '删除角色', icon: 'Trash2' }
-    ]
+      { key: 'role:delete', label: '删除角色', icon: 'Trash2' },
+    ],
   },
   {
     key: 'product',
@@ -521,9 +508,9 @@ const permissionTree = ref([
       { key: 'product:view', label: '查看产品', icon: 'Eye' },
       { key: 'product:create', label: '新增产品', icon: 'Plus' },
       { key: 'product:edit', label: '编辑产品', icon: 'Edit' },
-      { key: 'product:delete', label: '删除产品', icon: 'Trash2' }
-    ]
-  }
+      { key: 'product:delete', label: '删除产品', icon: 'Trash2' },
+    ],
+  },
 ])
 
 // 模拟角色数据
@@ -534,9 +521,18 @@ const roles = ref([
     description: '系统最高权限管理员',
     type: 'system',
     status: 'active',
-    permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete'],
+    permissions: [
+      'user:view',
+      'user:create',
+      'user:edit',
+      'user:delete',
+      'role:view',
+      'role:create',
+      'role:edit',
+      'role:delete',
+    ],
     user_count: 1,
-    created_at: new Date('2024-01-01')
+    created_at: new Date('2024-01-01'),
   },
   {
     id: '2',
@@ -546,7 +542,7 @@ const roles = ref([
     status: 'active',
     permissions: ['product:view', 'product:create', 'product:edit'],
     user_count: 3,
-    created_at: new Date('2024-01-02')
+    created_at: new Date('2024-01-02'),
   },
   {
     id: '3',
@@ -556,19 +552,20 @@ const roles = ref([
     status: 'active',
     permissions: ['product:view'],
     user_count: 10,
-    created_at: new Date('2024-01-03')
-  }
+    created_at: new Date('2024-01-03'),
+  },
 ] as any[])
 
 // 计算属性
 const filteredRoles = computed(() => {
-  return roles.value.filter((role) => {
-    const matchesSearch = !searchQuery.value 
-      || role.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      || role.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return roles.value.filter(role => {
+    const matchesSearch =
+      !searchQuery.value ||
+      role.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      role.description.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesType = !selectedType.value || role.type === selectedType.value
     const matchesStatus = !selectedStatus.value || role.status === selectedStatus.value
-  
+
     return matchesSearch && matchesType && matchesStatus
   })
 })
@@ -577,7 +574,7 @@ const filteredRoles = computed(() => {
 const getTypeDisplayName = (type: string): string => {
   const typeMap: Record<string, string> = {
     system: '系统角色',
-    custom: '自定义'
+    custom: '自定义',
   }
   return typeMap[type] || type
 }
@@ -586,7 +583,7 @@ const getTypeVariant = (type: string): string => {
   const variantMap: Record<string, string> = {
     system: 'destructive',
     custom: 'default',
-    business: 'secondary'
+    business: 'secondary',
   }
   return variantMap[type] || 'default'
 }
@@ -594,7 +591,7 @@ const getTypeVariant = (type: string): string => {
 const getStatusDisplayName = (status: string): string => {
   const statusMap: Record<string, string> = {
     active: '启用',
-    inactive: '停用'
+    inactive: '停用',
   }
   return statusMap[status] || status
 }
@@ -602,7 +599,7 @@ const getStatusDisplayName = (status: string): string => {
 const getStatusVariant = (status: string): string => {
   const variantMap: Record<string, string> = {
     active: 'default',
-    inactive: 'secondary'
+    inactive: 'secondary',
   }
   return variantMap[status] || 'secondary'
 }
@@ -624,7 +621,7 @@ const getPermissionName = (permission: string): string => {
     'product:view': '查看产品',
     'product:create': '新增产品',
     'product:edit': '编辑产品',
-    'product:delete': '删除产品'
+    'product:delete': '删除产品',
   }
   return permissionMap[permission] || permission
 }
@@ -642,7 +639,7 @@ const openCreateDialog = () => {
     description: '',
     type: 'custom',
     status: 'active',
-    permissions: []
+    permissions: [],
   })
   selectedPermissions.value = {}
   showRoleDialog.value = true
@@ -665,9 +662,9 @@ const editRole = (role: any) => {
     description: role.description,
     type: role.type,
     status: role.status,
-    permissions: role.permissions || []
+    permissions: role.permissions || [],
   })
-  
+
   // 设置权限选择状态
   const selections: any = {}
   if (role.permissions) {
@@ -676,7 +673,7 @@ const editRole = (role: any) => {
     })
   }
   selectedPermissions.value = selections
-  
+
   showRoleDialog.value = true
 }
 
@@ -684,12 +681,10 @@ const submitRole = async () => {
   submitting.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     // 获取选中的权限
-    const permissions = Object.keys(selectedPermissions.value).filter(key => 
-      selectedPermissions.value[key]?.checked
-    )
-    
+    const permissions = Object.keys(selectedPermissions.value).filter(key => selectedPermissions.value[key]?.checked)
+
     if (editingRole.value) {
       // 更新角色
       const index = roles.value.findIndex(r => r.id === (editingRole.value as any).id)
@@ -699,29 +694,26 @@ const submitRole = async () => {
           description: roleForm.description,
           type: roleForm.type,
           status: roleForm.status,
-          permissions
+          permissions,
         })
       }
-    }
-    else {
+    } else {
       // 新增角色
       const newRole = {
         id: Date.now().toString(),
         ...roleForm,
         permissions,
         user_count: 0,
-        created_at: new Date()
+        created_at: new Date(),
       }
       roles.value.push(newRole)
     }
-    
+
     closeRoleDialog()
     updateStats()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存角色失败:', error)
-  }
-  finally {
+  } finally {
     submitting.value = false
   }
 }

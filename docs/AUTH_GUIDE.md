@@ -33,6 +33,7 @@ SUPABASE_ANON_KEY=your-anon-key
 在 Supabase 项目中配置：
 
 #### 认证设置
+
 - 启用邮箱认证
 - 设置邮箱确认要求（推荐开启）
 - 配置重定向 URL：
@@ -40,6 +41,7 @@ SUPABASE_ANON_KEY=your-anon-key
   - `http://localhost:3000/auth/reset-password`
 
 #### 邮件模板（可选）
+
 - 自定义邮箱验证邮件模板
 - 自定义密码重置邮件模板
 
@@ -73,6 +75,7 @@ SUPABASE_ANON_KEY=your-anon-key
 ## 页面路由
 
 ### 公开页面（无需登录）
+
 - `/` - 首页
 - `/login` - 登录页面
 - `/register` - 注册页面
@@ -81,6 +84,7 @@ SUPABASE_ANON_KEY=your-anon-key
 - `/auth/reset-password` - 密码重置
 
 ### 受保护页面（需要登录）
+
 - `/dashboard` - 仪表板
 - `/master-data/*` - 主数据管理
 - `/warehouse/*` - 仓库管理
@@ -95,17 +99,17 @@ SUPABASE_ANON_KEY=your-anon-key
 ```typescript
 const {
   // 状态
-  user,                    // 当前用户信息
-  isLoading,              // 是否正在加载
-  isAuthenticated,        // 是否已认证
+  user, // 当前用户信息
+  isLoading, // 是否正在加载
+  isAuthenticated, // 是否已认证
 
   // 方法
-  login,                  // 登录
-  register,               // 注册
-  logout,                 // 登出
-  resetPassword,          // 重置密码
-  updatePassword,         // 更新密码
-  updateProfile          // 更新用户信息
+  login, // 登录
+  register, // 注册
+  logout, // 登出
+  resetPassword, // 重置密码
+  updatePassword, // 更新密码
+  updateProfile, // 更新用户信息
 } = useAuth()
 ```
 
@@ -119,9 +123,7 @@ const {
       欢迎，{{ user?.email }}！
       <button @click="handleLogout">退出</button>
     </div>
-    <div v-else>
-      请先登录
-    </div>
+    <div v-else>请先登录</div>
   </div>
 </template>
 
@@ -143,7 +145,7 @@ const handleLogout = async () => {
 ```typescript
 // pages/dashboard.vue
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
 })
 ```
 
@@ -232,6 +234,7 @@ console.log(useSupabaseSession().value)
 ### 调试技巧
 
 1. **启用调试日志**
+
    ```typescript
    // 在 composables/useAuth.ts 中
    console.log('Auth state changed:', event, session?.user?.email)
@@ -266,4 +269,4 @@ console.log(useSupabaseSession().value)
 4. **用户资料管理**
    - 头像上传
    - 个人信息编辑
-   - 偏好设置 
+   - 偏好设置

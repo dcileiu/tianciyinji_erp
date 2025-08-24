@@ -20,14 +20,14 @@ export interface Customer {
   customer_no: string
   name: string
   contact_person: string
-  contact_phone?: string  // 添加这个属性
+  contact_phone?: string // 添加这个属性
   phone: string
-  email?: string  // 可选字段，因为创建时可能为null
-  address?: string  // 可选字段，因为创建时可能为null
+  email?: string // 可选字段，因为创建时可能为null
+  address?: string // 可选字段，因为创建时可能为null
   type: 'enterprise' | 'individual' | 'distributor'
-  customer_type?: string  // 添加这个属性以兼容旧代码
+  customer_type?: string // 添加这个属性以兼容旧代码
   region: string
-  status: 'active' | 'inactive' | 'potential' | 'suspended'  // 添加suspended状态
+  status: 'active' | 'inactive' | 'potential' | 'suspended' // 添加suspended状态
   credit_limit: number
   created_at: string
   updated_at: string
@@ -39,16 +39,16 @@ export interface Supplier {
   supplier_no: string
   name: string
   contact_person: string
-  contact_phone?: string  // 添加这个属性
+  contact_phone?: string // 添加这个属性
   phone: string
-  email?: string  // 可选字段，因为创建时可能为null
-  address?: string  // 可选字段，因为创建时可能为null
+  email?: string // 可选字段，因为创建时可能为null
+  address?: string // 可选字段，因为创建时可能为null
   type: 'raw_material' | 'equipment' | 'service' | 'logistics'
-  supplier_type?: string  // 添加这个属性以兼容旧代码
+  supplier_type?: string // 添加这个属性以兼容旧代码
   rating: 'A' | 'B' | 'C' | 'D'
   status: 'active' | 'inactive' | 'suspended' | 'terminated' | 'potential'
   payment_terms: string
-  region?: string  // 添加这个属性
+  region?: string // 添加这个属性
   created_at: string
   updated_at: string
 }
@@ -66,9 +66,9 @@ export interface Product {
   cost_price: number
   min_stock: number
   max_stock: number
-  current_stock: number  // 添加当前库存字段
-  barcode?: string  // 添加条形码字段
-  supplier_name?: string  // 添加供应商名称字段
+  current_stock: number // 添加当前库存字段
+  barcode?: string // 添加条形码字段
+  supplier_name?: string // 添加供应商名称字段
   status: 'active' | 'inactive' | 'discontinued'
   supplier_id?: string
   created_at: string
@@ -92,7 +92,7 @@ export interface Warehouse {
 export interface Inventory {
   id: string
   product_id: string
-  warehouse: string  // 仓库名称
+  warehouse: string // 仓库名称
   warehouse_id?: string
   location?: string
   current_stock: number
@@ -276,7 +276,7 @@ export interface PaginationParams {
   search?: string
   sortBy?: string
   sortOrder?: 'asc' | 'desc'
-  orderBy?: { column: string, ascending: boolean }
+  orderBy?: { column: string; ascending: boolean }
   filters?: Record<string, any>
 }
 

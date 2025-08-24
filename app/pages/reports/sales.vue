@@ -27,13 +27,9 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-foreground">日期范围</label>
-            <Input
-              v-model="dateRange"
-              type="date"
-              placeholder="选择日期范围"
-            />
+            <Input v-model="dateRange" type="date" placeholder="选择日期范围" />
           </div>
-          
+
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-foreground">客户筛选</label>
             <Select v-model="customerFilter">
@@ -52,11 +48,7 @@
             <label class="text-sm font-medium text-foreground">搜索</label>
             <div class="relative">
               <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                v-model="searchQuery"
-                placeholder="搜索订单号、产品..."
-                class="pl-10"
-              />
+              <Input v-model="searchQuery" placeholder="搜索订单号、产品..." class="pl-10" />
             </div>
           </div>
         </div>
@@ -78,13 +70,15 @@
                 <span>+15.2%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center text-white"
+            >
               <DollarSign class="w-6 h-6" />
             </div>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
@@ -96,13 +90,15 @@
                 <span>+8.3%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white"
+            >
               <ShoppingCart class="w-6 h-6" />
             </div>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
@@ -116,13 +112,15 @@
                 <span>+12.1%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white"
+            >
               <Calculator class="w-6 h-6" />
             </div>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
@@ -134,7 +132,9 @@
                 <span>+6.7%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center text-white">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center text-white"
+            >
               <Users class="w-6 h-6" />
             </div>
           </div>
@@ -147,11 +147,7 @@
       <CardHeader>
         <div class="flex justify-between items-center">
           <CardTitle class="text-lg font-semibold">销售明细</CardTitle>
-          <Button 
-            variant="outline" 
-            size="sm"
-            @click="exportData"
-          >
+          <Button variant="outline" size="sm" @click="exportData">
             <Download class="w-4 h-4 mr-2" />
             导出
           </Button>
@@ -165,19 +161,15 @@
             <Skeleton class="h-4 w-full" />
           </div>
         </div>
-        
+
         <div v-else-if="filteredSalesData.length === 0" class="text-center py-8">
           <div class="text-muted-foreground mb-2">暂无销售数据</div>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            @click="refreshData"
-          >
+          <Button variant="ghost" size="sm" @click="refreshData">
             <RefreshCw class="w-4 h-4 mr-2" />
             刷新数据
           </Button>
         </div>
-        
+
         <Table v-else>
           <TableHeader>
             <TableRow>
@@ -192,7 +184,6 @@
             </TableRow>
           </TableHeader>
           <TableBody>
-
             <TableRow v-for="item in filteredSalesData" :key="item.id">
               <TableCell>
                 <div class="flex items-center gap-3">
@@ -211,9 +202,7 @@
               <TableCell>{{ item.quantity }}</TableCell>
               <TableCell>¥{{ formatCurrency(item.unit_price) }}</TableCell>
               <TableCell>
-                <span class="font-semibold text-green-600">
-                  ¥{{ formatCurrency(item.total_amount) }}
-                </span>
+                <span class="font-semibold text-green-600"> ¥{{ formatCurrency(item.total_amount) }} </span>
               </TableCell>
               <TableCell>
                 <span class="text-sm text-muted-foreground">
@@ -253,24 +242,30 @@
 </template>
 
 <script setup lang="ts">
+// UI组件现在自动导入，无需手动导入
+
 import { ref, computed } from 'vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Download, RefreshCw, Search, DollarSign, ShoppingCart, Calculator, Users, ArrowUp, BarChart3, Eye } from 'lucide-vue-next'
+
+import {
+  Download,
+  RefreshCw,
+  Search,
+  DollarSign,
+  ShoppingCart,
+  Calculator,
+  Users,
+  ArrowUp,
+  BarChart3,
+  Eye,
+} from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '销售报表 - ERP 管理系统'
+  title: '销售报表 - ERP 管理系统',
 })
 
 // 页面状态
@@ -284,7 +279,7 @@ const salesStats = ref({
   totalAmount: 1250000,
   totalOrders: 156,
   avgOrderAmount: 8013,
-  activeCustomers: 45
+  activeCustomers: 45,
 })
 
 // 客户选项
@@ -293,7 +288,7 @@ const customerOptions = ref([
   { label: '苏州华智科技有限公司', value: 'C001' },
   { label: '上海浦东制造有限公司', value: 'C002' },
   { label: '北京智能设备有限公司', value: 'C003' },
-  { label: '深圳创新科技有限公司', value: 'C004' }
+  { label: '深圳创新科技有限公司', value: 'C004' },
 ])
 
 // 销售明细数据
@@ -307,7 +302,7 @@ const salesDetails = ref([
     unit_price: 2500,
     total_amount: 25000,
     order_date: '2025-01-15',
-    status: 'completed'
+    status: 'completed',
   },
   {
     id: '2',
@@ -318,7 +313,7 @@ const salesDetails = ref([
     unit_price: 150,
     total_amount: 7500,
     order_date: '2025-01-16',
-    status: 'processing'
+    status: 'processing',
   },
   {
     id: '3',
@@ -329,7 +324,7 @@ const salesDetails = ref([
     unit_price: 8000,
     total_amount: 40000,
     order_date: '2025-01-17',
-    status: 'pending'
+    status: 'pending',
   },
   {
     id: '4',
@@ -340,8 +335,8 @@ const salesDetails = ref([
     unit_price: 50000,
     total_amount: 100000,
     order_date: '2025-01-18',
-    status: 'completed'
-  }
+    status: 'completed',
+  },
 ])
 
 // 计算属性
@@ -349,10 +344,11 @@ const filteredSalesData = computed(() => {
   let result = salesDetails.value
 
   if (searchQuery.value) {
-    result = result.filter(item =>
-      item.order_no.toLowerCase().includes(searchQuery.value.toLowerCase())
-      || item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      || item.customer_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    result = result.filter(
+      item =>
+        item.order_no.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.customer_name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
 
@@ -371,7 +367,7 @@ const filteredSalesData = computed(() => {
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('zh-CN', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   }).format(amount)
 }
 
@@ -379,7 +375,7 @@ const formatDate = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   })
 }
 
@@ -388,7 +384,7 @@ const getStatusText = (status: string) => {
     pending: '待处理',
     processing: '处理中',
     completed: '已完成',
-    cancelled: '已取消'
+    cancelled: '已取消',
   }
   return statusMap[status] || status
 }
@@ -398,7 +394,7 @@ const getStatusVariant = (status: string) => {
     pending: 'secondary',
     processing: 'default',
     completed: 'default',
-    cancelled: 'destructive'
+    cancelled: 'destructive',
   }
   return variantMap[status] || 'secondary'
 }
@@ -416,5 +412,3 @@ const refreshData = () => {
   }, 1000)
 }
 </script>
-
-

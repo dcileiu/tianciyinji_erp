@@ -6,11 +6,7 @@
         <h1 class="text-3xl font-bold text-color">库存调拨</h1>
         <p class="text-muted-color mt-2">管理仓库间库存调拨</p>
       </div>
-      <Button
-        label="新建调拨单"
-        icon="pi pi-plus"
-        @click="openTransferDialog()"
-      />
+      <Button label="新建调拨单" icon="pi pi-plus" @click="openTransferDialog()" />
     </div>
 
     <!-- 筛选区域 -->
@@ -47,26 +43,12 @@
               <InputIcon>
                 <i class="pi pi-search"></i>
               </InputIcon>
-              <InputText
-                v-model="filters.search"
-                placeholder="搜索调拨单号、商品..."
-                class="w-full"
-              />
+              <InputText v-model="filters.search" placeholder="搜索调拨单号、商品..." class="w-full" />
             </IconField>
           </div>
           <div class="flex items-end gap-2">
-            <Button
-              label="刷新"
-              icon="pi pi-refresh"
-              outlined
-              @click="loadTransfers"
-            />
-            <Button
-              label="导出"
-              icon="pi pi-download"
-              outlined
-              @click="exportTransfers"
-            />
+            <Button label="刷新" icon="pi pi-refresh" outlined @click="loadTransfers" />
+            <Button label="导出" icon="pi pi-download" outlined @click="exportTransfers" />
           </div>
         </div>
       </template>
@@ -77,9 +59,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">调拨单列表</h3>
-          <div class="flex items-center gap-2 text-sm text-muted-color">
-            共 {{ totalCount }} 条记录
-          </div>
+          <div class="flex items-center gap-2 text-sm text-muted-color">共 {{ totalCount }} 条记录</div>
         </div>
       </template>
 
@@ -100,7 +80,7 @@
               </code>
             </template>
           </Column>
-          
+
           <Column field="from_warehouse_name" header="调出仓库" sortable>
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
@@ -109,7 +89,7 @@
               </div>
             </template>
           </Column>
-          
+
           <Column field="to_warehouse_name" header="调入仓库" sortable>
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
@@ -118,19 +98,19 @@
               </div>
             </template>
           </Column>
-          
+
           <Column field="items_count" header="商品数量">
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.items.length }} 种商品</span>
             </template>
           </Column>
-          
+
           <Column field="total_quantity" header="总数量">
             <template #body="slotProps">
               <span class="font-medium">{{ slotProps.data.total_quantity }}</span>
             </template>
           </Column>
-          
+
           <Column field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
@@ -139,20 +119,16 @@
               />
             </template>
           </Column>
-          
+
           <Column field="operator_name" header="操作人">
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
-                <Avatar
-                  :label="slotProps.data.operator_name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
+                <Avatar :label="slotProps.data.operator_name.charAt(0)" shape="circle" size="small" />
                 <span class="text-sm">{{ slotProps.data.operator_name }}</span>
               </div>
             </template>
           </Column>
-          
+
           <Column field="created_at" header="创建时间" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
@@ -160,7 +136,7 @@
               </span>
             </template>
           </Column>
-          
+
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
@@ -220,13 +196,9 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">调拨单号</label>
-              <InputText
-                v-model="transferForm.transfer_no"
-                :disabled="true"
-                placeholder="系统自动生成"
-              />
+              <InputText v-model="transferForm.transfer_no" :disabled="true" placeholder="系统自动生成" />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">状态</label>
               <Dropdown
@@ -239,7 +211,7 @@
               />
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">调出仓库 *</label>
@@ -253,7 +225,7 @@
                 required
               />
             </div>
-            
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">调入仓库 *</label>
               <Dropdown
@@ -267,7 +239,7 @@
               />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">备注</label>
             <Textarea
@@ -277,7 +249,7 @@
               :disabled="dialogMode === 'view'"
             />
           </div>
-          
+
           <!-- 调拨商品列表 -->
           <div class="space-y-2">
             <div class="flex items-center justify-between">
@@ -291,23 +263,20 @@
                 @click="addTransferItem"
               />
             </div>
-            
-            <DataTable
-              :value="transferForm.items"
-              class="p-datatable-sm"
-            >
+
+            <DataTable :value="transferForm.items" class="p-datatable-sm">
               <Column field="product_name" header="商品名称">
                 <template #body="slotProps">
                   <span class="font-medium">{{ slotProps.data.product_name }}</span>
                 </template>
               </Column>
-              
+
               <Column field="current_stock" header="当前库存">
                 <template #body="slotProps">
                   <span class="text-sm">{{ slotProps.data.current_stock }} {{ slotProps.data.unit }}</span>
                 </template>
               </Column>
-              
+
               <Column field="transfer_quantity" header="调拨数量">
                 <template #body="slotProps">
                   <div v-if="dialogMode === 'view'">
@@ -322,13 +291,13 @@
                   />
                 </template>
               </Column>
-              
+
               <Column field="unit" header="单位">
                 <template #body="slotProps">
                   <span class="text-sm text-muted-color">{{ slotProps.data.unit }}</span>
                 </template>
               </Column>
-              
+
               <Column v-if="dialogMode !== 'view'" header="操作" :exportable="false">
                 <template #body="slotProps">
                   <Button
@@ -343,27 +312,20 @@
               </Column>
             </DataTable>
           </div>
-          
+
           <!-- 总计 -->
           <div class="border-t pt-4">
             <div class="flex justify-between items-center">
               <span class="text-lg font-medium text-color">总数量：</span>
-              <span class="text-xl font-bold text-primary">
-                {{ totalQuantity }} 件
-              </span>
+              <span class="text-xl font-bold text-primary"> {{ totalQuantity }} 件 </span>
             </div>
           </div>
         </div>
       </template>
-      
+
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeTransferDialog"
-          />
+          <Button label="取消" icon="pi pi-times" outlined @click="closeTransferDialog" />
           <Button
             v-if="dialogMode !== 'view'"
             label="保存"
@@ -374,7 +336,7 @@
         </div>
       </template>
     </Dialog>
-    
+
     <!-- 确认对话框 -->
     <ConfirmDialog />
   </div>
@@ -401,11 +363,11 @@ import type { Transfer, TransferItem } from '~/types/database'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '库存调拨 - ERP 管理系统'
+  title: '库存调拨 - ERP 管理系统',
 })
 
 // 状态管理
@@ -420,7 +382,7 @@ const confirm = useConfirm()
 const filters = ref({
   status: '',
   from_warehouse: '',
-  search: ''
+  search: '',
 })
 
 // 表单数据
@@ -430,7 +392,7 @@ const transferForm = ref({
   to_warehouse_id: '',
   status: 'draft',
   remark: '',
-  items: [] as any[]
+  items: [] as any[],
 })
 
 // 选项数据
@@ -440,13 +402,13 @@ const statusOptions = ref([
   { label: '已批准', value: 'approved' },
   { label: '运输中', value: 'in_transit' },
   { label: '已完成', value: 'completed' },
-  { label: '已取消', value: 'cancelled' }
+  { label: '已取消', value: 'cancelled' },
 ])
 
 const warehouses = ref([
   { id: 'WH001', name: '主仓库' },
   { id: 'WH002', name: '原料仓库' },
-  { id: 'WH003', name: '成品仓库' }
+  { id: 'WH003', name: '成品仓库' },
 ])
 
 // 模拟数据
@@ -468,15 +430,15 @@ const mockTransfers = ref([
         product_name: '商品A',
         current_stock: 500,
         transfer_quantity: 100,
-        unit: '个'
+        unit: '个',
       },
       {
         product_name: '商品B',
         current_stock: 300,
         transfer_quantity: 100,
-        unit: '个'
-      }
-    ]
+        unit: '个',
+      },
+    ],
   },
   {
     id: '2',
@@ -495,10 +457,10 @@ const mockTransfers = ref([
         product_name: '商品C',
         current_stock: 200,
         transfer_quantity: 150,
-        unit: '箱'
-      }
-    ]
-  }
+        unit: '箱',
+      },
+    ],
+  },
 ])
 
 // 计算属性
@@ -507,9 +469,10 @@ const filteredTransfers = computed(() => {
 
   if (filters.value.search) {
     const query = filters.value.search.toLowerCase()
-    result = result.filter(transfer =>
-      transfer.transfer_no.toLowerCase().includes(query)
-      || transfer.items.some(item => item.product_name.toLowerCase().includes(query))
+    result = result.filter(
+      transfer =>
+        transfer.transfer_no.toLowerCase().includes(query) ||
+        transfer.items.some(item => item.product_name.toLowerCase().includes(query))
     )
   }
 
@@ -539,7 +502,7 @@ const statusMap: Record<string, string> = {
   approved: '已批准',
   in_transit: '运输中',
   completed: '已完成',
-  cancelled: '已取消'
+  cancelled: '已取消',
 }
 
 const statusSeverityMap: Record<string, string> = {
@@ -548,7 +511,7 @@ const statusSeverityMap: Record<string, string> = {
   approved: 'info',
   in_transit: 'primary',
   completed: 'success',
-  cancelled: 'danger'
+  cancelled: 'danger',
 }
 
 // 方法
@@ -565,11 +528,9 @@ const loadTransfers = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('加载调拨单失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -584,10 +545,9 @@ const openTransferDialog = (transfer: any = null) => {
       to_warehouse_id: transfer.to_warehouse_id,
       status: transfer.status,
       remark: transfer.remark,
-      items: [...transfer.items]
+      items: [...transfer.items],
     })
-  }
-  else {
+  } else {
     editingTransfer.value = null
     dialogMode.value = 'create'
     transferForm.value = {
@@ -596,7 +556,7 @@ const openTransferDialog = (transfer: any = null) => {
       to_warehouse_id: '',
       status: 'draft',
       remark: '',
-      items: []
+      items: [],
     }
   }
   showDialog.value = true
@@ -611,7 +571,7 @@ const viewTransfer = (transfer: any) => {
     to_warehouse_id: transfer.to_warehouse_id,
     status: transfer.status,
     remark: transfer.remark,
-    items: [...transfer.items]
+    items: [...transfer.items],
   })
   showDialog.value = true
 }
@@ -632,11 +592,10 @@ const approveTransfer = async (transfer: any) => {
         if (index !== -1 && mockTransfers.value[index]) {
           mockTransfers.value[index].status = 'approved'
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('审核失败:', error)
       }
-    }
+    },
   })
 }
 
@@ -647,7 +606,7 @@ const confirmDeleteTransfer = (transfer: any) => {
     icon: 'pi pi-exclamation-triangle',
     accept: () => {
       deleteTransfer(transfer.id)
-    }
+    },
   })
 }
 
@@ -668,7 +627,7 @@ const saveTransfer = () => {
       mockTransfers.value[index] = {
         ...transferForm.value,
         id: editingTransfer.value.id,
-        created_at: mockTransfers.value[index].created_at
+        created_at: mockTransfers.value[index].created_at,
       } as Transfer
     }
   } else {
@@ -676,11 +635,11 @@ const saveTransfer = () => {
     const newTransfer: Transfer = {
       ...transferForm.value,
       id: Date.now().toString(),
-      created_at: new Date()
+      created_at: new Date(),
     } as Transfer
     mockTransfers.value.unshift(newTransfer)
   }
-  
+
   closeTransferDialog()
 }
 
@@ -689,7 +648,7 @@ const addTransferItem = () => {
     product_name: '新商品',
     current_stock: 100,
     transfer_quantity: 1,
-    unit: '个'
+    unit: '个',
   })
 }
 
