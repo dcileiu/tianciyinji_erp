@@ -3,373 +3,364 @@
     <!-- 页面标题 -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-color">系统日志</h1>
-        <p class="text-muted-color">查看和管理系统操作日志</p>
+        <h1 class="text-2xl font-bold text-foreground">系统日志</h1>
+        <p class="text-muted-foreground">查看和管理系统操作日志</p>
       </div>
       <div class="flex gap-2">
         <Button
-          label="导出日志"
-          icon="pi pi-download"
-          outlined
+          variant="outline"
           @click="exportLogs"
-        />
+        >
+          <Download class="w-4 h-4 mr-2" />
+          导出日志
+        </Button>
         <Button
-          label="清空日志"
-          icon="pi pi-trash"
-          severity="danger"
-          outlined
+          variant="outline"
           @click="confirmClearLogs"
-        />
+        >
+          <Trash2 class="w-4 h-4 mr-2" />
+          清空日志
+        </Button>
       </div>
     </div>
 
     <!-- 搜索筛选 -->
     <Card>
-      <template #content>
+      <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
           <div>
-            <label class="block text-sm font-medium mb-1 text-color">搜索</label>
-            <InputText
+            <Label class="text-sm font-medium mb-1">搜索</Label>
+            <Input
               v-model="searchQuery"
               placeholder="用户名、操作内容..."
               class="w-full"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-color">日志类型</label>
-            <Dropdown
-              v-model="logTypeFilter"
-              :options="logTypeOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部类型"
-              show-clear
-              class="w-full"
-            />
+            <Label class="text-sm font-medium mb-1">日志类型</Label>
+            <Select v-model="logTypeFilter">
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="全部类型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部类型</SelectItem>
+                <SelectItem
+                  v-for="option in logTypeOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-color">开始日期</label>
-            <Calendar
+            <Label class="text-sm font-medium mb-1">开始日期</Label>
+            <Input
               v-model="dateRange.start"
-              placeholder="选择开始日期"
+              type="date"
               class="w-full"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-color">结束日期</label>
-            <Calendar
+            <Label class="text-sm font-medium mb-1">结束日期</Label>
+            <Input
               v-model="dateRange.end"
-              placeholder="选择结束日期"
+              type="date"
               class="w-full"
             />
           </div>
           <div class="flex gap-2">
             <Button
-              label="查询"
-              icon="pi pi-search"
               class="flex-1"
               @click="applyFilters"
-            />
+            >
+              <Search class="w-4 h-4 mr-2" />
+              查询
+            </Button>
             <Button
-              label="重置"
-              icon="pi pi-refresh"
-              outlined
+              variant="outline"
               class="flex-1"
               @click="resetFilters"
-            />
+            >
+              <RefreshCw class="w-4 h-4 mr-2" />
+              重置
+            </Button>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 日志统计 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">总日志数</p>
+              <p class="text-sm text-muted-foreground">总日志数</p>
               <p class="text-2xl font-bold text-blue-600">{{ logStats.total }}</p>
             </div>
             <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-              <i class="pi pi-file text-blue-600 text-xl"></i>
+              <FileText class="text-blue-600 w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">今日操作</p>
+              <p class="text-sm text-muted-foreground">今日操作</p>
               <p class="text-2xl font-bold text-green-600">{{ logStats.today }}</p>
             </div>
             <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-              <i class="pi pi-calendar text-green-600 text-xl"></i>
+              <Calendar class="text-green-600 w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">错误日志</p>
+              <p class="text-sm text-muted-foreground">错误日志</p>
               <p class="text-2xl font-bold text-red-600">{{ logStats.errors }}</p>
             </div>
             <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
-              <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
+              <AlertTriangle class="text-red-600 w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">活跃用户</p>
+              <p class="text-sm text-muted-foreground">活跃用户</p>
               <p class="text-2xl font-bold text-purple-600">{{ logStats.activeUsers }}</p>
             </div>
             <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
-              <i class="pi pi-users text-purple-600 text-xl"></i>
+              <Users class="text-purple-600 w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
 
     <!-- 日志列表 -->
     <Card>
-      <template #header>
+      <CardHeader>
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-color">日志记录</h3>
-          <div class="text-sm text-muted-color">
+          <CardTitle class="text-lg font-semibold">日志记录</CardTitle>
+          <div class="text-sm text-muted-foreground">
             共 {{ filteredLogs.length }} 条记录
           </div>
         </div>
-      </template>
+      </CardHeader>
 
-      <template #content>
-        <DataTable
-          :value="filteredLogs"
-          :loading="loading"
-          :paginator="true"
-          :rows="20"
-          :rows-per-page-options="[10, 20, 50]"
-          data-key="id"
-        >
-          <template #loading>
-            <div class="p-6">
-              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
-                <Skeleton shape="circle" size="2.5rem" />
-                <div class="flex-1">
-                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                  <Skeleton width="80%" height="1rem" />
-                </div>
-                <Skeleton width="6rem" height="1.5rem" />
-                <Skeleton width="8rem" height="1rem" />
-              </div>
-            </div>
-          </template>
-          <Column field="type" header="类型" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="getLogTypeDisplayName(slotProps.data.type)"
-                :severity="getLogTypeSeverity(slotProps.data.type)"
-              />
-            </template>
-          </Column>
-          
-          <Column field="user_name" header="用户" sortable>
-            <template #body="slotProps">
-              <div class="flex items-center space-x-2">
-                <Avatar
-                  :label="slotProps.data.user_name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
-                <span class="font-medium">{{ slotProps.data.user_name }}</span>
-              </div>
-            </template>
-          </Column>
-          
-          <Column field="action" header="操作" sortable>
-            <template #body="slotProps">
-              <span class="font-medium">{{ slotProps.data.action }}</span>
-            </template>
-          </Column>
-          
-          <Column field="resource" header="资源">
-            <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm">
-                {{ slotProps.data.resource }}
-              </code>
-            </template>
-          </Column>
-          
-          <Column field="ip_address" header="IP地址">
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">{{ slotProps.data.ip_address }}</span>
-            </template>
-          </Column>
-          
-          <Column field="user_agent" header="用户代理">
-            <template #body="slotProps">
-              <span v-tooltip="slotProps.data.user_agent" class="text-sm text-muted-color">
-                {{ truncateUserAgent(slotProps.data.user_agent) }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column field="status" header="状态" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="slotProps.data.status === 'success' ? '成功' : '失败'"
-                :severity="slotProps.data.status === 'success' ? 'success' : 'danger'"
-              />
-            </template>
-          </Column>
-          
-          <Column field="created_at" header="时间" sortable>
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.created_at) }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column header="操作" :exportable="false">
-            <template #body="slotProps">
-              <Button
-                v-tooltip="'查看详情'"
-                icon="pi pi-eye"
-                rounded
-                text
-                size="small"
-                @click="viewLogDetail(slotProps.data)"
-              />
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+      <CardContent>
+        <div class="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>类型</TableHead>
+                <TableHead>用户</TableHead>
+                <TableHead>操作</TableHead>
+                <TableHead>资源</TableHead>
+                <TableHead>IP地址</TableHead>
+                <TableHead>用户代理</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>时间</TableHead>
+                <TableHead>操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-if="loading">
+                <TableCell colspan="9" class="text-center py-8">
+                  <div class="flex items-center justify-center">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                    <span class="ml-2">加载中...</span>
+                  </div>
+                </TableCell>
+              </TableRow>
+              <TableRow v-else-if="filteredLogs.length === 0">
+                <TableCell colspan="9" class="text-center py-8 text-muted-foreground">
+                  暂无数据
+                </TableCell>
+              </TableRow>
+              <TableRow v-else v-for="log in filteredLogs" :key="log.id">
+                <TableCell>
+                  <Badge
+                    :variant="getLogTypeSeverity(log.type) === 'danger' ? 'destructive' : getLogTypeSeverity(log.type) === 'success' ? 'default' : 'secondary'"
+                  >
+                    {{ getLogTypeDisplayName(log.type) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium">
+                      {{ log.user_name.charAt(0) }}
+                    </div>
+                    <span class="font-medium">{{ log.user_name }}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                   <span class="font-medium">{{ log.action }}</span>
+                 </TableCell>
+                 <TableCell>
+                   <code class="bg-muted px-2 py-1 rounded text-sm">
+                     {{ log.resource }}
+                   </code>
+                 </TableCell>
+                 <TableCell>
+                   <span class="text-sm text-muted-foreground">{{ log.ip_address }}</span>
+                 </TableCell>
+                 <TableCell>
+                   <span class="text-sm text-muted-foreground" :title="log.user_agent">
+                     {{ truncateUserAgent(log.user_agent) }}
+                   </span>
+                 </TableCell>
+                 <TableCell>
+                   <Badge
+                     :variant="log.status === 'success' ? 'default' : 'destructive'"
+                   >
+                     {{ log.status === 'success' ? '成功' : '失败' }}
+                   </Badge>
+                 </TableCell>
+                 <TableCell>
+                   <span class="text-sm text-muted-foreground">
+                     {{ formatDate(log.created_at) }}
+                   </span>
+                 </TableCell>
+                 <TableCell>
+                   <Button
+                     variant="ghost"
+                     size="sm"
+                     @click="viewLogDetail(log)"
+                   >
+                     <Eye class="w-4 h-4" />
+                   </Button>
+                 </TableCell>
+               </TableRow>
+             </TableBody>
+           </Table>
+         </div>
+       </CardContent>
     </Card>
 
     <!-- 日志详情对话框 -->
-    <Dialog
-      v-model:visible="showLogDetail"
-      header="日志详情"
-      :style="{ width: '700px' }"
-      modal
-    >
-      <template #default>
+    <Dialog v-model:open="showLogDetail">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>日志详情</DialogTitle>
+        </DialogHeader>
         <div v-if="selectedLog" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-color mb-1">日志类型</label>
-              <Tag
-                :value="getLogTypeDisplayName(selectedLog.type)"
-                :severity="getLogTypeSeverity(selectedLog.type)"
-              />
+              <Label class="text-sm font-medium">日志类型</Label>
+              <div class="mt-1">
+                <Badge
+                  :variant="getLogTypeSeverity(selectedLog.type) === 'danger' ? 'destructive' : getLogTypeSeverity(selectedLog.type) === 'success' ? 'default' : 'secondary'"
+                >
+                  {{ getLogTypeDisplayName(selectedLog.type) }}
+                </Badge>
+              </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-color mb-1">状态</label>
-              <Tag
-                :value="selectedLog.status === 'success' ? '成功' : '失败'"
-                :severity="selectedLog.status === 'success' ? 'success' : 'danger'"
-              />
+              <Label class="text-sm font-medium">状态</Label>
+              <div class="mt-1">
+                <Badge
+                  :variant="selectedLog.status === 'success' ? 'default' : 'destructive'"
+                >
+                  {{ selectedLog.status === 'success' ? '成功' : '失败' }}
+                </Badge>
+              </div>
             </div>
           </div>
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-color mb-1">用户</label>
-              <p class="text-sm">{{ selectedLog.user_name }}</p>
+              <Label class="text-sm font-medium">用户</Label>
+              <p class="text-sm mt-1">{{ selectedLog.user_name }}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-color mb-1">操作时间</label>
-              <p class="text-sm">{{ formatDate(selectedLog.created_at) }}</p>
+              <Label class="text-sm font-medium">操作时间</Label>
+              <p class="text-sm mt-1">{{ formatDate(selectedLog.created_at) }}</p>
             </div>
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-color mb-1">操作</label>
-            <p class="text-sm">{{ selectedLog.action }}</p>
+            <Label class="text-sm font-medium">操作</Label>
+            <p class="text-sm mt-1">{{ selectedLog.action }}</p>
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-color mb-1">资源</label>
-            <code class="bg-surface-100 px-2 py-1 rounded text-sm">
+            <Label class="text-sm font-medium">资源</Label>
+            <code class="bg-muted px-2 py-1 rounded text-sm mt-1 block">
               {{ selectedLog.resource }}
             </code>
           </div>
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-color mb-1">IP地址</label>
-              <p class="text-sm">{{ selectedLog.ip_address }}</p>
+              <Label class="text-sm font-medium">IP地址</Label>
+              <p class="text-sm mt-1">{{ selectedLog.ip_address }}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-color mb-1">请求方法</label>
-              <p class="text-sm">{{ selectedLog.method }}</p>
+              <Label class="text-sm font-medium">请求方法</Label>
+              <p class="text-sm mt-1">{{ selectedLog.method }}</p>
             </div>
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-color mb-1">用户代理</label>
-            <p class="text-sm break-words">{{ selectedLog.user_agent }}</p>
+            <Label class="text-sm font-medium">用户代理</Label>
+            <p class="text-sm break-words mt-1">{{ selectedLog.user_agent }}</p>
           </div>
           
           <div v-if="selectedLog.error_message">
-            <label class="block text-sm font-medium text-color mb-1">错误信息</label>
-            <div class="bg-red-50 dark:bg-red-900/20 p-3 rounded border">
+            <Label class="text-sm font-medium">错误信息</Label>
+            <div class="bg-red-50 dark:bg-red-900/20 p-3 rounded border mt-1">
               <p class="text-sm text-red-600 dark:text-red-400">{{ selectedLog.error_message }}</p>
             </div>
           </div>
           
           <div v-if="selectedLog.request_data">
-            <label class="block text-sm font-medium text-color mb-1">请求数据</label>
-            <div class="bg-surface-100 p-3 rounded">
+            <Label class="text-sm font-medium">请求数据</Label>
+            <div class="bg-muted p-3 rounded mt-1">
               <pre class="text-sm overflow-auto">{{ JSON.stringify(selectedLog.request_data, null, 2) }}</pre>
             </div>
           </div>
         </div>
-      </template>
-      
-      <template #footer>
-        <div class="flex justify-end">
+        <DialogFooter>
           <Button
-            label="关闭"
-            icon="pi pi-times"
-            outlined
+            variant="outline"
             @click="showLogDetail = false"
-          />
-        </div>
-      </template>
+          >
+            关闭
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
     
-    <!-- 确认对话框 -->
-    <ConfirmDialog />
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import Calendar from 'primevue/calendar'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import Skeleton from 'primevue/skeleton'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Download, Trash2, Search, RefreshCw, FileText, Calendar, AlertTriangle, Users, Eye } from 'lucide-vue-next'
+import { toast } from 'sonner'
 
 // 页面配置
 definePageMeta({
@@ -384,7 +375,7 @@ useHead({
 const loading = ref(false)
 const showLogDetail = ref(false)
 const selectedLog = ref(null as any)
-const confirm = useConfirm()
+
 
 // 搜索和筛选
 const searchQuery = ref('')
@@ -545,21 +536,18 @@ const viewLogDetail = (log: any) => {
 }
 
 const exportLogs = () => {
-  console.log('导出日志')
+  // 这里实现导出逻辑
+  toast.success('日志已成功导出')
 }
 
 const confirmClearLogs = () => {
-  confirm.require({
-    message: '确定要清空所有日志吗？此操作不可撤销！',
-    header: '确认清空',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      clearLogs()
-    }
-  })
+  if (confirm('确定要清空所有日志吗？此操作不可撤销。')) {
+    clearLogs()
+  }
 }
 
 const clearLogs = () => {
+  // 这里实现清空逻辑
   mockLogs.value = []
   logStats.value = {
     total: 0,
@@ -567,10 +555,11 @@ const clearLogs = () => {
     errors: 0,
     activeUsers: 0
   }
+  toast.success('所有日志已清空')
 }
 
 // 初始化
 onMounted(() => {
   // 加载数据
 })
-</script> 
+</script>

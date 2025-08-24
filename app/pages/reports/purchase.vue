@@ -3,356 +3,323 @@
     <!-- 页面标题 -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-color">采购报表</h1>
-        <p class="text-muted-color">采购数据分析和统计报表</p>
+        <h1 class="text-2xl font-bold text-foreground">采购报表</h1>
+        <p class="text-muted-foreground">采购数据分析和统计报表</p>
       </div>
       <div class="flex gap-2">
-        <Button 
-          label="导出报表"
-          icon="pi pi-download"
-          outlined
-          @click="exportReport"
-        />
-        <Button 
-          label="刷新数据"
-          icon="pi pi-refresh"
-          @click="refreshData"
-        />
+        <Button variant="outline" @click="exportReport">
+          <Download class="w-4 h-4 mr-2" />
+          导出报表
+        </Button>
+        <Button @click="refreshData">
+          <RefreshCw class="w-4 h-4 mr-2" />
+          刷新数据
+        </Button>
       </div>
     </div>
 
     <!-- 时间筛选 -->
     <Card>
-      <template #content>
+      <CardContent class="p-4">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
-            <label class="block text-sm font-medium text-color mb-2">开始日期</label>
-            <Calendar 
+            <label class="block text-sm font-medium mb-2">开始日期</label>
+            <Input 
               v-model="dateRange.start"
-              placeholder="选择开始日期"
-              date-format="yy-mm-dd"
+              type="date"
               class="w-full"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-color mb-2">结束日期</label>
-            <Calendar 
+            <label class="block text-sm font-medium mb-2">结束日期</label>
+            <Input 
               v-model="dateRange.end"
-              placeholder="选择结束日期"
-              date-format="yy-mm-dd"
+              type="date"
               class="w-full"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-color mb-2">供应商筛选</label>
-            <Dropdown
-              v-model="supplierFilter"
-              :options="supplierOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部供应商"
-              show-clear
-              class="w-full"
-            />
+            <label class="block text-sm font-medium mb-2">供应商筛选</label>
+            <Select v-model="supplierFilter">
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="全部供应商" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部供应商</SelectItem>
+                <SelectItem v-for="supplier in supplierOptions" :key="supplier.value" :value="supplier.value">
+                  {{ supplier.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div class="flex gap-2">
-            <Button 
-              label="查询"
-              icon="pi pi-search"
-              class="flex-1"
-              @click="applyFilters"
-            />
+            <Button class="flex-1" @click="applyFilters">
+              <Search class="w-4 h-4 mr-2" />
+              查询
+            </Button>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 采购概览 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card>
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+        <CardContent class="p-4">
+          <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">总采购额</p>
-              <p class="text-2xl font-bold text-red-600">¥{{ purchaseStats.totalAmount.toLocaleString() }}</p>
-              <div class="mt-2">
-                <span class="text-xs text-red-600">↗ +8.7%</span>
-                <span class="text-xs text-muted-color ml-2">较上期</span>
-              </div>
+              <p class="text-sm text-muted-foreground">总采购订单</p>
+              <p class="text-2xl font-bold text-foreground">{{ purchaseStats.totalOrders }}</p>
+              <p class="text-xs text-green-600 flex items-center mt-1">
+                <TrendingDown class="w-3 h-3 mr-1" />
+                较上月增长 {{ purchaseStats.orderGrowth }}%
+              </p>
             </div>
-            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-              <i class="pi pi-arrow-down text-red-600 text-xl"></i>
+            <div class="bg-blue-100 p-3 rounded-full">
+              <ShoppingBag class="text-blue-600 w-5 h-5" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+        <CardContent class="p-4">
+          <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">订单数量</p>
-              <p class="text-2xl font-bold text-blue-600">{{ purchaseStats.totalOrders }}</p>
-              <div class="mt-2">
-                <span class="text-xs text-blue-600">↗ +12.3%</span>
-                <span class="text-xs text-muted-color ml-2">较上期</span>
-              </div>
+              <p class="text-sm text-muted-foreground">总采购金额</p>
+              <p class="text-2xl font-bold text-foreground">¥{{ purchaseStats.totalAmount.toLocaleString() }}</p>
+              <p class="text-xs text-green-600 flex items-center mt-1">
+                <TrendingDown class="w-3 h-3 mr-1" />
+                较上月增长 {{ purchaseStats.amountGrowth }}%
+              </p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <i class="pi pi-shopping-bag text-blue-600 text-xl"></i>
+            <div class="bg-green-100 p-3 rounded-full">
+              <Calculator class="text-green-600 w-5 h-5" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+        <CardContent class="p-4">
+          <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">平均订单额</p>
-              <p class="text-2xl font-bold text-orange-600">¥{{ purchaseStats.avgOrderAmount.toLocaleString() }}</p>
-              <div class="mt-2">
-                <span class="text-xs text-orange-600">↗ +5.2%</span>
-                <span class="text-xs text-muted-color ml-2">较上期</span>
-              </div>
+              <p class="text-sm text-muted-foreground">活跃供应商</p>
+              <p class="text-2xl font-bold text-foreground">{{ purchaseStats.activeSuppliers }}</p>
+              <p class="text-xs text-blue-600 flex items-center mt-1">
+                <TrendingDown class="w-3 h-3 mr-1" />
+                较上月增长 {{ purchaseStats.supplierGrowth }}%
+              </p>
             </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <i class="pi pi-calculator text-orange-600 text-xl"></i>
+            <div class="bg-purple-100 p-3 rounded-full">
+              <Users class="text-purple-600 w-5 h-5" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+        <CardContent class="p-4">
+          <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-muted-color">活跃供应商</p>
-              <p class="text-2xl font-bold text-green-600">{{ purchaseStats.activeSuppliers }}</p>
-              <div class="mt-2">
-                <span class="text-xs text-green-600">↗ +3</span>
-                <span class="text-xs text-muted-color ml-2">较上期</span>
-              </div>
+              <p class="text-sm text-muted-foreground">平均订单金额</p>
+              <p class="text-2xl font-bold text-foreground">¥{{ averageOrderAmount.toLocaleString() }}</p>
+              <p class="text-xs text-orange-600 flex items-center mt-1">
+                <TrendingDown class="w-3 h-3 mr-1" />
+                较上月变化 {{ purchaseStats.avgGrowth }}%
+              </p>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <i class="pi pi-users text-green-600 text-xl"></i>
+            <div class="bg-orange-100 p-3 rounded-full">
+              <LineChart class="text-orange-600 w-5 h-5" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
 
-    <!-- 趋势图表 -->
+    <!-- 图表区域 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card>
-        <template #header>
-          <h3 class="text-lg font-semibold text-color">采购趋势</h3>
-        </template>
-        <template #content>
-          <div class="h-64 flex items-center justify-center text-muted-color">
+        <CardHeader>
+          <div class="flex items-center justify-between">
+            <CardTitle>采购趋势</CardTitle>
+            <LineChart class="text-muted-foreground w-5 h-5" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div class="h-64 flex items-center justify-center bg-muted rounded-lg">
             <div class="text-center">
-              <i class="pi pi-chart-line text-4xl mb-4"></i>
-              <p>图表组件待集成</p>
+              <LineChart class="w-12 h-12 text-muted-foreground mb-2 mx-auto" />
+              <p class="text-muted-foreground">采购趋势图表</p>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #header>
-          <h3 class="text-lg font-semibold text-color">供应商分布</h3>
-        </template>
-        <template #content>
-          <div class="h-64 flex items-center justify-center text-muted-color">
+        <CardHeader>
+          <div class="flex items-center justify-between">
+            <CardTitle>采购分布</CardTitle>
+            <PieChart class="text-muted-foreground w-5 h-5" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div class="h-64 flex items-center justify-center bg-muted rounded-lg">
             <div class="text-center">
-              <i class="pi pi-chart-pie text-4xl mb-4"></i>
-              <p>图表组件待集成</p>
+              <PieChart class="w-12 h-12 text-muted-foreground mb-2 mx-auto" />
+              <p class="text-muted-foreground">采购分布图表</p>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
 
     <!-- 详细数据表格 -->
     <Card>
-      <template #header>
+      <CardHeader>
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-color">采购明细</h3>
-          <div class="flex items-center gap-2">
-            <Button
-              label="批量导出"
-              icon="pi pi-file-excel"
-              outlined
-              size="small"
-            />
-          </div>
+          <CardTitle>采购明细</CardTitle>
+          <Button variant="outline" size="sm" @click="exportReport">
+            <FileSpreadsheet class="w-4 h-4 mr-2" />
+            批量导出
+          </Button>
         </div>
-      </template>
+      </CardHeader>
 
-      <template #content>
-        <DataTable
-          :value="purchaseDetails"
-          :loading="loading"
-          :paginator="true"
-          :rows="15"
-          :rows-per-page-options="[10, 15, 25]"
-          data-key="id"
-        >
-          <template #loading>
-            <div class="p-6">
-              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
-                <Skeleton shape="circle" size="2.5rem" />
-                <div class="flex-1">
-                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                  <Skeleton width="70%" height="1rem" />
-                </div>
-                <Skeleton width="8rem" height="1.5rem" />
-                <Skeleton width="6rem" height="1.5rem" />
-              </div>
-            </div>
-          </template>
-          <Column field="order_no" header="采购单号" sortable>
-            <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
-                {{ slotProps.data.order_no }}
-              </code>
-            </template>
-          </Column>
-          
-          <Column field="supplier_name" header="供应商" sortable>
-            <template #body="slotProps">
-              <div class="flex items-center space-x-2">
-                <Avatar
-                  :label="slotProps.data.supplier_name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
-                <span class="font-medium">{{ slotProps.data.supplier_name }}</span>
-              </div>
-            </template>
-          </Column>
-          
-          <Column field="product_name" header="产品名称" sortable>
-            <template #body="slotProps">
-              <span class="font-medium">{{ slotProps.data.product_name }}</span>
-            </template>
-          </Column>
-          
-          <Column field="quantity" header="数量" sortable>
-            <template #body="slotProps">
-              <span class="font-medium">{{ slotProps.data.quantity.toLocaleString() }}</span>
-            </template>
-          </Column>
-          
-          <Column field="unit_price" header="单价" sortable>
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                ¥{{ slotProps.data.unit_price.toLocaleString() }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column field="total_amount" header="总金额" sortable>
-            <template #body="slotProps">
-              <span class="font-bold text-red-600">
-                ¥{{ slotProps.data.total_amount.toLocaleString() }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column field="status" header="状态" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="getStatusDisplayName(slotProps.data.status)"
-                :severity="getStatusSeverity(slotProps.data.status)"
-              />
-            </template>
-          </Column>
-          
-          <Column field="order_date" header="采购日期" sortable>
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.order_date) }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column field="delivery_date" header="到货日期" sortable>
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.delivery_date) }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column header="操作" :exportable="false">
-            <template #body="slotProps">
-              <div class="flex items-center space-x-1">
-                <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
-                  text
-                  size="small"
-                  @click="viewDetail(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'打印'"
-                  icon="pi pi-print"
-                  rounded
-                  text
-                  size="small"
-                  @click="printOrder(slotProps.data)"
-                />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+      <CardContent>
+        <div class="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>采购单号</TableHead>
+                <TableHead>供应商</TableHead>
+                <TableHead>产品名称</TableHead>
+                <TableHead>数量</TableHead>
+                <TableHead>单价</TableHead>
+                <TableHead>总金额</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>采购日期</TableHead>
+                <TableHead>到货日期</TableHead>
+                <TableHead>操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <template v-if="loading">
+                <TableRow v-for="i in 5" :key="i">
+                  <TableCell v-for="j in 10" :key="j">
+                    <Skeleton class="h-4 w-full" />
+                  </TableCell>
+                </TableRow>
+              </template>
+              <template v-else-if="purchaseDetails.length === 0">
+                <TableRow>
+                  <TableCell colspan="10" class="text-center py-8">
+                    <div class="flex flex-col items-center">
+                      <FileSpreadsheet class="w-12 h-12 text-muted-foreground mb-2" />
+                      <p class="text-muted-foreground">暂无采购数据</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </template>
+              <TableRow v-for="item in purchaseDetails" :key="item.id">
+                  <TableCell>
+                    <code class="bg-muted px-2 py-1 rounded text-sm font-mono">
+                      {{ item.order_no }}
+                    </code>
+                  </TableCell>
+                  <TableCell>
+                    <div class="flex items-center space-x-2">
+                      <Avatar>
+                        <AvatarFallback>{{ item.supplier_name.charAt(0) }}</AvatarFallback>
+                      </Avatar>
+                      <span class="font-medium">{{ item.supplier_name }}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span class="font-medium">{{ item.product_name }}</span>
+                  </TableCell>
+                  <TableCell>
+                    <span class="font-medium">{{ item.quantity.toLocaleString() }}</span>
+                  </TableCell>
+                  <TableCell>
+                    <span class="text-sm text-muted-foreground">
+                      ¥{{ item.unit_price.toLocaleString() }}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span class="font-bold text-red-600">
+                      ¥{{ item.total_amount.toLocaleString() }}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Badge :variant="getStatusVariant(item.status)">
+                      {{ getStatusDisplayName(item.status) }}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <span class="text-sm text-muted-foreground">
+                      {{ formatDate(item.order_date) }}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span class="text-sm text-muted-foreground">
+                      {{ formatDate(item.delivery_date) }}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div class="flex items-center space-x-1">
+                      <Button variant="ghost" size="sm" @click="viewDetail(item)">
+                        <Eye class="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" @click="printOrder(item)">
+                        <Printer class="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </template>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
 
-    <!-- 总计统计 -->
-    <Card>
-      <template #header>
-        <h3 class="text-lg font-semibold text-color">汇总统计</h3>
-      </template>
-      <template #content>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+    <!-- 汇总统计 -->
+    <Card class="mt-6">
+      <CardHeader>
+        <CardTitle class="text-lg font-semibold">汇总统计</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="text-center">
-            <div class="text-3xl font-bold text-blue-600 mb-2">
-              {{ purchaseDetails.length }}
-            </div>
-            <div class="text-sm text-muted-color">采购订单总数</div>
+            <div class="text-2xl font-bold text-blue-600">{{ purchaseDetails.length }}</div>
+            <div class="text-sm text-muted-foreground mt-1">总订单数</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-green-600 mb-2">
-              ¥{{ totalAmount.toLocaleString() }}
-            </div>
-            <div class="text-sm text-muted-color">采购总金额</div>
+            <div class="text-2xl font-bold text-green-600">¥{{ totalAmount.toLocaleString() }}</div>
+            <div class="text-sm text-muted-foreground mt-1">总采购金额</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-orange-600 mb-2">
-              ¥{{ avgOrderAmount.toLocaleString() }}
-            </div>
-            <div class="text-sm text-muted-color">平均订单金额</div>
+            <div class="text-2xl font-bold text-orange-600">¥{{ avgOrderAmount.toLocaleString() }}</div>
+            <div class="text-sm text-muted-foreground mt-1">平均订单金额</div>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import Calendar from 'primevue/calendar'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Skeleton from 'primevue/skeleton'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Download, RefreshCw, Search, TrendingDown, ShoppingBag, Calculator, Users, LineChart, PieChart, FileSpreadsheet, Eye, Printer } from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
@@ -444,7 +411,16 @@ const statusSeverityMap: Record<string, string> = {
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case 'pending': return 'secondary'
+    case 'confirmed': return 'default'
+    case 'shipped': return 'default'
+    case 'delivered': return 'default'
+    case 'cancelled': return 'destructive'
+    default: return 'default'
+  }
+}
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString('zh-CN')
@@ -482,4 +458,4 @@ const printOrder = (order: any) => {
 onMounted(() => {
   // 加载数据
 })
-</script> 
+</script>

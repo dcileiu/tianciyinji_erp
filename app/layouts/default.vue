@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-surface-0 flex">
+  <div class="min-h-screen bg-background flex">
     <!-- 侧边栏 -->
     <aside 
-      class="transition-all duration-300 ease-in-out z-40 fixed top-0 left-0 h-screen overflow-hidden"
-      :class="sidebarCollapsed ? 'w-20' : 'w-[280px]'"
+      class="transition-all duration-300 ease-in-out z-40 fixed top-0 left-0 h-screen overflow-hidden border-r bg-card"
+      :class="sidebarCollapsed ? 'w-16' : 'w-64'"
     >
       <SidebarMenu 
         :sidebar-collapsed="sidebarCollapsed"
@@ -13,80 +13,82 @@
 
     <!-- 主要内容区域 -->
     <div
-class="flex-1 flex flex-col transition-all duration-300 ease-in-out"
-         :class="sidebarCollapsed ? 'ml-20' : 'ml-[280px]'">
+      class="flex-1 flex flex-col transition-all duration-300 ease-in-out"
+      :class="sidebarCollapsed ? 'ml-16' : 'ml-64'"
+    >
       <!-- 顶部导航栏 -->
-      <Toolbar class="border-b border-surface-200 bg-surface-0 sticky top-0 z-30 h-4rem">
-        <template #start>
+      <header class="border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 sticky top-0 z-30 h-16">
+        <div class="flex h-16 items-center justify-between px-6">
           <!-- 面包屑导航 -->
-            <Breadcrumb :model="breadcrumbItems" class="text-sm">
-              <template #item="{ item }">
-                <NuxtLink v-if="item.route" :to="item.route" class="text-primary hover:text-primary-600">
-                  {{ item.label }}
-                </NuxtLink>
-                <span v-else class="text-surface-600">{{ item.label }}</span>
-              </template>
-            </Breadcrumb>
-        </template>
+          <nav class="flex items-center space-x-1 text-sm text-muted-foreground">
+            <template v-for="(item, index) in breadcrumbItems" :key="index">
+              <NuxtLink 
+                v-if="item.route" 
+                :to="item.route" 
+                class="hover:text-foreground transition-colors"
+              >
+                {{ item.label }}
+              </NuxtLink>
+              <span v-else class="text-foreground font-medium">{{ item.label }}</span>
+              <ChevronRight v-if="index < breadcrumbItems.length - 1" class="h-4 w-4" />
+            </template>
+          </nav>
 
-        <template #end>
           <!-- 右侧操作区 -->
-          <div class="flex align-items-center gap-3">
+          <div class="flex items-center space-x-2">
             <!-- 搜索 -->
-              <IconField icon-position="left">
-                <InputIcon>
-                  <i class="pi pi-search"></i>
-                </InputIcon>
-                <InputText
-                  v-model="globalSearch"
-                  placeholder="全局搜索..."
-                class="w-16rem"
-                  size="small"
-                />
-              </IconField>
+            <div class="relative">
+              <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                v-model="globalSearch"
+                placeholder="全局搜索..."
+                class="w-64 pl-8"
+                type="search"
+              />
+            </div>
 
             <!-- 通知 -->
             <Button
-              v-tooltip.bottom="'通知'"
-              icon="pi pi-bell"
-              text
-              rounded
-              size="small"
-              severity="secondary"
+              variant="ghost"
+              size="icon"
               class="relative"
               @click="toggleNotifications"
             >
-              <Badge value="3" severity="danger" class="absolute -top-1 -right-1"></Badge>
+              <Bell class="h-4 w-4" />
+              <Badge 
+                class="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
+                variant="destructive"
+              >
+                3
+              </Badge>
             </Button>
 
             <!-- 主题切换 -->
             <Button
-              v-tooltip.bottom="'切换主题'"
-              :icon="isDark ? 'pi pi-sun' : 'pi pi-moon'"
-              text
-              rounded
-              size="small"
-              severity="secondary"
+              variant="ghost"
+              size="icon"
               @click="toggleTheme"
-            />
+            >
+              <Sun v-if="isDark" class="h-4 w-4" />
+              <Moon v-else class="h-4 w-4" />
+            </Button>
 
             <!-- 全屏 -->
             <Button
-              v-tooltip.bottom="'全屏'"
-              :icon="isFullscreen ? 'pi pi-window-minimize' : 'pi pi-window-maximize'"
-              text
-              rounded
-              size="small"
-              severity="secondary"
+              variant="ghost"
+              size="icon"
               @click="toggleFullscreen"
-            />
+            >
+              <Minimize v-if="isFullscreen" class="h-4 w-4" />
+              <Maximize v-else class="h-4 w-4" />
+            </Button>
           </div>
-        </template>
-      </Toolbar>
+        </div>
+      </header>
 
       <!-- 页面内容 -->
       <main class="flex-1 overflow-hidden">
-        <div class="h-full overflow-y-auto p-5">
+        <div class="h-full overflow-y-auto p-6">
           <slot />
         </div>
       </main>
@@ -98,13 +100,18 @@ class="flex-1 flex flex-col transition-all duration-300 ease-in-out"
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button'
-import Badge from 'primevue/badge'
-import Breadcrumb from 'primevue/breadcrumb'
-import InputText from 'primevue/inputtext'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Toolbar from 'primevue/toolbar'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { 
+  Search, 
+  Bell, 
+  Sun, 
+  Moon, 
+  Minimize, 
+  Maximize, 
+  ChevronRight 
+} from 'lucide-vue-next'
 
 // 获取路由信息
 const route = useRoute()

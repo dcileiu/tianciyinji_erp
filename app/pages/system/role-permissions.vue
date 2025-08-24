@@ -1,111 +1,103 @@
 <template>
-  <div class="space-y-6">
+  <div class="role-permissions-page">
     <!-- 页面标题 -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-color">角色权限配置</h1>
-        <p class="text-muted-color mt-1">
-          管理系统角色及其对应的菜单和资源权限
-        </p>
-      </div>
-      
-      <div class="flex items-center gap-3">
-        <Button
-          v-if="canCreate"
-          label="添加角色"
-          icon="pi pi-plus"
-          @click="openCreateRoleDialog"
-        />
-      </div>
+    <div class="page-header">
+      <h1 class="page-title">角色权限配置</h1>
+      <p class="page-description">管理系统角色和权限分配</p>
     </div>
-    
-    <!-- 角色列表和权限配置 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- 左侧：角色列表 -->
-      <div class="lg:col-span-1">
-        <Card>
-          <template #header>
-            <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold text-color">角色列表</h3>
+
+    <div class="page-content">
+      <!-- 左侧角色列表 -->
+      <Card class="role-list-card">
+        <CardHeader>
+          <div class="card-header">
+            <div class="header-title">
+              <Users class="w-4 h-4" />
+              <span>角色列表</span>
             </div>
-          </template>
-          
-          <template #content>
-            <!-- 搜索框 -->
-            <div class="mb-4">
-              <IconField icon-position="left">
-                <InputIcon>
-                  <i class="pi pi-search"></i>
-                </InputIcon>
-                <InputText
-                v-model="roleSearchQuery"
-                placeholder="搜索角色..."
-                  class="w-full"
+            <Button 
+              size="sm" 
+              @click="openCreateRoleDialog"
+            >
+              <Plus class="w-4 h-4 mr-2" />
+              新增角色
+            </Button>
+          </div>
+        </CardHeader>
+        
+        <CardContent>
+          <!-- 搜索框 -->
+          <div class="search-section">
+            <div class="relative">
+              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                v-model="roleSearchQuery" 
+                placeholder="搜索角色名称、编码或描述"
+                class="pl-10"
               />
-              </IconField>
+            </div>
           </div>
           
           <div class="max-h-96 overflow-y-auto">
-            <div v-if="loadingRoles" class="flex items-center justify-center py-8">
-                <ProgressSpinner style="width: 30px; height: 30px" stroke-width="3" />
-                <span class="ml-2 text-muted-color">加载中...</span>
+            <div v-if="loadingRoles" class="loading-state">
+                <Loader2 class="w-6 h-6 animate-spin" />
+                <span class="ml-2 text-muted-foreground">加载中...</span>
             </div>
             
             <div v-else-if="filteredRoles.length === 0" class="text-center py-8">
-                <i class="pi pi-users text-4xl text-muted-color opacity-50 mb-2"></i>
-                <p class="text-muted-color">暂无角色数据</p>
+                <Users class="w-12 h-12 text-muted-foreground opacity-50 mb-2 mx-auto" />
+                <p class="text-muted-foreground">暂无角色数据</p>
             </div>
             
-              <div v-else class="space-y-2">
+              <div v-else class="role-list">
               <div
                 v-for="role in filteredRoles"
                 :key="role.id"
                 :class="[
-                    'p-3 rounded-lg border cursor-pointer transition-colors',
-                  selectedRole?.id === role.id
-                      ? 'border-primary bg-primary-50 dark:bg-primary-900/20'
-                      : 'border-surface-300 hover:border-primary-300 hover:bg-surface-50',
+                  'role-item',
+                  selectedRole?.id === role.id ? 'active' : ''
                 ]"
                 @click="selectRole(role)"
               >
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                       <div class="flex-shrink-0">
-                        <i class="pi pi-shield text-primary text-lg"></i>
+                        <Shield class="w-5 h-5 text-primary" />
                       </div>
-                      <div>
-                        <h4 class="font-medium text-color">{{ role.name }}</h4>
-                        <p class="text-sm text-muted-color">{{ role.description }}</p>
+                      <div class="role-info">
+                        <h4 class="role-name">{{ role.name }}</h4>
+                        <p class="role-code">{{ role.code }}</p>
+                        <p class="role-description">{{ role.description }}</p>
                       </div>
                     </div>
                     
-                    <div class="flex items-center space-x-1">
+                    <div class="role-actions">
                       <Button
                         v-if="canEdit"
-                        v-tooltip="'编辑角色'"
-                        icon="pi pi-pencil"
-                        rounded
-                        text
-                        size="small"
+                        size="sm"
+                        variant="ghost"
                         @click.stop="editRole(role)"
-                      />
+                      >
+                        <Edit class="w-4 h-4" />
+                      </Button>
                       <Button
                         v-if="canDelete && !role.is_system"
-                        v-tooltip="'删除角色'"
-                        icon="pi pi-trash"
-                        rounded
-                        text
-                        size="small"
-                        severity="danger"
+                        size="sm"
+                        variant="ghost"
                         @click.stop="confirmDeleteRole(role)"
-                      />
+                      >
+                        <Trash2 class="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                   
-                  <div class="mt-2 flex items-center space-x-4 text-xs text-muted-color">
-                    <span>{{ role.user_count || 0 }} 个用户</span>
-                    <span>{{ role.menu_count || 0 }} 个菜单</span>
-                    <span>{{ role.resource_count || 0 }} 个资源</span>
+                  <div class="role-stats">
+                    <Badge variant="secondary">{{ role.user_count || 0 }} 个用户</Badge>
+                    <Badge variant="secondary">{{ role.menu_count || 0 }} 个菜单</Badge>
+                    <Badge variant="secondary">{{ role.resource_count || 0 }} 个资源</Badge>
+                    <Badge :variant="role.status === 'active' ? 'default' : 'destructive'">
+                      {{ role.status === 'active' ? '启用' : '停用' }}
+                    </Badge>
                   </div>
                 </div>
               </div>
@@ -113,252 +105,303 @@
           </template>
         </Card>
       </div>
-      
+    
       <!-- 右侧：权限配置 -->
       <div class="lg:col-span-2">
         <div v-if="!selectedRole" class="text-center py-20">
-          <i class="pi pi-arrow-left text-6xl text-muted-color opacity-50 mb-4"></i>
-          <h3 class="text-lg font-medium text-color mb-2">选择角色</h3>
-          <p class="text-muted-color">请从左侧列表中选择一个角色来配置权限</p>
+          <ArrowLeft class="w-16 h-16 text-muted-foreground opacity-50 mb-4 mx-auto" />
+          <h3 class="text-lg font-medium mb-2">选择角色</h3>
+          <p class="text-muted-foreground">请从左侧列表中选择一个角色来配置权限</p>
         </div>
         
         <div v-else class="space-y-6">
           <!-- 选中角色信息 -->
           <Card>
-            <template #content>
+            <CardContent>
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                  <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-full flex items-center justify-center">
-                    <i class="pi pi-shield text-primary text-xl"></i>
+                  <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Shield class="w-6 h-6 text-primary" />
                   </div>
                 <div>
-                    <h2 class="text-xl font-semibold text-color">{{ selectedRole.name }}</h2>
-                    <p class="text-muted-color">{{ selectedRole.description }}</p>
+                    <h2 class="text-xl font-semibold">{{ selectedRole.name }}</h2>
+                    <p class="text-muted-foreground">{{ selectedRole.description }}</p>
                   </div>
                 </div>
                 
                 <div class="flex items-center space-x-2">
-                  <Tag
-                    :value="selectedRole.is_system ? '系统角色' : '自定义角色'"
-                    :severity="selectedRole.is_system ? 'warn' : 'info'"
-                  />
-                  <Tag
-                    :value="selectedRole.status === 'active' ? '启用' : '停用'"
-                    :severity="selectedRole.status === 'active' ? 'success' : 'warn'"
-                  />
+                  <Badge :variant="selectedRole.is_system ? 'destructive' : 'default'">
+                    {{ selectedRole.is_system ? '系统角色' : '自定义角色' }}
+                  </Badge>
+                  <Badge :variant="selectedRole.status === 'active' ? 'default' : 'secondary'">
+                    {{ selectedRole.status === 'active' ? '启用' : '停用' }}
+                  </Badge>
                 </div>
               </div>
-            </template>
+            </CardContent>
           </Card>
           
           <!-- 权限配置选项卡 -->
-          <TabView>
-            <!-- 菜单权限 -->
-            <TabPanel value="0">
-              <template #header>
-                <i class="pi pi-bars mr-2"></i>
+          <Tabs default-value="menus" class="w-full">
+            <TabsList class="grid w-full grid-cols-2">
+              <TabsTrigger value="menus" class="flex items-center">
+                <Menu class="w-4 h-4 mr-2" />
                 菜单权限
-              </template>
+              </TabsTrigger>
+              <TabsTrigger value="resources" class="flex items-center">
+                <Database class="w-4 h-4 mr-2" />
+                资源权限
+              </TabsTrigger>
+            </TabsList>
+            
+            <!-- 菜单权限 -->
+            <TabsContent value="menus" class="mt-6">
               
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                  <p class="text-sm text-muted-color">
+                  <p class="text-sm text-muted-foreground">
                     配置该角色可以访问的系统菜单
                   </p>
                   <Button
-                    label="保存菜单权限"
-                    icon="pi pi-save"
-                    size="small"
-                    :loading="savingPermissions"
+                    size="sm"
+                    :disabled="savingPermissions"
                     @click="saveMenuPermissions"
-                  />
+                  >
+                    <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
+                    <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
+                    保存菜单权限
+                  </Button>
                 </div>
                 
-                <div class="border border-surface-300 rounded-lg p-4 max-h-96 overflow-y-auto">
-                  <Tree
-                    v-model:selection-keys="selectedMenus"
-                    :value="menuTree"
-                    selection-mode="checkbox"
-                    :filter="true"
-                    filter-placeholder="搜索菜单..."
-                    class="w-full"
-                  >
-                    <template #default="slotProps">
-                      <div class="flex items-center">
-                        <i :class="slotProps.node.icon || 'pi pi-circle'" class="mr-2"></i>
-                        <span>{{ slotProps.node.label }}</span>
-                        <span v-if="slotProps.node.path" class="ml-2 text-xs text-muted-color">
-                          ({{ slotProps.node.path }})
-                        </span>
+                <Card>
+                  <CardContent class="p-4">
+                    <div class="menu-tree">
+                      <div class="space-y-2">
+                        <div v-for="menu in menuTree" :key="menu.key" class="menu-item">
+                          <div class="flex items-center space-x-2 p-2 hover:bg-muted rounded">
+                            <Checkbox
+                              :id="menu.key"
+                              :checked="selectedMenus.includes(menu.key)"
+                              @update:checked="(checked) => {
+                                if (checked) {
+                                  selectedMenus.push(menu.key)
+                                } else {
+                                  const index = selectedMenus.indexOf(menu.key)
+                                  if (index > -1) selectedMenus.splice(index, 1)
+                                }
+                              }"
+                            />
+                            <component :is="getMenuIcon(menu.icon)" class="w-4 h-4" />
+                            <Label :for="menu.key" class="cursor-pointer flex-1">
+                              {{ menu.label }}
+                              <span v-if="menu.path" class="ml-2 text-xs text-muted-foreground">
+                                ({{ menu.path }})
+                              </span>
+                            </Label>
+                          </div>
+                          
+                          <!-- 子菜单 -->
+                          <div v-if="menu.children" class="ml-6 space-y-1">
+                            <div v-for="child in menu.children" :key="child.key" class="flex items-center space-x-2 p-2 hover:bg-muted rounded">
+                              <Checkbox
+                                :id="child.key"
+                                :checked="selectedMenus.includes(child.key)"
+                                @update:checked="(checked) => {
+                                  if (checked) {
+                                    selectedMenus.push(child.key)
+                                  } else {
+                                    const index = selectedMenus.indexOf(child.key)
+                                    if (index > -1) selectedMenus.splice(index, 1)
+                                  }
+                                }"
+                              />
+                              <component :is="getMenuIcon(child.icon)" class="w-4 h-4" />
+                              <Label :for="child.key" class="cursor-pointer flex-1">
+                                {{ child.label }}
+                                <span v-if="child.path" class="ml-2 text-xs text-muted-foreground">
+                                  ({{ child.path }})
+                                </span>
+                              </Label>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </template>
-                  </Tree>
-                </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-            </TabPanel>
+            </TabsContent>
           
             <!-- 资源权限 -->
-            <TabPanel value="1">
-              <template #header>
-                <i class="pi pi-database mr-2"></i>
-                资源权限
-              </template>
-              
+            <TabsContent value="resources" class="mt-6">
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                  <p class="text-sm text-muted-color">
+                  <p class="text-sm text-muted-foreground">
                     配置该角色可以访问的系统资源和操作
                   </p>
                   <Button
-                    label="保存资源权限"
-                    icon="pi pi-save"
-                    size="small"
-                    :loading="savingPermissions"
+                    size="sm"
+                    :disabled="savingPermissions"
                     @click="saveResourcePermissions"
-                />
-              </div>
-              
+                  >
+                    <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
+                    <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
+                    保存资源权限
+                  </Button>
+                </div>
+                
                 <div class="space-y-4">
-                  <div v-for="category in resourceCategories" :key="category.id" class="border border-surface-300 rounded-lg">
-                    <div class="p-3 bg-surface-50 border-b border-surface-300">
-                      <div class="flex items-center justify-between">
-                        <h4 class="font-medium text-color">{{ category.name }}</h4>
+                  <Card v-for="category in resourceCategories" :key="category.id">
+                    <CardContent class="p-4">
+                      <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-medium">{{ category.name }}</h4>
                         <div class="flex items-center space-x-2">
                           <Button
-                            label="全选"
-                            text
-                            size="small"
+                            variant="ghost"
+                            size="sm"
                             @click="selectAllInCategory(category)"
-                          />
+                          >
+                            全选
+                          </Button>
                           <Button
-                            label="清空"
-                            text
-                            size="small"
+                            variant="ghost"
+                            size="sm"
                             @click="clearAllInCategory(category)"
-                />
-              </div>
-            </div>
-          </div>
-                    
-                    <div class="p-3">
+                          >
+                            清空
+                          </Button>
+                        </div>
+                      </div>
+                      
                       <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                         <div
                           v-for="resource in category.resources"
                           :key="resource.id"
-                          class="flex items-center"
+                          class="flex items-center space-x-2"
                         >
                           <Checkbox
-                            v-model="selectedResources"
-                            :input-id="resource.id"
-                            :value="resource.id"
+                            :id="resource.id"
+                            :checked="selectedResources.includes(resource.id)"
+                            @update:checked="(checked) => {
+                              if (checked) {
+                                selectedResources.push(resource.id)
+                              } else {
+                                const index = selectedResources.indexOf(resource.id)
+                                if (index > -1) selectedResources.splice(index, 1)
+                              }
+                            }"
                           />
-                          <label :for="resource.id" class="ml-2 text-sm cursor-pointer">
+                          <Label :for="resource.id" class="text-sm cursor-pointer">
                             {{ resource.name }}
-                          </label>
+                          </Label>
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
-            </TabPanel>
-          </TabView>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
     
-    <!-- 角色对话框 -->
-    <Dialog
-      v-model:visible="showRoleDialog"
-      :header="editingRole ? '编辑角色' : '添加角色'"
-      :style="{ width: '500px' }"
-      modal
-      class="p-fluid"
-    >
-      <template #default>
-        <div class="space-y-4">
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">角色名称 *</label>
-            <InputText
-              v-model="roleForm.name"
+    <!-- 角色创建/编辑对话框 -->
+    <Dialog v-model:open="showRoleDialog">
+      <DialogContent class="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{{ editingRole ? '编辑角色' : '新增角色' }}</DialogTitle>
+        </DialogHeader>
+        
+        <div class="role-form space-y-4">
+          <div class="form-group">
+            <Label for="roleName">角色名称 *</Label>
+            <Input 
+              id="roleName"
+              v-model="roleForm.name" 
               placeholder="请输入角色名称"
-              required
             />
           </div>
           
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">角色编码 *</label>
-            <InputText
-              v-model="roleForm.code"
+          <div class="form-group">
+            <Label for="roleCode">角色编码 *</Label>
+            <Input 
+              id="roleCode"
+              v-model="roleForm.code" 
               placeholder="请输入角色编码"
-              :disabled="editingRole && editingRole.is_system"
-              required
+              :disabled="!!editingRole"
             />
           </div>
           
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">描述</label>
-            <Textarea
-              v-model="roleForm.description"
+          <div class="form-group">
+            <Label for="roleDescription">角色描述</Label>
+            <Textarea 
+              id="roleDescription"
+              v-model="roleForm.description" 
               placeholder="请输入角色描述"
-              :rows="3"
+              rows="3"
             />
           </div>
           
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">状态</label>
-            <Dropdown
-              v-model="roleForm.status"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择状态"
-            />
+          <div class="form-group">
+            <Label for="roleStatus">状态</Label>
+            <Select v-model="roleForm.status">
+              <SelectTrigger>
+                <SelectValue placeholder="请选择状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem 
+                  v-for="option in statusOptions" 
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      </template>
-      
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
+        
+        <DialogFooter>
+          <Button 
+            variant="outline"
             @click="closeRoleDialog"
-        />
-          <Button
-            label="保存"
-            icon="pi pi-check"
-            :loading="savingPermissions"
+          >
+            取消
+          </Button>
+          <Button 
+            :disabled="savingPermissions"
             @click="saveRole"
-          />
-        </div>
-      </template>
+          >
+            <RefreshCw v-if="savingPermissions" class="w-4 h-4 mr-2 animate-spin" />
+            保存
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
     
-    <!-- 确认对话框 -->
-    <ConfirmDialog />
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import Tree from 'primevue/tree'
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
-import Tag from 'primevue/tag'
-import Checkbox from 'primevue/checkbox'
-import Dialog from 'primevue/dialog'
-import ProgressSpinner from 'primevue/progressspinner'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { 
+  Users, Plus, Search, Edit, Trash2, RefreshCw, ArrowLeft, Save,
+  Home, Database, ShoppingCart, Settings, FileText, Shield, Key,
+  Box, Truck, File, Loader2, Menu
+} from 'lucide-vue-next'
+import { toast } from 'sonner'
 
 // 页面配置
 definePageMeta({
@@ -389,7 +432,7 @@ const confirm = useConfirm()
 const roleSearchQuery = ref('')
 
 // 权限选择状态
-const selectedMenus = ref({} as Record<string, any>)
+const selectedMenus = ref([] as string[])
 const selectedResources = ref([] as string[])
 
 // 表单数据
@@ -524,6 +567,23 @@ const resourceCategories = ref([
   }
 ])
 
+// 辅助函数
+const getMenuIcon = (iconClass: string) => {
+  const iconMap: Record<string, any> = {
+    'pi pi-home': Home,
+    'pi pi-database': Database,
+    'pi pi-shopping-cart': ShoppingCart,
+    'pi pi-cog': Settings,
+    'pi pi-box': Box,
+    'pi pi-users': Users,
+    'pi pi-truck': Truck,
+    'pi pi-file': File,
+    'pi pi-shield': Shield,
+    'pi pi-key': Key
+  }
+  return iconMap[iconClass] || FileText
+}
+
 // 计算属性
 const filteredRoles = computed(() => {
   if (!roleSearchQuery.value) {
@@ -546,12 +606,7 @@ const selectRole = (role: any) => {
 
 const loadRolePermissions = async (role: any) => {
   // 模拟加载角色权限
-  selectedMenus.value = {
-    'dashboard': { checked: true, partialChecked: false },
-    'master-data': { checked: true, partialChecked: false },
-    'products': { checked: true, partialChecked: false }
-  }
-  
+  selectedMenus.value = ['dashboard', 'master-data', 'products']
   selectedResources.value = ['user:view', 'product:view', 'product:create']
 }
 
@@ -592,6 +647,7 @@ const saveRole = async () => {
         mockRoles.value[index]!.description = roleForm.value.description
         mockRoles.value[index]!.status = roleForm.value.status
       }
+      toast.success('角色更新成功')
     }
     else {
       // 新增角色
@@ -605,12 +661,14 @@ const saveRole = async () => {
         created_at: new Date()
       }
       mockRoles.value.push(newRole)
+      toast.success('角色创建成功')
     }
     
     closeRoleDialog()
   }
   catch (error) {
     console.error('保存角色失败:', error)
+    toast.error('保存角色失败')
   }
   finally {
     savingPermissions.value = false
@@ -618,14 +676,9 @@ const saveRole = async () => {
 }
 
 const confirmDeleteRole = (role: any) => {
-  confirm.require({
-    message: `确定要删除角色 ${role.name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteRole(role.id)
-    }
-  })
+  if (confirm(`确定要删除角色 ${role.name} 吗？`)) {
+    deleteRole(role.id)
+  }
 }
 
 const deleteRole = (roleId: string) => {
@@ -633,6 +686,7 @@ const deleteRole = (roleId: string) => {
   if (selectedRole.value?.id === roleId) {
     selectedRole.value = null
   }
+  toast.success('角色删除成功')
 }
 
 const saveMenuPermissions = async () => {
@@ -640,9 +694,11 @@ const saveMenuPermissions = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     console.log('保存菜单权限:', selectedMenus.value)
+    toast.success('菜单权限保存成功')
   }
   catch (error) {
     console.error('保存菜单权限失败:', error)
+    toast.error('保存菜单权限失败')
   }
   finally {
     savingPermissions.value = false
@@ -654,9 +710,11 @@ const saveResourcePermissions = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     console.log('保存资源权限:', selectedResources.value)
+    toast.success('资源权限保存成功')
   }
   catch (error) {
     console.error('保存资源权限失败:', error)
+    toast.error('保存资源权限失败')
   }
   finally {
     savingPermissions.value = false
@@ -682,3 +740,129 @@ onMounted(() => {
   roles.value = mockRoles.value
 })
 </script>
+
+<style scoped>
+.role-permissions-page {
+  @apply p-6 space-y-6;
+}
+
+.page-header {
+  @apply mb-6;
+}
+
+.page-title {
+  @apply text-2xl font-bold text-gray-900 dark:text-white;
+}
+
+.page-description {
+  @apply text-gray-600 dark:text-gray-400 mt-1;
+}
+
+.page-content {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
+}
+
+.role-list-card {
+  @apply lg:col-span-1;
+}
+
+.card-header {
+  @apply flex items-center justify-between;
+}
+
+.header-title {
+  @apply flex items-center space-x-2 font-semibold;
+}
+
+.search-section {
+  @apply mb-4;
+}
+
+.role-list {
+  @apply space-y-2 max-h-96 overflow-y-auto;
+}
+
+.role-item {
+  @apply p-3 border rounded-lg cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800;
+}
+
+.role-item.active {
+  @apply bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800;
+}
+
+.role-info {
+  @apply space-y-1;
+}
+
+.role-name {
+  @apply font-medium text-gray-900 dark:text-white;
+}
+
+.role-code {
+  @apply text-sm text-gray-500 dark:text-gray-400;
+}
+
+.role-description {
+  @apply text-sm text-gray-600 dark:text-gray-300;
+}
+
+.role-stats {
+  @apply flex flex-wrap gap-1 mt-2;
+}
+
+.role-actions {
+  @apply flex items-center space-x-1 mt-2;
+}
+
+.loading-state {
+  @apply flex flex-col items-center justify-center py-8 text-gray-500;
+}
+
+.menu-tree {
+  @apply max-h-96 overflow-y-auto;
+}
+
+.menu-item {
+  @apply space-y-2;
+}
+
+.resource-categories {
+  @apply max-h-96 overflow-y-auto;
+}
+
+.category-section {
+  @apply border rounded-lg p-4;
+}
+
+.category-header {
+  @apply pb-3 border-b;
+}
+
+.category-title {
+  @apply text-lg font-medium;
+}
+
+.category-actions {
+  @apply flex space-x-2;
+}
+
+.resource-grid {
+  @apply mt-3;
+}
+
+.resource-item {
+  @apply transition-colors hover:bg-gray-50 dark:hover:bg-gray-800;
+}
+
+.resource-label {
+  @apply cursor-pointer;
+}
+
+.role-form {
+  @apply py-4;
+}
+
+.form-group {
+  @apply space-y-2;
+}
+</style>

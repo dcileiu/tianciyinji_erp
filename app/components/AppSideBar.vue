@@ -2,20 +2,21 @@
 import type { SidebarProps } from "@/registry/new-york/ui/sidebar"
 
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  ShoppingCart,
+  Package,
+  Warehouse,
+  Factory,
+  Calculator,
+  Database,
+  BarChart3,
+  Settings,
+  Users,
+  FileText,
+  Truck,
+  Building2,
 } from "lucide-vue-next"
-import NavMain from "@/registry/new-york/blocks/Sidebar07/components/NavMain.vue"
-import NavProjects from "@/registry/new-york/blocks/Sidebar07/components/NavProjects.vue"
-import NavUser from "@/registry/new-york/blocks/Sidebar07/components/NavUser.vue"
+import NavMain from "@/components/NavMain.vue"
+import NavUser from "@/components/NavUser.vue"
 
 import {
   Sidebar,
@@ -29,132 +30,198 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: "icon",
 })
 
-// This is sample data.
+// ERP系统菜单数据
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "管理员",
+    email: "admin@erp.com",
+    avatar: "/avatars/admin.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      title: "销售管理",
+      url: "/sales",
+      icon: ShoppingCart,
+      isActive: false,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "销售订单",
+          url: "/sales/orders",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "客户管理",
+          url: "/sales/customers",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "报价管理",
+          url: "/sales/quotes",
+        },
+        {
+          title: "销售统计",
+          url: "/sales/statistics",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "采购管理",
+      url: "/purchase",
+      icon: Package,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "采购订单",
+          url: "/purchase/orders",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "供应商管理",
+          url: "/purchase/suppliers",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "采购申请",
+          url: "/purchase/requests",
+        },
+        {
+          title: "采购统计",
+          url: "/purchase/statistics",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      title: "库存管理",
+      url: "/inventory",
+      icon: Warehouse,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "库存查询",
+          url: "/inventory/query",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "入库管理",
+          url: "/inventory/inbound",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "出库管理",
+          url: "/inventory/outbound",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "库存盘点",
+          url: "/inventory/stocktaking",
         },
       ],
     },
     {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
+      title: "生产管理",
+      url: "/production",
+      icon: Factory,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "生产计划",
+          url: "/production/planning",
         },
         {
-          title: "Team",
-          url: "#",
+          title: "工单管理",
+          url: "/production/workorders",
         },
         {
-          title: "Billing",
-          url: "#",
+          title: "质量检验",
+          url: "/production/quality",
         },
         {
-          title: "Limits",
-          url: "#",
+          title: "设备管理",
+          url: "/production/equipment",
         },
       ],
     },
-  ],
-  projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      title: "财务管理",
+      url: "/finance",
+      icon: Calculator,
+      items: [
+        {
+          title: "应收账款",
+          url: "/finance/receivables",
+        },
+        {
+          title: "应付账款",
+          url: "/finance/payables",
+        },
+        {
+          title: "费用管理",
+          url: "/finance/expenses",
+        },
+        {
+          title: "财务报表",
+          url: "/finance/reports",
+        },
+      ],
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      title: "基础数据",
+      url: "/master",
+      icon: Database,
+      items: [
+        {
+          title: "产品管理",
+          url: "/master/products",
+        },
+        {
+          title: "仓库管理",
+          url: "/master/warehouses",
+        },
+        {
+          title: "部门管理",
+          url: "/master/departments",
+        },
+        {
+          title: "员工管理",
+          url: "/master/employees",
+        },
+      ],
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      title: "报表分析",
+      url: "/reports",
+      icon: BarChart3,
+      items: [
+        {
+          title: "销售报表",
+          url: "/reports/sales",
+        },
+        {
+          title: "采购报表",
+          url: "/reports/purchase",
+        },
+        {
+          title: "库存报表",
+          url: "/reports/inventory",
+        },
+        {
+          title: "财务报表",
+          url: "/reports/finance",
+        },
+      ],
+    },
+    {
+      title: "系统设置",
+      url: "/settings",
+      icon: Settings,
+      items: [
+        {
+          title: "用户管理",
+          url: "/settings/users",
+        },
+        {
+          title: "角色权限",
+          url: "/settings/roles",
+        },
+        {
+          title: "系统参数",
+          url: "/settings/parameters",
+        },
+        {
+          title: "数据备份",
+          url: "/settings/backup",
+        },
+      ],
     },
   ],
 }
@@ -163,13 +230,13 @@ const data = {
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <div>
-        ERP 管理系统
+      <div class="flex items-center gap-2 px-4 py-2">
+        <Building2 class="h-6 w-6" />
+        <span class="font-semibold text-lg">ERP 管理系统</span>
       </div>
     </SidebarHeader>
     <SidebarContent>
       <NavMain :items="data.navMain" />
-      <NavProjects :projects="data.projects" />
     </SidebarContent>
     <SidebarFooter>
       <NavUser :user="data.user" />

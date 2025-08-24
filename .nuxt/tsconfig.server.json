@@ -89,9 +89,6 @@
       "#internal/nuxt/paths": [
         "../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/core/runtime/nitro/utils/paths"
       ],
-      "#primevue-style": [
-        "./primevue-style.mjs"
-      ],
       "#unhead/composables": [
         "../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/head/runtime/composables"
       ],
@@ -117,8 +114,6 @@
     "../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/@nuxt+eslint@1.9.0_@typescr_64f80e84f2a62ee1e879ade28f105ab8/node_modules/runtime/server",
     "../node_modules/.pnpm/@nuxt+eslint@1.9.0_@typescr_64f80e84f2a62ee1e879ade28f105ab8/node_modules/dist/runtime/server",
-    "../node_modules/.pnpm/@primevue+nuxt-module@4.3.7_34b72d09ff69234a347b66f2e1e28f06/node_modules/runtime/server",
-    "../node_modules/.pnpm/@primevue+nuxt-module@4.3.7_34b72d09ff69234a347b66f2e1e28f06/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/shadcn-nuxt@2.2.0_magicast@0.3.5/node_modules/runtime/server",
     "../node_modules/.pnpm/shadcn-nuxt@2.2.0_magicast@0.3.5/node_modules/dist/runtime/server",
     "../node_modules/runtime/server",
@@ -132,7 +127,6 @@
     "../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/node_modules",
     "../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/node_modules",
     "../node_modules/.pnpm/@nuxt+eslint@1.9.0_@typescr_64f80e84f2a62ee1e879ade28f105ab8/node_modules/@nuxt/eslint/node_modules",
-    "../node_modules/.pnpm/@primevue+nuxt-module@4.3.7_34b72d09ff69234a347b66f2e1e28f06/node_modules/@primevue/nuxt-module/node_modules",
     "../node_modules/.pnpm/shadcn-nuxt@2.2.0_magicast@0.3.5/node_modules/shadcn-nuxt/node_modules",
     "../node_modules/@nuxt/devtools/node_modules",
     "../node_modules/@nuxt/telemetry/node_modules",

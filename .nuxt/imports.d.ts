@@ -41,10 +41,4 @@ export { useSupabaseClient } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/
 export { useSupabaseCookieRedirect } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseCookieRedirect';
 export { useSupabaseSession } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseSession';
 export { useSupabaseUser } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser';
-export { usePrimeVue } from 'primevue/config';
-export { useStyle } from 'primevue/usestyle';
-export { useConfirm } from 'primevue/useconfirm';
-export { useToast } from 'primevue/usetoast';
-export { useDialog } from 'primevue/usedialog';
-export { useNuxtDevTools } from '../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
 export { definePageMeta } from '../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/pages/runtime/composables';

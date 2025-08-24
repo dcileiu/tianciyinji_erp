@@ -1,341 +1,375 @@
 <template>
-  <div class="p-6 min-h-screen bg-surface-50">
+  <div class="p-6 min-h-screen bg-gray-50">
     <!-- 页面标题 -->
     <div class="flex justify-between items-start mb-6">
-      <div>
-        <h1 class="text-3xl font-semibold text-color mb-2">产品管理</h1>
-        <p class="text-muted-color">管理产品信息、库存和定价</p>
+      <div class="flex items-center gap-3">
+        <Package class="h-8 w-8 text-blue-600" />
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-1">产品管理</h1>
+          <p class="text-gray-600">管理产品信息、库存和定价</p>
+        </div>
       </div>
-      <div>
-        <Button
-          label="新增产品"
-          icon="pi pi-plus"
-          class="create-btn"
-          @click="openProductModal"
-        />
-      </div>
+      <Button @click="openProductModal" class="bg-blue-600 hover:bg-blue-700">
+        <Plus class="h-4 w-4 mr-2" />
+        新增产品
+      </Button>
     </div>
 
     <!-- 搜索和筛选区域 -->
     <Card class="mb-6">
-      <template #content>
-        <div class="flex gap-4 items-center flex-wrap p-4">
-          <div class="flex-1 min-w-80">
-            <span class="p-input-icon-left w-full">
-              <i class="pi pi-search"></i>
-              <InputText
-                v-model="searchKeyword"
-                placeholder="搜索产品名称、编码..."
-                class="w-full"
-              />
-            </span>
+      <CardContent class="p-6">
+        <div class="flex gap-4 items-center flex-wrap">
+          <div class="flex-1 min-w-80 relative">
+            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              v-model="searchKeyword"
+              placeholder="搜索产品名称、编码..."
+              class="pl-10"
+            />
           </div>
 
           <div class="flex gap-4 items-center">
-            <Dropdown
-              v-model="selectedCategory"
-              :options="categoryOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="产品分类"
-              class="w-40"
-            />
-            <Dropdown
-              v-model="selectedStatus"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="产品状态"
-              class="w-40"
-            />
-            <Button
-              label="重置"
-              icon="pi pi-refresh"
-              outlined
-              @click="resetFilters"
-            />
+            <Select v-model="selectedCategory">
+              <SelectTrigger class="w-40">
+                <SelectValue placeholder="产品分类" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in categoryOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select v-model="selectedStatus">
+              <SelectTrigger class="w-40">
+                <SelectValue placeholder="产品状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Button variant="outline" @click="resetFilters">
+              <RefreshCw class="h-4 w-4 mr-2" />
+              重置
+            </Button>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 统计信息 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <div class="bg-surface-0 border border-surface rounded-border p-6 text-center">
-        <div class="text-2xl font-semibold text-primary mb-2">{{ filteredProducts.length }}</div>
-        <div class="text-sm text-muted-color">总产品数</div>
-      </div>
-      <div class="bg-surface-0 border border-surface rounded-border p-6 text-center">
-        <div class="text-2xl font-semibold text-green-600 mb-2">{{ activeProductsCount }}</div>
-        <div class="text-sm text-muted-color">在售产品</div>
-      </div>
-      <div class="bg-surface-0 border border-surface rounded-border p-6 text-center">
-        <div class="text-2xl font-semibold text-orange-600 mb-2">{{ lowStockCount }}</div>
-        <div class="text-sm text-muted-color">库存预警</div>
-      </div>
-      <div class="bg-surface-0 border border-surface rounded-border p-6 text-center">
-        <div class="text-2xl font-semibold text-red-600 mb-2">{{ outOfStockCount }}</div>
-        <div class="text-sm text-muted-color">缺货产品</div>
-      </div>
+      <Card>
+        <CardContent class="p-6 text-center">
+          <div class="flex items-center justify-center mb-3">
+            <Package class="h-6 w-6 text-blue-600" />
+          </div>
+          <div class="text-2xl font-bold text-gray-900 mb-1">{{ filteredProducts.length }}</div>
+          <div class="text-sm text-gray-600">总产品数</div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardContent class="p-6 text-center">
+          <div class="flex items-center justify-center mb-3">
+            <CheckCircle class="h-6 w-6 text-green-600" />
+          </div>
+          <div class="text-2xl font-bold text-green-600 mb-1">{{ activeProductsCount }}</div>
+          <div class="text-sm text-gray-600">在售产品</div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardContent class="p-6 text-center">
+          <div class="flex items-center justify-center mb-3">
+            <AlertTriangle class="h-6 w-6 text-orange-600" />
+          </div>
+          <div class="text-2xl font-bold text-orange-600 mb-1">{{ lowStockCount }}</div>
+          <div class="text-sm text-gray-600">库存预警</div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardContent class="p-6 text-center">
+          <div class="flex items-center justify-center mb-3">
+            <XCircle class="h-6 w-6 text-red-600" />
+          </div>
+          <div class="text-2xl font-bold text-red-600 mb-1">{{ outOfStockCount }}</div>
+          <div class="text-sm text-gray-600">缺货产品</div>
+        </CardContent>
+      </Card>
     </div>
 
     <!-- 产品列表 -->
     <Card>
-      <template #content>
-        <DataTable
-          :value="filteredProducts"
-          :loading="loading"
-          :paginator="true"
-          :rows="pageSize"
-          :total-records="filteredProducts.length"
-          :rows-per-page-options="[10, 20, 50]"
-          striped-rows
-          show-gridlines
-          responsive-layout="scroll"
-          class="p-4"
-        >
-          <template #empty>
-            <div class="text-center py-12 text-muted-color">
-              <i class="pi pi-inbox text-6xl mb-4 opacity-50"></i>
-              <h3 class="text-lg mb-2">暂无产品</h3>
-              <p class="mb-4">开始创建您的第一个产品</p>
-                    <Button 
-                label="新增产品"
-                icon="pi pi-plus"
-                @click="openProductModal"
-              />
-            </div>
-          </template>
-
-          <Column field="name" header="产品名称" :sortable="true">
-            <template #body="slotProps">
-              <div class="flex items-center gap-3">
-                <Avatar
-                  :label="slotProps.data.name.charAt(0)"
-                  shape="circle"
-                  size="large"
-                  class="bg-primary text-primary-contrast"
-                />
-                <div class="flex-1">
-                  <div class="font-medium text-color mb-1">{{ slotProps.data.name }}</div>
-                  <div class="text-sm text-muted-color">{{ slotProps.data.description }}</div>
-            </div>
-          </div>
-            </template>
-          </Column>
-
-          <Column field="code" header="产品编码" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-mono bg-surface-100 px-2 py-1 rounded text-primary text-sm">
-                {{ slotProps.data.code }}
-              </span>
-            </template>
-          </Column>
-      
-          <Column field="price" header="价格" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-semibold text-green-600">
-                ¥{{ slotProps.data.price.toLocaleString() }}
-              </span>
-            </template>
-          </Column>
-
-          <Column field="stock" header="库存" :sortable="true">
-            <template #body="slotProps">
-              <div class="flex items-center gap-2">
-                <span class="font-medium">{{ slotProps.data.stock }}</span>
-                <Tag 
-                  v-if="slotProps.data.stock <= 10"
-                  value="库存不足" 
-                  severity="warn" 
-                  class="text-xs"
-            />
-          </div>
-            </template>
-          </Column>
-
-          <Column field="status" header="状态" :sortable="true">
-            <template #body="slotProps">
-              <Tag
-                :value="slotProps.data.status === 'active' ? '在售' : '停售'"
-                :severity="slotProps.data.status === 'active' ? 'success' : 'danger'"
-              />
-            </template>
-          </Column>
-
-          <Column field="updated_at" header="更新时间" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.updated_at) }}
-              </span>
-            </template>
-          </Column>
-
-          <Column header="操作" class="w-32">
-            <template #body="slotProps">
-              <div class="flex gap-2">
-                <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="viewProduct(slotProps.data)"
-            />
-                <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="editProduct(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'复制'"
-                  icon="pi pi-copy"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="copyProduct(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  outlined
-                  rounded
-                  size="small"
-                  severity="danger"
-                  @click="confirmDelete(slotProps.data)"
-            />
-          </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+      <CardHeader>
+        <CardTitle class="flex items-center gap-2">
+          <List class="h-5 w-5" />
+          产品列表
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div v-if="loading" class="flex items-center justify-center py-12">
+          <RefreshCw class="h-6 w-6 animate-spin text-gray-400" />
+          <span class="ml-2 text-gray-600">加载中...</span>
+        </div>
+        
+        <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
+          <Package class="h-16 w-16 mx-auto text-gray-300 mb-4" />
+          <h3 class="text-lg font-medium text-gray-900 mb-2">暂无产品</h3>
+          <p class="text-gray-600 mb-4">开始创建您的第一个产品</p>
+          <Button @click="openProductModal" class="bg-blue-600 hover:bg-blue-700">
+            <Plus class="h-4 w-4 mr-2" />
+            新增产品
+          </Button>
+        </div>
+        
+        <div v-else class="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>产品信息</TableHead>
+                <TableHead>产品编码</TableHead>
+                <TableHead>价格</TableHead>
+                <TableHead>库存</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>更新时间</TableHead>
+                <TableHead class="w-32">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="product in filteredProducts" :key="product.id" class="hover:bg-gray-50">
+                <TableCell>
+                  <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span class="text-blue-600 font-medium">{{ product.name.charAt(0) }}</span>
+                    </div>
+                    <div>
+                      <div class="font-medium text-gray-900">{{ product.name }}</div>
+                      <div class="text-sm text-gray-600">{{ product.description }}</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary" class="font-mono">
+                    {{ product.code }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span class="font-semibold text-green-600">
+                    ¥{{ product.price.toLocaleString() }}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium">{{ product.stock }}</span>
+                    <Badge v-if="product.stock <= 10 && product.stock > 0" variant="destructive" class="text-xs">
+                      库存不足
+                    </Badge>
+                    <Badge v-if="product.stock === 0" variant="destructive" class="text-xs">
+                      缺货
+                    </Badge>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="product.status === 'active' ? 'default' : 'secondary'">
+                    {{ product.status === 'active' ? '在售' : '停售' }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm text-gray-600">
+                    {{ formatDate(product.updated_at) }}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <div class="flex gap-1">
+                    <Button variant="ghost" size="sm" @click="viewProduct(product)">
+                      <Eye class="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="editProduct(product)">
+                      <Edit class="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="copyProduct(product)">
+                      <Copy class="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="confirmDeleteProduct(product)" class="text-red-600 hover:text-red-700">
+                      <Trash2 class="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
 
+
+
     <!-- 产品详情/编辑对话框 -->
-    <Dialog
-      v-model:visible="showProductModal"
-      :header="modalTitle"
-      modal
-      :style="{ width: '600px' }"
-      class="product-modal"
-    >
-      <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label for="productCode" class="text-sm font-medium text-color">产品编码</label>
-            <InputText
-              id="productCode"
-              v-model="currentProduct.code"
-              placeholder="输入产品编码"
-              :disabled="isEditing"
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="productName" class="text-sm font-medium text-color">产品名称</label>
-            <InputText
-              id="productName"
-              v-model="currentProduct.name"
-              placeholder="输入产品名称"
-            />
-          </div>
+    <Dialog :open="showProductModal" @update:open="closeProductModal">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle class="flex items-center gap-2">
+            <Package class="h-5 w-5" />
+            {{ modalTitle }}
+          </DialogTitle>
+        </DialogHeader>
+        
+        <div class="space-y-6">
+          <!-- 基本信息 -->
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-base flex items-center gap-2">
+                <Info class="h-4 w-4" />
+                基本信息
+              </CardTitle>
+            </CardHeader>
+            <CardContent class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <Label for="productCode">产品编码</Label>
+                  <Input
+                    id="productCode"
+                    v-model="currentProduct.code"
+                    placeholder="输入产品编码"
+                    :disabled="isEditing"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <Label for="productName">产品名称</Label>
+                  <Input
+                    id="productName"
+                    v-model="currentProduct.name"
+                    placeholder="输入产品名称"
+                  />
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <Label for="productCategory">产品分类</Label>
+                  <Select v-model="currentProduct.category">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择产品分类" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="option in categoryOptions.filter(o => o.value)"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div class="space-y-2">
+                  <Label for="productStatus">状态</Label>
+                  <Select v-model="currentProduct.status">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择状态" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="option in statusOptions.filter(o => o.value)"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div class="space-y-2">
+                <Label for="productDescription">产品描述</Label>
+                <Textarea
+                  id="productDescription"
+                  v-model="currentProduct.description"
+                  placeholder="输入产品描述"
+                  rows="3"
+                />
+              </div>
+            </CardContent>
+          </Card>
+          
+          <!-- 价格和库存 -->
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-base flex items-center gap-2">
+                <DollarSign class="h-4 w-4" />
+                价格和库存
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <Label for="productPrice">价格 (¥)</Label>
+                  <Input
+                    id="productPrice"
+                    v-model.number="currentProduct.price"
+                    type="number"
+                    placeholder="输入价格"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <Label for="productStock">库存数量</Label>
+                  <Input
+                    id="productStock"
+                    v-model.number="currentProduct.stock"
+                    type="number"
+                    placeholder="输入库存数量"
+                    min="0"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label for="productCategory" class="text-sm font-medium text-color">产品分类</label>
-            <Dropdown
-              id="productCategory"
-              v-model="currentProduct.category"
-              :options="categoryOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择产品分类"
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="productStatus" class="text-sm font-medium text-color">状态</label>
-            <Dropdown
-              id="productStatus"
-              v-model="currentProduct.status"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择状态"
-            />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label for="productPrice" class="text-sm font-medium text-color">价格</label>
-            <InputNumber
-              id="productPrice"
-              v-model="currentProduct.price"
-              mode="currency"
-              currency="CNY"
-              locale="zh-CN"
-              placeholder="输入价格"
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="productStock" class="text-sm font-medium text-color">库存数量</label>
-            <InputNumber
-              id="productStock"
-              v-model="currentProduct.stock"
-              placeholder="输入库存数量"
-            />
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label for="productDescription" class="text-sm font-medium text-color">产品描述</label>
-          <Textarea
-            id="productDescription"
-            v-model="currentProduct.description"
-            placeholder="输入产品描述"
-            rows="3"
-          />
-        </div>
-        </div>
-
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <Button
-            label="取消"
-            outlined
-            @click="closeProductModal"
-          />
-          <Button
-            :label="isEditing ? '更新' : '创建'"
-            :loading="saving"
-            @click="saveProduct"
-          />
-        </div>
-      </template>
-  </Dialog>
-
-    <!-- 删除确认对话框 -->
-    <ConfirmDialog />
+        
+        <DialogFooter>
+          <Button variant="outline" @click="closeProductModal">
+            <X class="h-4 w-4 mr-2" />
+            取消
+          </Button>
+          <Button @click="saveProduct" :disabled="saving" class="bg-blue-600 hover:bg-blue-700">
+            <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
+            <Check v-else class="h-4 w-4 mr-2" />
+            {{ isEditing ? '更新' : '创建' }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import Textarea from 'primevue/textarea'
-import InputNumber from 'primevue/inputnumber'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Package, Plus, Search, RefreshCw, CheckCircle, AlertTriangle, XCircle, List, Eye, Edit, Copy, Trash2, Info, DollarSign, X, Check, Loader2 } from 'lucide-vue-next'
 
 // 页面状态
 const loading = ref(false)
@@ -348,7 +382,6 @@ const pageSize = ref(10)
 // 对话框状态
 const showProductModal = ref(false)
 const isEditing = ref(false)
-const confirm = useConfirm()
 
 // 当前编辑的产品
 const currentProduct = ref({
@@ -513,15 +546,20 @@ const copyProduct = (product: any) => {
   showProductModal.value = true
 }
 
-const confirmDelete = (product: any) => {
-  confirm.require({
-    message: `确定要删除产品 "${product.name}" 吗？此操作不可撤销。`,
-    header: '删除确认',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteProduct(product.id)
-    }
-  })
+const confirmDeleteProduct = (product: any) => {
+  if (window.confirm(`确定要删除产品 "${product.name}" 吗？此操作不可撤销。`)) {
+    deleteProduct(product.id)
+  }
+}
+
+// 获取状态样式
+const getStatusVariant = (status) => {
+  const variantMap = {
+    active: 'default',
+    inactive: 'secondary',
+    'out-of-stock': 'destructive'
+  }
+  return variantMap[status] || 'outline'
 }
 
 const deleteProduct = async (productId: string) => {

@@ -3,22 +3,22 @@
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-color">产品管理</h1>
-        <p class="text-muted-color">管理产品信息、库存设置和定价策略</p>
+        <h1 class="text-3xl font-bold flex items-center gap-3">
+          <Package class="h-8 w-8 text-blue-600" />
+          产品管理
+        </h1>
+        <p class="text-muted-foreground mt-2">管理产品信息、库存设置和定价策略</p>
       </div>
-      <div class="flex items-center space-x-2">
-        <Button 
-          label="批量导入"
-          icon="pi pi-upload"
-          outlined
-          @click="importProducts"
-        />
+      <div class="flex items-center gap-3">
+        <Button variant="outline" @click="importProducts">
+          <Upload class="h-4 w-4 mr-2" />
+          批量导入
+        </Button>
         <PermissionWrapper :has-permission="canCreateProduct">
-          <Button 
-            label="新增产品"
-            icon="pi pi-plus"
-            @click="openCreateDialog"
-          />
+          <Button @click="openCreateDialog" class="bg-blue-600 hover:bg-blue-700">
+            <Plus class="h-4 w-4 mr-2" />
+            新增产品
+          </Button>
         </PermissionWrapper>
       </div>
     </div>
@@ -26,559 +26,542 @@
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center">
             <div class="p-3 bg-blue-500/10 rounded-full">
-              <i class="pi pi-box text-blue-600 text-xl"></i>
+              <Package class="h-6 w-6 text-blue-600" />
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">总产品数</p>
-              <p class="text-2xl font-semibold text-color">{{ productStats.totalProducts }}</p>
+              <p class="text-sm font-medium text-muted-foreground">总产品数</p>
+              <p class="text-2xl font-semibold">{{ productStats.totalProducts }}</p>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center">
             <div class="p-3 bg-green-500/10 rounded-full">
-              <i class="pi pi-chart-line text-green-600 text-xl"></i>
+              <TrendingUp class="h-6 w-6 text-green-600" />
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">库存价值</p>
-              <p class="text-2xl font-semibold text-color">¥{{ formatCurrency(productStats.stockValue) }}</p>
+              <p class="text-sm font-medium text-muted-foreground">库存价值</p>
+              <p class="text-2xl font-semibold">¥{{ formatCurrency(productStats.stockValue) }}</p>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center">
             <div class="p-3 bg-yellow-500/10 rounded-full">
-              <i class="pi pi-exclamation-triangle text-yellow-600 text-xl"></i>
+              <AlertTriangle class="h-6 w-6 text-yellow-600" />
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">低库存产品</p>
-              <p class="text-2xl font-semibold text-color">{{ productStats.lowStockCount }}</p>
+              <p class="text-sm font-medium text-muted-foreground">低库存产品</p>
+              <p class="text-2xl font-semibold">{{ productStats.lowStockCount }}</p>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card>
-        <template #content>
+        <CardContent class="p-6">
           <div class="flex items-center">
             <div class="p-3 bg-red-500/10 rounded-full">
-              <i class="pi pi-times-circle text-red-600 text-xl"></i>
+              <XCircle class="h-6 w-6 text-red-600" />
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-muted-color">缺货产品</p>
-              <p class="text-2xl font-semibold text-color">{{ productStats.outOfStockCount }}</p>
+              <p class="text-sm font-medium text-muted-foreground">缺货产品</p>
+              <p class="text-2xl font-semibold">{{ productStats.outOfStockCount }}</p>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
 
     <!-- 搜索和筛选 -->
     <Card>
-      <template #header>
-        <h3 class="text-lg font-semibold text-color">搜索筛选</h3>
-      </template>
-      <template #content>
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-color mb-2">搜索产品</label>
-            <InputText
+      <CardContent class="p-6">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1 relative">
+            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
               v-model="searchQuery"
-              placeholder="产品名称或编码"
-              class="w-full"
+              placeholder="搜索产品名称、编码或规格..."
+              class="pl-10"
             />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-color mb-2">产品分类</label>
-            <Dropdown
-              v-model="categoryFilter"
-              :options="categoryOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部分类"
-              show-clear
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-color mb-2">库存状态</label>
-            <Dropdown
-              v-model="stockStatusFilter"
-              :options="stockStatusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部状态"
-              show-clear
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-color mb-2">产品状态</label>
-            <Dropdown
-              v-model="statusFilter"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部状态"
-              show-clear
-              class="w-full"
-            />
-          </div>
-          <div class="flex items-end">
+          <div class="flex gap-2">
+            <Select v-model="selectedCategory">
+              <SelectTrigger class="w-48">
+                <SelectValue placeholder="选择分类" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">
+                  <span class="text-muted-foreground">全部分类</span>
+                </SelectItem>
+                <SelectItem
+                  v-for="option in categoryOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select v-model="selectedStockStatus">
+              <SelectTrigger class="w-32">
+                <SelectValue placeholder="库存状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">
+                  <span class="text-muted-foreground">全部</span>
+                </SelectItem>
+                <SelectItem
+                  v-for="option in stockStatusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select v-model="selectedStatus">
+              <SelectTrigger class="w-32">
+                <SelectValue placeholder="产品状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">
+                  <span class="text-muted-foreground">全部</span>
+                </SelectItem>
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            
             <Button
-              label="重置筛选"
-              icon="pi pi-filter-slash"
-              outlined
-              class="w-full"
+              variant="outline"
+              size="icon"
               @click="resetFilters"
-            />
+              title="重置筛选"
+            >
+              <FilterX class="h-4 w-4" />
+            </Button>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 产品列表 -->
     <Card>
-      <template #header>
+      <CardHeader>
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-color">产品列表</h3>
+          <CardTitle class="flex items-center gap-2">
+            <List class="h-5 w-5" />
+            产品列表
+          </CardTitle>
           <div class="flex items-center gap-2">
-            <Button
-              label="批量操作"
-              icon="pi pi-cog"
-              outlined
-              size="small"
-            />
-            <Button
-              label="导出数据"
-              icon="pi pi-download"
-              outlined
-              size="small"
-            />
+            <Button variant="outline" size="sm" @click="openSettings">
+              <Settings class="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="sm" @click="exportProducts">
+              <Download class="h-4 w-4" />
+            </Button>
           </div>
         </div>
-      </template>
-
-      <template #content>
-        <DataTable
-          v-model:selection="selectedProducts"
-          :value="filteredProducts"
-          :loading="loading"
-          :paginator="true"
-          :rows="20"
-          :rows-per-page-options="[10, 20, 50]"
-          data-key="id"
-          class="p-datatable-sm"
-          selection-mode="multiple"
-        >
-          <template #loading>
-            <div class="p-6">
-              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
-                <Skeleton shape="circle" size="3rem" />
-                <div class="flex-1">
-                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                  <Skeleton width="70%" height="1rem" />
-                </div>
-                <Skeleton width="8rem" height="1.5rem" />
-                <Skeleton width="6rem" height="1.5rem" />
-              </div>
+      </CardHeader>
+      <CardContent>
+        <div v-if="loading" class="space-y-4">
+          <div v-for="i in 5" :key="i" class="flex items-center space-x-4">
+            <Skeleton class="h-12 w-12 rounded" />
+            <div class="space-y-2">
+              <Skeleton class="h-4 w-[250px]" />
+              <Skeleton class="h-4 w-[200px]" />
             </div>
-          </template>
-          <Column selection-mode="multiple" :exportable="false"></Column>
-          
-          <Column field="product_no" header="产品编码" sortable>
-            <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
-                {{ slotProps.data.product_no }}
-              </code>
-            </template>
-          </Column>
-          
-          <Column field="name" header="产品名称" sortable>
-            <template #body="slotProps">
-              <div class="flex align-items-center gap-2">
-                <Avatar
-                  v-if="slotProps.data.image"
-                  :image="slotProps.data.image"
-                  shape="circle"
-                  size="small"
-                />
-                <Avatar
-                  v-else
-                  :label="slotProps.data.name.charAt(0)"
-                  shape="circle"
-                  size="small"
-                />
-                <div>
-                  <span class="font-medium">{{ slotProps.data.name }}</span>
-                  <p class="text-xs text-muted-color">{{ slotProps.data.specification }}</p>
-                </div>
-              </div>
-            </template>
-          </Column>
-          
-          <Column field="category" header="分类" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="getCategoryDisplayName(slotProps.data.category)"
-                :severity="getCategorySeverity(slotProps.data.category)"
-              />
-            </template>
-          </Column>
-          
-          <Column field="current_stock" header="当前库存" sortable>
-            <template #body="slotProps">
-              <div class="flex align-items-center gap-2">
-                <span 
-                  :class="getStockClass(slotProps.data.current_stock, slotProps.data.min_stock)"
-                  class="font-medium"
-                >
-                  {{ slotProps.data.current_stock }}
-                </span>
-                <span class="text-xs text-muted-color">{{ slotProps.data.unit }}</span>
-              </div>
-            </template>
-          </Column>
-          
-          <Column field="unit_price" header="单价" sortable>
-            <template #body="slotProps">
-              <span class="font-medium text-green-600">
-                ¥{{ slotProps.data.unit_price.toLocaleString() }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column field="cost_price" header="成本价" sortable>
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                ¥{{ slotProps.data.cost_price.toLocaleString() }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column field="status" header="状态" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="getStatusDisplayName(slotProps.data.status)"
-                :severity="getStatusSeverity(slotProps.data.status)"
-              />
-            </template>
-          </Column>
-          
-          <Column field="created_at" header="创建时间" sortable>
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.created_at) }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column header="操作" :exportable="false">
-            <template #body="slotProps">
-              <div class="flex align-items-center gap-1">
-                <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
-                  text
-                  size="small"
-                  @click="viewProduct(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
-                  text
-                  size="small"
-                  @click="editProduct(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'复制'"
-                  icon="pi pi-copy"
-                  rounded
-                  text
-                  size="small"
-                  @click="duplicateProduct(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'库存详情'"
-                  icon="pi pi-chart-bar"
-                  rounded
-                  text
-                  size="small"
-                  @click="showStockDetails(slotProps.data)"
-                />
-                <Button
-                  v-if="slotProps.data.status === 'active'"
-                  v-tooltip="'停用'"
-                  icon="pi pi-pause"
-                  rounded
-                  text
-                  size="small"
-                  severity="warning"
-                  @click="toggleStatus(slotProps.data, 'inactive')"
-                />
-                <Button
-                  v-else
-                  v-tooltip="'启用'"
-                  icon="pi pi-play"
-                  rounded
-                  text
-                  size="small"
-                  severity="success"
-                  @click="toggleStatus(slotProps.data, 'active')"
-                />
-                <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  rounded
-                  text
-                  size="small"
-                  severity="danger"
-                  @click="confirmDeleteProduct(slotProps.data)"
-                />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+          </div>
+        </div>
+        
+        <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
+          <Package class="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 class="text-lg font-semibold mb-2">暂无产品数据</h3>
+          <p class="text-muted-foreground mb-4">开始添加您的第一个产品</p>
+          <Button @click="openCreateDialog">
+            <Plus class="h-4 w-4 mr-2" />
+            新增产品
+          </Button>
+        </div>
+        
+        <div v-else>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead class="w-12">
+                  <input type="checkbox" class="rounded" />
+                </TableHead>
+                <TableHead>产品编码</TableHead>
+                <TableHead>产品名称</TableHead>
+                <TableHead>分类</TableHead>
+                <TableHead class="text-right">当前库存</TableHead>
+                <TableHead class="text-right">单价</TableHead>
+                <TableHead class="text-right">成本价</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>创建时间</TableHead>
+                <TableHead class="text-right">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="product in filteredProducts" :key="product.id" class="hover:bg-muted/50">
+                <TableCell>
+                  <input type="checkbox" class="rounded" />
+                </TableCell>
+                <TableCell>
+                  <span class="font-mono text-sm">{{ product.product_no }}</span>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded bg-muted flex items-center justify-center">
+                      <Package class="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <div class="font-medium">{{ product.name }}</div>
+                      <div class="text-sm text-muted-foreground">{{ product.specification }}</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getCategoryVariant(product.category)">
+                    {{ getCategoryDisplayName(product.category) }}
+                  </Badge>
+                </TableCell>
+                <TableCell class="text-right">
+                  <div class="font-medium">{{ product.current_stock }}</div>
+                  <div class="text-sm text-muted-foreground">{{ product.unit }}</div>
+                </TableCell>
+                <TableCell class="text-right font-medium">
+                  ¥{{ formatCurrency(product.unit_price) }}
+                </TableCell>
+                <TableCell class="text-right text-muted-foreground">
+                  ¥{{ formatCurrency(product.cost_price) }}
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(product.status)">
+                    {{ getStatusDisplayName(product.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm text-muted-foreground">{{ formatDate(product.created_at) }}</span>
+                </TableCell>
+                <TableCell class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="sm" @click="viewProduct(product)">
+                      <Eye class="h-4 w-4" />
+                    </Button>
+                    <PermissionWrapper :has-permission="canEditProduct">
+                      <Button variant="ghost" size="sm" @click="editProduct(product)">
+                        <Edit class="h-4 w-4" />
+                      </Button>
+                    </PermissionWrapper>
+                    <Button variant="ghost" size="sm" @click="duplicateProduct(product)">
+                      <Copy class="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="showStockDetails(product)">
+                      <BarChart3 class="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      @click="toggleStatus(product, product.status === 'active' ? 'inactive' : 'active')"
+                    >
+                      <component :is="product.status === 'active' ? Pause : Play" class="h-4 w-4" />
+                    </Button>
+                    <PermissionWrapper :has-permission="canDeleteProduct">
+                      <Button variant="ghost" size="sm" @click="confirmDeleteProduct(product)">
+                        <Trash2 class="h-4 w-4 text-destructive" />
+                      </Button>
+                    </PermissionWrapper>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
 
     <!-- 产品对话框 -->
-    <Dialog
-      v-model:visible="showProductDialog"
-      :header="editingProduct ? '编辑产品' : '新增产品'"
-      :style="{ width: '900px' }"
-      modal
-      class="p-fluid"
-    >
-      <template #default>
-        <TabView>
-          <TabPanel header="基本信息" value="basic">
-            <div class="space-y-4 pt-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">产品编码</label>
-                  <InputText
-                    v-model="productForm.product_no"
-                    :disabled="true"
-                    placeholder="系统自动生成"
-                  />
-                </div>
-                
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">产品名称 *</label>
-                  <InputText
-                    v-model="productForm.name"
-                    placeholder="请输入产品名称"
-                    :disabled="dialogMode === 'view'"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">产品分类 *</label>
-                  <Dropdown
-                    v-model="productForm.category"
-                    :options="categoryOptions"
-                    option-label="label"
-                    option-value="value"
-                    placeholder="选择产品分类"
-                    :disabled="dialogMode === 'view'"
-                    required
-                  />
-                </div>
-                
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">计量单位 *</label>
-                  <Dropdown
-                    v-model="productForm.unit"
-                    :options="unitOptions"
-                    option-label="label"
-                    option-value="value"
-                    placeholder="选择计量单位"
-                    :disabled="dialogMode === 'view'"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">产品规格</label>
-                <InputText
-                  v-model="productForm.specification"
-                  placeholder="请输入产品规格"
-                  :disabled="dialogMode === 'view'"
-                />
-              </div>
-              
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">产品描述</label>
-                <Textarea
-                  v-model="productForm.description"
-                  placeholder="请输入产品描述"
-                  :rows="3"
-                  :disabled="dialogMode === 'view'"
-                />
-              </div>
-            </div>
-          </TabPanel>
+    <Dialog :open="showProductDialog" @update:open="showProductDialog = $event">
+      <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle class="flex items-center gap-2">
+            <Package class="h-5 w-5" />
+            {{ editingProduct ? '编辑产品' : '新增产品' }}
+          </DialogTitle>
+        </DialogHeader>
+        
+        <Tabs default-value="basic" class="w-full">
+          <TabsList class="grid w-full grid-cols-3">
+            <TabsTrigger value="basic">基本信息</TabsTrigger>
+            <TabsTrigger value="pricing">价格库存</TabsTrigger>
+            <TabsTrigger value="other">其他信息</TabsTrigger>
+          </TabsList>
           
-          <TabPanel header="价格库存" value="pricing">
-            <div class="space-y-4 pt-4">
-              <div class="grid grid-cols-3 gap-4">
+          <TabsContent value="basic" class="space-y-6 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle class="flex items-center gap-2">
+                  <Info class="h-4 w-4" />
+                  基本信息
+                </CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <Label>产品编码</Label>
+                    <Input
+                      v-model="productForm.product_no"
+                      disabled
+                      placeholder="系统自动生成"
+                    />
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <Label>产品名称 <span class="text-destructive">*</span></Label>
+                    <Input
+                      v-model="productForm.name"
+                      placeholder="请输入产品名称"
+                      :disabled="dialogMode === 'view'"
+                    />
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <Label>产品分类 <span class="text-destructive">*</span></Label>
+                    <Select v-model="productForm.category" :disabled="dialogMode === 'view'">
+                      <SelectTrigger>
+                        <SelectValue placeholder="选择产品分类" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="option in categoryOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <Label>计量单位 <span class="text-destructive">*</span></Label>
+                    <Select v-model="productForm.unit" :disabled="dialogMode === 'view'">
+                      <SelectTrigger>
+                        <SelectValue placeholder="选择计量单位" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="option in unitOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">销售单价 *</label>
-                  <InputNumber
-                    v-model="productForm.unit_price"
-                    mode="currency"
-                    currency="CNY"
-                    :min="0"
+                  <Label>产品规格</Label>
+                  <Input
+                    v-model="productForm.specification"
+                    placeholder="请输入产品规格"
                     :disabled="dialogMode === 'view'"
-                    required
                   />
                 </div>
                 
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">成本价 *</label>
-                  <InputNumber
-                    v-model="productForm.cost_price"
-                    mode="currency"
-                    currency="CNY"
-                    :min="0"
+                  <Label>产品描述</Label>
+                  <Textarea
+                    v-model="productForm.description"
+                    placeholder="请输入产品描述"
                     :disabled="dialogMode === 'view'"
-                    required
+                    rows="3"
                   />
                 </div>
-                
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">当前库存</label>
-                  <InputNumber
-                    v-model="productForm.current_stock"
-                    :min="0"
-                    show-buttons
-                    :disabled="dialogMode === 'view'"
-                  />
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">最小库存</label>
-                  <InputNumber
-                    v-model="productForm.min_stock"
-                    :min="0"
-                    show-buttons
-                    :disabled="dialogMode === 'view'"
-                  />
-                </div>
-                
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">最大库存</label>
-                  <InputNumber
-                    v-model="productForm.max_stock"
-                    :min="0"
-                    show-buttons
-                    :disabled="dialogMode === 'view'"
-                  />
-                </div>
-              </div>
-            </div>
-          </TabPanel>
+              </CardContent>
+            </Card>
+          </TabsContent>
           
-          <TabPanel header="其他信息" value="other">
-            <div class="space-y-4 pt-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">产品状态</label>
-                  <Dropdown
-                    v-model="productForm.status"
-                    :options="statusOptions"
-                    option-label="label"
-                    option-value="value"
-                    placeholder="选择产品状态"
-                    :disabled="dialogMode === 'view'"
-                  />
+          <TabsContent value="pricing" class="space-y-6 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle class="flex items-center gap-2">
+                  <DollarSign class="h-4 w-4" />
+                  价格库存
+                </CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div class="grid grid-cols-3 gap-4">
+                  <div class="space-y-2">
+                    <Label>销售单价 <span class="text-destructive">*</span></Label>
+                    <Input
+                      v-model="productForm.unit_price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                      :disabled="dialogMode === 'view'"
+                    />
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <Label>成本价 <span class="text-destructive">*</span></Label>
+                    <Input
+                      v-model="productForm.cost_price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                      :disabled="dialogMode === 'view'"
+                    />
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <Label>当前库存</Label>
+                    <Input
+                      v-model="productForm.current_stock"
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      :disabled="dialogMode === 'view'"
+                    />
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <Label>最小库存</Label>
+                    <Input
+                      v-model="productForm.min_stock"
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      :disabled="dialogMode === 'view'"
+                    />
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <Label>最大库存</Label>
+                    <Input
+                      v-model="productForm.max_stock"
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      :disabled="dialogMode === 'view'"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="other" class="space-y-6 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle class="flex items-center gap-2">
+                  <Settings class="h-4 w-4" />
+                  其他信息
+                </CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <Label>产品状态</Label>
+                    <Select v-model="productForm.status" :disabled="dialogMode === 'view'">
+                      <SelectTrigger>
+                        <SelectValue placeholder="选择产品状态" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="option in statusOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <Label>供应商</Label>
+                    <Input
+                      v-model="productForm.supplier"
+                      placeholder="请输入供应商"
+                      :disabled="dialogMode === 'view'"
+                    />
+                  </div>
                 </div>
                 
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">供应商</label>
-                  <InputText
-                    v-model="productForm.supplier"
-                    placeholder="请输入供应商"
+                  <Label>备注</Label>
+                  <Textarea
+                    v-model="productForm.notes"
+                    placeholder="请输入备注信息"
                     :disabled="dialogMode === 'view'"
+                    rows="4"
                   />
                 </div>
-              </div>
-              
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">备注</label>
-                <Textarea
-                  v-model="productForm.notes"
-                  placeholder="请输入备注信息"
-                  :rows="4"
-                  :disabled="dialogMode === 'view'"
-                />
-              </div>
-            </div>
-          </TabPanel>
-        </TabView>
-      </template>
-      
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeProductDialog"
-          />
-          <Button
-            v-if="dialogMode !== 'view'"
-            label="保存"
-            icon="pi pi-check"
-            :loading="saving"
-            @click="saveProduct"
-          />
-        </div>
-      </template>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+        
+        <DialogFooter class="mt-6">
+          <Button variant="outline" @click="closeProductDialog">
+            <X class="h-4 w-4 mr-2" />
+            取消
+          </Button>
+          <Button v-if="dialogMode !== 'view'" @click="saveProduct" :disabled="saving">
+            <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
+            <Check v-else class="h-4 w-4 mr-2" />
+            保存
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
     
-    <!-- 确认对话框 -->
-    <ConfirmDialog />
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Package, Upload, Plus, TrendingUp, AlertTriangle, XCircle, Search, FilterX, List, Settings, Download, Eye, Edit, Copy, BarChart3, Pause, Play, Trash2, Info, DollarSign, X, Check, Loader2 } from 'lucide-vue-next'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
-import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -596,7 +579,6 @@ const showProductDialog = ref(false)
 const dialogMode = ref<'view' | 'create' | 'edit'>('view')
 const editingProduct = ref(null as any)
 const selectedProducts = ref([])
-const confirm = useConfirm()
 
 // 权限检查
 const canCreateProduct = ref(true)
@@ -766,7 +748,13 @@ const statusSeverityMap: Record<string, string> = {
 const getCategoryDisplayName = (category: string) => categoryMap[category] || category
 const getCategorySeverity = (category: string) => categorySeverityMap[category] || 'info'
 const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getStatusVariant = (status: string) => {
+  const variantMap = {
+    'active': 'default',
+    'inactive': 'secondary'
+  }
+  return variantMap[status] || 'outline'
+}
 
 const getStockClass = (currentStock: number, minStock: number) => {
   if (currentStock === 0) return 'text-red-600'
@@ -841,36 +829,26 @@ const showStockDetails = (product: any) => {
 }
 
 const toggleStatus = async (product: any, newStatus: string) => {
-  confirm.require({
-    message: `确定要${newStatus === 'active' ? '启用' : '停用'}产品 ${product.name} 吗？`,
-    header: newStatus === 'active' ? '启用产品' : '停用产品',
-    icon: 'pi pi-question',
-    accept: async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const index = mockProducts.value.findIndex(p => p.id === product.id)
-        if (index !== -1) {
-          if (mockProducts.value[index]) {
-            mockProducts.value[index]!.status = newStatus
-          }
+  if (window.confirm(`确定要${newStatus === 'active' ? '启用' : '停用'}产品 ${product.name} 吗？`)) {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      const index = mockProducts.value.findIndex(p => p.id === product.id)
+      if (index !== -1) {
+        if (mockProducts.value[index]) {
+          mockProducts.value[index]!.status = newStatus
         }
       }
-      catch (error) {
-        console.error('操作失败:', error)
-      }
     }
-  })
+    catch (error) {
+      console.error('操作失败:', error)
+    }
+  }
 }
 
 const confirmDeleteProduct = (product: any) => {
-  confirm.require({
-    message: `确定要删除产品 ${product.name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteProduct(product.id)
-    }
-  })
+  if (window.confirm(`确定要删除产品 ${product.name} 吗？`)) {
+    deleteProduct(product.id)
+  }
 }
 
 const deleteProduct = (productId: string) => {
@@ -925,4 +903,4 @@ const importProducts = () => {
 onMounted(() => {
   // 加载数据
 })
-</script> 
+</script>

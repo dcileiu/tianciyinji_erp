@@ -5,107 +5,118 @@
     <div class="w-full max-w-md mx-auto px-4 sm:px-0">
       <!-- 密码重置卡片 -->
       <Card class="shadow-2xl border-0 overflow-hidden">
-        <template #content>
-          <div class="p-4 sm:p-6">
-            <div class="text-center mb-6">
-              <h1 class="text-base sm:text-2xl font-bold text-gray-700 mb-2">
-                设置新密码
-              </h1>
-              <p class="text-sm text-gray-600">请输入您的新密码</p>
+        <CardContent class="p-4 sm:p-6">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock class="w-8 h-8 text-blue-600" />
+            </div>
+            <h1 class="text-base sm:text-2xl font-bold text-foreground mb-2">
+              设置新密码
+            </h1>
+            <p class="text-sm text-muted-foreground">请输入您的新密码</p>
+          </div>
+
+          <form @submit.prevent="handleResetPassword">
+            <!-- 新密码输入 -->
+            <div class="mb-6">
+              <Label for="password">新密码</Label>
+              <div class="relative mt-1">
+                <Input
+                  id="password"
+                  v-model="form.password"
+                  :type="showPassword ? 'text' : 'password'"
+                  placeholder="请输入新密码"
+                  class="pr-10"
+                  :class="{ 'border-red-500': passwordError }"
+                />
+                <button
+                  type="button"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  @click="showPassword = !showPassword"
+                >
+                  <Eye v-if="!showPassword" class="w-4 h-4 text-muted-foreground" />
+                  <EyeOff v-else class="w-4 h-4 text-muted-foreground" />
+                </button>
+              </div>
+              <p v-if="passwordError" class="text-sm text-red-500 mt-1">
+                {{ passwordError }}
+              </p>
             </div>
 
-            <form @submit.prevent="handleResetPassword">
-              <!-- 新密码输入 -->
-              <div class="mb-6">
-                <FloatLabel variant="on">
-                  <IconField class="w-full">
-                    <Password
-                      v-model="form.password"
-                      :class="{ 'p-invalid': passwordError }"
-                      class="w-full"
-                      input-class="w-full pl-10 text-sm sm:text-base"
-                      toggle-mask
-                      inputId="password"
-                      placeholder="请输入新密码"
-                    />
-                  </IconField>
-                  <label for="password">新密码</label>
-                </FloatLabel>
-                <small v-if="passwordError" class="text-red-500">{{
-                  passwordError
-                }}</small>
-              </div>
-
-              <!-- 确认密码输入 -->
-              <div class="mb-6">
-                <FloatLabel variant="on">
-                  <IconField class="w-full">
-                    <Password
-                      v-model="form.confirmPassword"
-                      :class="{ 'p-invalid': confirmPasswordError }"
-                      class="w-full"
-                      input-class="w-full pl-10 text-sm sm:text-base"
-                      toggle-mask
-                      inputId="confirmPassword"
-                      placeholder="请再次输入新密码"
-                    />
-                  </IconField>
-                  <label for="confirmPassword">确认新密码</label>
-                </FloatLabel>
-                <small v-if="confirmPasswordError" class="text-red-500">{{
-                  confirmPasswordError
-                }}</small>
-              </div>
-
-              <!-- 错误提示 -->
-              <div
-                v-if="error"
-                class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6"
-              >
-                <div class="flex items-center">
-                  <i class="pi pi-exclamation-triangle text-red-500 mr-2"></i>
-                  <span class="text-red-700 text-sm">{{ error }}</span>
-                </div>
-              </div>
-
-              <!-- 成功提示 -->
-              <div
-                v-if="success"
-                class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
-              >
-                <div class="flex items-center">
-                  <i class="pi pi-check-circle text-green-500 mr-2"></i>
-                  <span class="text-green-700 text-sm">{{ success }}</span>
-                </div>
-              </div>
-
-              <!-- 更新密码按钮 -->
-              <Button
-                type="submit"
-                label="更新密码"
-                class="w-full mb-6"
-                :loading="loading"
-                :disabled="!isFormValid || loading"
-                size="large"
-              />
-
-              <!-- 分割线 -->
-              <Divider align="center" class="my-6">
-                <span class="text-gray-500 text-sm">或</span>
-              </Divider>
-
-              <!-- 其他操作 -->
-              <div class="space-y-3">
-                <Button
-                  label="返回登录"
-                  link
-                  class="w-full text-center"
-                  @click="$router.push('/login')"
+            <!-- 确认密码输入 -->
+            <div class="mb-6">
+              <Label for="confirmPassword">确认新密码</Label>
+              <div class="relative mt-1">
+                <Input
+                  id="confirmPassword"
+                  v-model="form.confirmPassword"
+                  :type="showConfirmPassword ? 'text' : 'password'"
+                  placeholder="请再次输入新密码"
+                  class="pr-10"
+                  :class="{ 'border-red-500': confirmPasswordError }"
                 />
+                <button
+                  type="button"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  @click="showConfirmPassword = !showConfirmPassword"
+                >
+                  <Eye v-if="!showConfirmPassword" class="w-4 h-4 text-muted-foreground" />
+                  <EyeOff v-else class="w-4 h-4 text-muted-foreground" />
+                </button>
               </div>
-            </form>
-          </div>
-        </template>
+              <p v-if="confirmPasswordError" class="text-sm text-red-500 mt-1">
+                {{ confirmPasswordError }}
+              </p>
+            </div>
+
+            <!-- 错误提示 -->
+            <Alert v-if="error" variant="destructive" class="mb-6">
+              <AlertCircle class="h-4 w-4" />
+              <AlertDescription>
+                {{ error }}
+              </AlertDescription>
+            </Alert>
+
+            <!-- 成功提示 -->
+            <Alert v-if="success" class="mb-6 border-green-200 bg-green-50">
+              <CheckCircle class="h-4 w-4 text-green-600" />
+              <AlertDescription class="text-green-700">
+                {{ success }}
+              </AlertDescription>
+            </Alert>
+
+            <!-- 更新密码按钮 -->
+            <Button
+              type="submit"
+              class="w-full mb-6"
+              :disabled="!isFormValid || loading"
+            >
+              <Loader2 v-if="loading" class="w-4 h-4 mr-2 animate-spin" />
+              更新密码
+            </Button>
+
+            <!-- 分割线 -->
+            <div class="relative my-6">
+              <div class="absolute inset-0 flex items-center">
+                <span class="w-full border-t" />
+              </div>
+              <div class="relative flex justify-center text-xs uppercase">
+                <span class="bg-background px-2 text-muted-foreground">或</span>
+              </div>
+            </div>
+
+            <!-- 其他操作 -->
+            <div class="space-y-3">
+              <Button
+                variant="ghost"
+                class="w-full"
+                @click="$router.push('/login')"
+              >
+                返回登录
+              </Button>
+            </div>
+          </form>
+        </CardContent>
       </Card>
 
       <!-- 版权信息 -->
@@ -118,12 +129,19 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import Card from "primevue/card";
-import Password from "primevue/password";
-import Button from "primevue/button";
-import IconField from "primevue/iconfield";
-import Divider from "primevue/divider";
-import FloatLabel from "primevue/floatlabel";
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import {
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+  Loader2
+} from 'lucide-vue-next'
 import { useAuth } from "~/composables/useAuth";
 
 // 页面配置 - 禁用布局，让密码重置页面全屏显示
@@ -144,6 +162,9 @@ const form = ref({
   password: "",
   confirmPassword: "",
 });
+
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
 
 // 表单验证
 const passwordError = computed(() => {

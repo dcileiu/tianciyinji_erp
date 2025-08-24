@@ -1,346 +1,317 @@
 <template>
-  <div class="p-6 min-h-screen bg-surface-50">
+  <div class="p-6 min-h-screen bg-background">
     <!-- 页面标题 -->
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 gap-4">
       <div>
-        <h1 class="text-3xl font-semibold text-color mb-2">财务支付</h1>
-        <p class="text-muted-color">管理付款记录和支付流程</p>
+        <h1 class="text-3xl font-semibold text-foreground mb-2">财务支付</h1>
+        <p class="text-muted-foreground">管理付款记录和支付流程</p>
       </div>
-      <Button
-        label="新建支付"
-        icon="pi pi-plus"
-        @click="openPaymentModal"
-      />
+      <Button @click="openPaymentModal">
+        <Plus class="w-4 h-4 mr-2" />
+        新建支付
+      </Button>
     </div>
 
     <!-- 搜索和筛选区域 -->
     <Card class="mb-6">
-      <template #content>
+      <CardContent class="p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">搜索</label>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <InputText
+            <Label class="text-sm font-medium">搜索</Label>
+            <div class="relative">
+              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
                 v-model="searchKeyword"
                 placeholder="搜索单号、供应商..."
-                class="w-full"
+                class="pl-10"
               />
-            </span>
+            </div>
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">支付状态</label>
-            <Dropdown
-              v-model="selectedStatus"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部状态"
-              class="w-full"
-              show-clear
-            />
+            <Label class="text-sm font-medium">支付状态</Label>
+            <Select v-model="selectedStatus">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">支付方式</label>
-            <Dropdown
-              v-model="selectedMethod"
-              :options="methodOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部方式"
-              class="w-full"
-              show-clear
-            />
+            <Label class="text-sm font-medium">支付方式</Label>
+            <Select v-model="selectedMethod">
+              <SelectTrigger>
+                <SelectValue placeholder="全部方式" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in methodOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">日期范围</label>
-            <Calendar
+            <Label class="text-sm font-medium">日期范围</Label>
+            <Input
               v-model="dateRange"
-              selection-mode="range"
+              type="date"
               placeholder="选择日期范围"
-              date-format="yy-mm-dd"
-              class="w-full"
             />
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color opacity-0">操作</label>
-            <Button
-              label="重置"
-              icon="pi pi-refresh"
-              outlined
-              class="w-full"
-              @click="resetFilters"
-            />
+            <Label class="text-sm font-medium opacity-0">操作</Label>
+            <Button variant="outline" @click="resetFilters">
+              <RefreshCw class="w-4 h-4 mr-2" />
+              重置
+            </Button>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 统计信息 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <Card class="bg-blue-50 dark:bg-blue-900/20 border-blue-200">
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
             <div>
               <div class="text-2xl font-bold text-blue-600 mb-1">{{ filteredPayments.length }}</div>
               <div class="text-sm text-blue-700">总支付数</div>
             </div>
             <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <i class="pi pi-credit-card text-blue-600 text-xl"></i>
+              <CreditCard class="w-6 h-6 text-blue-600" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card class="bg-orange-50 dark:bg-orange-900/20 border-orange-200">
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
             <div>
               <div class="text-2xl font-bold text-orange-600 mb-1">{{ pendingPaymentsCount }}</div>
               <div class="text-sm text-orange-700">待支付</div>
             </div>
             <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-              <i class="pi pi-clock text-orange-600 text-xl"></i>
+              <Clock class="w-6 h-6 text-orange-600" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card class="bg-green-50 dark:bg-green-900/20 border-green-200">
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
             <div>
               <div class="text-2xl font-bold text-green-600 mb-1">¥{{ totalAmount.toLocaleString() }}</div>
               <div class="text-sm text-green-700">总金额</div>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <i class="pi pi-dollar text-green-600 text-xl"></i>
+              <DollarSign class="w-6 h-6 text-green-600" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
             
     <!-- 支付列表 -->
     <Card>
-      <template #header>
+      <CardHeader>
         <div class="flex justify-between items-center">
-          <h3 class="text-lg font-semibold text-color">支付列表</h3>
-          <span class="text-sm text-muted-color">总金额: ¥{{ totalAmount.toLocaleString() }}</span>
+          <CardTitle class="text-lg font-semibold">支付列表</CardTitle>
+          <span class="text-sm text-muted-foreground">总金额: ¥{{ totalAmount.toLocaleString() }}</span>
         </div>
-      </template>
-      <template #content>
-        <DataTable
-          :value="filteredPayments"
-          :loading="loading"
-          :paginator="true"
-          :rows="pageSize"
-          :total-records="filteredPayments.length"
-          :rows-per-page-options="[10, 20, 50]"
-          striped-rows
-          show-gridlines
-          responsive-layout="scroll"
-        >
-          <template #empty>
-            <div class="text-center py-12 text-muted-color">
-              <i class="pi pi-credit-card text-6xl mb-4 opacity-50"></i>
-              <h3 class="text-lg mb-2">暂无支付记录</h3>
-              <p class="mb-4">开始创建您的第一个支付记录</p>
-              <Button
-                label="新建支付"
-                icon="pi pi-plus"
-                @click="openPaymentModal"
-              />
-            </div>
-          </template>
-
-          <Column field="paymentNo" header="支付单号" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-mono bg-surface-100 px-2 py-1 rounded text-primary text-sm">{{ slotProps.data.paymentNo }}</span>
-            </template>
-          </Column>
-
-          <Column field="supplier" header="供应商" :sortable="true">
-            <template #body="slotProps">
-              <div class="flex items-center gap-3">
-                <Avatar
-                  :label="slotProps.data.supplier.charAt(0)"
-                  shape="circle"
-                  size="normal"
-                  class="bg-primary-100 text-primary"
-                />
-                <span class="font-medium text-color">{{ slotProps.data.supplier }}</span>
-              </div>
-            </template>
-          </Column>
-
-          <Column field="amount" header="支付金额" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-semibold text-green-600 text-lg">¥{{ slotProps.data.amount.toLocaleString() }}</span>
-            </template>
-          </Column>
-
-          <Column field="paymentMethod" header="支付方式" :sortable="true">
-            <template #body="slotProps">
-              <Tag
-                :value="getMethodText(slotProps.data.paymentMethod)"
-                :severity="getMethodSeverity(slotProps.data.paymentMethod)"
-              />
-            </template>
-          </Column>
-
-          <Column field="status" header="状态" :sortable="true">
-            <template #body="slotProps">
-              <Tag
-                :value="getStatusText(slotProps.data.status)"
-                :severity="getStatusSeverity(slotProps.data.status)"
-              />
-            </template>
-          </Column>
-
-          <Column field="paymentDate" header="支付日期" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">{{ formatDate(slotProps.data.paymentDate) }}</span>
-            </template>
-          </Column>
-
-          <Column header="操作" class="w-40">
-            <template #body="slotProps">
-              <div class="flex gap-2">
-                <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="viewPayment(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="editPayment(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  outlined
-                  rounded
-                  size="small"
-                  severity="danger"
-                  @click="confirmDelete(slotProps.data)"
-                />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+      </CardHeader>
+      <CardContent>
+        <div v-if="loading" class="flex justify-center py-8">
+          <Loader2 class="w-6 h-6 animate-spin" />
+        </div>
+        <div v-else-if="filteredPayments.length === 0" class="text-center py-12">
+          <CreditCard class="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+          <h3 class="text-lg mb-2">暂无支付记录</h3>
+          <p class="mb-4 text-muted-foreground">开始创建您的第一个支付记录</p>
+          <Button @click="openPaymentModal">
+            <Plus class="w-4 h-4 mr-2" />
+            新建支付
+          </Button>
+        </div>
+        <div v-else class="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>支付单号</TableHead>
+                <TableHead>供应商</TableHead>
+                <TableHead>支付金额</TableHead>
+                <TableHead>支付方式</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>支付日期</TableHead>
+                <TableHead class="w-40">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="payment in filteredPayments" :key="payment.id">
+                <TableCell>
+                  <span class="font-mono bg-muted px-2 py-1 rounded text-primary text-sm">{{ payment.paymentNo }}</span>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <span class="text-sm font-medium text-primary">{{ payment.supplier.charAt(0) }}</span>
+                    </div>
+                    <span class="font-medium">{{ payment.supplier }}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <span class="font-semibold text-green-600 text-lg">¥{{ payment.amount.toLocaleString() }}</span>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getMethodVariant(payment.paymentMethod)">
+                    {{ getMethodText(payment.paymentMethod) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(payment.status)">
+                    {{ getStatusText(payment.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm text-muted-foreground">{{ formatDate(payment.paymentDate) }}</span>
+                </TableCell>
+                <TableCell>
+                  <div class="flex gap-2">
+                    <Button variant="outline" size="sm" @click="viewPayment(payment)">
+                      <Eye class="w-4 h-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" @click="editPayment(payment)">
+                      <Edit class="w-4 h-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" @click="confirmDelete(payment)">
+                      <Trash2 class="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
 
     <!-- 支付详情/编辑对话框 -->
-    <Dialog
-      v-model:visible="showPaymentModal"
-      :header="modalTitle"
-      modal
-      :style="{ width: '700px' }"
-      class="p-fluid"
-    >
-      <div class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">支付单号</label>
-            <InputText
-              v-model="currentPayment.paymentNo"
-              placeholder="自动生成"
-              :disabled="isEditing"
-            />
+    <Dialog v-model:open="showPaymentModal">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{{ modalTitle }}</DialogTitle>
+        </DialogHeader>
+        
+        <div class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-2">
+              <Label class="text-sm font-medium">支付单号</Label>
+              <Input
+                v-model="currentPayment.paymentNo"
+                placeholder="自动生成"
+                :disabled="isEditing"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <Label class="text-sm font-medium">供应商</Label>
+              <Select v-model="currentPayment.supplier">
+                <SelectTrigger>
+                  <SelectValue placeholder="选择供应商" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="supplier in supplierOptions" :key="supplier.value" :value="supplier.value">
+                    {{ supplier.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">供应商</label>
-            <Dropdown
-              v-model="currentPayment.supplier"
-              :options="supplierOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择供应商"
-            />
-          </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">支付金额</label>
-            <InputNumber
-              v-model="currentPayment.amount"
-              mode="currency"
-              currency="CNY"
-              locale="zh-CN"
-              placeholder="输入支付金额"
-            />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-2">
+              <Label class="text-sm font-medium">支付金额</Label>
+              <Input
+                v-model="currentPayment.amount"
+                type="number"
+                placeholder="输入支付金额"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <Label class="text-sm font-medium">支付方式</Label>
+              <Select v-model="currentPayment.paymentMethod">
+                <SelectTrigger>
+                  <SelectValue placeholder="选择支付方式" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="method in methodOptions" :key="method.value" :value="method.value">
+                    {{ method.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+            
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-2">
+              <Label class="text-sm font-medium">支付日期</Label>
+              <Input
+                v-model="currentPayment.paymentDate"
+                type="date"
+                placeholder="选择支付日期"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <Label class="text-sm font-medium">状态</Label>
+              <Select v-model="currentPayment.status">
+                <SelectTrigger>
+                  <SelectValue placeholder="选择状态" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="status in statusOptions" :key="status.value" :value="status.value">
+                    {{ status.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+            
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">支付方式</label>
-            <Dropdown
-              v-model="currentPayment.paymentMethod"
-              :options="methodOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择支付方式"
+            <Label class="text-sm font-medium">描述</Label>
+            <Textarea 
+              v-model="currentPayment.description"
+              placeholder="输入支付描述"
+              :rows="3"
             />
           </div>
         </div>
             
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">支付日期</label>
-            <Calendar
-              v-model="currentPayment.paymentDate"
-              date-format="yy-mm-dd"
-              placeholder="选择支付日期"
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">状态</label>
-            <Dropdown
-              v-model="currentPayment.status"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择状态"
-            />
-          </div>
-        </div>
-            
-        <div class="flex flex-col gap-2">
-          <label class="text-sm font-medium text-color">描述</label>
-          <Textarea 
-            v-model="currentPayment.description"
-            placeholder="输入支付描述"
-            :rows="3"
-          />
-        </div>
-      </div>
-            
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            outlined
-            @click="closePaymentModal"
-          />
-          <Button
-            :label="isEditing ? '更新' : '创建'"
-            :loading="saving"
-            @click="savePayment"
-          />
-        </div>
-      </template>
+        <DialogFooter>
+          <Button variant="outline" @click="closePaymentModal">
+            取消
+          </Button>
+          <Button @click="savePayment" :disabled="saving">
+            <Loader2 v-if="saving" class="w-4 h-4 mr-2 animate-spin" />
+            {{ isEditing ? '更新' : '创建' }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
     <!-- 删除确认对话框 -->
@@ -349,48 +320,48 @@
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import Calendar from 'primevue/calendar'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import Textarea from 'primevue/textarea'
-import InputNumber from 'primevue/inputnumber'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
+import { ref, computed } from 'vue'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import { Textarea } from '~/components/ui/textarea'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
+import { Badge } from '~/components/ui/badge'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Plus, Search, RefreshCw, CreditCard, Clock, DollarSign, Eye, Edit, Trash2, Loader2 } from 'lucide-vue-next'
 
 // 页面状态
 const loading = ref(false)
 const saving = ref(false)
+
+// 搜索过滤
 const searchKeyword = ref('')
 const selectedStatus = ref('')
 const selectedMethod = ref('')
-const dateRange = ref(null)
-const pageSize = ref(10)
+const startDate = ref('')
+const endDate = ref('')
 
 // 对话框状态
 const showPaymentModal = ref(false)
 const isEditing = ref(false)
-const confirm = useConfirm()
+const currentPayment = ref({})
+const dialogMode = ref('create')
 
-// 当前编辑的支付记录
-const currentPayment = ref({
-  id: '',
+// 初始化当前支付记录
+const initCurrentPayment = () => ({
+  id: null,
   paymentNo: '',
   supplier: '',
   amount: 0,
-  paymentMethod: 'bank_transfer',
+  paymentMethod: '',
   status: 'pending',
-  paymentDate: new Date(),
-  description: '',
-  created_at: new Date(),
-  updated_at: new Date()
+  paymentDate: '',
+  description: ''
 })
+
+currentPayment.value = initCurrentPayment()
 
 // 模拟支付数据
 const payments = ref([
@@ -503,14 +474,14 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
-const getStatusSeverity = (status: string) => {
-  const severityMap: Record<string, string> = {
-    pending: 'warn',
-    processing: 'info',
-    completed: 'success',
-    cancelled: 'danger'
+const getStatusVariant = (status: string) => {
+  const variantMap: Record<string, string> = {
+    pending: 'secondary',
+    processing: 'outline',
+    completed: 'default',
+    cancelled: 'destructive'
   }
-  return severityMap[status] || 'secondary'
+  return variantMap[status] || 'outline'
 }
 
 const getMethodText = (method: string) => {
@@ -524,15 +495,15 @@ const getMethodText = (method: string) => {
   return methodMap[method] || method
 }
 
-const getMethodSeverity = (method: string) => {
-  const severityMap: Record<string, string> = {
-    bank_transfer: 'info',
-    credit_card: 'warn',
-    alipay: 'success',
-    wechat_pay: 'success',
-    cash: 'secondary'
+const getMethodVariant = (method: string) => {
+  const variantMap: Record<string, string> = {
+    bank_transfer: 'outline',
+    credit_card: 'secondary',
+    alipay: 'default',
+    wechat_pay: 'default',
+    cash: 'outline'
   }
-  return severityMap[method] || 'secondary'
+  return variantMap[method] || 'outline'
 }
 
 const formatDate = (date: Date) => {
@@ -579,29 +550,27 @@ const viewPayment = (payment: any) => {
 }
 
 const confirmDelete = (payment: any) => {
-  confirm.require({
-    message: `确定要删除支付记录 "${payment.paymentNo}" 吗？此操作不可撤销。`,
-    header: '删除确认',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deletePayment(payment.id)
-    }
-  })
+  if (confirm(`确定要删除支付单号 ${payment.paymentNo} 吗？`)) {
+    deletePayment(payment)
+  }
 }
 
-const deletePayment = async (paymentId: string) => {
+const deletePayment = async (payment: any) => {
   try {
     loading.value = true
-    // 模拟删除操作
-    const index = payments.value.findIndex(p => p.id === paymentId)
-    if (index !== -1) {
+    // 这里应该调用API删除支付记录
+    // await paymentApi.delete(payment.id)
+    
+    // 模拟删除
+    const index = payments.value.findIndex(p => p.id === payment.id)
+    if (index > -1) {
       payments.value.splice(index, 1)
     }
-  }
-  catch (error) {
+    
+    console.log('支付记录已删除')
+  } catch (error) {
     console.error('删除支付记录失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -611,32 +580,28 @@ const savePayment = async () => {
     saving.value = true
     
     if (isEditing.value) {
-      // 更新支付记录
+      // 更新现有支付记录
       const index = payments.value.findIndex(p => p.id === currentPayment.value.id)
-      if (index !== -1) {
-        payments.value[index] = {
-          ...currentPayment.value,
-          updated_at: new Date()
-        }
+      if (index > -1) {
+        payments.value[index] = { ...currentPayment.value, updated_at: new Date() }
       }
-    }
-    else {
+    } else {
       // 创建新支付记录
       const newPayment = {
         ...currentPayment.value,
         id: Date.now().toString(),
+        paymentNo: `PAY${Date.now()}`,
         created_at: new Date(),
         updated_at: new Date()
       }
-      payments.value.push(newPayment)
+      payments.value.unshift(newPayment)
     }
     
     closePaymentModal()
-  }
-  catch (error) {
+    console.log('支付记录保存成功')
+  } catch (error) {
     console.error('保存支付记录失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -644,5 +609,7 @@ const savePayment = async () => {
 const closePaymentModal = () => {
   showPaymentModal.value = false
   isEditing.value = false
+  dialogMode.value = 'create'
+  currentPayment.value = initCurrentPayment()
 }
 </script>

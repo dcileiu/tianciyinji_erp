@@ -1,5 +1,6 @@
 <template>
-  <div class="customers-container p-6 flex flex-column gap-6 bg-surface-50 min-h-full">
+  <div>
+  <div class="customers-container p-6 space-y-6 bg-gray-50 min-h-full">
     <!-- 页面头部 -->
     <div class="page-header bg-gradient-to-r from-green-500 via-green-600 to-green-700 rounded-2xl p-8 text-white relative overflow-hidden">
       <div class="absolute inset-0 bg-black opacity-10"></div>
@@ -9,26 +10,27 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 class="text-3xl font-bold mb-2 flex items-center">
-              <i class="pi pi-users mr-3 text-4xl"></i>
+              <Users class="mr-3 h-8 w-8" />
               客户管理
             </h1>
             <p class="text-green-100 text-lg">管理客户信息、联系方式和业务关系，维护客户档案</p>
           </div>
           <div class="mt-4 lg:mt-0 flex flex-col sm:flex-row gap-3">
             <Button
-              label="导入客户"
-              icon="pi pi-upload"
-              severity="secondary"
-              outlined
+              variant="outline"
               class="text-white border-white hover:bg-white hover:text-green-600"
               @click="importCustomers"
-            />
+            >
+              <Upload class="mr-2 h-4 w-4" />
+              导入客户
+            </Button>
             <Button
-              label="新建客户"
-              icon="pi pi-plus"
               class="bg-white text-green-600 hover:bg-green-50 border-0 shadow-lg"
               @click="openCustomerModal"
-            />
+            >
+              <Plus class="mr-2 h-4 w-4" />
+              新建客户
+            </Button>
           </div>
         </div>
       </div>
@@ -36,95 +38,101 @@
 
     <!-- 搜索和筛选区域 -->
     <Card class="shadow-lg border-0">
-      <template #header>
-        <div class="p-6 pb-0">
-          <h3 class="text-lg font-bold text-surface-900 mb-1 flex items-center">
-            <i class="pi pi-search mr-2 text-primary-600"></i>
-            搜索与筛选
-          </h3>
-          <p class="text-surface-600">快速找到您需要的客户信息</p>
-        </div>
-      </template>
-      <template #content>
-        <div class="p-6 pt-0">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900">搜索客户</label>
-              <IconField icon-position="left">
-                <InputIcon>
-                  <i class="pi pi-search"></i>
-                </InputIcon>
-                <InputText
-                  v-model="searchKeyword"
-                  placeholder="搜索客户名称、编号..."
-                  class="w-full"
-                />
-              </IconField>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900">状态筛选</label>
-              <Dropdown
-                v-model="selectedStatus"
-                :options="statusOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="全部状态"
-                class="w-full"
-                show-clear
+      <CardHeader>
+        <CardTitle class="flex items-center">
+          <Search class="mr-2 h-5 w-5 text-primary" />
+          搜索与筛选
+        </CardTitle>
+        <p class="text-muted-foreground">快速找到您需要的客户信息</p>
+      </CardHeader>
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+          <div class="space-y-2">
+            <Label class="text-sm font-semibold">搜索客户</Label>
+            <div class="relative">
+              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                v-model="searchKeyword"
+                placeholder="搜索客户名称、编号..."
+                class="pl-10"
               />
             </div>
+          </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900">地区筛选</label>
-              <Dropdown
-                v-model="selectedRegion"
-                :options="regionOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="全部地区"
-                class="w-full"
-                show-clear
-              />
-            </div>
+          <div class="space-y-2">
+            <Label class="text-sm font-semibold">状态筛选</Label>
+            <Select v-model="selectedStatus">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900 opacity-0">操作</label>
-              <div class="flex gap-2">
-                <Button
-                  label="重置"
-                  icon="pi pi-refresh"
-                  outlined
-                  class="flex-1"
-                  @click="resetFilters"
-                />
-                <Button
-                  v-tooltip="'导出数据'"
-                  icon="pi pi-download"
-                  outlined
-                  @click="exportData"
-                />
-              </div>
+          <div class="space-y-2">
+            <Label class="text-sm font-semibold">地区筛选</Label>
+            <Select v-model="selectedRegion">
+              <SelectTrigger>
+                <SelectValue placeholder="全部地区" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in regionOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="space-y-2">
+            <Label class="text-sm font-semibold opacity-0">操作</Label>
+            <div class="flex gap-2">
+              <Button
+                variant="outline"
+                class="flex-1"
+                @click="resetFilters"
+              >
+                <RefreshCw class="mr-2 h-4 w-4" />
+                重置
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                @click="exportData"
+              >
+                <Download class="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 统计信息卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card class="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg overflow-hidden">
-        <template #content>
-          <div class="relative p-6">
+        <CardContent class="p-6">
+          <div class="relative">
             <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
                 <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
-                  <i class="pi pi-users text-2xl text-white"></i>
+                  <Users class="h-6 w-6 text-white" />
                 </div>
                 <div class="text-right">
                   <div class="flex items-center text-sm font-medium text-blue-100">
-                    <i class="pi pi-arrow-up mr-1"></i>
+                    <TrendingUp class="mr-1 h-4 w-4" />
                     +12.5%
                   </div>
                 </div>
@@ -136,21 +144,21 @@
               </div>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card class="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg overflow-hidden">
-        <template #content>
-          <div class="relative p-6">
+        <CardContent class="p-6">
+          <div class="relative">
             <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
                 <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
-                  <i class="pi pi-check-circle text-2xl text-white"></i>
+                  <CheckCircle class="h-6 w-6 text-white" />
                 </div>
                 <div class="text-right">
                   <div class="flex items-center text-sm font-medium text-green-100">
-                    <i class="pi pi-arrow-up mr-1"></i>
+                    <TrendingUp class="mr-1 h-4 w-4" />
                     +8.5%
                   </div>
                 </div>
@@ -162,21 +170,21 @@
               </div>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
       <Card class="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg overflow-hidden">
-        <template #content>
-          <div class="relative p-6">
+        <CardContent class="p-6">
+          <div class="relative">
             <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
                 <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
-                  <i class="pi pi-plus-circle text-2xl text-white"></i>
+                  <UserPlus class="h-6 w-6 text-white" />
                 </div>
                 <div class="text-right">
                   <div class="flex items-center text-sm font-medium text-purple-100">
-                    <i class="pi pi-arrow-up mr-1"></i>
+                    <TrendingUp class="mr-1 h-4 w-4" />
                     +15.2%
                   </div>
                 </div>
@@ -188,58 +196,150 @@
               </div>
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
             
     <!-- 客户列表 -->
     <Card class="shadow-lg border-0">
-      <template #header>
-        <div class="p-6 pb-0">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 class="text-xl font-bold text-surface-900 mb-1 flex items-center">
-                <i class="pi pi-list mr-2 text-primary-600"></i>
-                客户列表
-              </h3>
-              <p class="text-surface-600">当前共有 {{ filteredCustomers.length }} 个客户</p>
+      <CardHeader class="border-b border-gray-100">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <List class="h-5 w-5 text-blue-600" />
             </div>
-            <div class="flex items-center gap-2">
-              <Dropdown
-                v-model="pageSize"
-                :options="pageSizeOptions"
-                option-label="label"
-                option-value="value"
-                class="w-32"
-                size="small"
-              />
-              <Button
-                v-tooltip="'刷新数据'"
-                icon="pi pi-refresh"
-                outlined
-                rounded
-                size="small"
-                @click="refreshData"
-              />
+            <div>
+              <CardTitle class="text-lg font-semibold text-gray-900">客户列表</CardTitle>
+              <p class="text-sm text-gray-500">当前共有 {{ filteredCustomers.length }} 个客户</p>
             </div>
           </div>
+          <div class="flex items-center space-x-3">
+            <Select v-model="pageSize">
+              <SelectTrigger class="w-32">
+                <SelectValue placeholder="每页显示" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="option in pageSizeOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" @click="refreshData">
+              <RefreshCw class="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </template>
-      <template #content>
-        <div class="p-6 pt-0">
-          <DataTable
-            :value="filteredCustomers"
-            :loading="loading"
-            :paginator="true"
-            :rows="pageSize"
-            :total-records="filteredCustomers.length"
-            :rows-per-page-options="[10, 20, 50]"
-            striped-rows
-            show-gridlines
-            responsive-layout="scroll"
-            :sort-field="'created_at'"
-            :sort-order="-1"
-          >
+      </CardHeader>
+      <CardContent class="p-0">
+        <div v-if="loading" class="flex items-center justify-center py-8">
+          <div class="flex flex-col items-center space-y-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="text-sm text-gray-500">加载中...</p>
+          </div>
+        </div>
+        <div v-else-if="filteredCustomers.length === 0" class="flex flex-col items-center justify-center py-12">
+          <Search class="h-12 w-12 text-gray-400 mb-4" />
+          <h3 class="text-lg font-medium text-gray-900 mb-2">未找到客户</h3>
+          <p class="text-gray-500">尝试调整搜索条件或添加新客户</p>
+        </div>
+        <div v-else>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead class="min-w-32">客户编号</TableHead>
+                <TableHead class="min-w-48">联系信息</TableHead>
+                <TableHead class="min-w-48">邮箱</TableHead>
+                <TableHead class="min-w-64">地址</TableHead>
+                <TableHead class="min-w-24">状态</TableHead>
+                <TableHead class="min-w-32">创建时间</TableHead>
+                <TableHead class="min-w-48">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="customer in filteredCustomers" :key="customer.id">
+                <TableCell>
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span class="text-sm font-medium text-blue-600">{{ customer.name.charAt(0) }}</span>
+                    </div>
+                    <div>
+                      <div class="font-medium text-gray-900">{{ customer.code }}</div>
+                      <div class="text-sm text-gray-500">{{ customer.name }}</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div class="space-y-1">
+                    <div class="flex items-center text-sm">
+                      <User class="h-4 w-4 text-gray-400 mr-2" />
+                      <span class="text-gray-900">{{ customer.contactName }}</span>
+                    </div>
+                    <div class="flex items-center text-sm">
+                      <Phone class="h-4 w-4 text-gray-400 mr-2" />
+                      <span class="text-gray-600">{{ customer.contactPhone }}</span>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center">
+                    <Mail class="h-4 w-4 text-gray-400 mr-2" />
+                    <span class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ customer.email }}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center">
+                    <MapPin class="h-4 w-4 text-gray-400 mr-2" />
+                    <span class="text-gray-600 truncate">{{ customer.address }}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(customer.status)" class="px-3 py-1 text-xs font-medium">
+                    {{ getStatusText(customer.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div class="text-sm text-gray-600">
+                    {{ formatDate(customer.created_at) }}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div class="flex items-center space-x-2">
+                    <Button variant="outline" size="sm" @click="viewCustomer(customer)">
+                      <Eye class="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" @click="editCustomer(customer)">
+                      <Edit class="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" @click="sendEmail(customer)">
+                      <Mail class="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" @click="viewOrders(customer)">
+                      <ShoppingCart class="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" @click="confirmDelete(customer)">
+                      <Trash2 class="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+    <DataTable
+      :value="filteredCustomers"
+      :loading="loading"
+      :emptyMessage="emptyMessage"
+      :paginator="true"
+      :rows="10"
+      :first="first"
+      :totalRecords="totalRecords"
+      :pageLinks="5"
+      :page="page"
+      :pageSize="pageSize"
+      @page="handlePageChange"
+    >
             <template #loading>
               <div class="p-6">
                 <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
@@ -401,90 +501,75 @@
               </template>
             </Column>
           </DataTable>
-        </div>
-      </template>
-    </Card>
+   </div>
 
     <!-- 客户详情/编辑对话框 -->
-    <Dialog
-      v-model:visible="showCustomerModal"
-      :header="modalTitle"
-      modal
-      :style="{ width: '800px' }"
-      class="p-fluid customer-dialog"
-      :draggable="false"
-    >
-      <template #header>
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-            <i class="pi pi-users text-green-600 text-lg"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold text-surface-900">{{ modalTitle }}</h3>
-            <p class="text-surface-600 text-sm">{{ isEditing ? '编辑客户信息' : '创建新的客户档案' }}</p>
-          </div>
-        </div>
-      </template>
-
-      <div class="space-y-6 py-4">
-        <!-- 基本信息 -->
-        <Card class="shadow-sm">
-          <template #header>
-            <div class="p-4 pb-0">
-              <h4 class="font-semibold text-surface-900 flex items-center">
-                <i class="pi pi-info-circle mr-2 text-primary-600"></i>
-                基本信息
-              </h4>
+    <Dialog v-model:open="showCustomerModal">
+      <DialogContent class="max-w-4xl">
+        <DialogHeader>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <Users class="h-5 w-5 text-green-600" />
             </div>
-          </template>
-          <template #content>
-            <div class="p-4 pt-0">
+            <div>
+              <DialogTitle class="text-xl font-bold text-gray-900">{{ modalTitle }}</DialogTitle>
+              <p class="text-gray-600 text-sm">{{ isEditing ? '编辑客户信息' : '创建新的客户档案' }}</p>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div class="space-y-6 py-4">
+          <!-- 基本信息 -->
+          <Card class="shadow-sm">
+            <CardHeader>
+              <CardTitle class="font-semibold text-gray-900 flex items-center">
+                <Info class="mr-2 h-4 w-4 text-blue-600" />
+                基本信息
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">客户编号</label>
-                  <InputText
+                <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-900">客户编号</Label>
+                  <Input
                     v-model="currentCustomer.code"
                     placeholder="系统自动生成"
                     :disabled="isEditing"
                     class="font-mono"
                   />
                 </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">客户名称 *</label>
-                  <InputText
+                <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-900">客户名称 *</Label>
+                  <Input
                     v-model="currentCustomer.name"
                     placeholder="输入客户名称"
-                    :class="{ 'p-invalid': !currentCustomer.name && showValidation }"
+                    :class="{ 'border-red-500': !currentCustomer.name && showValidation }"
                   />
                 </div>
               </div>
-            </div>
-          </template>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <!-- 联系信息 -->
-        <Card class="shadow-sm">
-          <template #header>
-            <div class="p-4 pb-0">
-              <h4 class="font-semibold text-surface-900 flex items-center">
-                <i class="pi pi-phone mr-2 text-primary-600"></i>
+          <!-- 联系信息 -->
+          <Card class="shadow-sm">
+            <CardHeader>
+              <CardTitle class="font-semibold text-gray-900 flex items-center">
+                <Phone class="mr-2 h-4 w-4 text-blue-600" />
                 联系信息
-              </h4>
-            </div>
-          </template>
-          <template #content>
-            <div class="p-4 pt-0">
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">联系人</label>
-                  <InputText
+                <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-900">联系人</Label>
+                  <Input
                     v-model="currentCustomer.contactName"
                     placeholder="输入联系人姓名"
                   />
                 </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">联系电话</label>
-                  <InputText
+                <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-900">联系电话</Label>
+                  <Input
                     v-model="currentCustomer.contactPhone"
                     placeholder="输入联系电话"
                   />
@@ -492,43 +577,42 @@
               </div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">邮箱地址</label>
-                  <InputText
+                <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-900">邮箱地址</Label>
+                  <Input
                     v-model="currentCustomer.email"
                     placeholder="输入邮箱地址"
                     type="email"
                   />
                 </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">客户状态</label>
-                  <Dropdown
-                    v-model="currentCustomer.status"
-                    :options="statusOptions.filter(s => s.value !== '')"
-                    option-label="label"
-                    option-value="value"
-                    placeholder="选择状态"
-                  />
+                <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-900">客户状态</Label>
+                  <Select v-model="currentCustomer.status">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择状态" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem v-for="option in statusOptions.filter(s => s.value !== '')" :key="option.value" :value="option.value">
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-            </div>
-          </template>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <!-- 地址信息 -->
-        <Card class="shadow-sm">
-          <template #header>
-            <div class="p-4 pb-0">
-              <h4 class="font-semibold text-surface-900 flex items-center">
-                <i class="pi pi-map-marker mr-2 text-primary-600"></i>
+          <!-- 地址信息 -->
+          <Card class="shadow-sm">
+            <CardHeader>
+              <CardTitle class="font-semibold text-gray-900 flex items-center">
+                <MapPin class="mr-2 h-4 w-4 text-blue-600" />
                 地址信息
-              </h4>
-            </div>
-          </template>
-          <template #content>
-            <div class="p-4 pt-0">
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-surface-900">详细地址</label>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="space-y-2">
+                <Label class="text-sm font-semibold text-gray-900">详细地址</Label>
                 <Textarea 
                   v-model="currentCustomer.address"
                   placeholder="输入详细地址信息..."
@@ -536,27 +620,28 @@
                   class="w-full"
                 />
               </div>
-            </div>
-          </template>
-        </Card>
-      </div>
-            
-      <template #footer>
-        <div class="flex justify-end gap-3 pt-4 border-t border-surface-200">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeCustomerModal"
-          />
-          <Button
-            :label="isEditing ? '更新客户' : '创建客户'"
-            :icon="isEditing ? 'pi pi-check' : 'pi pi-plus'"
-            :loading="saving"
-            @click="saveCustomer"
-          />
+            </CardContent>
+          </Card>
         </div>
-      </template>
+            
+        <DialogFooter>
+          <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button variant="outline" @click="closeCustomerModal">
+              <X class="mr-2 h-4 w-4" />
+              取消
+            </Button>
+            <Button :disabled="saving" @click="saveCustomer">
+              <template v-if="saving">
+                <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+              </template>
+              <template v-else>
+                <component :is="isEditing ? Check : Plus" class="mr-2 h-4 w-4" />
+              </template>
+              {{ isEditing ? '更新客户' : '创建客户' }}
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
     <!-- 删除确认对话框 -->
@@ -565,21 +650,22 @@
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import Textarea from 'primevue/textarea'
-import ConfirmDialog from 'primevue/confirmdialog'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Skeleton from 'primevue/skeleton'
-import { useConfirm } from 'primevue/useconfirm'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Skeleton } from '@/components/ui/skeleton'
+import { 
+  Users, Upload, Plus, Search, RefreshCw, Download, 
+  CheckCircle, UserPlus, TrendingUp, List, User, 
+  Phone, Mail, MapPin, Eye, Edit, ShoppingCart, 
+  Trash2, Info, X, Check, Loader2 
+} from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
@@ -609,7 +695,6 @@ const pageSizeOptions = [
 // 对话框状态
 const showCustomerModal = ref(false)
 const isEditing = ref(false)
-const confirm = useConfirm()
 
 // 当前编辑的客户
 const currentCustomer = ref({
@@ -748,13 +833,13 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
-const getStatusSeverity = (status: string) => {
-  const severityMap: Record<string, string> = {
-    active: 'success',
+const getStatusVariant = (status: string) => {
+  const variantMap: Record<string, string> = {
+    active: 'default',
     inactive: 'secondary',
-    suspended: 'warn'
+    suspended: 'outline'
   }
-  return severityMap[status] || 'secondary'
+  return variantMap[status] || 'secondary'
 }
 
 const getStatusDescription = (status: string) => {
@@ -842,16 +927,9 @@ const viewOrders = (customer: any) => {
 }
 
 const confirmDelete = (customer: any) => {
-  confirm.require({
-    message: `确定要删除客户 "${customer.name}" 吗？此操作不可撤销。`,
-    header: '删除确认',
-    icon: 'pi pi-exclamation-triangle',
-    acceptLabel: '确认删除',
-    rejectLabel: '取消',
-    accept: () => {
-      deleteCustomer(customer.id)
-    }
-  })
+  if (window.confirm(`确定要删除客户 "${customer.name}" 吗？此操作不可撤销。`)) {
+    deleteCustomer(customer.id)
+  }
 }
 
 const deleteCustomer = async (customerId: string) => {

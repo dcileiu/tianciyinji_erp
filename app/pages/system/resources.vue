@@ -3,8 +3,8 @@
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-color">资源管理</h1>
-        <p class="text-muted-color mt-1">
+        <h1 class="text-2xl font-bold text-gray-900">资源管理</h1>
+        <p class="text-gray-600 mt-1">
           管理系统中的各种资源权限，包括页面、功能、数据等
         </p>
       </div>
@@ -12,273 +12,293 @@
       <div class="flex items-center gap-3">
         <Button
           v-if="canCreate"
-          label="添加资源"
-          icon="pi pi-plus"
           @click="openCreateDialog"
-        />
+        >
+          <Plus class="h-4 w-4 mr-2" />
+          添加资源
+        </Button>
       </div>
     </div>
     
     <!-- 搜索和筛选 -->
     <Card>
-      <template #content>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- 搜索框 -->
-        <div class="md:col-span-2">
-            <IconField icon-position="left">
-              <InputIcon>
-                <i class="pi pi-search"></i>
-              </InputIcon>
-              <InputText
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- 搜索框 -->
+          <div class="md:col-span-2 relative">
+            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
               v-model="searchQuery"
               placeholder="搜索资源名称、键值或描述..."
-                class="w-full"
-            />
-            </IconField>
-        </div>
-        
-        <!-- 资源类型筛选 -->
-        <div>
-            <Dropdown
-              v-model="typeFilter"
-              :options="typeOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部类型"
-              class="w-full"
-            />
-        </div>
-        
-        <!-- 状态筛选 -->
-        <div>
-            <Dropdown
-              v-model="statusFilter"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部状态"
-              class="w-full"
-            />
-        </div>
-      </div>
-      
-      <!-- 筛选操作 -->
-      <div class="flex items-center justify-between mt-4">
-        <div class="flex items-center gap-2">
-          <Button
-            v-if="hasSelected"
-              label="批量删除"
-              icon="pi pi-trash"
-              severity="danger"
-              outlined
-              size="small"
-            @click="handleBatchDelete"
-          >
-              <template #default>
-            批量删除 ({{ selectedResources.length }})
-              </template>
-          </Button>
-          
-          <Button
-            v-if="searchQuery || typeFilter !== 'all' || statusFilter !== 'all'"
-              label="清空筛选"
-              icon="pi pi-filter-slash"
-              text
-              size="small"
-            @click="clearFilters"
-            />
-        </div>
-        
-          <div class="flex items-center gap-2">
-            <Button
-              label="导出"
-              icon="pi pi-download"
-              outlined
-              size="small"
-              @click="exportResources"
-            />
-            <Button
-              label="刷新"
-              icon="pi pi-refresh"
-              outlined
-              size="small"
-              @click="loadResources"
+              class="pl-10"
             />
           </div>
+          
+          <!-- 资源类型筛选 -->
+          <div>
+            <Select v-model="typeFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部类型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in typeOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <!-- 状态筛选 -->
+          <div>
+            <Select v-model="statusFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </template>
+      
+        <!-- 筛选操作 -->
+        <div class="flex items-center justify-between mt-4">
+          <div class="flex items-center gap-2">
+            <Button
+              v-if="hasSelected"
+              variant="destructive"
+              size="sm"
+              @click="handleBatchDelete"
+            >
+              <Trash2 class="h-4 w-4 mr-2" />
+              批量删除 ({{ selectedResources.length }})
+            </Button>
+            
+            <Button
+              v-if="searchQuery || typeFilter !== 'all' || statusFilter !== 'all'"
+              variant="ghost"
+              size="sm"
+              @click="clearFilters"
+            >
+              <RefreshCw class="h-4 w-4 mr-2" />
+              清空筛选
+            </Button>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              @click="exportResources"
+            >
+              <Download class="h-4 w-4 mr-2" />
+              导出
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              @click="loadResources"
+            >
+              <RefreshCw class="h-4 w-4 mr-2" />
+              刷新
+            </Button>
+          </div>
+        </div>
+      </CardContent>
     </Card>
     
     <!-- 资源列表 -->
     <Card>
-      <template #header>
+      <CardHeader>
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-color">资源列表</h3>
-          <div class="text-sm text-muted-color">
+          <CardTitle class="flex items-center gap-2">
+            <Database class="h-5 w-5" />
+            资源列表
+          </CardTitle>
+          <div class="text-sm text-gray-600">
             共 {{ filteredResources.length }} 个资源
           </div>
         </div>
-      </template>
+      </CardHeader>
       
-      <template #content>
-        <DataTable
-          v-model:selection="selectedResources"
-          :value="filteredResources"
-          :loading="loading"
-          selection-mode="multiple"
-          data-key="id"
-          :paginator="true"
-          :rows="20"
-          :rows-per-page-options="[10, 20, 50]"
-          class="p-datatable-sm"
-        >
-          <Column selection-mode="multiple" header-style="width: 3rem"></Column>
-          
-          <Column field="key" header="资源键值" sortable>
-            <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm">
-                {{ slotProps.data.key }}
-              </code>
-            </template>
-          </Column>
-          
-          <Column field="name" header="资源名称" sortable>
-            <template #body="slotProps">
-              <div class="flex items-center space-x-2">
-                <i :class="getResourceIcon(slotProps.data.type)" class="text-primary"></i>
-                <span class="font-medium">{{ slotProps.data.name }}</span>
-            </div>
-            </template>
-          </Column>
-          
-          <Column field="type" header="类型" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="getTypeDisplayName(slotProps.data.type)"
-                :severity="getTypeSeverity(slotProps.data.type)"
-              />
-            </template>
-          </Column>
-            
-          <Column field="description" header="描述">
-            <template #body="slotProps">
-              <span class="text-muted-color text-sm">
-                {{ slotProps.data.description || '-' }}
-              </span>
-            </template>
-          </Column>
-          
-          <Column field="status" header="状态" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="slotProps.data.status === 'active' ? '启用' : '禁用'"
-                :severity="slotProps.data.status === 'active' ? 'success' : 'warn'"
-              />
-            </template>
-          </Column>
-            
-          <Column field="created_at" header="创建时间" sortable>
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.created_at) }}
-              </span>
-            </template>
-          </Column>
-            
-          <Column header="操作" :exportable="false">
-            <template #body="slotProps">
-              <div class="flex items-center space-x-1">
-                <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
-                  text
-                  size="small"
-                  @click="viewResource(slotProps.data)"
-                />
-                <Button
-                  v-if="canEdit"
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
-                  text
-                  size="small"
-                  @click="editResource(slotProps.data)"
-                />
-                <Button
-                  v-if="canDelete"
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  rounded
-                  text
-                  size="small"
-                  severity="danger"
-                  @click="confirmDeleteResource(slotProps.data)"
-                />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
-    </Card>
+      <CardContent>
+        <div v-if="loading" class="flex items-center justify-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+        
+        <div v-else-if="filteredResources.length === 0" class="text-center py-8 text-gray-500">
+          暂无资源数据
+        </div>
+        
+        <Table v-else>
+          <TableHeader>
+            <TableRow>
+              <TableHead class="w-12">
+                <input type="checkbox" class="rounded" />
+              </TableHead>
+              <TableHead>资源键值</TableHead>
+              <TableHead>资源名称</TableHead>
+              <TableHead>类型</TableHead>
+              <TableHead>描述</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>创建时间</TableHead>
+              <TableHead class="w-32">操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="resource in filteredResources" :key="resource.id">
+              <TableCell>
+                <input type="checkbox" class="rounded" />
+              </TableCell>
+              
+              <TableCell>
+                <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">
+                  {{ resource.key }}
+                </code>
+              </TableCell>
+              
+              <TableCell>
+                <div class="flex items-center space-x-2">
+                  <component :is="getResourceIcon(resource.type)" class="h-4 w-4 text-blue-600" />
+                  <span class="font-medium">{{ resource.name }}</span>
+                </div>
+              </TableCell>
+              
+              <TableCell>
+                <Badge :variant="getTypeSeverity(resource.type)">
+                  {{ getTypeDisplayName(resource.type) }}
+                </Badge>
+              </TableCell>
+              
+              <TableCell>
+                <span class="text-gray-600 text-sm">
+                  {{ resource.description || '-' }}
+                </span>
+              </TableCell>
+              
+              <TableCell>
+                <Badge :variant="resource.status === 'active' ? 'default' : 'secondary'">
+                  {{ resource.status === 'active' ? '启用' : '禁用' }}
+                </Badge>
+              </TableCell>
+              
+              <TableCell>
+                <span class="text-sm text-gray-600">
+                  {{ formatDate(resource.created_at) }}
+                </span>
+              </TableCell>
+              
+              <TableCell>
+                <div class="flex items-center space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    @click="viewResource(resource)"
+                  >
+                    <Eye class="h-4 w-4" />
+                  </Button>
+                  <Button
+                     v-if="canEdit"
+                     variant="ghost"
+                     size="sm"
+                     @click="editResource(resource)"
+                   >
+                     <Edit class="h-4 w-4" />
+                   </Button>
+                   <Button
+                     v-if="canDelete"
+                     variant="ghost"
+                     size="sm"
+                     @click="confirmDeleteResource(resource)"
+                   >
+                     <Trash2 class="h-4 w-4 text-red-500" />
+                   </Button>
+                 </div>
+               </TableCell>
+             </TableRow>
+           </TableBody>
+         </Table>
+       </CardContent>
+     </Card>
     
     <!-- 资源对话框 -->
-    <Dialog
-      v-model:visible="showDialog"
-      :header="editingResource ? '编辑资源' : '添加资源'"
-      :style="{ width: '600px' }"
-      modal
-      class="p-fluid"
-    >
-      <template #default>
+    <Dialog v-model:open="showDialog">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>
+            {{ editingResource ? '编辑资源' : '添加资源' }}
+          </DialogTitle>
+        </DialogHeader>
+        
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">资源键值 *</label>
-              <InputText
+              <Label>资源键值 *</Label>
+              <Input
                 v-model="resourceForm.key"
                 placeholder="例如: user:create"
-                required
               />
             </div>
             
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">资源名称 *</label>
-              <InputText
+              <Label>资源名称 *</Label>
+              <Input
                 v-model="resourceForm.name"
                 placeholder="例如: 创建用户"
-                required
               />
             </div>
           </div>
           
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">资源类型 *</label>
-              <Dropdown
-                v-model="resourceForm.type"
-                :options="typeOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="选择类型"
-                required
-              />
-        </div>
+              <Label>资源类型 *</Label>
+              <Select v-model="resourceForm.type">
+                <SelectTrigger>
+                  <SelectValue placeholder="选择资源类型" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="type in resourceTypes"
+                    :key="type.value"
+                    :value="type.value"
+                  >
+                    {{ type.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">状态</label>
-              <Dropdown
-                v-model="resourceForm.status"
-                :options="statusOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="选择状态"
-              />
-      </div>
-    </div>
+              <Label>状态</Label>
+              <Select v-model="resourceForm.status">
+                <SelectTrigger>
+                  <SelectValue placeholder="选择状态" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="status in statusOptions"
+                    :key="status.value"
+                    :value="status.value"
+                  >
+                    {{ status.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
     
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">描述</label>
+            <Label>描述</Label>
             <Textarea
               v-model="resourceForm.description"
               placeholder="请输入资源描述"
@@ -287,43 +307,47 @@
           </div>
           
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">路径</label>
-            <InputText
+            <Label>路径</Label>
+            <Input
               v-model="resourceForm.path"
               placeholder="例如: /api/users"
             />
           </div>
           
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">HTTP方法</label>
-            <MultiSelect
-              v-model="resourceForm.methods"
-              :options="methodOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择HTTP方法"
-              :max-selected-labels="3"
-            />
+            <Label>HTTP方法</Label>
+            <Select v-model="resourceForm.methods" multiple>
+              <SelectTrigger>
+                <SelectValue placeholder="选择HTTP方法" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="method in methodOptions"
+                  :key="method.value"
+                  :value="method.value"
+                >
+                  {{ method.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      </template>
-      
-      <template #footer>
-        <div class="flex justify-end gap-2">
+        
+        <DialogFooter>
           <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
+            variant="outline"
             @click="closeDialog"
-          />
+          >
+            取消
+          </Button>
           <Button
-            label="保存"
-            icon="pi pi-check"
-            :loading="saving"
+            :disabled="saving"
             @click="saveResource"
-        />
-      </div>
-      </template>
+          >
+            保存
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
     
     <!-- 确认对话框 -->
@@ -333,20 +357,18 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Dropdown from 'primevue/dropdown'
-import MultiSelect from 'primevue/multiselect'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Dialog from 'primevue/dialog'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Plus, Search, Trash2, RefreshCw, Download, Database, Eye, Edit } from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
@@ -368,9 +390,13 @@ const saving = ref(false)
 const showDialog = ref(false)
 const editingResource = ref(null as any)
 const selectedResources = ref([])
-const confirm = useConfirm()
+// 权限控制
+const canAdd = ref(true)
+const canEdit = ref(true)
+const canDelete = ref(true)
+const canExport = ref(true)
 
-// 搜索和筛选
+// 模拟数据搜索和筛选
 const searchQuery = ref('')
 const typeFilter = ref('all')
 const statusFilter = ref('all')
@@ -532,6 +558,16 @@ const getTypeDisplayName = (type: string) => typeMap[type] || type
 
 const getTypeSeverity = (type: string) => severityMap[type] || 'info'
 
+// 获取状态Badge变体
+const getStatusSeverity = (status: string) => {
+  const severityMap: Record<string, string> = {
+    active: 'default',
+    inactive: 'destructive',
+    pending: 'secondary'
+  }
+  return severityMap[status] || 'outline'
+}
+
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleString('zh-CN')
 }
@@ -606,6 +642,7 @@ const saveResource = async () => {
           mockResources.value[index]!.status = resourceForm.value.status
         }
       }
+      toast.success('资源更新成功')
     }
     else {
       // 新增资源
@@ -615,6 +652,7 @@ const saveResource = async () => {
         created_at: new Date()
       }
       mockResources.value.push(newResource)
+      toast.success('资源添加成功')
     }
     
     closeDialog()
@@ -628,31 +666,31 @@ const saveResource = async () => {
 }
 
 const confirmDeleteResource = (resource: any) => {
-  confirm.require({
-    message: `确定要删除资源 ${resource.name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteResource(resource.id)
-    }
-  })
+  if (confirm(`确定要删除资源 "${resource.name}" 吗？`)) {
+    deleteResource(resource.id)
+  }
 }
 
-const deleteResource = (resourceId: string) => {
-  mockResources.value = mockResources.value.filter(resource => resource.id !== resourceId)
+const deleteResource = (id: string) => {
+  const index = mockResources.value.findIndex(r => r.id === id)
+  if (index !== -1) {
+    mockResources.value.splice(index, 1)
+    toast.success('资源删除成功')
+  }
 }
 
 const handleBatchDelete = () => {
-  confirm.require({
-    message: `确定要删除选中的 ${selectedResources.value.length} 个资源吗？`,
-    header: '确认批量删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      const selectedIds = selectedResources.value.map((r: any) => r.id)
-      mockResources.value = mockResources.value.filter(resource => !selectedIds.includes(resource.id))
-      selectedResources.value = []
-    }
-  })
+  if (selectedResources.value.length === 0) {
+    toast.warning('请选择要删除的资源')
+    return
+  }
+  
+  if (confirm(`确定要删除选中的 ${selectedResources.value.length} 个资源吗？`)) {
+    const selectedIds = selectedResources.value.map((r: any) => r.id)
+    mockResources.value = mockResources.value.filter(resource => !selectedIds.includes(resource.id))
+    selectedResources.value = []
+    toast.success(`成功删除 ${selectedIds.length} 个资源`)
+  }
 }
 
 const clearFilters = () => {
@@ -662,7 +700,10 @@ const clearFilters = () => {
 }
 
 const exportResources = () => {
-  console.log('导出资源')
+  // 模拟导出功能
+  const data = filteredResources.value
+  console.log('导出资源数据:', data)
+  toast.success(`成功导出 ${data.length} 条资源数据`)
 }
 
 // 初始化

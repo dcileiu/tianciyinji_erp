@@ -3,405 +3,391 @@
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-color">角色管理</h1>
-        <p class="text-muted-color">管理系统角色和权限配置</p>
+        <h1 class="text-2xl font-bold text-foreground">角色管理</h1>
+        <p class="text-muted-foreground mt-1">管理系统角色和权限配置</p>
       </div>
       <PermissionWrapper :has-permission="canCreateRole">
-        <Button 
-          label="新增角色" 
-          icon="pi pi-plus"
-          @click="openCreateDialog"
-        />
+        <Button @click="openCreateDialog">
+          <Plus class="w-4 h-4 mr-2" />
+          新增角色
+        </Button>
       </PermissionWrapper>
     </div>
 
     <!-- 统计卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <Card class="bg-blue-50 dark:bg-blue-900/20 border-blue-200">
-        <template #content>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <Card class="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-blue-600 dark:text-blue-400 text-sm font-medium">总角色数</p>
-              <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ roleStats.totalRoles }}</p>
+              <p class="text-blue-100 text-sm">总角色数</p>
+              <p class="text-2xl font-bold">{{ roleStats.totalRoles }}</p>
             </div>
-            <div class="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
-              <i class="pi pi-shield text-blue-600 dark:text-blue-400 text-xl"></i>
-            </div>
+            <Shield class="w-8 h-8 text-blue-200" />
           </div>
-        </template>
+        </CardContent>
       </Card>
 
-      <Card class="bg-green-50 dark:bg-green-900/20 border-green-200">
-        <template #content>
+      <Card class="bg-gradient-to-r from-green-500 to-green-600 text-white">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-green-600 dark:text-green-400 text-sm font-medium">活跃角色</p>
-              <p class="text-2xl font-bold text-green-900 dark:text-green-100">{{ roleStats.activeRoles }}</p>
+              <p class="text-green-100 text-sm">启用角色</p>
+              <p class="text-2xl font-bold">{{ roleStats.activeRoles }}</p>
             </div>
-            <div class="bg-green-100 dark:bg-green-800 p-3 rounded-full">
-              <i class="pi pi-check-circle text-green-600 dark:text-green-400 text-xl"></i>
-            </div>
+            <CheckCircle class="w-8 h-8 text-green-200" />
           </div>
-        </template>
+        </CardContent>
       </Card>
 
-      <Card class="bg-orange-50 dark:bg-orange-900/20 border-orange-200">
-        <template #content>
+      <Card class="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-orange-600 dark:text-orange-400 text-sm font-medium">系统角色</p>
-              <p class="text-2xl font-bold text-orange-900 dark:text-orange-100">{{ roleStats.systemRoles }}</p>
+              <p class="text-orange-100 text-sm">系统角色</p>
+              <p class="text-2xl font-bold">{{ roleStats.systemRoles }}</p>
             </div>
-            <div class="bg-orange-100 dark:bg-orange-800 p-3 rounded-full">
-              <i class="pi pi-cog text-orange-600 dark:text-orange-400 text-xl"></i>
-            </div>
+            <Settings class="w-8 h-8 text-orange-200" />
           </div>
-        </template>
+        </CardContent>
       </Card>
 
-      <Card class="bg-purple-50 dark:bg-purple-900/20 border-purple-200">
-        <template #content>
+      <Card class="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+        <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-purple-600 dark:text-purple-400 text-sm font-medium">自定义角色</p>
-              <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">{{ roleStats.customRoles }}</p>
+              <p class="text-purple-100 text-sm">自定义角色</p>
+              <p class="text-2xl font-bold">{{ roleStats.customRoles }}</p>
             </div>
-            <div class="bg-purple-100 dark:bg-purple-800 p-3 rounded-full">
-              <i class="pi pi-user text-purple-600 dark:text-purple-400 text-xl"></i>
-            </div>
+            <Users class="w-8 h-8 text-purple-200" />
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
 
-    <!-- 筛选和搜索 -->
+    <!-- 搜索和筛选 -->
     <Card>
-      <template #header>
-        <h3 class="text-lg font-semibold text-color">筛选条件</h3>
-      </template>
-      <template #content>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">搜索角色</label>
-            <InputText
-              v-model="searchQuery"
-              placeholder="角色名称、描述..."
-              class="w-full"
-            />
+      <CardContent class="p-6">
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div class="flex flex-col md:flex-row gap-4 flex-1">
+            <div class="flex-1 relative">
+              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                v-model="searchQuery"
+                placeholder="搜索角色名称或描述..."
+                class="pl-10"
+              />
+            </div>
+            
+            <Select v-model="selectedType">
+              <SelectTrigger class="w-full md:w-48">
+                <SelectValue placeholder="选择类型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in typeOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select v-model="selectedStatus">
+              <SelectTrigger class="w-full md:w-48">
+                <SelectValue placeholder="选择状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">角色类型</label>
-            <Dropdown
-              v-model="selectedType"
-              :options="typeOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部类型"
-              class="w-full"
-              show-clear
-            />
-          </div>
-
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">状态</label>
-            <Dropdown
-              v-model="selectedStatus"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部状态"
-              class="w-full"
-              show-clear
-            />
-          </div>
-
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color opacity-0">操作</label>
-            <Button
-              label="重置筛选"
-              icon="pi pi-refresh"
-              outlined
-              class="w-full"
-              @click="resetFilters"
-            />
+          
+          <div class="flex gap-2">
+            <Button variant="outline" @click="resetFilters">
+              <FilterX class="w-4 h-4 mr-2" />
+              重置
+            </Button>
+            <Button variant="outline">
+              <Download class="w-4 h-4 mr-2" />
+              导出
+            </Button>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 角色列表 -->
     <Card>
-      <template #header>
-        <h3 class="text-lg font-semibold text-color">角色列表</h3>
-      </template>
-      <template #content>
-        <DataTable
-          :value="filteredRoles"
-          :loading="loading"
-          striped-rows
-          show-gridlines
-          responsive-layout="scroll"
-          paginator
-          :rows="10"
-          :rows-per-page-options="[5, 10, 20, 50]"
-          paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          current-page-report-template="显示 {first} 到 {last} 条，共 {totalRecords} 条记录"
-        >
-          <template #loading>
-            <div class="p-6">
-              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
-                <Skeleton shape="circle" size="3rem" />
-                <div class="flex-1">
-                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                  <Skeleton width="60%" height="1rem" />
-                </div>
-                <Skeleton width="6rem" height="1.5rem" />
-                <Skeleton width="4rem" height="1.5rem" />
-              </div>
+      <CardHeader>
+        <div class="flex items-center justify-between">
+          <CardTitle>角色列表</CardTitle>
+          <div class="flex items-center gap-2">
+            <Button variant="outline" size="sm">
+              <RefreshCw class="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="sm">
+              <Download class="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      
+      <CardContent>
+        <div v-if="loading" class="space-y-4">
+          <div v-for="i in 5" :key="i" class="flex items-center space-x-4 p-4">
+            <Skeleton class="w-12 h-12 rounded-full" />
+            <div class="flex-1 space-y-2">
+              <Skeleton class="h-4 w-full" />
+              <Skeleton class="h-4 w-4/5" />
             </div>
-          </template>
-          <template #empty>
-            <div class="text-center py-12 text-muted-color">
-              <i class="pi pi-shield text-6xl mb-4 opacity-50"></i>
-              <h3 class="text-lg mb-2">暂无角色数据</h3>
-              <p class="mb-4">开始创建第一个角色</p>
-              <Button
-                label="新增角色"
-                icon="pi pi-plus"
-                @click="openCreateDialog"
-              />
-              </div>
-          </template>
-
-          <Column field="name" header="角色信息" :sortable="true">
-            <template #body="slotProps">
-              <div>
-                <p class="font-medium text-color">{{ slotProps.data.name }}</p>
-                <p class="text-sm text-muted-color">{{ slotProps.data.description }}</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <Tag
-                    :value="getTypeDisplayName(slotProps.data.type)"
-                    :severity="getTypeSeverity(slotProps.data.type)"
-                    size="small"
-                  />
-                  <span class="text-xs text-muted-color">
-                    {{ slotProps.data.permissions?.length || 0 }} 项权限
+          </div>
+        </div>
+        
+        <div v-else-if="filteredRoles.length === 0" class="text-center py-8">
+          <Shield class="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <p class="text-muted-foreground">暂无角色数据</p>
+        </div>
+        
+        <div v-else>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>角色名称</TableHead>
+                <TableHead>类型</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>关联用户</TableHead>
+                <TableHead>创建时间</TableHead>
+                <TableHead class="w-[150px]">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="role in filteredRoles" :key="role.id">
+                <TableCell>
+                  <div class="flex items-center">
+                    <div class="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center mr-3">
+                      <Shield class="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div class="font-semibold">{{ role.name }}</div>
+                      <div class="text-sm text-muted-foreground">{{ role.description }}</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getTypeVariant(role.type)">
+                    {{ getTypeDisplayName(role.type) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getStatusVariant(role.status)">
+                    {{ getStatusDisplayName(role.status) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm">{{ role.user_count || 0 }} 个用户</span>
+                </TableCell>
+                <TableCell>
+                  <span class="text-sm text-muted-foreground">
+                    {{ formatDate(role.created_at) }}
                   </span>
-                </div>
-              </div>
-            </template>
-          </Column>
-
-          <Column field="status" header="状态" :sortable="true">
-            <template #body="slotProps">
-              <Tag
-                :value="getStatusDisplayName(slotProps.data.status)"
-                :severity="getStatusSeverity(slotProps.data.status)"
-              />
-            </template>
-          </Column>
-
-          <Column field="user_count" header="关联用户">
-            <template #body="slotProps">
-              <span class="text-sm">{{ slotProps.data.user_count || 0 }} 个用户</span>
-            </template>
-          </Column>
-
-          <Column field="created_at" header="创建时间" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.created_at) }}
-              </span>
-            </template>
-          </Column>
-
-          <Column header="操作" style="width: 150px">
-            <template #body="slotProps">
-              <div class="flex gap-2">
-                <Button
-                  v-tooltip="'查看权限'"
-                  icon="pi pi-eye"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="viewRole(slotProps.data)"
-                />
-                  <PermissionWrapper :has-permission="canEditRole">
-                  <Button
-                    v-tooltip="'编辑'"
-                    icon="pi pi-pencil"
-                    outlined
-                    rounded
-                    size="small"
-                    @click="editRole(slotProps.data)"
-                  />
-                  </PermissionWrapper>
-                  <PermissionWrapper :has-permission="canDeleteRole">
-                  <Button
-                    v-tooltip="'删除'"
-                    icon="pi pi-trash"
-                    outlined
-                    rounded
-                    size="small"
-                    severity="danger"
-                    :disabled="slotProps.data.type === 'system'"
-                    @click="confirmDeleteRole(slotProps.data)"
-                  />
-                  </PermissionWrapper>
-            </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+                </TableCell>
+                <TableCell>
+                  <div class="flex gap-2">
+                    <Button variant="outline" size="sm" @click="viewRole(role)">
+                      <Eye class="w-4 h-4" />
+                    </Button>
+                    <PermissionWrapper :has-permission="canEditRole">
+                      <Button variant="outline" size="sm" @click="editRole(role)">
+                        <Edit class="w-4 h-4" />
+                      </Button>
+                    </PermissionWrapper>
+                    <PermissionWrapper :has-permission="canDeleteRole">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        :disabled="role.type === 'system'"
+                        @click="confirmDeleteRole(role)"
+                      >
+                        <Trash2 class="w-4 h-4" />
+                      </Button>
+                    </PermissionWrapper>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
 
     <!-- 角色对话框 -->
-    <Dialog
-      v-model:visible="showRoleDialog"
-      :header="editingRole ? '编辑角色' : '新增角色'"
-      :style="{ width: '800px' }"
-      modal
-      class="p-fluid"
-    >
-      <template #default>
+    <Dialog v-model:open="showRoleDialog">
+      <DialogContent class="max-w-4xl">
+        <DialogHeader>
+          <DialogTitle>{{ editingRole ? '编辑角色' : '新增角色' }}</DialogTitle>
+        </DialogHeader>
+        
         <div class="space-y-6">
           <!-- 基本信息 -->
-          <div class="space-y-4">
-            <h4 class="text-lg font-semibold text-color border-b pb-2">基本信息</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">角色名称 *</label>
-                <InputText
-                v-model="roleForm.name"
-                placeholder="请输入角色名称"
-                  required
-              />
-            </div>
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-lg">基本信息</CardTitle>
+            </CardHeader>
+            <CardContent class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <Label>角色名称 *</Label>
+                  <Input
+                    v-model="roleForm.name"
+                    placeholder="请输入角色名称"
+                  />
+                </div>
 
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">角色类型</label>
-                <Dropdown
-                  v-model="roleForm.type"
-                  :options="typeOptions"
-                  option-label="label"
-                  option-value="value"
-                  placeholder="选择类型"
-                  :disabled="editingRole && editingRole.type === 'system'"
-              />
-          </div>
-          
-              <div class="space-y-2 md:col-span-2">
-                <label class="block text-sm font-medium text-color">角色描述</label>
-            <Textarea
-              v-model="roleForm.description"
-              placeholder="请输入角色描述"
-                  :rows="2"
-            />
-          </div>
-          
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">状态</label>
-                <Dropdown
-              v-model="roleForm.status"
-                  :options="statusOptions"
-                  option-label="label"
-                  option-value="value"
-                  placeholder="选择状态"
-                />
+                <div class="space-y-2">
+                  <Label>角色类型</Label>
+                  <Select 
+                    v-model="roleForm.type" 
+                    :disabled="editingRole && editingRole.type === 'system'"
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择类型" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="option in typeOptions.filter(o => o.value)"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div class="space-y-2 md:col-span-2">
+                  <Label>角色描述</Label>
+                  <Textarea
+                    v-model="roleForm.description"
+                    placeholder="请输入角色描述"
+                    :rows="2"
+                  />
+                </div>
+                
+                <div class="space-y-2">
+                  <Label>状态</Label>
+                  <Select v-model="roleForm.status">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择状态" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="option in statusOptions.filter(o => o.value)"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           <!-- 权限配置 -->
-          <div class="space-y-4">
-            <h4 class="text-lg font-semibold text-color border-b pb-2">权限配置</h4>
-            <div class="bg-surface-50 p-4 rounded-lg max-h-96 overflow-y-auto">
-              <Tree
-                v-model:selection-keys="selectedPermissions"
-                :value="permissionTree"
-                selection-mode="checkbox"
-                :filter="true"
-                filter-placeholder="搜索权限..."
-                class="w-full"
-              >
-                <template #default="slotProps">
-                  <div class="flex items-center">
-                    <i :class="slotProps.node.icon" class="mr-2"></i>
-                    <span>{{ slotProps.node.label }}</span>
-                    <span v-if="slotProps.node.description" class="ml-2 text-xs text-muted-color">
-                      ({{ slotProps.node.description }})
-                    </span>
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-lg">权限配置</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="bg-muted/50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                <div class="space-y-4">
+                  <div v-for="group in permissionTree" :key="group.key" class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                      <input
+                        :id="group.key"
+                        type="checkbox"
+                        class="rounded border-gray-300"
+                        @change="toggleGroupPermissions(group)"
+                      />
+                      <Label :for="group.key" class="font-medium flex items-center">
+                        <component :is="getIconComponent(group.icon)" class="w-4 h-4 mr-2" />
+                        {{ group.label }}
+                      </Label>
+                    </div>
+                    <div class="ml-6 space-y-2">
+                      <div v-for="child in group.children" :key="child.key" class="flex items-center space-x-2">
+                        <input
+                          :id="child.key"
+                          v-model="selectedPermissions[child.key]"
+                          type="checkbox"
+                          class="rounded border-gray-300"
+                        />
+                        <Label :for="child.key" class="text-sm flex items-center">
+                          <component :is="getIconComponent(child.icon)" class="w-4 h-4 mr-2" />
+                          {{ child.label }}
+                        </Label>
+                      </div>
+                    </div>
                   </div>
-                </template>
-              </Tree>
-            </div>
-          </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </template>
 
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeRoleDialog"
-          />
-          <Button
-            label="保存"
-            icon="pi pi-check"
-            :loading="submitting"
-            @click="submitRole"
-          />
-        </div>
-      </template>
+        <DialogFooter>
+          <Button variant="outline" @click="closeRoleDialog">
+            <X class="w-4 h-4 mr-2" />
+            取消
+          </Button>
+          <Button :disabled="submitting" @click="submitRole">
+            <Check class="w-4 h-4 mr-2" />
+            <span v-if="submitting">保存中...</span>
+            <span v-else>保存</span>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
     <!-- 权限查看对话框 -->
-    <Dialog
-      v-model:visible="showPermissionDialog"
-      header="角色权限详情"
-      :style="{ width: '600px' }"
-      modal
-    >
-      <template #default>
-        <div v-if="viewingRole" class="space-y-4">
-          <div>
-            <h4 class="font-semibold text-color mb-2">{{ viewingRole.name }}</h4>
-            <p class="text-sm text-muted-color">{{ viewingRole.description }}</p>
+    <Dialog v-model:open="showPermissionDialog">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>权限详情</DialogTitle>
+        </DialogHeader>
+        
+        <div v-if="viewingRole" class="space-y-6">
+          <div class="text-center space-y-2">
+            <h3 class="text-xl font-semibold">{{ viewingRole.name }}</h3>
+            <p class="text-muted-foreground">{{ viewingRole.description }}</p>
           </div>
-
-          <Divider />
-
-          <div v-if="viewingRole.permissions && viewingRole.permissions.length > 0">
-            <h5 class="font-medium text-color mb-3">权限列表</h5>
-            <div class="space-y-2">
-              <div 
-                v-for="permission in viewingRole.permissions"
-                :key="permission"
-                class="flex items-center p-2 bg-surface-50 rounded"
-              >
-                <i class="pi pi-check text-green-600 mr-2"></i>
-                <span class="text-sm">{{ getPermissionName(permission) }}</span>
+          
+          <Separator />
+          
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-lg">已分配权限</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="space-y-3">
+                <div v-for="permission in viewingRole.permissions" :key="permission" class="flex items-center space-x-2">
+                  <Check class="w-4 h-4 text-green-500" />
+                  <span>{{ getPermissionName(permission) }}</span>
+                </div>
               </div>
-            </div>
-          </div>
-          <div v-else class="text-center py-6 text-muted-color">
-            <i class="pi pi-shield text-4xl mb-2 opacity-50"></i>
-            <p>该角色暂无权限配置</p>
-          </div>
+            </CardContent>
+          </Card>
         </div>
-      </template>
-
-      <template #footer>
-        <Button
-          label="关闭"
-          icon="pi pi-times"
-          outlined
-          @click="showPermissionDialog = false"
-        />
-      </template>
+      </DialogContent>
     </Dialog>
 
     <!-- 确认对话框 -->
@@ -409,22 +395,20 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Dialog from 'primevue/dialog'
-import Textarea from 'primevue/textarea'
-import Tree from 'primevue/tree'
-import Divider from 'primevue/divider'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import Skeleton from 'primevue/skeleton'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Plus, Shield, CheckCircle, Settings, Users, Search, FilterX, Download, RefreshCw, Eye, Edit, Trash2, Check, X } from 'lucide-vue-next'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
 // 页面配置
@@ -446,7 +430,28 @@ const editingRole = ref(null as any)
 const viewingRole = ref(null as any)
 const submitting = ref(false)
 const loading = ref(false)
-const confirm = useConfirm()
+// 图标组件映射
+const getIconComponent = (iconName) => {
+  const iconMap = {
+    'Users': Users,
+    'Shield': Shield,
+    'Settings': Settings,
+    'Eye': Eye,
+    'Edit': Edit,
+    'Check': Check,
+    'Plus': Plus,
+    'Trash2': Trash2
+  }
+  return iconMap[iconName] || Shield
+}
+
+// 切换权限组
+const toggleGroupPermissions = (group) => {
+  const allSelected = group.children.every(child => selectedPermissions.value[child.key])
+  group.children.forEach(child => {
+    selectedPermissions.value[child.key] = !allSelected
+  })
+}
 const selectedPermissions = ref({} as Record<string, any>)
 
 // 权限检查（模拟）
@@ -489,34 +494,34 @@ const permissionTree = ref([
   {
     key: 'user',
     label: '用户管理',
-    icon: 'pi pi-users',
+    icon: 'Users',
     children: [
-      { key: 'user:view', label: '查看用户', icon: 'pi pi-eye' },
-      { key: 'user:create', label: '新增用户', icon: 'pi pi-plus' },
-      { key: 'user:edit', label: '编辑用户', icon: 'pi pi-pencil' },
-      { key: 'user:delete', label: '删除用户', icon: 'pi pi-trash' }
+      { key: 'user:view', label: '查看用户', icon: 'Eye' },
+      { key: 'user:create', label: '新增用户', icon: 'Plus' },
+      { key: 'user:edit', label: '编辑用户', icon: 'Edit' },
+      { key: 'user:delete', label: '删除用户', icon: 'Trash2' }
     ]
   },
   {
     key: 'role',
     label: '角色管理',
-    icon: 'pi pi-shield',
+    icon: 'Shield',
     children: [
-      { key: 'role:view', label: '查看角色', icon: 'pi pi-eye' },
-      { key: 'role:create', label: '新增角色', icon: 'pi pi-plus' },
-      { key: 'role:edit', label: '编辑角色', icon: 'pi pi-pencil' },
-      { key: 'role:delete', label: '删除角色', icon: 'pi pi-trash' }
+      { key: 'role:view', label: '查看角色', icon: 'Eye' },
+      { key: 'role:create', label: '新增角色', icon: 'Plus' },
+      { key: 'role:edit', label: '编辑角色', icon: 'Edit' },
+      { key: 'role:delete', label: '删除角色', icon: 'Trash2' }
     ]
   },
   {
     key: 'product',
     label: '产品管理',
-    icon: 'pi pi-box',
+    icon: 'Settings',
     children: [
-      { key: 'product:view', label: '查看产品', icon: 'pi pi-eye' },
-      { key: 'product:create', label: '新增产品', icon: 'pi pi-plus' },
-      { key: 'product:edit', label: '编辑产品', icon: 'pi pi-pencil' },
-      { key: 'product:delete', label: '删除产品', icon: 'pi pi-trash' }
+      { key: 'product:view', label: '查看产品', icon: 'Eye' },
+      { key: 'product:create', label: '新增产品', icon: 'Plus' },
+      { key: 'product:edit', label: '编辑产品', icon: 'Edit' },
+      { key: 'product:delete', label: '删除产品', icon: 'Trash2' }
     ]
   }
 ])
@@ -577,12 +582,13 @@ const getTypeDisplayName = (type: string): string => {
   return typeMap[type] || type
 }
 
-const getTypeSeverity = (type: string): string => {
-  const severityMap: Record<string, string> = {
-    system: 'warn',
-    custom: 'info'
+const getTypeVariant = (type: string): string => {
+  const variantMap: Record<string, string> = {
+    system: 'destructive',
+    custom: 'default',
+    business: 'secondary'
   }
-  return severityMap[type] || 'secondary'
+  return variantMap[type] || 'default'
 }
 
 const getStatusDisplayName = (status: string): string => {
@@ -593,12 +599,12 @@ const getStatusDisplayName = (status: string): string => {
   return statusMap[status] || status
 }
 
-const getStatusSeverity = (status: string): string => {
-  const severityMap: Record<string, string> = {
-    active: 'success',
-    inactive: 'warn'
+const getStatusVariant = (status: string): string => {
+  const variantMap: Record<string, string> = {
+    active: 'default',
+    inactive: 'secondary'
   }
-  return severityMap[status] || 'secondary'
+  return variantMap[status] || 'secondary'
 }
 
 const formatDate = (date: Date): string => {
@@ -721,14 +727,9 @@ const submitRole = async () => {
 }
 
 const confirmDeleteRole = (role: any) => {
-  confirm.require({
-    message: `确定要删除角色 ${role.name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteRole(role.id)
-    }
-  })
+  if (window.confirm(`确定要删除角色 "${role.name}" 吗？此操作不可撤销。`)) {
+    deleteRole(role.id)
+  }
 }
 
 const deleteRole = (roleId: string) => {
@@ -747,4 +748,4 @@ const updateStats = () => {
 onMounted(() => {
   updateStats()
 })
-</script> 
+</script>

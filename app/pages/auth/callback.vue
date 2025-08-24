@@ -39,7 +39,7 @@
               重新尝试
             </Button>
             <Button 
-              outlined 
+              variant="outline" 
               class="w-full" 
               @click="$router.push('/login')"
             >
@@ -63,8 +63,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Loader2, CheckCircle, AlertTriangle } from 'lucide-vue-next'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
+import { Button } from '@/components/ui/button'
 
 // 使用认证布局
 definePageMeta({
@@ -204,4 +203,4 @@ const handleRetry = () => {
 onMounted(() => {
   handleEmailConfirmation()
 })
-</script> 
+</script>

@@ -18,7 +18,7 @@
           <label for="email" class="block text-sm font-medium text-foreground mb-2">
             邮箱地址
           </label>
-          <InputText
+          <Input
             id="email"
             v-model="form.email"
             type="email"
@@ -37,7 +37,7 @@
           <label for="password" class="block text-sm font-medium text-foreground mb-2">
             密码
           </label>
-          <InputText
+          <Input
             id="password"
             v-model="form.password"
             type="password"
@@ -56,7 +56,7 @@
           <label for="confirmPassword" class="block text-sm font-medium text-foreground mb-2">
             确认密码
           </label>
-          <InputText
+          <Input
             id="confirmPassword"
             v-model="form.confirmPassword"
             type="password"
@@ -105,9 +105,9 @@
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 const { register } = useAuth()
 

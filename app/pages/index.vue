@@ -1,131 +1,116 @@
 <template>
-  <div class="min-h-screen flex align-items-center justify-content-center py-6 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
     <!-- 加载状态 -->
-    <Panel
-v-if="isLoading" class="text-center border-none" :pt="{
-      root: { class: 'bg-transparent' },
-      header: { class: 'hidden' },
-      content: { class: 'p-6' },
-    }">
-      <div class="flex flex-column align-items-center gap-3">
-        <Skeleton shape="circle" size="3rem" />
-        <Skeleton width="12rem" height="1rem" />
+    <div v-if="isLoading" class="text-center">
+      <div class="flex flex-col items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-muted animate-pulse"></div>
+        <div class="w-48 h-4 bg-muted rounded animate-pulse"></div>
       </div>
-      <p class="mt-3 text-sm text-surface-500">
+      <p class="mt-3 text-sm text-muted-foreground">
         正在检查登录状态...
       </p>
-    </Panel>
+    </div>
 
     <!-- 未登录用户显示欢迎页面 -->
     <div v-else-if="!isAuthenticated" class="text-center max-w-4xl mx-auto">
       <div class="mb-8">
-        <div class="w-4rem h-4rem bg-primary border-round-2xl flex align-items-center justify-content-center mx-auto mb-4">
-          <span class="text-white font-bold text-2xl">E</span>
+        <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Building2 class="w-8 h-8 text-primary-foreground" />
         </div>
-        <h1 class="text-4xl font-bold text-surface-900 mb-4">
+        <h1 class="text-4xl font-bold text-foreground mb-4">
           ERP 管理系统
         </h1>
-        <p class="text-xl text-surface-600 mb-8">
+        <p class="text-xl text-muted-foreground mb-8">
           企业资源规划系统，助力您的业务发展
         </p>
       </div>
 
       <div class="grid md:grid-cols-2 gap-6 mb-8">
-        <Panel
-class="shadow-lg border-0" :pt="{
-          root: { class: 'bg-surface-0' },
-          header: { class: 'hidden' },
-          content: { class: 'p-6' },
-        }">
-          <div class="w-3rem h-3rem bg-blue-100 border-round flex align-items-center justify-content-center mb-4">
-            <i class="pi pi-shopping-cart text-blue-600 text-xl"></i>
-          </div>
-          <h3 class="text-lg font-semibold text-surface-900 mb-2">
-            销售管理
-          </h3>
-          <p class="text-surface-600">
-            客户管理、订单处理、发货跟踪等全流程销售管理
-          </p>
-        </Panel>
+        <Card class="shadow-lg">
+          <CardContent class="p-6">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+              <ShoppingCart class="w-6 h-6 text-blue-600" />
+            </div>
+            <h3 class="text-lg font-semibold text-foreground mb-2">
+              销售管理
+            </h3>
+            <p class="text-muted-foreground">
+              客户管理、订单处理、发货跟踪等全流程销售管理
+            </p>
+          </CardContent>
+        </Card>
 
-        <Panel
-class="shadow-lg border-0" :pt="{
-          root: { class: 'bg-surface-0' },
-          header: { class: 'hidden' },
-          content: { class: 'p-6' },
-        }">
-          <div class="w-3rem h-3rem bg-green-100 border-round flex align-items-center justify-content-center mb-4">
-            <i class="pi pi-box text-green-600 text-xl"></i>
-          </div>
-          <h3 class="text-lg font-semibold text-surface-900 mb-2">
-            库存管理
-          </h3>
-          <p class="text-surface-600">
-            实时库存监控、入出库管理、盘点调拨等仓储功能
-          </p>
-        </Panel>
+        <Card class="shadow-lg">
+          <CardContent class="p-6">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+              <Warehouse class="w-6 h-6 text-green-600" />
+            </div>
+            <h3 class="text-lg font-semibold text-foreground mb-2">
+              库存管理
+            </h3>
+            <p class="text-muted-foreground">
+              实时库存监控、入出库管理、盘点调拨等仓储功能
+            </p>
+          </CardContent>
+        </Card>
 
-        <Panel
-class="shadow-lg border-0" :pt="{
-          root: { class: 'bg-surface-0' },
-          header: { class: 'hidden' },
-          content: { class: 'p-6' },
-        }">
-          <div class="w-3rem h-3rem bg-purple-100 border-round flex align-items-center justify-content-center mb-4">
-            <i class="pi pi-cog text-purple-600 text-xl"></i>
-          </div>
-          <h3 class="text-lg font-semibold text-surface-900 mb-2">
-            生产管理
-          </h3>
-          <p class="text-surface-600">
-            生产计划、工单管理、质量控制等生产流程管理
-          </p>
-        </Panel>
+        <Card class="shadow-lg">
+          <CardContent class="p-6">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+              <Factory class="w-6 h-6 text-purple-600" />
+            </div>
+            <h3 class="text-lg font-semibold text-foreground mb-2">
+              生产管理
+            </h3>
+            <p class="text-muted-foreground">
+              生产计划、工单管理、质量控制等生产流程管理
+            </p>
+          </CardContent>
+        </Card>
 
-        <Panel
-class="shadow-lg border-0" :pt="{
-          root: { class: 'bg-surface-0' },
-          header: { class: 'hidden' },
-          content: { class: 'p-6' },
-        }">
-          <div class="w-3rem h-3rem bg-red-100 border-round flex align-items-center justify-content-center mb-4">
-            <i class="pi pi-chart-line text-red-600 text-xl"></i>
-          </div>
-          <h3 class="text-lg font-semibold text-surface-900 mb-2">
-            财务管理
-          </h3>
-          <p class="text-surface-600">
-            应收应付、成本核算、财务报表等财务管理功能
-          </p>
-        </Panel>
+        <Card class="shadow-lg">
+          <CardContent class="p-6">
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+              <Calculator class="w-6 h-6 text-red-600" />
+            </div>
+            <h3 class="text-lg font-semibold text-foreground mb-2">
+              财务管理
+            </h3>
+            <p class="text-muted-foreground">
+              应收应付、成本核算、财务报表等财务管理功能
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
-      <div class="flex flex-column sm:flex-row gap-4 justify-content-center">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <Button 
-          label="立即登录" 
-          icon="pi pi-sign-in"
           class="w-full sm:w-auto"
-          size="large"
+          size="lg"
           @click="navigateTo('/login')"
-        />
+        >
+          <LogIn class="w-4 h-4 mr-2" />
+          立即登录
+        </Button>
         <Button 
-          label="了解更多" 
-          icon="pi pi-info-circle"
-          outlined
+          variant="outline"
           class="w-full sm:w-auto"
-          size="large"
+          size="lg"
           @click="navigateTo('/getting-started')"
-        />
+        >
+          <Info class="w-4 h-4 mr-2" />
+          了解更多
+        </Button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import Skeleton from 'primevue/skeleton'
-import Button from 'primevue/button'
-import Panel from 'primevue/panel'
+import { ref, onMounted, watchEffect } from 'vue'
+import { Card, CardContent } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Building2, ShoppingCart, Warehouse, Factory, Calculator, LogIn, Info } from 'lucide-vue-next'
 import { useAuth } from '~/composables/useAuth'
 
 // 页面元数据
@@ -153,6 +138,13 @@ onMounted(async () => {
   // 如果已登录，跳转到仪表盘
   if (isAuthenticated.value) {
     await navigateTo('/dashboard')
+  }
+})
+
+// 如果已登录，重定向到仪表板
+watchEffect(() => {
+  if (!isLoading.value && isAuthenticated.value) {
+    navigateTo('/dashboard')
   }
 })
 </script>

@@ -1,104 +1,128 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex align-items-center justify-content-center p-4 login-container">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
     <div class="w-full max-w-md mx-auto px-4 sm:px-0">
       <!-- 登录卡片 -->
-      <Panel
-class="shadow-2xl border-0 overflow-hidden" :pt="{
-        root: { class: 'border-none' },
-        header: { class: 'hidden' },
-        content: { class: 'p-4 sm:p-6' },
-      }">
-        <div class="text-center text-base sm:text-2xl font-bold text-surface-700 mb-6">
-          欢迎回来，请登录您的账户
-        </div>
+      <Card class="shadow-2xl">
+        <CardContent class="p-6">
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Building2 class="w-8 h-8 text-primary-foreground" />
+            </div>
+            <h1 class="text-2xl font-bold text-foreground mb-2">
+              欢迎回来
+            </h1>
+            <p class="text-muted-foreground">
+              请登录您的账户
+            </p>
+          </div>
 
-        <form class="flex flex-column gap-4" @submit.prevent="handleLogin">
-          <!-- 邮箱输入 -->
-          <div class="field">
-            <FloatLabel variant="on">
-              <IconField class="w-full">
-                <InputIcon class="pi pi-envelope" />
-                <InputText
+          <form class="flex flex-col gap-4" @submit.prevent="handleLogin">
+            <!-- 邮箱输入 -->
+            <div class="space-y-2">
+              <Label for="email">账号</Label>
+              <div class="relative">
+                <Mail class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
                   id="email"
                   v-model="form.email"
                   type="email"
-                  class="w-full"
-                  :class="{ 'p-invalid': emailError }"
+                  placeholder="请输入邮箱地址"
+                  class="pl-10"
+                  :class="{ 'border-destructive': emailError }"
                   :disabled="loading"
                   required
                 />
-              </IconField>
-              <label for="email">账号</label>
-            </FloatLabel>
-            <small v-if="emailError" class="p-error">{{ emailError }}</small>
-          </div>
-
-          <!-- 密码输入 -->
-          <div class="field">
-            <FloatLabel variant="on">
-              <IconField class="w-full">
-                <InputIcon class="pi pi-lock" />
-                <Password
-                  v-model="form.password"
-                  :class="{ 'p-invalid': passwordError }"
-                  class="w-full"
-                  input-class="w-full pl-10"
-                  toggle-mask
-                  inputId="password"
-                  :feedback="false"
-                />
-              </IconField>
-              <label for="password">密码</label>
-            </FloatLabel>
-            <small v-if="passwordError" class="p-error">{{ passwordError }}</small>
-          </div>
-
-          <!-- 错误提示 -->
-          <Message v-if="error" severity="error" :closable="false">
-            {{ error }}
-          </Message>
-
-          <!-- 登录按钮 -->
-          <Button
-            type="submit"
-            label="登录"
-            icon="pi pi-sign-in"
-            class="w-full"
-            :loading="loading"
-            :disabled="!isFormValid || loading"
-            size="large"
-          />
-
-          <!-- 分割线 -->
-          <Divider align="center" class="my-4">
-            <Chip label="或" class="px-3" />
-          </Divider>
-
-          <!-- 其他操作 -->
-          <div class="flex flex-column gap-3">
-            <Button
-              label="忘记密码？"
-              icon="pi pi-question-circle"
-              link
-              class="w-full justify-content-center"
-              @click="$router.push('/forgot-password')"
-            />
-
-            <div class="text-center text-sm text-surface-600">
-              还没有账户？
-              <Button
-                label="立即注册"
-                link
-                class="p-0 text-primary"
-                @click="$router.push('/register')"
-              />
+              </div>
+              <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
             </div>
-          </div>
-        </form>
-      </Panel>
+
+            <!-- 密码输入 -->
+            <div class="space-y-2">
+              <Label for="password">密码</Label>
+              <div class="relative">
+                <Lock class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="password"
+                  v-model="form.password"
+                  :type="showPassword ? 'text' : 'password'"
+                  placeholder="请输入密码"
+                  class="pl-10 pr-10"
+                  :class="{ 'border-destructive': passwordError }"
+                  :disabled="loading"
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  class="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  @click="showPassword = !showPassword"
+                >
+                  <Eye v-if="!showPassword" class="h-4 w-4" />
+                  <EyeOff v-else class="h-4 w-4" />
+                </Button>
+              </div>
+              <p v-if="passwordError" class="text-sm text-destructive">{{ passwordError }}</p>
+            </div>
+
+            <!-- 错误提示 -->
+            <Alert v-if="error" variant="destructive">
+              <AlertCircle class="h-4 w-4" />
+              <AlertDescription>
+                {{ error }}
+              </AlertDescription>
+            </Alert>
+
+            <!-- 登录按钮 -->
+            <Button
+              type="submit"
+              class="w-full"
+              :disabled="!isFormValid || loading"
+              size="lg"
+            >
+              <Loader2 v-if="loading" class="mr-2 h-4 w-4 animate-spin" />
+              <LogIn v-else class="mr-2 h-4 w-4" />
+              {{ loading ? '登录中...' : '登录' }}
+            </Button>
+
+            <!-- 分割线 -->
+            <div class="relative my-4">
+              <div class="absolute inset-0 flex items-center">
+                <span class="w-full border-t" />
+              </div>
+              <div class="relative flex justify-center text-xs uppercase">
+                <span class="bg-background px-2 text-muted-foreground">或</span>
+              </div>
+            </div>
+
+            <!-- 其他操作 -->
+            <div class="flex flex-col gap-3">
+              <Button
+                variant="ghost"
+                class="w-full"
+                @click="$router.push('/forgot-password')"
+              >
+                <HelpCircle class="mr-2 h-4 w-4" />
+                忘记密码？
+              </Button>
+
+              <div class="text-center text-sm text-muted-foreground">
+                还没有账户？
+                <Button
+                  variant="link"
+                  class="p-0 h-auto font-normal"
+                  @click="$router.push('/register')"
+                >
+                  立即注册
+                </Button>
+              </div>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
 
       <!-- 版权信息 -->
-      <div class="text-center mt-4 text-sm text-surface-500">
+      <div class="text-center mt-4 text-sm text-muted-foreground">
         © 2025 ERP管理系统. 保留所有权利.
       </div>
     </div>
@@ -107,16 +131,12 @@ class="shadow-2xl border-0 overflow-hidden" :pt="{
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import Panel from "primevue/panel";
-import InputText from "primevue/inputtext";
-import Password from "primevue/password";
-import Button from "primevue/button";
-import IconField from "primevue/iconfield";
-import InputIcon from "primevue/inputicon";
-import Divider from "primevue/divider";
-import FloatLabel from "primevue/floatlabel";
-import Message from "primevue/message";
-import Chip from "primevue/chip";
+import { Card, CardContent } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Alert, AlertDescription } from "~/components/ui/alert";
+import { Building2, Mail, Lock, Eye, EyeOff, LogIn, HelpCircle, AlertCircle, Loader2 } from "lucide-vue-next";
 import { useAuth } from "~/composables/useAuth";
 import type { LoginForm } from "~/types/auth";
 
@@ -132,6 +152,7 @@ const router = useRouter();
 // 响应式数据
 const loading = ref(false);
 const error = ref("");
+const showPassword = ref(false);
 const form = ref<LoginForm>({
   email: "",
   password: "",

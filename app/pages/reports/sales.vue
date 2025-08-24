@@ -3,282 +3,266 @@
     <!-- 页面标题 -->
     <div class="flex justify-between items-start mb-6">
       <div>
-        <h1 class="text-3xl font-semibold text-color mb-2">销售报表</h1>
-        <p class="text-muted-color">分析销售数据，了解业务趋势和客户表现</p>
+        <h1 class="text-3xl font-semibold text-foreground mb-2">销售报表</h1>
+        <p class="text-muted-foreground">分析销售数据，了解业务趋势和客户表现</p>
       </div>
       <div class="flex gap-3">
-        <Button
-          label="导出报表"
-          icon="pi pi-download"
-          outlined
-          @click="exportReport"
-        />
-        <Button
-          label="刷新数据"
-          icon="pi pi-refresh"
-          @click="refreshData"
-        />
+        <Button variant="outline" @click="exportReport">
+          <Download class="w-4 h-4 mr-2" />
+          导出报表
+        </Button>
+        <Button @click="refreshData">
+          <RefreshCw class="w-4 h-4 mr-2" />
+          刷新数据
+        </Button>
       </div>
     </div>
 
     <!-- 筛选器 -->
     <Card class="mb-6">
-      <template #header>
-        <h3 class="text-lg font-semibold text-color">报表筛选</h3>
-      </template>
-      <template #content>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+      <CardHeader>
+        <CardTitle class="text-lg font-semibold">报表筛选</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">日期范围</label>
-            <Calendar
+            <label class="text-sm font-medium text-foreground">日期范围</label>
+            <Input
               v-model="dateRange"
-              selection-mode="range"
-              :manual-input="false"
-              date-format="yy-mm-dd"
+              type="date"
               placeholder="选择日期范围"
             />
           </div>
           
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">客户筛选</label>
-            <Dropdown
-              v-model="customerFilter"
-              :options="customerOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择客户"
-              filter
-              show-clear
-            />
+            <label class="text-sm font-medium text-foreground">客户筛选</label>
+            <Select v-model="customerFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="选择客户" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="option in customerOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">搜索</label>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <InputText
+            <label class="text-sm font-medium text-foreground">搜索</label>
+            <div class="relative">
+              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
                 v-model="searchQuery"
                 placeholder="搜索订单号、产品..."
+                class="pl-10"
               />
-            </span>
+            </div>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
             <div class="flex-1">
               <div class="text-2xl font-semibold text-green-600 mb-1">
                 ¥{{ formatCurrency(salesStats.totalAmount) }}
               </div>
-              <div class="text-sm text-muted-color mb-2">总销售额</div>
+              <div class="text-sm text-muted-foreground mb-2">总销售额</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
-                <i class="pi pi-arrow-up"></i>
+                <ArrowUp class="w-4 h-4" />
                 <span>+15.2%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-border flex items-center justify-center text-white">
-              <i class="pi pi-dollar text-xl"></i>
+            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center text-white">
+              <DollarSign class="w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
       
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
             <div class="flex-1">
               <div class="text-2xl font-semibold text-blue-600 mb-1">{{ salesStats.totalOrders }}</div>
-              <div class="text-sm text-muted-color mb-2">订单数量</div>
+              <div class="text-sm text-muted-foreground mb-2">订单数量</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
-                <i class="pi pi-arrow-up"></i>
+                <ArrowUp class="w-4 h-4" />
                 <span>+8.3%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-border flex items-center justify-center text-white">
-              <i class="pi pi-shopping-cart text-xl"></i>
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white">
+              <ShoppingCart class="w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
       
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
             <div class="flex-1">
               <div class="text-2xl font-semibold text-purple-600 mb-1">
                 ¥{{ formatCurrency(salesStats.avgOrderAmount) }}
               </div>
-              <div class="text-sm text-muted-color mb-2">平均订单额</div>
+              <div class="text-sm text-muted-foreground mb-2">平均订单额</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
-                <i class="pi pi-arrow-up"></i>
+                <ArrowUp class="w-4 h-4" />
                 <span>+12.1%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-border flex items-center justify-center text-white">
-              <i class="pi pi-calculator text-xl"></i>
+            <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white">
+              <Calculator class="w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
       
-      <Card class="border border-surface-border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:border-primary">
-        <template #content>
-          <div class="flex items-center justify-between p-4">
+      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
             <div class="flex-1">
               <div class="text-2xl font-semibold text-orange-600 mb-1">{{ salesStats.activeCustomers }}</div>
-              <div class="text-sm text-muted-color mb-2">活跃客户</div>
+              <div class="text-sm text-muted-foreground mb-2">活跃客户</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
-                <i class="pi pi-arrow-up"></i>
+                <ArrowUp class="w-4 h-4" />
                 <span>+6.7%</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-border flex items-center justify-center text-white">
-              <i class="pi pi-users text-xl"></i>
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center text-white">
+              <Users class="w-6 h-6" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
 
-    <!-- 销售明细 -->
-    <Card class="mb-6">
-      <template #header>
+    <!-- 详细销售表格 -->
+    <Card class="border">
+      <CardHeader>
         <div class="flex justify-between items-center">
-          <h3 class="text-lg font-semibold text-color">销售明细</h3>
-          <span class="text-sm text-muted-color">共 {{ filteredSalesDetails.length }} 条记录</span>
+          <CardTitle class="text-lg font-semibold">销售明细</CardTitle>
+          <Button 
+            variant="outline" 
+            size="sm"
+            @click="exportData"
+          >
+            <Download class="w-4 h-4 mr-2" />
+            导出
+          </Button>
         </div>
-      </template>
-      <template #content>
-        <DataTable
-          :value="filteredSalesDetails"
-          :loading="loading"
-          :paginator="true"
-          :rows="10"
-          :total-records="filteredSalesDetails.length"
-          :rows-per-page-options="[10, 20, 50]"
-          striped-rows
-          show-gridlines
-          responsive-layout="scroll"
-        >
-          <template #loading>
-            <div class="p-6">
-              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
-                <Skeleton shape="circle" size="3rem" />
-                <div class="flex-1">
-                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                  <Skeleton width="70%" height="1rem" />
+      </CardHeader>
+      <CardContent>
+        <div v-if="loading" class="flex justify-center items-center py-8">
+          <div class="space-y-3 w-full">
+            <Skeleton class="h-4 w-full" />
+            <Skeleton class="h-4 w-full" />
+            <Skeleton class="h-4 w-full" />
+          </div>
+        </div>
+        
+        <div v-else-if="filteredSalesData.length === 0" class="text-center py-8">
+          <div class="text-muted-foreground mb-2">暂无销售数据</div>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            @click="refreshData"
+          >
+            <RefreshCw class="w-4 h-4 mr-2" />
+            刷新数据
+          </Button>
+        </div>
+        
+        <Table v-else>
+          <TableHeader>
+            <TableRow>
+              <TableHead>客户名称</TableHead>
+              <TableHead>产品名称</TableHead>
+              <TableHead>数量</TableHead>
+              <TableHead>单价</TableHead>
+              <TableHead>总金额</TableHead>
+              <TableHead>订单日期</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+
+            <TableRow v-for="item in filteredSalesData" :key="item.id">
+              <TableCell>
+                <div class="flex items-center gap-3">
+                  <Avatar>
+                    <AvatarFallback>{{ item.customer_name.charAt(0) }}</AvatarFallback>
+                  </Avatar>
+                  <span class="font-medium">{{ item.customer_name }}</span>
                 </div>
-                <Skeleton width="8rem" height="1.5rem" />
-                <Skeleton width="6rem" height="1.5rem" />
-              </div>
-            </div>
-          </template>
-          <template #empty>
-            <div class="text-center py-12 text-muted-color">
-              <i class="pi pi-chart-bar text-6xl mb-4 opacity-50"></i>
-              <h3 class="text-lg mb-2">暂无销售数据</h3>
-              <p class="mb-4">当前筛选条件下没有找到相关数据</p>
-        </div>
-          </template>
-
-          <Column field="order_no" header="订单号" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-mono bg-surface-100 px-2 py-1 rounded text-primary text-sm">
-                {{ slotProps.data.order_no }}
-                  </span>
-            </template>
-          </Column>
-
-          <Column field="customer_name" header="客户名称" :sortable="true">
-            <template #body="slotProps">
-              <div class="flex items-center gap-3">
-                <Avatar
-                  :label="slotProps.data.customer_name.charAt(0)"
-                  shape="circle"
-                  size="normal"
-                  class="bg-primary-100 text-primary"
-                />
-                <span class="font-medium text-color">{{ slotProps.data.customer_name }}</span>
-              </div>
-            </template>
-          </Column>
-
-          <Column field="product_name" header="产品名称" :sortable="true">
-            <template #body="slotProps">
-              <div>
-                <div class="font-medium text-color mb-1">{{ slotProps.data.product_name }}</div>
-                <div class="text-sm text-muted-color">数量: {{ slotProps.data.quantity }}</div>
-              </div>
-            </template>
-          </Column>
-
-          <Column field="unit_price" header="单价" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-medium text-color">¥{{ formatCurrency(slotProps.data.unit_price) }}</span>
-            </template>
-          </Column>
-
-          <Column field="total_amount" header="总金额" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-semibold text-green-600 text-lg">
-                ¥{{ formatCurrency(slotProps.data.total_amount) }}
-              </span>
-            </template>
-          </Column>
-
-          <Column field="order_date" header="订单日期" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDate(slotProps.data.order_date) }}
-              </span>
-            </template>
-          </Column>
-
-          <Column field="status" header="状态" :sortable="true">
-            <template #body="slotProps">
-              <Tag
-                :value="getStatusText(slotProps.data.status)"
-                :severity="getStatusSeverity(slotProps.data.status)"
-              />
-            </template>
-          </Column>
-        </DataTable>
-      </template>
-      </Card>
+              </TableCell>
+              <TableCell>
+                <div>
+                  <div class="font-medium mb-1">{{ item.product_name }}</div>
+                  <div class="text-sm text-muted-foreground">数量: {{ item.quantity }}</div>
+                </div>
+              </TableCell>
+              <TableCell>{{ item.quantity }}</TableCell>
+              <TableCell>¥{{ formatCurrency(item.unit_price) }}</TableCell>
+              <TableCell>
+                <span class="font-semibold text-green-600">
+                  ¥{{ formatCurrency(item.total_amount) }}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span class="text-sm text-muted-foreground">
+                  {{ formatDate(item.order_date) }}
+                </span>
+              </TableCell>
+              <TableCell>
+                <Badge :variant="getStatusVariant(item.status)">
+                  {{ getStatusText(item.status) }}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <Button variant="ghost" size="sm">
+                  <Eye class="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
 
     <!-- 趋势图表 -->
-      <Card>
-      <template #header>
-        <h3 class="text-lg font-semibold text-color">销售趋势</h3>
-      </template>
-      <template #content>
-        <div class="flex flex-col items-center justify-center h-80 text-center text-muted-color p-4">
-          <i class="pi pi-chart-bar text-6xl mb-4 opacity-50"></i>
+    <Card class="border">
+      <CardHeader>
+        <CardTitle class="text-lg font-semibold">销售趋势</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="flex flex-col items-center justify-center h-80 text-center text-muted-foreground p-4">
+          <BarChart3 class="w-16 h-16 mb-4 opacity-50" />
           <p class="text-lg mb-2">销售趋势图表</p>
           <p class="text-sm opacity-75">（图表组件待集成）</p>
-                </div>
-      </template>
-      </Card>
+        </div>
+      </CardContent>
+    </Card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import Calendar from 'primevue/calendar'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Skeleton from 'primevue/skeleton'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Download, RefreshCw, Search, DollarSign, ShoppingCart, Calculator, Users, ArrowUp, BarChart3, Eye } from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
@@ -361,7 +345,7 @@ const salesDetails = ref([
 ])
 
 // 计算属性
-const filteredSalesDetails = computed(() => {
+const filteredSalesData = computed(() => {
   let result = salesDetails.value
 
   if (searchQuery.value) {
@@ -409,18 +393,18 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
-const getStatusSeverity = (status: string) => {
-  const severityMap: Record<string, string> = {
-    pending: 'warn',
-    processing: 'info',
-    completed: 'success',
-    cancelled: 'danger'
+const getStatusVariant = (status: string) => {
+  const variantMap: Record<string, string> = {
+    pending: 'secondary',
+    processing: 'default',
+    completed: 'default',
+    cancelled: 'destructive'
   }
-  return severityMap[status] || 'secondary'
+  return variantMap[status] || 'secondary'
 }
 
-const exportReport = () => {
-  console.log('导出报表')
+const exportData = () => {
+  console.log('导出数据')
   // 这里可以实现导出功能
 }
 

@@ -3,320 +3,306 @@
     <!-- 页面标题 -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-color">岗位管理</h1>
-        <p class="text-muted-color">管理系统岗位和职位设置</p>
+        <h1 class="text-2xl font-bold text-gray-900">岗位管理</h1>
+        <p class="text-gray-600">管理系统岗位和职位设置</p>
       </div>
-      <Button
-        label="新增岗位"
-        icon="pi pi-plus"
-        @click="showCreateDialog = true"
-      />
+      <Button @click="showCreateDialog = true">
+        <Plus class="w-4 h-4 mr-2" />
+        新增岗位
+      </Button>
     </div>
 
     <!-- 搜索筛选 -->
     <Card>
-      <template #content>
+      <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
-            <label class="block text-sm font-medium mb-1 text-color">搜索</label>
-            <InputText
-              v-model="searchQuery"
-              placeholder="岗位名称、编码..."
-              class="w-full"
-            />
+            <Label for="search-input">搜索</Label>
+            <div class="relative">
+              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                id="search-input"
+                v-model="searchQuery"
+                placeholder="岗位名称、编码..."
+                class="pl-10"
+              />
+            </div>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-color">部门</label>
-            <Dropdown
-              v-model="departmentFilter"
-              :options="departments"
-              option-label="name"
-              option-value="id"
-              placeholder="全部部门"
-              show-clear
-              class="w-full"
-            />
+            <Label for="department-filter">部门</Label>
+            <Select v-model="departmentFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部部门" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部部门</SelectItem>
+                <SelectItem v-for="dept in departments" :key="dept.id" :value="dept.id">
+                  {{ dept.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-color">状态</label>
-            <Dropdown
-              v-model="statusFilter"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部状态"
-              show-clear
-              class="w-full"
-            />
+            <Label for="status-filter">状态</Label>
+            <Select v-model="statusFilter">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div class="flex gap-2">
-            <Button
-              label="重置"
-              icon="pi pi-refresh"
-              outlined
-              class="flex-1"
-              @click="resetFilters"
-            />
+            <Button variant="outline" class="flex-1" @click="resetFilters">
+              <RefreshCw class="w-4 h-4 mr-2" />
+              重置
+            </Button>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 岗位列表 -->
     <Card>
-      <template #header>
+      <CardHeader>
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-semibold text-color">岗位列表</h2>
-          <div class="text-sm text-muted-color">
+          <CardTitle class="flex items-center space-x-2">
+            <Briefcase class="w-5 h-5" />
+            <span>岗位列表</span>
+          </CardTitle>
+          <div class="text-sm text-gray-600">
             共 {{ filteredPositions.length }} 个岗位
           </div>
         </div>
-      </template>
+      </CardHeader>
 
-      <template #content>
-        <DataTable
-          :value="filteredPositions"
-          :loading="loading"
-          :paginator="true"
-          :rows="20"
-          :rows-per-page-options="[10, 20, 50]"
-          data-key="id"
-          class="p-datatable-sm"
-        >
-          <Column field="code" header="岗位编码" sortable>
-            <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
-                {{ slotProps.data.code }}
-              </code>
-            </template>
-          </Column>
-          
-          <Column field="name" header="岗位名称" sortable>
-            <template #body="slotProps">
-              <span class="font-medium">{{ slotProps.data.name }}</span>
-            </template>
-          </Column>
-          
-          <Column field="department_name" header="所属部门" sortable>
-            <template #body="slotProps">
-              <div class="flex items-center space-x-2">
-                <i class="pi pi-building text-primary"></i>
-                <span>{{ slotProps.data.department_name }}</span>
-              </div>
-            </template>
-          </Column>
-          
-          <Column field="level" header="职级" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="getLevelDisplayName(slotProps.data.level)"
-                :severity="getLevelSeverity(slotProps.data.level)"
-              />
-            </template>
-          </Column>
-          
-          <Column field="employee_count" header="人数" sortable>
-            <template #body="slotProps">
-              <div class="flex items-center space-x-2">
-                <i class="pi pi-users text-muted-color"></i>
-                <span>{{ slotProps.data.employee_count || 0 }}</span>
-              </div>
-            </template>
-          </Column>
-          
-          <Column field="status" header="状态" sortable>
-            <template #body="slotProps">
-              <Tag
-                :value="slotProps.data.status === 'active' ? '启用' : '停用'"
-                :severity="slotProps.data.status === 'active' ? 'success' : 'warn'"
-              />
-            </template>
-          </Column>
-          
-          <Column header="操作" :exportable="false">
-            <template #body="slotProps">
-              <div class="flex items-center space-x-1">
-                <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
-                  text
-                  size="small"
-                  @click="viewPosition(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
-                  text
-                  size="small"
-                  @click="editPosition(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  rounded
-                  text
-                  size="small"
-                  severity="danger"
-                  @click="confirmDeletePosition(slotProps.data)"
-                />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+      <CardContent>
+        <div v-if="loading" class="flex justify-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+        
+        <div v-else-if="filteredPositions.length === 0" class="text-center py-8 text-gray-500">
+          暂无岗位数据
+        </div>
+        
+        <div v-else>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>岗位编码</TableHead>
+                <TableHead>岗位名称</TableHead>
+                <TableHead>岗位级别</TableHead>
+                <TableHead>薪资范围</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>创建时间</TableHead>
+                <TableHead>操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="position in filteredPositions" :key="position.id">
+                <TableCell>
+                  <span class="font-mono text-sm">{{ position.code }}</span>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <div class="font-medium">{{ position.name }}</div>
+                    <div class="text-sm text-gray-500">{{ position.department?.name }}</div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="getLevelSeverity(position.level)">
+                    {{ getLevelDisplayName(position.level) }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div class="text-sm">
+                    {{ position.minSalary?.toLocaleString() }} - 
+                    {{ position.maxSalary?.toLocaleString() }}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge :variant="position.status === 'active' ? 'default' : 'destructive'">
+                    {{ position.status === 'active' ? '启用' : '禁用' }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div class="text-sm text-gray-500">
+                    {{ formatDate(position.createdAt) }}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div class="flex gap-2">
+                    <Button variant="ghost" size="sm" @click="viewPosition(position)">
+                      <Eye class="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="editPosition(position)">
+                      <Edit class="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" @click="confirmDeletePosition(position)">
+                      <Trash2 class="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
     </Card>
 
     <!-- 岗位对话框 -->
-    <Dialog
-      v-model:visible="showCreateDialog"
-      :header="editingPosition ? '编辑岗位' : '新增岗位'"
-      :style="{ width: '600px' }"
-      modal
-      class="p-fluid"
-    >
-      <template #default>
-        <div class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">岗位编码 *</label>
-              <InputText
+    <Dialog v-model:open="showCreateDialog">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{{ editingPosition ? '编辑岗位' : '新增岗位' }}</DialogTitle>
+        </DialogHeader>
+        
+        <div class="space-y-6">
+          <!-- 基本信息 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label for="position-code">岗位编码 *</Label>
+              <Input
+                id="position-code"
                 v-model="positionForm.code"
                 placeholder="请输入岗位编码"
-                required
+                :class="{ 'border-red-500': !positionForm.code }"
               />
             </div>
             
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">岗位名称 *</label>
-              <InputText
+            <div>
+              <Label for="position-name">岗位名称 *</Label>
+              <Input
+                id="position-name"
                 v-model="positionForm.name"
                 placeholder="请输入岗位名称"
-                required
+                :class="{ 'border-red-500': !positionForm.name }"
               />
             </div>
           </div>
           
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">所属部门 *</label>
-              <Dropdown
-                v-model="positionForm.department_id"
-                :options="departments"
-                option-label="name"
-                option-value="id"
-                placeholder="选择部门"
-                required
-              />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label for="department-select">所属部门 *</Label>
+              <Select v-model="positionForm.department_id">
+                <SelectTrigger>
+                  <SelectValue placeholder="请选择部门" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="dept in departments" :key="dept.id" :value="dept.id">
+                    {{ dept.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">职级</label>
-              <Dropdown
-                v-model="positionForm.level"
-                :options="levelOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="选择职级"
-              />
+            <div>
+              <Label for="level-select">职级 *</Label>
+              <Select v-model="positionForm.level">
+                <SelectTrigger>
+                  <SelectValue placeholder="请选择职级" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="option in levelOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">最低薪资</label>
-              <InputNumber
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label for="min-salary">最低薪资</Label>
+              <Input
+                id="min-salary"
                 v-model="positionForm.min_salary"
-                placeholder="最低薪资"
-                :min="0"
-                mode="currency"
-                currency="CNY"
-                locale="zh-CN"
+                type="number"
+                placeholder="请输入最低薪资"
+                min="0"
+                step="1000"
               />
             </div>
             
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-color">最高薪资</label>
-              <InputNumber
+            <div>
+              <Label for="max-salary">最高薪资</Label>
+              <Input
+                id="max-salary"
                 v-model="positionForm.max_salary"
-                placeholder="最高薪资"
-                :min="0"
-                mode="currency"
-                currency="CNY"
-                locale="zh-CN"
+                type="number"
+                placeholder="请输入最高薪资"
+                min="0"
+                step="1000"
               />
             </div>
           </div>
           
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">岗位描述</label>
+          <div>
+            <Label for="description">岗位描述</Label>
             <Textarea
+              id="description"
               v-model="positionForm.description"
               placeholder="请输入岗位描述"
               :rows="3"
             />
           </div>
           
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">岗位要求</label>
+          <div>
+            <Label for="requirements">任职要求</Label>
             <Textarea
+              id="requirements"
               v-model="positionForm.requirements"
-              placeholder="请输入岗位要求"
+              placeholder="请输入任职要求"
               :rows="3"
             />
           </div>
           
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-color">状态</label>
-            <Dropdown
-              v-model="positionForm.status"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择状态"
-            />
+          <div>
+            <Label for="status-select">状态</Label>
+            <Select v-model="positionForm.status">
+              <SelectTrigger>
+                <SelectValue placeholder="选择状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      </template>
-      
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            icon="pi pi-times"
-            outlined
-            @click="closeDialog"
-          />
-          <Button
-            label="保存"
-            icon="pi pi-check"
-            :loading="saving"
-            @click="savePosition"
-          />
-        </div>
-      </template>
+        
+        <DialogFooter>
+          <Button variant="outline" @click="closeDialog">
+            取消
+          </Button>
+          <Button @click="savePosition" :disabled="saving">
+            保存
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
     
-    <!-- 确认对话框 -->
-    <ConfirmDialog />
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Dialog from 'primevue/dialog'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Plus, Search, RefreshCw, Briefcase, Eye, Edit, Trash2 } from 'lucide-vue-next'
+import { toast } from 'sonner'
 
 // 页面配置
 definePageMeta({
@@ -332,7 +318,7 @@ const loading = ref(false)
 const saving = ref(false)
 const showCreateDialog = ref(false)
 const editingPosition = ref(null as any)
-const confirm = useConfirm()
+
 
 // 搜索和筛选
 const searchQuery = ref('')
@@ -487,7 +473,16 @@ const levelSeverityMap: Record<string, string> = {
 // 方法
 const getLevelDisplayName = (level: string) => levelMap[level] || level
 
-const getLevelSeverity = (level: string) => levelSeverityMap[level] || 'info'
+const getLevelSeverity = (level: string) => {
+  const severityMap: Record<string, string> = {
+    'junior': 'secondary',
+    'intermediate': 'default',
+    'senior': 'outline',
+    'expert': 'destructive',
+    'manager': 'default'
+  }
+  return severityMap[level] || 'secondary'
+}
 
 const resetFilters = () => {
   searchQuery.value = ''
@@ -529,66 +524,52 @@ const closeDialog = () => {
   })
 }
 
-const savePosition = async () => {
-  saving.value = true
-  try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    if (editingPosition.value) {
-      // 更新岗位
-      const index = mockPositions.value.findIndex(p => p.id === editingPosition.value.id)
-      if (index !== -1) {
-        const department = departments.value.find(d => d.id === positionForm.value.department_id)
-        mockPositions.value[index] = {
-          ...mockPositions.value[index],
-          ...positionForm.value,
-          id: mockPositions.value[index]?.id || '',
-          employee_count: mockPositions.value[index]?.employee_count || 0,
-          created_at: mockPositions.value[index]?.created_at || new Date(),
-          department_name: department?.name || ''
-        }
-      }
-    }
-    else {
-      // 新增岗位
+const savePosition = () => {
+  if (editingPosition.value) {
+    // 更新现有岗位
+    const index = mockPositions.value.findIndex(p => p.id === editingPosition.value.id)
+    if (index !== -1) {
       const department = departments.value.find(d => d.id === positionForm.value.department_id)
-      const newPosition = {
-        id: Date.now().toString(),
+      mockPositions.value[index] = {
+        ...mockPositions.value[index],
         ...positionForm.value,
-        department_name: department?.name || '',
-        employee_count: 0,
-        created_at: new Date()
+        id: mockPositions.value[index]?.id || '',
+        employee_count: mockPositions.value[index]?.employee_count || 0,
+        created_at: mockPositions.value[index]?.created_at || new Date(),
+        department_name: department?.name || ''
       }
-      mockPositions.value.push(newPosition)
     }
-    
-    closeDialog()
+    toast.success('岗位更新成功')
+  } else {
+    // 添加新岗位
+    const department = departments.value.find(d => d.id === positionForm.value.department_id)
+    const newPosition = {
+      id: Date.now().toString(),
+      ...positionForm.value,
+      department_name: department?.name || '',
+      employee_count: 0,
+      created_at: new Date()
+    }
+    mockPositions.value.push(newPosition)
+    toast.success('岗位创建成功')
   }
-  catch (error) {
-    console.error('保存岗位失败:', error)
-  }
-  finally {
-    saving.value = false
-  }
+  
+  closeDialog()
 }
 
 const confirmDeletePosition = (position: any) => {
-  confirm.require({
-    message: `确定要删除岗位 ${position.name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deletePosition(position.id)
-    }
-  })
+  if (confirm(`确定要删除岗位 "${position.name}" 吗？`)) {
+    deletePosition(position.id)
+  }
 }
 
 const deletePosition = (positionId: string) => {
   mockPositions.value = mockPositions.value.filter(position => position.id !== positionId)
+  toast.success('岗位删除成功')
 }
 
 // 初始化
 onMounted(() => {
   // 加载数据
 })
-</script> 
+</script>

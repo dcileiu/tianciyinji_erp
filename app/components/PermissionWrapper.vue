@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { Lock } from 'lucide-vue-next'
-import Button from 'primevue/button'
+import { Button } from '@/components/ui/button'
 
 interface Props {
   /** 是否有权限 - 由父组件传入 */
@@ -45,4 +45,4 @@ const props = withDefaults(defineProps<Props>(), {
   showFallback: true,
   showBackButton: true
 })
-</script> 
+</script>

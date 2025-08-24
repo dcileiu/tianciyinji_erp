@@ -1,424 +1,345 @@
 <template>
-  <div class="p-6 min-h-screen bg-surface-50">
-    <!-- 页面标题 -->
-    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 gap-4">
-      <div>
-        <h1 class="text-3xl font-semibold text-color mb-2">字典管理</h1>
-        <p class="text-muted-color">管理系统字典数据和配置项</p>
+  <div class="p-6">
+    <!-- 页面头部 -->
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex items-center space-x-3">
+        <BookOpen class="h-8 w-8 text-blue-600" />
+        <h1 class="text-2xl font-bold text-gray-900">数据字典管理</h1>
       </div>
       <Button
-        label="新增字典"
-        icon="pi pi-plus"
-        @click="showCreateDialog = true"
-      />
+        @click="showCreateDialog = true; editingDictionary = false; currentDictionary = { id: '', code: '', name: '', type: 'system', status: 'active', description: '', items: [] }"
+        class="bg-blue-600 hover:bg-blue-700"
+      >
+        <Plus class="h-4 w-4 mr-2" />
+        新建字典
+      </Button>
     </div>
 
-    <!-- 搜索和筛选区域 -->
+    <!-- 搜索和筛选 -->
     <Card class="mb-6">
-      <template #content>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-          <div class="flex flex-col gap-2 md:col-span-2">
-            <label class="text-sm font-medium text-color">搜索</label>
-            <span class="p-input-icon-left w-full">
-              <i class="pi pi-search"></i>
-              <InputText
-                v-model="searchQuery"
-                placeholder="搜索字典名称、编码..."
-                class="w-full"
-              />
-            </span>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">字典类型</label>
-            <Dropdown
-              v-model="typeFilter"
-              :options="typeOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部类型"
-              class="w-full"
-              show-clear
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="relative">
+            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              v-model="searchQuery"
+              placeholder="搜索字典名称、编码..."
+              class="pl-10"
             />
           </div>
-
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">状态</label>
-            <Dropdown
-              v-model="statusFilter"
-              :options="statusFilterOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="全部状态"
-              class="w-full"
-              show-clear
-            />
-          </div>
-        </div>
-
-        <div class="flex justify-end mt-4">
+          <Select v-model="typeFilter">
+            <SelectTrigger>
+              <SelectValue placeholder="选择类型" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">全部类型</SelectItem>
+              <SelectItem v-for="option in typeOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <Select v-model="statusFilter">
+            <SelectTrigger>
+              <SelectValue placeholder="选择状态" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="option in statusFilterOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
           <Button
-            label="重置筛选"
-            icon="pi pi-refresh"
-            outlined
             @click="resetFilters"
-          />
+            variant="outline"
+            class="w-full"
+          >
+            <RefreshCw class="h-4 w-4 mr-2" />
+            重置
+          </Button>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 字典列表 -->
     <Card>
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h3 class="text-lg font-semibold text-color">字典列表</h3>
-          <span class="text-sm text-muted-color">共 {{ filteredDictionaries.length }} 条记录</span>
-        </div>
-      </template>
-      <template #content>
-        <DataTable
-          :value="filteredDictionaries"
-          :loading="loading"
-          :paginator="true"
-          :rows="10"
-          :total-records="filteredDictionaries.length"
-          :rows-per-page-options="[10, 20, 50]"
-          striped-rows
-          show-gridlines
-          responsive-layout="scroll"
-        >
-          <template #loading>
-            <div class="p-6">
-              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
-                <Skeleton shape="circle" size="3rem" />
-                <div class="flex-1">
-                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                  <Skeleton width="70%" height="1rem" />
+      <CardHeader>
+        <CardTitle>字典列表</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>字典编码</TableHead>
+              <TableHead>类型</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>项目数量</TableHead>
+              <TableHead>更新时间</TableHead>
+              <TableHead>操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-if="filteredDictionaries.length === 0">
+              <TableCell colspan="6" class="text-center py-8">
+                <div class="flex flex-col items-center">
+                  <BookOpen class="h-12 w-12 text-gray-400 mb-4" />
+                  <p class="text-gray-500">暂无字典数据</p>
                 </div>
-                <Skeleton width="6rem" height="1.5rem" />
-                <Skeleton width="4rem" height="1.5rem" />
-              </div>
-            </div>
-          </template>
-          <template #empty>
-            <div class="text-center py-12 text-muted-color">
-              <i class="pi pi-database text-6xl mb-4 opacity-50"></i>
-              <h3 class="text-lg mb-2">暂无字典数据</h3>
-              <p class="mb-4">开始创建您的第一个字典</p>
-              <Button
-                label="新增字典"
-                icon="pi pi-plus"
-                @click="showCreateDialog = true"
-              />
-            </div>
-          </template>
-
-          <Column field="code" header="字典编码" :sortable="true">
-            <template #body="slotProps">
-              <span class="font-mono bg-surface-100 px-2 py-1 rounded text-primary text-sm">
-                {{ slotProps.data.code }}
-              </span>
-            </template>
-          </Column>
-
-          <Column field="name" header="字典名称" :sortable="true">
-            <template #body="slotProps">
-              <div class="flex items-center gap-3">
-                <Avatar
-                  :label="slotProps.data.name.charAt(0)"
-                  shape="circle"
-                  size="normal"
-                  class="bg-primary-100 text-primary"
-                />
-                <div>
-                  <div class="font-medium text-color">{{ slotProps.data.name }}</div>
-                  <div class="text-sm text-muted-color">{{ slotProps.data.description || '暂无描述' }}</div>
+              </TableCell>
+            </TableRow>
+            <TableRow v-for="dictionary in filteredDictionaries" :key="dictionary.id">
+              <TableCell>
+                <div class="flex items-center space-x-3">
+                  <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span class="text-blue-600 font-medium">{{ dictionary.code.charAt(0) }}</span>
+                  </div>
+                  <div>
+                    <div class="font-medium text-gray-900">{{ dictionary.code }}</div>
+                    <div class="text-sm text-gray-500">{{ dictionary.name }}</div>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </Column>
-
-          <Column field="type" header="类型" :sortable="true">
-            <template #body="slotProps">
-              <Tag
-                :value="getTypeText(slotProps.data.type)"
-                :severity="getTypeSeverity(slotProps.data.type)"
-              />
-            </template>
-          </Column>
-
-          <Column field="itemCount" header="项目数量" :sortable="true">
-            <template #body="slotProps">
-              <span class="inline-flex items-center gap-1 text-sm">
-                <i class="pi pi-list text-muted-color"></i>
-                {{ slotProps.data.items?.length || 0 }} 个
-              </span>
-            </template>
-          </Column>
-
-          <Column field="status" header="状态" :sortable="true">
-            <template #body="slotProps">
-              <Tag
-                :value="slotProps.data.status === 'active' ? '启用' : '禁用'"
-                :severity="slotProps.data.status === 'active' ? 'success' : 'danger'"
-              />
-            </template>
-          </Column>
-
-          <Column field="updatedAt" header="更新时间" :sortable="true">
-            <template #body="slotProps">
-              <span class="text-sm text-muted-color">
-                {{ formatDateTime(slotProps.data.updatedAt) }}
-              </span>
-            </template>
-          </Column>
-
-          <Column header="操作" class="w-40">
-            <template #body="slotProps">
-              <div class="flex gap-2">
-                <Button
-                  v-tooltip="'查看项目'"
-                  icon="pi pi-list"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="viewDictionaryItems(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  outlined
-                  rounded
-                  size="small"
-                  @click="editDictionary(slotProps.data)"
-                />
-                <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  outlined
-                  rounded
-                  size="small"
-                  severity="danger"
-                  @click="confirmDeleteDictionary(slotProps.data)"
-                />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </template>
+              </TableCell>
+              <TableCell>
+                <Badge :variant="getTypeSeverity(dictionary.type)">
+                  {{ getTypeText(dictionary.type) }}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <Badge :variant="dictionary.status === 'active' ? 'default' : 'destructive'">
+                  {{ dictionary.status === 'active' ? '启用' : '禁用' }}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <span class="text-sm text-gray-500">{{ dictionary.items?.length || 0 }} 项</span>
+              </TableCell>
+              <TableCell>
+                <span class="text-sm text-gray-500">{{ formatDateTime(dictionary.updatedAt) }}</span>
+              </TableCell>
+              <TableCell>
+                <div class="flex items-center space-x-2">
+                  <Button
+                    @click="viewDictionaryItems(dictionary)"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <List class="h-4 w-4" />
+                  </Button>
+                  <Button
+                    @click="editDictionary(dictionary)"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <Edit class="h-4 w-4" />
+                  </Button>
+                  <Button
+                    @click="confirmDeleteDictionary(dictionary)"
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <Trash2 class="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
     </Card>
 
     <!-- 创建/编辑字典对话框 -->
-    <Dialog
-      v-model:visible="showCreateDialog"
-      :header="editingDictionary ? '编辑字典' : '新增字典'"
-      modal
-      :style="{ width: '600px' }"
-      class="p-fluid"
-    >
-      <div class="space-y-6">
+    <Dialog v-model:open="showCreateDialog">
+      <DialogContent class="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{{ editingDictionary ? '编辑字典' : '新建字典' }}</DialogTitle>
+        </DialogHeader>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">字典编码 *</label>
-            <InputText
+          <div class="space-y-2">
+            <Label>字典编码 *</Label>
+            <Input
               v-model="currentDictionary.code"
-              placeholder="输入字典编码"
+              placeholder="请输入字典编码"
               :disabled="editingDictionary"
             />
           </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">字典名称 *</label>
-            <InputText
+
+          <div class="space-y-2">
+            <Label>字典名称 *</Label>
+            <Input
               v-model="currentDictionary.name"
-              placeholder="输入字典名称"
+              placeholder="请输入字典名称"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <Label>字典类型</Label>
+            <Select v-model="currentDictionary.type">
+              <SelectTrigger>
+                <SelectValue placeholder="选择字典类型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="option in typeOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="space-y-2">
+            <Label>状态</Label>
+            <Select v-model="currentDictionary.status">
+              <SelectTrigger>
+                <SelectValue placeholder="选择状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="space-y-2 md:col-span-2">
+            <Label>描述</Label>
+            <Textarea
+              v-model="currentDictionary.description"
+              placeholder="请输入字典描述"
+              rows="3"
             />
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">字典类型 *</label>
-            <Dropdown
-              v-model="currentDictionary.type"
-              :options="typeOptions"
-              option-label="label"
-              option-value="value"
-              placeholder="选择字典类型"
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-color">状态</label>
-            <Dropdown
-              v-model="currentDictionary.status"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-            />
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="text-sm font-medium text-color">描述</label>
-          <Textarea
-            v-model="currentDictionary.description"
-            placeholder="输入字典描述"
-            :rows="3"
-          />
-        </div>
-      </div>
-
-      <template #footer>
-        <div class="flex justify-end gap-2">
+        <DialogFooter>
           <Button
-            label="取消"
-            outlined
+            variant="outline"
             @click="showCreateDialog = false"
-          />
+          >
+            取消
+          </Button>
           <Button
-            :label="editingDictionary ? '更新' : '创建'"
-            :loading="saving"
+            :disabled="saving"
             @click="saveDictionary"
-          />
-        </div>
-      </template>
+          >
+            {{ editingDictionary ? '更新' : '创建' }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
     <!-- 字典项目管理对话框 -->
-    <Dialog
-      v-model:visible="showItemsDialog"
-      :header="`管理字典项目: ${selectedDictionary?.name}`"
-      modal
-      :style="{ width: '900px' }"
-      maximizable
-    >
-      <div class="space-y-4">
-        <div class="flex justify-between items-center">
-          <h4 class="text-lg font-semibold text-color">字典项目列表</h4>
-          <Button
-            label="新增项目"
-            icon="pi pi-plus"
-            size="small"
-            @click="addNewItem"
-          />
-        </div>
+    <Dialog v-model:open="showItemsDialog">
+      <DialogContent class="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>管理字典项目 - {{ selectedDictionary?.name }}</DialogTitle>
+        </DialogHeader>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <h4 class="text-lg font-medium text-gray-900">字典项目列表</h4>
+            <Button
+              @click="addNewItem"
+              size="sm"
+            >
+              <Plus class="h-4 w-4 mr-2" />
+              添加项目
+            </Button>
+          </div>
 
-        <DataTable
-          :value="currentItems"
-          striped-rows
-          responsive-layout="scroll"
-        >
-          <template #loading>
-            <div class="p-6">
-              <div v-for="i in 3" :key="i" class="flex align-items-center gap-4 mb-4">
-                <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                <Skeleton width="60%" height="1rem" />
-                <Skeleton width="80%" height="1rem" />
-                <Skeleton width="4rem" height="1.5rem" />
+          <div class="space-y-3">
+            <div
+              v-for="(item, index) in currentItems"
+              :key="index"
+              class="grid grid-cols-1 md:grid-cols-5 gap-3 p-4 border border-gray-200 rounded-lg"
+            >
+              <div class="space-y-2">
+                <Label>值</Label>
+                <Input
+                  v-model="item.value"
+                  placeholder="项目值"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <Label>标签</Label>
+                <Input
+                  v-model="item.label"
+                  placeholder="显示标签"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <Label>排序</Label>
+                <Input
+                  v-model="item.sort"
+                  type="number"
+                  min="1"
+                  max="999"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <Label>状态</Label>
+                <Select v-model="item.status">
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择状态" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="option in itemStatusOptions" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div class="space-y-2">
+                <Label>操作</Label>
+                <Button
+                  @click="removeItem(index)"
+                  variant="destructive"
+                  size="sm"
+                  class="w-full"
+                >
+                  <Trash2 class="h-4 w-4" />
+                </Button>
               </div>
             </div>
-          </template>
-          <template #empty>
-            <div class="text-center py-8 text-muted-color">
-              <i class="pi pi-inbox text-4xl mb-2 opacity-50"></i>
-              <p>暂无字典项目</p>
-            </div>
-          </template>
+          </div>
 
-          <Column header="项目值" class="w-32">
-            <template #body="slotProps">
-              <InputText
-                v-model="slotProps.data.value"
-                size="small"
-                placeholder="项目值"
-              />
-            </template>
-          </Column>
-
-          <Column header="项目标签" class="flex-1">
-            <template #body="slotProps">
-              <InputText
-                v-model="slotProps.data.label"
-                size="small"
-                placeholder="项目标签"
-              />
-            </template>
-          </Column>
-
-          <Column header="排序" class="w-24">
-            <template #body="slotProps">
-              <InputNumber
-                v-model="slotProps.data.sort"
-                size="small"
-                :min="0"
-                :max="999"
-              />
-            </template>
-          </Column>
-
-          <Column header="状态" class="w-32">
-            <template #body="slotProps">
-              <Dropdown
-                v-model="slotProps.data.status"
-                :options="itemStatusOptions"
-                option-label="label"
-                option-value="value"
-                size="small"
-              />
-            </template>
-          </Column>
-
-          <Column header="操作" class="w-20">
-            <template #body="slotProps">
-              <Button
-                v-tooltip="'删除'"
-                icon="pi pi-trash"
-                text
-                rounded
-                size="small"
-                severity="danger"
-                @click="removeItem(slotProps.index)"
-              />
-            </template>
-          </Column>
-        </DataTable>
-      </div>
-
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <Button
-            label="取消"
-            outlined
-            @click="showItemsDialog = false"
-          />
-          <Button
-            label="保存项目"
-            :loading="saving"
-            @click="saveDictionaryItems"
-          />
+          <div v-if="currentItems.length === 0" class="text-center py-8 text-gray-500">
+            <List class="h-12 w-12 mx-auto mb-4 text-gray-400" />
+            <p>暂无字典项目，点击上方按钮添加</p>
+          </div>
         </div>
-      </template>
+
+        <DialogFooter>
+          <Button
+            variant="outline"
+            @click="showItemsDialog = false"
+          >
+            取消
+          </Button>
+          <Button
+            :disabled="saving"
+            @click="saveDictionaryItems"
+          >
+            保存
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
-    <!-- 删除确认对话框 -->
-    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import Textarea from 'primevue/textarea'
-import InputNumber from 'primevue/inputnumber'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import Skeleton from 'primevue/skeleton'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { BookOpen, Search, RefreshCw, Plus, List, Edit, Trash2 } from 'lucide-vue-next'
+import { toast } from 'sonner'
 
 // 页面状态
 const loading = ref(false)
@@ -431,7 +352,7 @@ const statusFilter = ref('')
 const showCreateDialog = ref(false)
 const showItemsDialog = ref(false)
 const editingDictionary = ref(false)
-const confirm = useConfirm()
+
 
 // 当前编辑的字典
 const currentDictionary = ref({
@@ -594,14 +515,9 @@ const viewDictionaryItems = (dictionary: any) => {
 }
 
 const confirmDeleteDictionary = (dictionary: any) => {
-  confirm.require({
-    message: `确定要删除字典 "${dictionary.name}" 吗？此操作不可撤销。`,
-    header: '删除确认',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteDictionary(dictionary.id)
-    }
-  })
+  if (confirm(`确定要删除字典 "${dictionary.name}" 吗？此操作不可撤销。`)) {
+    deleteDictionary(dictionary.id)
+  }
 }
 
 const deleteDictionary = async (dictionaryId: string) => {
@@ -611,6 +527,7 @@ const deleteDictionary = async (dictionaryId: string) => {
     if (index !== -1) {
       dictionaries.value.splice(index, 1)
     }
+    toast.success('字典删除成功')
   }
   catch (error) {
     console.error('删除字典失败:', error)
@@ -649,6 +566,7 @@ const saveDictionary = async () => {
 
     showCreateDialog.value = false
     editingDictionary.value = false
+    toast.success('字典保存成功')
   }
   catch (error: any) {
     console.error('保存字典失败:', error)
@@ -682,6 +600,7 @@ const removeItem = (index: number) => {
         }
       }
       showItemsDialog.value = false
+      toast.success('字典项目保存成功')
     }
     catch (error: any) {
       console.error('保存字典项目失败:', error)

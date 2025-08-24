@@ -85,9 +85,6 @@
       "vue-demi": [
         "../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/compat/vue-demi"
       ],
-      "#primevue-style": [
-        "./primevue-style.mjs"
-      ],
       "#vue-router": [
         "../node_modules/.pnpm/vue-router@4.5.1_vue@3.5.19_typescript@5.9.2_/node_modules/vue-router"
       ],

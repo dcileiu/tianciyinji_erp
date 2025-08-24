@@ -210,23 +210,24 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, computed, onMounted } from 'vue'
 import { 
   Plus, Search, MoreHorizontal, Truck, 
   Eye, Edit, Trash2, Loader2 
 } from 'lucide-vue-next'
 
 // 导入组件
-import Button from 'primevue/button'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Badge from 'primevue/badge'
-import Dialog from 'primevue/dialog'
-import Menu from 'primevue/menu'
-
-// 使用 composables
-const { suppliers, loading, getSuppliers } = useSuppliers()
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 
 // 响应式数据
+const suppliers = ref([])
+const loading = ref(false)
 const searchQuery = ref('')
 const selectedStatus = ref('')
 const selectedType = ref('')
@@ -327,14 +328,57 @@ const getTypeText = (type: string) => {
   return texts[type] || type
 }
 
+// Mock数据
+const mockSuppliers = [
+  {
+    id: 1,
+    supplier_no: 'SUP001',
+    name: '华为技术有限公司',
+    contact_person: '张经理',
+    contact_phone: '138-0000-0001',
+    email: 'zhang@huawei.com',
+    supplier_type: 'equipment',
+    status: 'active',
+    address: '深圳市龙岗区华为基地',
+    created_at: '2024-01-15'
+  },
+  {
+    id: 2,
+    supplier_no: 'SUP002',
+    name: '中石化集团',
+    contact_person: '李总监',
+    contact_phone: '138-0000-0002',
+    email: 'li@sinopec.com',
+    supplier_type: 'raw_material',
+    status: 'active',
+    address: '北京市朝阳区中石化大厦',
+    created_at: '2024-01-10'
+  },
+  {
+    id: 3,
+    supplier_no: 'SUP003',
+    name: '顺丰速运',
+    contact_person: '王主管',
+    contact_phone: '138-0000-0003',
+    email: 'wang@sf-express.com',
+    supplier_type: 'logistics',
+    status: 'inactive',
+    address: '广东省深圳市顺丰总部',
+    created_at: '2024-01-05'
+  }
+]
+
 // 页面加载时获取数据
 onMounted(async () => {
+  loading.value = true
   try {
-    const result = await getSuppliers()
-    suppliers.value = result || []
-  }
-  catch (error) {
+    // 模拟API调用
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    suppliers.value = mockSuppliers
+  } catch (error) {
     console.error('获取供应商数据失败:', error)
+  } finally {
+    loading.value = false
   }
 })
 
@@ -342,4 +386,4 @@ onMounted(async () => {
 definePageMeta({
   layout: 'default'
 })
-</script> 
+</script>

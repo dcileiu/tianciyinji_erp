@@ -1,4 +1,3 @@
-import Aura from "@primeuix/themes/aura";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -6,7 +5,6 @@ export default defineNuxtConfig({
   modules: [
     "@nuxtjs/supabase",
     "@nuxt/eslint",
-    "@primevue/nuxt-module",
     "shadcn-nuxt",
   ],
 
@@ -33,9 +31,7 @@ export default defineNuxtConfig({
     },
   },
 
-  build: {
-    transpile: ["primevue"],
-  },
+
 
   // 开发服务器配置
   devServer: {
@@ -54,20 +50,8 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            ui: ["primevue"],
-          },
-        },
-      },
-    },
     optimizeDeps: {
-      include: ["vue", "vue-router", "@vueuse/core", "primevue"],
-    },
-    ssr: {
-      noExternal: ["primevue", "@primeuix/themes"],
+      include: ["vue", "vue-router", "@vueuse/core"],
     },
   },
 
@@ -77,13 +61,7 @@ export default defineNuxtConfig({
     },
   },
 
-  primevue: {
-    options: {
-      theme: {
-        preset: Aura,
-      },
-    },
-  },
+
 
   shadcn: {
     prefix: "",

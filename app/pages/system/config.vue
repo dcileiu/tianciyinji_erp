@@ -3,478 +3,465 @@
     <!-- 页面标题 -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-color">系统配置</h1>
-        <p class="text-muted-color">管理系统参数和配置项</p>
+        <h1 class="text-2xl font-bold">系统配置</h1>
+        <p class="text-muted-foreground">管理系统参数和配置项</p>
       </div>
-      <Button
-        label="保存所有配置"
-        icon="pi pi-save"
-        severity="success"
-        :loading="saving"
-        @click="saveAllConfigs"
-      />
+      <Button :disabled="saving" @click="saveAllConfigs">
+        <Save class="w-4 h-4 mr-2" />
+        <span v-if="saving">保存中...</span>
+        <span v-else>保存所有配置</span>
+      </Button>
     </div>
 
     <!-- 配置选项卡 -->
-    <TabView>
+    <Tabs default-value="basic" class="w-full">
+      <TabsList class="grid w-full grid-cols-5">
+        <TabsTrigger value="basic">基础配置</TabsTrigger>
+        <TabsTrigger value="business">业务配置</TabsTrigger>
+        <TabsTrigger value="security">安全配置</TabsTrigger>
+        <TabsTrigger value="email">邮件配置</TabsTrigger>
+        <TabsTrigger value="backup">备份配置</TabsTrigger>
+      </TabsList>
+      
       <!-- 基础配置 -->
-      <TabPanel value="basic" header="基础配置">
+      <TabsContent value="basic">
         <Card>
-          <template #header>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-color">基础信息配置</h3>
-            </div>
-          </template>
+          <CardHeader>
+            <CardTitle class="flex items-center">
+              <Settings class="w-5 h-5 mr-2" />
+              基础信息配置
+            </CardTitle>
+          </CardHeader>
           
-          <template #content>
-            <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">公司名称</label>
-                  <InputText
-                    v-model="basicConfig.companyName"
-                    placeholder="请输入公司名称"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">系统名称</label>
-                  <InputText
-                    v-model="basicConfig.systemName"
-                    placeholder="请输入系统名称"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">系统版本</label>
-                  <InputText
-                    v-model="basicConfig.version"
-                    placeholder="如: v1.0.0"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">管理员邮箱</label>
-                  <InputText
-                    v-model="basicConfig.adminEmail"
-                    type="email"
-                    placeholder="admin@company.com"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-              
+          <CardContent class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">公司地址</label>
-                <InputText
-                  v-model="basicConfig.address"
-                  placeholder="请输入公司地址"
-                  class="w-full"
+                <Label>公司名称</Label>
+                <Input
+                  v-model="basicConfig.companyName"
+                  placeholder="请输入公司名称"
                 />
               </div>
-
-              <div class="flex justify-end">
-                <Button
-                  label="保存基础配置"
-                  icon="pi pi-save"
-                  :loading="saving"
-                  @click="saveBasicConfig"
+              <div class="space-y-2">
+                <Label>系统名称</Label>
+                <Input
+                  v-model="basicConfig.systemName"
+                  placeholder="请输入系统名称"
                 />
               </div>
             </div>
-          </template>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <Label>系统版本</Label>
+                <Input
+                  v-model="basicConfig.version"
+                  placeholder="如: v1.0.0"
+                />
+              </div>
+              <div class="space-y-2">
+                <Label>管理员邮箱</Label>
+                <Input
+                  v-model="basicConfig.adminEmail"
+                  type="email"
+                  placeholder="admin@company.com"
+                />
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <Label>公司地址</Label>
+              <Input
+                v-model="basicConfig.address"
+                placeholder="请输入公司地址"
+              />
+            </div>
+
+            <div class="flex justify-end">
+              <Button :disabled="saving" @click="saveBasicConfig">
+                <Save class="w-4 h-4 mr-2" />
+                <span v-if="saving">保存中...</span>
+                <span v-else>保存基础配置</span>
+              </Button>
+            </div>
+          </CardContent>
         </Card>
-      </TabPanel>
+      </TabsContent>
 
       <!-- 业务配置 -->
-      <TabPanel value="business" header="业务配置">
+      <TabsContent value="business">
         <Card>
-          <template #header>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-color">业务参数配置</h3>
-            </div>
-          </template>
+          <CardHeader>
+            <CardTitle class="flex items-center">
+              <Briefcase class="w-5 h-5 mr-2" />
+              业务参数配置
+            </CardTitle>
+          </CardHeader>
           
-          <template #content>
-            <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">默认货币</label>
-                  <Dropdown
-                    v-model="businessConfig.defaultCurrency"
-                    :options="currencyOptions"
-                    option-label="label"
-                    option-value="value"
-                    placeholder="选择默认货币"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">小数位数</label>
-                  <InputNumber
-                    v-model="businessConfig.decimalPlaces"
-                    :min="0"
-                    :max="6"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">税率 (%)</label>
-                  <InputNumber
-                    v-model="businessConfig.taxRate"
-                    mode="decimal"
-                    :min="0"
-                    :max="100"
-                    :max-fraction-digits="2"
-                    suffix="%"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">库存预警阈值</label>
-                  <InputNumber
-                    v-model="businessConfig.stockWarningThreshold"
-                    :min="0"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
-              </div>
-
+          <CardContent class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
-                <div class="flex items-center space-x-2">
-                  <Checkbox
-                    v-model="businessConfig.autoApproval"
-                    input-id="autoApproval"
-                    :binary="true"
-                  />
-                  <label for="autoApproval" class="text-sm font-medium text-color">启用自动审批</label>
-                </div>
+                <Label>默认货币</Label>
+                <Select v-model="businessConfig.defaultCurrency">
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择默认货币" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="option in currencyOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
-              <div class="flex justify-end">
-                <Button
-                  label="保存业务配置"
-                  icon="pi pi-save"
-                  :loading="saving"
-                  @click="saveBusinessConfig"
+              <div class="space-y-2">
+                <Label>小数位数</Label>
+                <Input
+                  v-model.number="businessConfig.decimalPlaces"
+                  type="number"
+                  min="0"
+                  max="6"
+                  placeholder="小数位数"
                 />
               </div>
             </div>
-          </template>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <Label>税率 (%)</Label>
+                <Input
+                  v-model.number="businessConfig.taxRate"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  placeholder="税率"
+                />
+              </div>
+              <div class="space-y-2">
+                <Label>库存预警阈值</Label>
+                <Input
+                  v-model.number="businessConfig.stockWarningThreshold"
+                  type="number"
+                  min="0"
+                  placeholder="库存预警阈值"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="autoApproval"
+                  v-model="businessConfig.autoApproval"
+                />
+                <Label for="autoApproval">启用自动审批</Label>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <Button :disabled="saving" @click="saveBusinessConfig">
+                <Save class="w-4 h-4 mr-2" />
+                <span v-if="saving">保存中...</span>
+                <span v-else>保存业务配置</span>
+              </Button>
+            </div>
+          </CardContent>
         </Card>
-      </TabPanel>
+      </TabsContent>
 
       <!-- 安全配置 -->
-      <TabPanel value="security" header="安全配置">
+      <TabsContent value="security">
         <Card>
-          <template #header>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-color">安全参数配置</h3>
-            </div>
-          </template>
+          <CardHeader>
+            <CardTitle class="flex items-center">
+              <Shield class="w-5 h-5 mr-2" />
+              安全参数配置
+            </CardTitle>
+          </CardHeader>
           
-          <template #content>
-            <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">密码最小长度</label>
-                  <InputNumber
-                    v-model="securityConfig.passwordMinLength"
-                    :min="6"
-                    :max="32"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">登录失败锁定次数</label>
-                  <InputNumber
-                    v-model="securityConfig.maxLoginAttempts"
-                    :min="3"
-                    :max="10"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
+          <CardContent class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <Label>密码最小长度</Label>
+                <Input
+                  v-model.number="securityConfig.passwordMinLength"
+                  type="number"
+                  min="6"
+                  max="32"
+                  placeholder="密码最小长度"
+                />
               </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">会话超时时间 (分钟)</label>
-                  <InputNumber
-                    v-model="securityConfig.sessionTimeout"
-                    :min="10"
-                    :max="1440"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">账户锁定时间 (分钟)</label>
-                  <InputNumber
-                    v-model="securityConfig.lockoutDuration"
-                    :min="5"
-                    :max="120"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
-              </div>
-
-              <div class="space-y-4">
-                <div class="flex items-center space-x-2">
-                  <Checkbox
-                    v-model="securityConfig.requirePasswordComplexity"
-                    input-id="passwordComplexity"
-                    :binary="true"
-                  />
-                  <label for="passwordComplexity" class="text-sm font-medium text-color">密码复杂度要求</label>
-                </div>
-                
-                <div class="flex items-center space-x-2">
-                  <Checkbox
-                    v-model="securityConfig.enableTwoFactor"
-                    input-id="twoFactor"
-                    :binary="true"
-                  />
-                  <label for="twoFactor" class="text-sm font-medium text-color">启用双因子认证</label>
-                </div>
-              </div>
-
-              <div class="flex justify-end">
-                <Button
-                  label="保存安全配置"
-                  icon="pi pi-save"
-                  :loading="saving"
-                  @click="saveSecurityConfig"
+              <div class="space-y-2">
+                <Label>登录失败锁定次数</Label>
+                <Input
+                  v-model.number="securityConfig.maxLoginAttempts"
+                  type="number"
+                  min="3"
+                  max="10"
+                  placeholder="登录失败锁定次数"
                 />
               </div>
             </div>
-          </template>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <Label>会话超时时间 (分钟)</Label>
+                <Input
+                  v-model.number="securityConfig.sessionTimeout"
+                  type="number"
+                  min="10"
+                  max="1440"
+                  placeholder="会话超时时间"
+                />
+              </div>
+              <div class="space-y-2">
+                <Label>账户锁定时间 (分钟)</Label>
+                <Input
+                  v-model.number="securityConfig.lockoutDuration"
+                  type="number"
+                  min="5"
+                  max="120"
+                  placeholder="账户锁定时间"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="passwordComplexity"
+                  v-model="securityConfig.requirePasswordComplexity"
+                />
+                <Label for="passwordComplexity">密码复杂度要求</Label>
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="twoFactor"
+                  v-model="securityConfig.enableTwoFactor"
+                />
+                <Label for="twoFactor">启用双因子认证</Label>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <Button :disabled="saving" @click="saveSecurityConfig">
+                <Save class="w-4 h-4 mr-2" />
+                <span v-if="saving">保存中...</span>
+                <span v-else>保存安全配置</span>
+              </Button>
+            </div>
+          </CardContent>
         </Card>
-      </TabPanel>
+      </TabsContent>
 
       <!-- 邮件配置 -->
-      <TabPanel value="email" header="邮件配置">
+      <TabsContent value="email">
         <Card>
-          <template #header>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-color">邮件服务配置</h3>
-            </div>
-          </template>
+          <CardHeader>
+            <CardTitle class="flex items-center">
+              <Mail class="w-5 h-5 mr-2" />
+              邮件服务配置
+            </CardTitle>
+          </CardHeader>
           
-          <template #content>
-            <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">SMTP服务器</label>
-                  <InputText
-                    v-model="emailConfig.smtpHost"
-                    placeholder="如: smtp.qq.com"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">SMTP端口</label>
-                  <InputNumber
-                    v-model="emailConfig.smtpPort"
-                    :min="1"
-                    :max="65535"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">发件人邮箱</label>
-                  <InputText
-                    v-model="emailConfig.fromEmail"
-                    type="email"
-                    placeholder="system@company.com"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">发件人名称</label>
-                  <InputText
-                    v-model="emailConfig.fromName"
-                    placeholder="ERP系统"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">SMTP用户名</label>
-                  <InputText
-                    v-model="emailConfig.smtpUsername"
-                    placeholder="SMTP登录用户名"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">SMTP密码</label>
-                  <Password
-                    v-model="emailConfig.smtpPassword"
-                    placeholder="SMTP登录密码"
-                    :feedback="false"
-                    toggle-mask
-                    class="w-full"
-                  />
-                </div>
-              </div>
-
-              <div class="space-y-4">
-                <div class="flex items-center space-x-2">
-                  <Checkbox
-                    v-model="emailConfig.enableSSL"
-                    input-id="enableSSL"
-                    :binary="true"
-                  />
-                  <label for="enableSSL" class="text-sm font-medium text-color">启用SSL加密</label>
-                </div>
-                
-                <div class="flex items-center space-x-2">
-                  <Checkbox
-                    v-model="emailConfig.enableTLS"
-                    input-id="enableTLS"
-                    :binary="true"
-                  />
-                  <label for="enableTLS" class="text-sm font-medium text-color">启用TLS加密</label>
-                </div>
-              </div>
-
-              <div class="flex justify-between">
-                <Button
-                  label="测试邮件连接"
-                  icon="pi pi-send"
-                  outlined
-                  :loading="testing"
-                  @click="testEmailConnection"
+          <CardContent class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <Label>SMTP服务器</Label>
+                <Input
+                  v-model="emailConfig.smtpHost"
+                  placeholder="如: smtp.qq.com"
                 />
-                
-                <Button
-                  label="保存邮件配置"
-                  icon="pi pi-save"
-                  :loading="saving"
-                  @click="saveEmailConfig"
+              </div>
+              <div class="space-y-2">
+                <Label>SMTP端口</Label>
+                <Input
+                  v-model.number="emailConfig.smtpPort"
+                  type="number"
+                  min="1"
+                  max="65535"
+                  placeholder="端口号"
                 />
               </div>
             </div>
-          </template>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <Label>发件人邮箱</Label>
+                <Input
+                  v-model="emailConfig.fromEmail"
+                  type="email"
+                  placeholder="system@company.com"
+                />
+              </div>
+              <div class="space-y-2">
+                <Label>发件人名称</Label>
+                <Input
+                  v-model="emailConfig.fromName"
+                  placeholder="ERP系统"
+                />
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <Label>SMTP用户名</Label>
+                <Input
+                  v-model="emailConfig.smtpUsername"
+                  placeholder="SMTP登录用户名"
+                />
+              </div>
+              <div class="space-y-2">
+                <Label>SMTP密码</Label>
+                <Input
+                  v-model="emailConfig.smtpPassword"
+                  type="password"
+                  placeholder="SMTP登录密码"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="enableSSL"
+                  v-model="emailConfig.enableSSL"
+                />
+                <Label for="enableSSL">启用SSL加密</Label>
+              </div>
+              
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="enableTLS"
+                  v-model="emailConfig.enableTLS"
+                />
+                <Label for="enableTLS">启用TLS加密</Label>
+              </div>
+            </div>
+
+            <div class="flex justify-between">
+              <Button variant="outline" :disabled="testing" @click="testEmailConnection">
+                <Send class="w-4 h-4 mr-2" />
+                <span v-if="testing">测试中...</span>
+                <span v-else>测试邮件连接</span>
+              </Button>
+              
+              <Button :disabled="saving" @click="saveEmailConfig">
+                <Save class="w-4 h-4 mr-2" />
+                <span v-if="saving">保存中...</span>
+                <span v-else>保存邮件配置</span>
+              </Button>
+            </div>
+          </CardContent>
         </Card>
-      </TabPanel>
+      </TabsContent>
 
       <!-- 备份配置 -->
-      <TabPanel value="backup" header="备份配置">
+      <TabsContent value="backup">
         <Card>
-          <template #header>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-color">数据备份配置</h3>
-            </div>
-          </template>
+          <CardHeader>
+            <CardTitle class="flex items-center">
+              <Database class="w-5 h-5 mr-2" />
+              数据备份配置
+            </CardTitle>
+          </CardHeader>
           
-          <template #content>
-            <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">备份频率</label>
-                  <Dropdown
-                    v-model="backupConfig.frequency"
-                    :options="backupFrequencyOptions"
-                    option-label="label"
-                    option-value="value"
-                    placeholder="选择备份频率"
-                    class="w-full"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-color">保留天数</label>
-                  <InputNumber
-                    v-model="backupConfig.retentionDays"
-                    :min="1"
-                    :max="365"
-                    show-buttons
-                    class="w-full"
-                  />
-                </div>
-              </div>
-              
+          <CardContent class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-color">备份路径</label>
-                <InputText
-                  v-model="backupConfig.backupPath"
-                  placeholder="/var/backups/erp"
-                  class="w-full"
-                />
+                <Label>备份频率</Label>
+                <Select v-model="backupConfig.frequency">
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择备份频率" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="option in backupFrequencyOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
-              <div class="space-y-4">
-                <div class="flex items-center space-x-2">
-                  <Checkbox
-                    v-model="backupConfig.enableAutoBackup"
-                    input-id="autoBackup"
-                    :binary="true"
-                  />
-                  <label for="autoBackup" class="text-sm font-medium text-color">启用自动备份</label>
-                </div>
-                
-                <div class="flex items-center space-x-2">
-                  <Checkbox
-                    v-model="backupConfig.compressBackup"
-                    input-id="compressBackup"
-                    :binary="true"
-                  />
-                  <label for="compressBackup" class="text-sm font-medium text-color">压缩备份文件</label>
-                </div>
-              </div>
-
-              <div class="flex justify-between">
-                <Button
-                  label="立即备份"
-                  icon="pi pi-download"
-                  outlined
-                  :loading="backing"
-                  @click="createBackup"
-                />
-                
-                <Button
-                  label="保存备份配置"
-                  icon="pi pi-save"
-                  :loading="saving"
-                  @click="saveBackupConfig"
+              <div class="space-y-2">
+                <Label>保留天数</Label>
+                <Input
+                  v-model.number="backupConfig.retentionDays"
+                  type="number"
+                  min="1"
+                  max="365"
+                  placeholder="保留天数"
                 />
               </div>
             </div>
-          </template>
+            
+            <div class="space-y-2">
+              <Label>备份路径</Label>
+              <Input
+                v-model="backupConfig.backupPath"
+                placeholder="/backup/erp"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="enableAutoBackup"
+                  v-model="backupConfig.enableAutoBackup"
+                />
+                <Label for="enableAutoBackup">启用自动备份</Label>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="compressBackup"
+                  v-model="backupConfig.compressBackup"
+                />
+                <Label for="compressBackup">压缩备份文件</Label>
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+              <Button variant="outline" :disabled="backing" @click="performBackup">
+                <Download class="w-4 h-4 mr-2" />
+                <span v-if="backing">备份中...</span>
+                <span v-else>立即备份</span>
+              </Button>
+              <Button :disabled="saving" @click="saveBackupConfig">
+                <Save class="w-4 h-4 mr-2" />
+                <span v-if="saving">保存中...</span>
+                <span v-else>保存备份配置</span>
+              </Button>
+            </div>
+          </CardContent>
         </Card>
-      </TabPanel>
-    </TabView>
+      </TabsContent>
+    </Tabs>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import Password from 'primevue/password'
-import Dropdown from 'primevue/dropdown'
-import Checkbox from 'primevue/checkbox'
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
+<script setup>
+import { ref, reactive, onMounted } from 'vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Settings, Save, Briefcase, Shield, Mail, Database, CheckCircle, Send, Download } from 'lucide-vue-next'
+import { toast } from 'sonner'
 
 // 页面配置
 definePageMeta({
@@ -578,13 +565,12 @@ const saveAllConfigs = async () => {
 const saveBasicConfig = async () => {
   saving.value = true
   try {
+    // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
-    console.log('保存基础配置:', basicConfig.value)
-  }
-  catch (error) {
-    console.error('保存基础配置失败:', error)
-  }
-  finally {
+    toast.success('基础配置保存成功')
+  } catch (error) {
+    toast.error('保存失败，请重试')
+  } finally {
     saving.value = false
   }
 }
@@ -593,12 +579,10 @@ const saveBusinessConfig = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    console.log('保存业务配置:', businessConfig.value)
-  }
-  catch (error) {
-    console.error('保存业务配置失败:', error)
-  }
-  finally {
+    toast.success('业务配置保存成功')
+  } catch (error) {
+    toast.error('保存失败，请重试')
+  } finally {
     saving.value = false
   }
 }
@@ -607,12 +591,10 @@ const saveSecurityConfig = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    console.log('保存安全配置:', securityConfig.value)
-  }
-  catch (error) {
-    console.error('保存安全配置失败:', error)
-  }
-  finally {
+    toast.success('安全配置保存成功')
+  } catch (error) {
+    toast.error('保存失败，请重试')
+  } finally {
     saving.value = false
   }
 }
@@ -621,12 +603,10 @@ const saveEmailConfig = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    console.log('保存邮件配置:', emailConfig.value)
-  }
-  catch (error) {
-    console.error('保存邮件配置失败:', error)
-  }
-  finally {
+    toast.success('邮件配置保存成功')
+  } catch (error) {
+    toast.error('保存失败，请重试')
+  } finally {
     saving.value = false
   }
 }
@@ -635,12 +615,10 @@ const saveBackupConfig = async () => {
   saving.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-    console.log('保存备份配置:', backupConfig.value)
-  }
-  catch (error) {
-    console.error('保存备份配置失败:', error)
-  }
-  finally {
+    toast.success('备份配置保存成功')
+  } catch (error) {
+    toast.error('保存失败，请重试')
+  } finally {
     saving.value = false
   }
 }
@@ -649,26 +627,22 @@ const testEmailConnection = async () => {
   testing.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 2000))
-    console.log('测试邮件连接')
-  }
-  catch (error) {
-    console.error('测试邮件连接失败:', error)
-  }
-  finally {
+    toast.success('邮件连接测试成功')
+  } catch (error) {
+    toast.error('邮件连接测试失败')
+  } finally {
     testing.value = false
   }
 }
 
-const createBackup = async () => {
+const performBackup = async () => {
   backing.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 3000))
-    console.log('创建备份')
-  }
-  catch (error) {
-    console.error('创建备份失败:', error)
-  }
-  finally {
+    toast.success('数据备份完成')
+  } catch (error) {
+    toast.error('数据备份失败')
+  } finally {
     backing.value = false
   }
 }
@@ -677,4 +651,4 @@ const createBackup = async () => {
 onMounted(() => {
   // 加载配置数据
 })
-</script> 
+</script>

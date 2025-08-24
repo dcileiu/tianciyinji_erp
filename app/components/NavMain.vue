@@ -33,7 +33,7 @@ defineProps<{
 
 <template>
   <SidebarGroup>
-    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroupLabel>业务模块</SidebarGroupLabel>
     <SidebarMenu>
       <Collapsible
         v-for="item in items"
@@ -54,9 +54,9 @@ defineProps<{
             <SidebarMenuSub>
               <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
                 <SidebarMenuSubButton as-child>
-                  <a :href="subItem.url">
+                  <NuxtLink :to="subItem.url">
                     <span>{{ subItem.title }}</span>
-                  </a>
+                  </NuxtLink>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             </SidebarMenuSub>
