@@ -104,28 +104,27 @@
                   {{ supplier.contact_phone }}
                 </p>
               </div>
-              <SelectMenu>
-                <SelectMenuTrigger>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
                   <Button variant="ghost" size="sm">
                     <MoreHorizontal class="h-4 w-4" />
                   </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem @click="viewSupplier(supplier)">
-                      <Eye class="mr-2 h-4 w-4" />
-                      查看详情
-                    </DropdownMenuItem>
-                    <DropdownMenuItem @click="editSupplier(supplier)">
-                      <Edit class="mr-2 h-4 w-4" />
-                      编辑
-                    </DropdownMenuItem>
-                    <DropdownMenuItem class="text-destructive" @click="deleteSupplier(supplier)">
-                      <Trash2 class="mr-2 h-4 w-4" />
-                      删除
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                  </DropdownMenu>
-                </selectmenutrigger></selectmenu></div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem @click="viewSupplier(supplier)">
+                    <Eye class="mr-2 h-4 w-4" />
+                    查看详情
+                  </DropdownMenuItem>
+                  <DropdownMenuItem @click="editSupplier(supplier)">
+                    <Edit class="mr-2 h-4 w-4" />
+                    编辑
+                  </DropdownMenuItem>
+                  <DropdownMenuItem class="text-destructive" @click="deleteSupplier(supplier)">
+                    <Trash2 class="mr-2 h-4 w-4" />
+                    删除
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu></div>
           </div>
         </div>
       </CardContent>

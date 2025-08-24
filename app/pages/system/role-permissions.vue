@@ -1,389 +1,391 @@
 <template>
-  <div class="role-permissions-page">
-    <!-- 页面标题 -->
-    <div class="page-header">
-      <h1 class="page-title">角色权限配置</h1>
-      <p class="page-description">管理系统角色和权限分配</p>
-    </div>
-
-    <div class="page-content">
-      <!-- 左侧角色列表 -->
-      <Card class="role-list-card">
-        <CardHeader>
-          <div class="card-header">
-            <div class="header-title">
-              <Users class="w-4 h-4" />
-              <span>角色列表</span>
-            </div>
-            <Button
-              size="sm"
-              @click="openCreateRoleDialog"
-            >
-              <Plus class="w-4 h-4 mr-2" />
-              新增角色
-            </Button>
-          </div>
-        </CardHeader>
-
-        <CardContent>
-          <!-- 搜索框 -->
-          <div class="search-section">
-            <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                v-model="roleSearchQuery"
-                placeholder="搜索角色名称、编码或描述"
-                class="pl-10"
-              />
-            </div>
-          </div>
-
-          <div class="max-h-96 overflow-y-auto">
-            <div v-if="loadingRoles" class="loading-state">
-              <Loader2 class="w-6 h-6 animate-spin" />
-              <span class="ml-2 text-muted-foreground">加载中...</span>
-            </div>
-
-            <div v-else-if="filteredRoles.length === 0" class="text-center py-8">
-              <Users class="w-12 h-12 text-muted-foreground opacity-50 mb-2 mx-auto" />
-              <p class="text-muted-foreground">暂无角色数据</p>
-            </div>
-
-            <div v-else class="role-list">
-              <div
-                v-for="role in filteredRoles"
-                :key="role.id"
-                :class="[
-                  'role-item',
-                  selectedRole?.id === role.id ? 'active' : '',
-                ]"
-                @click="selectRole(role)"
-              >
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
-                      <Shield class="w-5 h-5 text-primary" />
-                    </div>
-                    <div class="role-info">
-                      <h4 class="role-name">{{ role.name }}</h4>
-                      <p class="role-code">{{ role.code }}</p>
-                      <p class="role-description">{{ role.description }}</p>
-                    </div>
-                  </div>
-
-                  <div class="role-actions">
-                    <Button
-                      v-if="canEdit"
-                      size="sm"
-                      variant="ghost"
-                      @click.stop="editRole(role)"
-                    >
-                      <Edit class="w-4 h-4" />
-                    </Button>
-                    <Button
-                      v-if="canDelete && !role.is_system"
-                      size="sm"
-                      variant="ghost"
-                      @click.stop="confirmDeleteRole(role)"
-                    >
-                      <Trash2 class="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div class="role-stats">
-                  <Badge variant="secondary">{{ role.user_count || 0 }} 个用户</Badge>
-                  <Badge variant="secondary">{{ role.menu_count || 0 }} 个菜单</Badge>
-                  <Badge variant="secondary">{{ role.resource_count || 0 }} 个资源</Badge>
-                  <Badge :variant="role.status === 'active' ? 'default' : 'destructive'">
-                    {{ role.status === 'active' ? '启用' : '停用' }}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    <!-- 右侧：权限配置 -->
-    <div class="lg:col-span-2">
-      <div v-if="!selectedRole" class="text-center py-20">
-        <ArrowLeft class="w-16 h-16 text-muted-foreground opacity-50 mb-4 mx-auto" />
-        <h3 class="text-lg font-medium mb-2">选择角色</h3>
-        <p class="text-muted-foreground">请从左侧列表中选择一个角色来配置权限</p>
+  <div class="role-permissions-container">
+    <div class="role-permissions-page">
+      <!-- 页面标题 -->
+      <div class="page-header">
+        <h1 class="page-title">角色权限配置</h1>
+        <p class="page-description">管理系统角色和权限分配</p>
       </div>
 
-      <div v-else class="space-y-6">
-        <!-- 选中角色信息 -->
-        <Card>
+      <div class="page-content">
+        <!-- 左侧角色列表 -->
+        <Card class="role-list-card">
+          <CardHeader>
+            <div class="card-header">
+              <div class="header-title">
+                <Users class="w-4 h-4" />
+                <span>角色列表</span>
+              </div>
+              <Button
+                size="sm"
+                @click="openCreateRoleDialog"
+              >
+                <Plus class="w-4 h-4 mr-2" />
+                新增角色
+              </Button>
+            </div>
+          </CardHeader>
+
           <CardContent>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 bg-primary/10 -full flex items-center justify-center">
-                  <Shield class="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h2 class="text-xl font-semibold">{{ selectedRole.name }}</h2>
-                  <p class="text-muted-foreground">{{ selectedRole.description }}</p>
-                </div>
+            <!-- 搜索框 -->
+            <div class="search-section">
+              <div class="relative">
+                <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  v-model="roleSearchQuery"
+                  placeholder="搜索角色名称、编码或描述"
+                  class="pl-10"
+                />
+              </div>
+            </div>
+
+            <div class="max-h-96 overflow-y-auto">
+              <div v-if="loadingRoles" class="loading-state">
+                <Loader2 class="w-6 h-6 animate-spin" />
+                <span class="ml-2 text-muted-foreground">加载中...</span>
               </div>
 
-              <div class="flex items-center space-x-2">
-                <Badge :variant="selectedRole.is_system ? 'destructive' : 'default'">
-                  {{ selectedRole.is_system ? '系统角色' : '自定义角色' }}
-                </Badge>
-                <Badge :variant="selectedRole.status === 'active' ? 'default' : 'secondary'">
-                  {{ selectedRole.status === 'active' ? '启用' : '停用' }}
-                </Badge>
+              <div v-else-if="filteredRoles.length === 0" class="text-center py-8">
+                <Users class="w-12 h-12 text-muted-foreground opacity-50 mb-2 mx-auto" />
+                <p class="text-muted-foreground">暂无角色数据</p>
+              </div>
+
+              <div v-else class="role-list">
+                <div
+                  v-for="role in filteredRoles"
+                  :key="role.id"
+                  :class="[
+                    'role-item',
+                    selectedRole?.id === role.id ? 'active' : '',
+                  ]"
+                  @click="selectRole(role)"
+                >
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                      <div class="flex-shrink-0">
+                        <Shield class="w-5 h-5 text-primary" />
+                      </div>
+                      <div class="role-info">
+                        <h4 class="role-name">{{ role.name }}</h4>
+                        <p class="role-code">{{ role.code }}</p>
+                        <p class="role-description">{{ role.description }}</p>
+                      </div>
+                    </div>
+
+                    <div class="role-actions">
+                      <Button
+                        v-if="canEdit"
+                        size="sm"
+                        variant="ghost"
+                        @click.stop="editRole(role)"
+                      >
+                        <Edit class="w-4 h-4" />
+                      </Button>
+                      <Button
+                        v-if="canDelete && !role.is_system"
+                        size="sm"
+                        variant="ghost"
+                        @click.stop="confirmDeleteRole(role)"
+                      >
+                        <Trash2 class="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div class="role-stats">
+                    <Badge variant="secondary">{{ role.user_count || 0 }} 个用户</Badge>
+                    <Badge variant="secondary">{{ role.menu_count || 0 }} 个菜单</Badge>
+                    <Badge variant="secondary">{{ role.resource_count || 0 }} 个资源</Badge>
+                    <Badge :variant="role.status === 'active' ? 'default' : 'destructive'">
+                      {{ role.status === 'active' ? '启用' : '停用' }}
+                    </Badge>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
+      </div>
 
-        <!-- 权限配置选项卡 -->
-        <Tabs default-value="menus" class="w-full">
-          <TabsList class="grid w-full grid-cols-2">
-            <TabsTrigger value="menus" class="flex items-center">
-              <Menu class="w-4 h-4 mr-2" />
-              菜单权限
-            </TabsTrigger>
-            <TabsTrigger value="resources" class="flex items-center">
-              <Database class="w-4 h-4 mr-2" />
-              资源权限
-            </TabsTrigger>
-          </TabsList>
+      <!-- 右侧：权限配置 -->
+      <div class="lg:col-span-2">
+        <div v-if="!selectedRole" class="text-center py-20">
+          <ArrowLeft class="w-16 h-16 text-muted-foreground opacity-50 mb-4 mx-auto" />
+          <h3 class="text-lg font-medium mb-2">选择角色</h3>
+          <p class="text-muted-foreground">请从左侧列表中选择一个角色来配置权限</p>
+        </div>
 
-          <!-- 菜单权限 -->
-          <TabsContent value="menus" class="mt-6">
-
-            <div class="space-y-4">
+        <div v-else class="space-y-6">
+          <!-- 选中角色信息 -->
+          <Card>
+            <CardContent>
               <div class="flex items-center justify-between">
-                <p class="text-sm text-muted-foreground">
-                  配置该角色可以访问的系统菜单
-                </p>
-                <Button
-                  size="sm"
-                  :disabled="savingPermissions"
-                  @click="saveMenuPermissions"
-                >
-                  <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
-                  <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
-                  保存菜单权限
-                </Button>
+                <div class="flex items-center space-x-4">
+                  <div class="w-12 h-12 bg-primary/10 -full flex items-center justify-center">
+                    <Shield class="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 class="text-xl font-semibold">{{ selectedRole.name }}</h2>
+                    <p class="text-muted-foreground">{{ selectedRole.description }}</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                  <Badge :variant="selectedRole.is_system ? 'destructive' : 'default'">
+                    {{ selectedRole.is_system ? '系统角色' : '自定义角色' }}
+                  </Badge>
+                  <Badge :variant="selectedRole.status === 'active' ? 'default' : 'secondary'">
+                    {{ selectedRole.status === 'active' ? '启用' : '停用' }}
+                  </Badge>
+                </div>
               </div>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent class="p-4">
-                  <div class="menu-tree">
-                    <div class="space-y-2">
-                      <div v-for="menu in menuTree" :key="menu.key" class="menu-item">
-                        <div class="flex items-center space-x-2 p-2 hover:bg-muted ">
-                          <Checkbox
-                            :id="menu.key"
-                            :checked="selectedMenus.includes(menu.key)"
-                            @update:checked="(checked: boolean) => {
-                              if (checked) {
-                                selectedMenus.push(menu.key)
-                              }
-                              else {
-                                const index = selectedMenus.indexOf(menu.key)
-                                if (index > -1) {
-                                  selectedMenus.splice(index, 1)
-                                }
-                              }
-                            }"
-                          />
-                          <component :is="getMenuIcon(menu.icon)" class="w-4 h-4" />
-                          <Label :for="menu.key" class="cursor-pointer flex-1">
-                            {{ menu.label }}
-                            <span v-if="menu.path" class="ml-2 text-xs text-muted-foreground">
-                              ({{ menu.path }})
-                            </span>
-                          </Label>
-                        </div>
+          <!-- 权限配置选项卡 -->
+          <Tabs default-value="menus" class="w-full">
+            <TabsList class="grid w-full grid-cols-2">
+              <TabsTrigger value="menus" class="flex items-center">
+                <Menu class="w-4 h-4 mr-2" />
+                菜单权限
+              </TabsTrigger>
+              <TabsTrigger value="resources" class="flex items-center">
+                <Database class="w-4 h-4 mr-2" />
+                资源权限
+              </TabsTrigger>
+            </TabsList>
 
-                        <!-- 子菜单 -->
-                        <div v-if="menu.children" class="ml-6 space-y-1">
-                          <div v-for="child in menu.children" :key="child.key" class="flex items-center space-x-2 p-2 hover:bg-muted ">
+            <!-- 菜单权限 -->
+            <TabsContent value="menus" class="mt-6">
+
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm text-muted-foreground">
+                    配置该角色可以访问的系统菜单
+                  </p>
+                  <Button
+                    size="sm"
+                    :disabled="savingPermissions"
+                    @click="saveMenuPermissions"
+                  >
+                    <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
+                    <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
+                    保存菜单权限
+                  </Button>
+                </div>
+
+                <Card>
+                  <CardContent class="p-4">
+                    <div class="menu-tree">
+                      <div class="space-y-2">
+                        <div v-for="menu in menuTree" :key="menu.key" class="menu-item">
+                          <div class="flex items-center space-x-2 p-2 hover:bg-muted ">
                             <Checkbox
-                              :id="child.key"
-                              :checked="selectedMenus.includes(child.key)"
+                              :id="menu.key"
+                              :checked="selectedMenus.includes(menu.key)"
                               @update:checked="(checked: boolean) => {
                                 if (checked) {
-                                  selectedMenus.push(child.key)
+                                  selectedMenus.push(menu.key)
                                 }
                                 else {
-                                  const index = selectedMenus.indexOf(child.key)
-                                  if (index > -1) selectedMenus.splice(index, 1)
+                                  const index = selectedMenus.indexOf(menu.key)
+                                  if (index > -1) {
+                                    selectedMenus.splice(index, 1)
+                                  }
                                 }
                               }"
                             />
-                            <component :is="getMenuIcon(child.icon)" class="w-4 h-4" />
-                            <Label :for="child.key" class="cursor-pointer flex-1">
-                              {{ child.label }}
-                              <span v-if="child.path" class="ml-2 text-xs text-muted-foreground">
-                                ({{ child.path }})
+                            <component :is="getMenuIcon(menu.icon)" class="w-4 h-4" />
+                            <Label :for="menu.key" class="cursor-pointer flex-1">
+                              {{ menu.label }}
+                              <span v-if="menu.path" class="ml-2 text-xs text-muted-foreground">
+                                ({{ menu.path }})
                               </span>
                             </Label>
                           </div>
+
+                          <!-- 子菜单 -->
+                          <div v-if="menu.children" class="ml-6 space-y-1">
+                            <div v-for="child in menu.children" :key="child.key" class="flex items-center space-x-2 p-2 hover:bg-muted ">
+                              <Checkbox
+                                :id="child.key"
+                                :checked="selectedMenus.includes(child.key)"
+                                @update:checked="(checked: boolean) => {
+                                  if (checked) {
+                                    selectedMenus.push(child.key)
+                                  }
+                                  else {
+                                    const index = selectedMenus.indexOf(child.key)
+                                    if (index > -1) selectedMenus.splice(index, 1)
+                                  }
+                                }"
+                              />
+                              <component :is="getMenuIcon(child.icon)" class="w-4 h-4" />
+                              <Label :for="child.key" class="cursor-pointer flex-1">
+                                {{ child.label }}
+                                <span v-if="child.path" class="ml-2 text-xs text-muted-foreground">
+                                  ({{ child.path }})
+                                </span>
+                              </Label>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <!-- 资源权限 -->
-          <TabsContent value="resources" class="mt-6">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <p class="text-sm text-muted-foreground">
-                  配置该角色可以访问的系统资源和操作
-                </p>
-                <Button
-                  size="sm"
-                  :disabled="savingPermissions"
-                  @click="saveResourcePermissions"
-                >
-                  <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
-                  <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
-                  保存资源权限
-                </Button>
-              </div>
-
-              <div class="space-y-4">
-                <Card v-for="category in resourceCategories" :key="category.id">
-                  <CardContent class="p-4">
-                    <div class="flex items-center justify-between mb-3">
-                      <h4 class="font-medium">{{ category.name }}</h4>
-                      <div class="flex items-center space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          @click="selectAllInCategory(category)"
-                        >
-                          全选
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          @click="clearAllInCategory(category)"
-                        >
-                          清空
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      <div
-                        v-for="resource in category.resources"
-                        :key="resource.id"
-                        class="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          :id="resource.id"
-                          :checked="selectedResources.includes(resource.id)"
-                          @update:checked="(checked: boolean) => {
-                            if (checked) {
-                              selectedResources.push(resource.id)
-                            }
-                            else {
-                              const index = selectedResources.indexOf(resource.id)
-                              if (index > -1) selectedResources.splice(index, 1)
-                            }
-                          }"
-                        />
-                        <Label :for="resource.id" class="text-sm cursor-pointer">
-                          {{ resource.name }}
-                        </Label>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
-            </div>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+
+            <!-- 资源权限 -->
+            <TabsContent value="resources" class="mt-6">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm text-muted-foreground">
+                    配置该角色可以访问的系统资源和操作
+                  </p>
+                  <Button
+                    size="sm"
+                    :disabled="savingPermissions"
+                    @click="saveResourcePermissions"
+                  >
+                    <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
+                    <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
+                    保存资源权限
+                  </Button>
+                </div>
+
+                <div class="space-y-4">
+                  <Card v-for="category in resourceCategories" :key="category.id">
+                    <CardContent class="p-4">
+                      <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-medium">{{ category.name }}</h4>
+                        <div class="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            @click="selectAllInCategory(category)"
+                          >
+                            全选
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            @click="clearAllInCategory(category)"
+                          >
+                            清空
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <div
+                          v-for="resource in category.resources"
+                          :key="resource.id"
+                          class="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            :id="resource.id"
+                            :checked="selectedResources.includes(resource.id)"
+                            @update:checked="(checked: boolean) => {
+                              if (checked) {
+                                selectedResources.push(resource.id)
+                              }
+                              else {
+                                const index = selectedResources.indexOf(resource.id)
+                                if (index > -1) selectedResources.splice(index, 1)
+                              }
+                            }"
+                          />
+                          <Label :for="resource.id" class="text-sm cursor-pointer">
+                            {{ resource.name }}
+                          </Label>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
+
+    <!-- 角色创建/编辑对话框 -->
+    <Dialog v-model:open="showRoleDialog">
+      <DialogContent class="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{{ editingRole ? '编辑角色' : '新增角色' }}</DialogTitle>
+        </DialogHeader>
+
+        <div class="role-form space-y-4">
+          <div class="form-group">
+            <Label for="roleName">角色名称 *</Label>
+            <Input
+              id="roleName"
+              v-model="roleForm.name"
+              placeholder="请输入角色名称"
+            />
+          </div>
+
+          <div class="form-group">
+            <Label for="roleCode">角色编码 *</Label>
+            <Input
+              id="roleCode"
+              v-model="roleForm.code"
+              placeholder="请输入角色编码"
+              :disabled="!!editingRole"
+            />
+          </div>
+
+          <div class="form-group">
+            <Label for="roleDescription">角色描述</Label>
+            <Textarea
+              id="roleDescription"
+              v-model="roleForm.description"
+              placeholder="请输入角色描述"
+              rows="3"
+            />
+          </div>
+
+          <div class="form-group">
+            <Label for="roleStatus">状态</Label>
+            <Select v-model="roleForm.status">
+              <SelectTrigger>
+                <SelectValue placeholder="请选择状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button
+            variant="outline"
+            @click="closeRoleDialog"
+          >
+            取消
+          </Button>
+          <Button
+            :disabled="savingPermissions"
+            @click="saveRole"
+          >
+            <RefreshCw v-if="savingPermissions" class="w-4 h-4 mr-2 animate-spin" />
+            保存
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
-
-  <!-- 角色创建/编辑对话框 -->
-  <Dialog v-model:open="showRoleDialog">
-    <DialogContent class="sm:max-w-[500px]">
-      <DialogHeader>
-        <DialogTitle>{{ editingRole ? '编辑角色' : '新增角色' }}</DialogTitle>
-      </DialogHeader>
-
-      <div class="role-form space-y-4">
-        <div class="form-group">
-          <Label for="roleName">角色名称 *</Label>
-          <Input
-            id="roleName"
-            v-model="roleForm.name"
-            placeholder="请输入角色名称"
-          />
-        </div>
-
-        <div class="form-group">
-          <Label for="roleCode">角色编码 *</Label>
-          <Input
-            id="roleCode"
-            v-model="roleForm.code"
-            placeholder="请输入角色编码"
-            :disabled="!!editingRole"
-          />
-        </div>
-
-        <div class="form-group">
-          <Label for="roleDescription">角色描述</Label>
-          <Textarea
-            id="roleDescription"
-            v-model="roleForm.description"
-            placeholder="请输入角色描述"
-            rows="3"
-          />
-        </div>
-
-        <div class="form-group">
-          <Label for="roleStatus">状态</Label>
-          <Select v-model="roleForm.status">
-            <SelectTrigger>
-              <SelectValue placeholder="请选择状态" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem
-                v-for="option in statusOptions"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <DialogFooter>
-        <Button
-          variant="outline"
-          @click="closeRoleDialog"
-        >
-          取消
-        </Button>
-        <Button
-          :disabled="savingPermissions"
-          @click="saveRole"
-        >
-          <RefreshCw v-if="savingPermissions" class="w-4 h-4 mr-2 animate-spin" />
-          保存
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -420,7 +422,6 @@ useHead({
 })
 
 // 权限检查
-const canCreate = ref(true)
 const canEdit = ref(true)
 const canDelete = ref(true)
 
@@ -428,12 +429,9 @@ const canDelete = ref(true)
 const loadingRoles = ref(false)
 const savingPermissions = ref(false)
 const roles = ref([] as any[])
-const menus = ref([] as any[])
-const resources = ref([] as any[])
 const selectedRole = ref(null as any)
 const showRoleDialog = ref(false)
 const editingRole = ref(null as any)
-// const confirm = useConfirm() // 已移除
 // 搜索和筛选
 const roleSearchQuery = ref('')
 
@@ -610,7 +608,7 @@ const selectRole = (role: any) => {
   loadRolePermissions(role)
 }
 
-const loadRolePermissions = async (role: any) => {
+const loadRolePermissions = async (_role: any) => {
   // 模拟加载角色权限
   selectedMenus.value = ['dashboard', 'master-data', 'products']
   selectedResources.value = ['user:view', 'product:view', 'product:create']

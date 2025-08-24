@@ -11,13 +11,7 @@ export default defineNuxtConfig({
       path: '~/components',
       pathPrefix: false,
     },
-    // UI组件自动导入 - 扫描每个UI组件目录
-    {
-      path: '~/components/ui/**',
-      extensions: ['.vue'],
-      pathPrefix: false,
-      global: true,
-    },
+    // UI组件通过 shadcn-nuxt 模块自动处理，无需手动配置
   ],
 
   // 自动导入配置

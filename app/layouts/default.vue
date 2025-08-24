@@ -5,7 +5,7 @@
       class="transition-all duration-300 ease-in-out z-40 fixed top-0 left-0 h-screen overflow-hidden border-r bg-card"
       :class="sidebarCollapsed ? 'w-16' : 'w-64'"
     >
-      <SidebarMenu :sidebar-collapsed="sidebarCollapsed" @toggle-sidebar="toggleSidebar" />
+      <AppSidebarMenu :sidebar-collapsed="sidebarCollapsed" @toggle-sidebar="toggleSidebar" />
     </aside>
 
     <!-- 主要内容区域 -->

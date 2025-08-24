@@ -348,7 +348,7 @@
 
         <DialogFooter>
           <Button variant="outline" :disabled="saving" @click="closeInvoiceDialog"> 取消 </Button>
-          <Button v-if="dialogMode !== 'view'" :disabled="saving" @click="saveInvoice">
+          <Button :disabled="saving" @click="saveInvoice">
             <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
             保存
           </Button>

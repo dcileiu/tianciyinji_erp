@@ -1,7 +1,7 @@
 // ERP 系统数据库表结构类型定义
 
 // 用户相关
-export interface User {
+export interface DatabaseUser {
   id: string
   email: string
   name: string

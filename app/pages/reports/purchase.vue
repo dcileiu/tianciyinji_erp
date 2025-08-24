@@ -398,7 +398,7 @@ const statusMap: Record<string, string> = {
   cancelled: '已取消',
 }
 
-const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+const _statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
   pending: 'outline',
   confirmed: 'secondary',
   shipped: 'secondary',

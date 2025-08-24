@@ -17,8 +17,8 @@ const delegatedProps = reactiveOmit(props, 'class')
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
 
-const allItems = ref<Map<string, string>>(new Map())
-const allGroups = ref<Map<string, Set<string>>>(new Map())
+const allItems = ref(new Map<string, string>())
+const allGroups = ref(new Map<string, Set<string>>())
 
 const { contains } = useFilter({ sensitivity: 'base' })
 const filterState = reactive({
@@ -27,9 +27,9 @@ const filterState = reactive({
     /** The count of all visible items. */
     count: 0,
     /** Map from visible item id to its search score. */
-    items: new Map() as Map<string, number>,
+    items: new Map<string, number>(),
     /** Set of groups with at least one visible item. */
-    groups: new Set() as Set<string>,
+    groups: new Set<string>(),
   },
 })
 

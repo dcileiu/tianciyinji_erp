@@ -8,19 +8,7 @@
       </div>
       <Button
         class="bg-blue-600 hover:bg-blue-700"
-        @click="
-          showCreateDialog = true
-          editingDictionary = false
-          currentDictionary = {
-            id: '',
-            code: '',
-            name: '',
-            type: 'system',
-            status: 'active',
-            description: '',
-            items: [],
-          }
-        "
+        @click="createNewDictionary"
       >
         <Plus class="h-4 w-4 mr-2" />
         新建字典
@@ -436,6 +424,20 @@ const resetFilters = () => {
   searchQuery.value = ''
   typeFilter.value = ''
   statusFilter.value = ''
+}
+
+const createNewDictionary = () => {
+  editingDictionary.value = false
+  currentDictionary.value = {
+    id: '',
+    code: '',
+    name: '',
+    type: 'system',
+    status: 'active',
+    description: '',
+    items: [],
+  }
+  showCreateDialog.value = true
 }
 
 const editDictionary = (dictionary: any) => {

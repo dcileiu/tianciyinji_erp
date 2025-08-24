@@ -706,7 +706,7 @@ const statusMap: Record<string, string> = {
   inactive: '停用',
 }
 
-const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+const _statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
   active: 'default',
   inactive: 'destructive',
 }
@@ -723,7 +723,7 @@ const getStatusVariant = (status: string) => {
   return variantMap[status] || 'outline'
 }
 
-const getStockClass = (currentStock: number, minStock: number) => {
+const _getStockClass = (currentStock: number, minStock: number) => {
   if (currentStock === 0) return 'text-red-600'
   if (currentStock <= minStock) return 'text-orange-600'
   return 'text-color'
@@ -773,7 +773,7 @@ const viewProduct = (product: any) => {
   showProductDialog.value = true
 }
 
-const editProduct = (product: any) => {
+const _editProduct = (product: any) => {
   editingProduct.value = product
   dialogMode.value = 'edit'
   Object.assign(productForm.value, product)

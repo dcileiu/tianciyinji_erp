@@ -1,23 +1,12 @@
-// 通用分页参数
-export interface PaginationParams {
-  page: number
-  pageSize: number
-  total?: number
-}
-
-// 通用响应结构
-export interface ApiResponse<T = unknown> {
-  success: boolean
-  data?: T
-  message?: string
-  error?: string
-}
-
 // 通用列表响应
 export interface ListResponse<T = unknown> {
   success: boolean
   data: T[]
-  pagination?: PaginationParams
+  pagination?: {
+    page: number
+    pageSize: number
+    total?: number
+  }
   message?: string
   error?: string
 }

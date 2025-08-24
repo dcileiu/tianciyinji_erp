@@ -61,12 +61,4 @@ export default withNuxt(
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
-
-  // 先不检查 any
-  {
-    files: ['**/*.{ts,vue}'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
 )

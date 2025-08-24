@@ -7,16 +7,6 @@ interface AuthError {
   message: string
 }
 
-// 注册表单接口
-export interface RegisterForm {
-  name: string
-  email: string
-  password: string
-  confirmPassword: string
-  department?: string
-  position?: string
-}
-
 // 全局用户状态
 const userState = ref<UserState>({
   user: null,

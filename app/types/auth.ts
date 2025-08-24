@@ -24,10 +24,12 @@ export interface LoginForm {
 
 // 注册表单数据
 export interface RegisterForm {
+  name: string
   email: string
   password: string
   confirmPassword: string
-  fullName?: string
+  department?: string
+  position?: string
 }
 
 // 用户状态
