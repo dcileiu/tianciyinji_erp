@@ -25,7 +25,7 @@ export function getIndexIfArray(string: string) {
   // Match the index
   const match = string.match(indexRegex)
   // Extract the index (number)
-  const index = match ? Number.parseInt(match[1]) : undefined
+  const index = match ? Number.parseInt(match[1] || '0') : undefined
   return index
 }
 
@@ -34,7 +34,7 @@ export function getIndexIfArray(string: string) {
  * This will unpack optionals, refinements, etc.
  */
 export function getBaseSchema<ChildType extends z.ZodAny | z.AnyZodObject = z.ZodAny>(
-  schema: ChildType | z.ZodEffects<ChildType>
+  schema: ChildType | z.ZodEffects<ChildType>,
 ): ChildType | null {
   if (!schema) return null
   if ('innerType' in schema._def) return getBaseSchema(schema._def.innerType as ChildType)
@@ -133,7 +133,7 @@ export function getFromPath<TValue = unknown, TFallback = TValue>(
 export function getFromPath<TValue = unknown, TFallback = TValue>(
   object: NestedRecord | undefined,
   path: string,
-  fallback?: TFallback
+  fallback?: TFallback,
 ): TValue | TFallback | undefined {
   if (!object) return fallback
 

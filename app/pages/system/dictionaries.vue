@@ -7,6 +7,7 @@
         <h1 class="text-2xl font-bold text-gray-900">数据字典管理</h1>
       </div>
       <Button
+        class="bg-blue-600 hover:bg-blue-700"
         @click="
           showCreateDialog = true
           editingDictionary = false
@@ -20,7 +21,6 @@
             items: [],
           }
         "
-        class="bg-blue-600 hover:bg-blue-700"
       >
         <Plus class="h-4 w-4 mr-2" />
         新建字典
@@ -56,7 +56,7 @@
               </SelectItem>
             </SelectContent>
           </Select>
-          <Button @click="resetFilters" variant="outline" class="w-full">
+          <Button variant="outline" class="w-full" @click="resetFilters">
             <RefreshCw class="h-4 w-4 mr-2" />
             重置
           </Button>
@@ -93,7 +93,7 @@
             <TableRow v-for="dictionary in filteredDictionaries" :key="dictionary.id">
               <TableCell>
                 <div class="flex items-center space-x-3">
-                  <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <div class="h-10 w-10 -full bg-blue-100 flex items-center justify-center">
                     <span class="text-blue-600 font-medium">{{ dictionary.code.charAt(0) }}</span>
                   </div>
                   <div>
@@ -120,13 +120,13 @@
               </TableCell>
               <TableCell>
                 <div class="flex items-center space-x-2">
-                  <Button @click="viewDictionaryItems(dictionary)" variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" @click="viewDictionaryItems(dictionary)">
                     <List class="h-4 w-4" />
                   </Button>
-                  <Button @click="editDictionary(dictionary)" variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" @click="editDictionary(dictionary)">
                     <Edit class="h-4 w-4" />
                   </Button>
-                  <Button @click="confirmDeleteDictionary(dictionary)" variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" @click="confirmDeleteDictionary(dictionary)">
                     <Trash2 class="h-4 w-4" />
                   </Button>
                 </div>
@@ -206,7 +206,7 @@
         <div class="space-y-4">
           <div class="flex justify-between items-center">
             <h4 class="text-lg font-medium text-gray-900">字典项目列表</h4>
-            <Button @click="addNewItem" size="sm">
+            <Button size="sm" @click="addNewItem">
               <Plus class="h-4 w-4 mr-2" />
               添加项目
             </Button>
@@ -216,7 +216,7 @@
             <div
               v-for="(item, index) in currentItems"
               :key="index"
-              class="grid grid-cols-1 md:grid-cols-5 gap-3 p-4 border border-gray-200 rounded-lg"
+              class="grid grid-cols-1 md:grid-cols-5 gap-3 p-4 border border-gray-200 -lg"
             >
               <div class="space-y-2">
                 <Label>值</Label>
@@ -249,7 +249,7 @@
 
               <div class="space-y-2">
                 <Label>操作</Label>
-                <Button @click="removeItem(index)" variant="destructive" size="sm" class="w-full">
+                <Button variant="destructive" size="sm" class="w-full" @click="removeItem(index)">
                   <Trash2 class="h-4 w-4" />
                 </Button>
               </div>
@@ -386,9 +386,9 @@ const filteredDictionaries = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       dict =>
-        dict.name.toLowerCase().includes(query) ||
-        dict.code.toLowerCase().includes(query) ||
-        dict.description?.toLowerCase().includes(query)
+        dict.name.toLowerCase().includes(query)
+        || dict.code.toLowerCase().includes(query)
+        || dict.description?.toLowerCase().includes(query),
     )
   }
 
@@ -413,11 +413,11 @@ const getTypeText = (type: string) => {
   return typeMap[type] || type
 }
 
-const getTypeSeverity = (type: string) => {
-  const severityMap: Record<string, string> = {
-    system: 'info',
-    business: 'success',
-    config: 'warn',
+const getTypeSeverity = (type: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    system: 'default',
+    business: 'secondary',
+    config: 'outline',
   }
   return severityMap[type] || 'secondary'
 }
@@ -464,9 +464,11 @@ const deleteDictionary = async (dictionaryId: string) => {
       dictionaries.value.splice(index, 1)
     }
     toast.success('字典删除成功')
-  } catch (error) {
+  }
+  catch (error) {
     console.error('删除字典失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -486,7 +488,8 @@ const saveDictionary = async () => {
           updatedAt: new Date(),
         }
       }
-    } else {
+    }
+    else {
       // 创建新字典
       const newDictionary = {
         ...currentDictionary.value,
@@ -500,9 +503,11 @@ const saveDictionary = async () => {
     showCreateDialog.value = false
     editingDictionary.value = false
     toast.success('字典保存成功')
-  } catch (error: any) {
+  }
+  catch (error: any) {
     console.error('保存字典失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
@@ -532,9 +537,11 @@ const saveDictionaryItems = async () => {
     }
     showItemsDialog.value = false
     toast.success('字典项目保存成功')
-  } catch (error: any) {
+  }
+  catch (error: any) {
     console.error('保存字典项目失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

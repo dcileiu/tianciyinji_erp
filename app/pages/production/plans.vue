@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold text-color">生产计划管理</h1>
         <p class="text-muted-color mt-1">制定和调整生产计划，优化生产资源配置</p>
       </div>
-      <Button label="新建生产计划" icon="pi pi-plus" @click="showCreateDialog = true" />
+      <Button @click="showCreateDialog = true" />
     </div>
 
     <!-- 计划概览 -->
@@ -14,7 +14,7 @@
       <Card>
         <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-blue-500/10 rounded-full">
+            <div class="p-3 bg-blue-500/10 -full">
               <i class="pi pi-calendar text-blue-600 text-xl"></i>
             </div>
             <div class="ml-4">
@@ -30,7 +30,7 @@
       <Card>
         <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-green-500/10 rounded-full">
+            <div class="p-3 bg-green-500/10 -full">
               <i class="pi pi-check-circle text-green-600 text-xl"></i>
             </div>
             <div class="ml-4">
@@ -46,7 +46,7 @@
       <Card>
         <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-yellow-500/10 rounded-full">
+            <div class="p-3 bg-yellow-500/10 -full">
               <i class="pi pi-clock text-yellow-600 text-xl"></i>
             </div>
             <div class="ml-4">
@@ -62,7 +62,7 @@
       <Card>
         <template #content>
           <div class="flex items-center">
-            <div class="p-3 bg-purple-500/10 rounded-full">
+            <div class="p-3 bg-purple-500/10 -full">
               <i class="pi pi-chart-line text-purple-600 text-xl"></i>
             </div>
             <div class="ml-4">
@@ -80,15 +80,14 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label class="text-sm font-medium text-color mb-2 block"> 计划名称 </label>
-            <InputText v-model="searchQuery" placeholder="输入计划名称搜索" class="w-full" />
+            <Input v-model="searchQuery" placeholder="输入计划名称搜索" class="w-full" />
           </div>
           <div>
             <label class="text-sm font-medium text-color mb-2 block"> 计划状态 </label>
-            <Dropdown
+            <Select
               v-model="statusFilter"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部状态"
               show-clear
               class="w-full"
@@ -96,18 +95,17 @@
           </div>
           <div>
             <label class="text-sm font-medium text-color mb-2 block"> 车间 </label>
-            <Dropdown
+            <Select
               v-model="workshopFilter"
               :options="workshopOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部车间"
               show-clear
               class="w-full"
             />
           </div>
           <div class="flex items-end">
-            <Button label="重置筛选" icon="pi pi-filter-slash" outlined class="w-full" @click="resetFilters" />
+            <Button class="w-full" @click="resetFilters" />
           </div>
         </div>
       </template>
@@ -119,14 +117,14 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">生产计划列表</h3>
           <div class="flex items-center gap-2">
-            <Button label="批量操作" icon="pi pi-cog" outlined size="small" />
-            <Button label="导出计划" icon="pi pi-download" outlined size="small" />
+            <Button size="sm" />
+            <Button size="sm" />
           </div>
         </div>
       </template>
 
       <template #content>
-        <DataTable
+        <Table
           v-model:selection="selectedPlans"
           :value="filteredPlans"
           :loading="loading"
@@ -150,137 +148,115 @@
               </div>
             </div>
           </template>
-          <Column selection-mode="multiple" :exportable="false"></Column>
+          <TableHead selection-mode="multiple" :exportable="false"/>
 
-          <Column field="plan_name" header="计划名称" sortable>
+          <TableHead field="plan_name" header="计划名称" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Avatar :label="slotProps.data.plan_name.charAt(0)" shape="circle" size="small" />
+                <Avatar :shape="'circle'" size="sm" />
                 <span class="font-medium">{{ slotProps.data.plan_name }}</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="workshop_name" header="车间" sortable>
+          <TableHead field="workshop_name" header="车间" sortable>
             <template #body="slotProps">
               <Tag :value="slotProps.data.workshop_name" severity="info" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="start_date" header="开始日期" sortable>
+          <TableHead field="start_date" header="开始日期" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
                 {{ formatDate(slotProps.data.start_date) }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="end_date" header="结束日期" sortable>
+          <TableHead field="end_date" header="结束日期" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
                 {{ formatDate(slotProps.data.end_date) }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="total_orders" header="订单数量" sortable>
+          <TableHead field="total_orders" header="订单数量" sortable>
             <template #body="slotProps">
               <span class="font-medium">{{ slotProps.data.total_orders }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="completed_orders" header="已完成" sortable>
+          <TableHead field="completed_orders" header="已完成" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
                 <span class="font-medium">{{ slotProps.data.completed_orders }}</span>
-                <ProgressBar
-                  :value="(slotProps.data.completed_orders / slotProps.data.total_orders) * 100"
-                  class="w-20"
-                  :show-value="false"
-                />
+                <!-- ProgressBar 组件已移除 -->
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="capacity_utilization" header="产能利用率" sortable>
+          <TableHead field="capacity_utilization" header="产能利用率" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
                 <span class="font-medium">{{ slotProps.data.capacity_utilization }}%</span>
-                <ProgressBar :value="slotProps.data.capacity_utilization" class="w-16" :show-value="false" />
+                <!-- ProgressBar 组件已移除 -->
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态" sortable>
+          <TableHead field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
                 :value="getStatusDisplayName(slotProps.data.status)"
                 :severity="getStatusSeverity(slotProps.data.status)"
               />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" :exportable="false">
+          <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
                 <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="viewPlan(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'draft' || slotProps.data.status === 'pending'"
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="editPlan(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'draft'"
-                  v-tooltip="'提交审核'"
-                  icon="pi pi-send"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="submitPlan(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'pending'"
-                  v-tooltip="'审核通过'"
-                  icon="pi pi-check"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="approvePlan(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'approved'"
-                  v-tooltip="'开始执行'"
-                  icon="pi pi-play"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="startPlan(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'"
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   severity="danger"
                   @click="confirmDeletePlan(slotProps.data)"
                 />
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
@@ -291,16 +267,15 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">计划名称 *</label>
-              <InputText v-model="planForm.plan_name" placeholder="请输入计划名称" required />
+              <Input v-model="planForm.plan_name" placeholder="请输入计划名称" required />
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">车间 *</label>
-              <Dropdown
+              <Select
                 v-model="planForm.workshop_id"
                 :options="workshopOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择车间"
                 required
               />
@@ -310,12 +285,12 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">开始日期 *</label>
-              <Calendar v-model="planForm.start_date" placeholder="选择开始日期" required />
+              <!-- Calendar 组件需要手动替换为 DatePicker -->
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">结束日期 *</label>
-              <Calendar v-model="planForm.end_date" placeholder="选择结束日期" required />
+              <!-- Calendar 组件需要手动替换为 DatePicker -->
             </div>
           </div>
 
@@ -328,10 +303,10 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <label class="block text-sm font-medium text-color">计划订单</label>
-              <Button label="添加订单" icon="pi pi-plus" text size="small" @click="addPlanOrder" />
+              <Button text size="sm" @click="addPlanOrder" />
             </div>
 
-            <DataTable :value="planForm.orders" class="p-datatable-sm">
+            <Table :value="planForm.orders" class="p-datatable-sm">
               <template #loading>
                 <div class="p-6">
                   <div v-for="i in 3" :key="i" class="flex align-items-center gap-4 mb-4">
@@ -342,87 +317,81 @@
                   </div>
                 </div>
               </template>
-              <Column field="order_no" header="订单号">
+              <TableHead field="order_no" header="订单号">
                 <template #body="slotProps">
-                  <Dropdown
+                  <Select
                     v-model="slotProps.data.order_no"
                     :options="availableOrders"
-                    option-label="label"
-                    option-value="value"
+                    option-option-value="value"
                     placeholder="选择订单"
                     class="w-full"
                   />
                 </template>
-              </Column>
+              </TableHead>
 
-              <Column field="quantity" header="计划数量">
+              <TableHead field="quantity" header="计划数量">
                 <template #body="slotProps">
-                  <InputNumber v-model="slotProps.data.quantity" :min="1" show-buttons />
+                  <Input v-model="slotProps.data.quantity" type="number" :min="1" show-buttons />
                 </template>
-              </Column>
+              </TableHead>
 
-              <Column field="priority" header="优先级">
+              <TableHead field="priority" header="优先级">
                 <template #body="slotProps">
-                  <Dropdown
+                  <Select
                     v-model="slotProps.data.priority"
                     :options="priorityOptions"
-                    option-label="label"
-                    option-value="value"
+                    option-option-value="value"
                     placeholder="选择优先级"
                     class="w-full"
                   />
                 </template>
-              </Column>
+              </TableHead>
 
-              <Column header="操作" :exportable="false">
+              <TableHead header="操作" :exportable="false">
                 <template #body="slotProps">
                   <Button
-                    icon="pi pi-trash"
-                    rounded
                     text
-                    size="small"
+                    size="sm"
                     severity="danger"
                     @click="removePlanOrder(slotProps.index)"
                   />
                 </template>
-              </Column>
-            </DataTable>
+              </TableHead>
+            </Table>
           </div>
         </div>
       </template>
 
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button label="取消" icon="pi pi-times" outlined @click="showCreateDialog = false" />
-          <Button label="保存" icon="pi pi-check" :loading="saving" @click="savePlan" />
+          <Button @click="showCreateDialog = false" />
+          <Button :loading="saving" @click="savePlan" />
         </div>
       </template>
     </Dialog>
 
     <!-- 确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import Dropdown from 'primevue/dropdown'
-import Calendar from 'primevue/calendar'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import ProgressBar from 'primevue/progressbar'
-import Dialog from 'primevue/dialog'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import Skeleton from 'primevue/skeleton'
-
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import InputNumber from 'primevue/inputnumber' // 已移除PrimeVue导入
+// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
+// import Calendar from 'primevue/calendar' // 已移除PrimeVue导入
+// import Textarea from 'primevue/textarea' // 已移除PrimeVue导入
+// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
+// import Column from 'primevue/column' // 已移除PrimeVue导入
+// import Tag from 'primevue/tag' // 已移除PrimeVue导入
+// import Avatar from 'primevue/avatar' // 已移除PrimeVue导入
+// import ProgressBar from 'primevue/progressbar' // 已移除PrimeVue导入
+// import Dialog from 'primevue/dialog' // 已移除PrimeVue导入
+// import ConfirmDialog from 'primevue/confirmdialog' // 已移除PrimeVue导入
+// import { useConfirm } from 'primevue/useconfirm' // 已移除PrimeVue导入
+// import Skeleton from 'primevue/skeleton' // 已移除PrimeVue导入
 // 页面配置
 definePageMeta({
   layout: 'default',
@@ -437,8 +406,7 @@ const loading = ref(false)
 const saving = ref(false)
 const showCreateDialog = ref(false)
 const selectedPlans = ref([])
-const confirm = useConfirm()
-
+// const confirm = useConfirm() // 已移除
 // 筛选条件
 const searchQuery = ref('')
 const statusFilter = ref('')
@@ -548,18 +516,18 @@ const statusMap: Record<string, string> = {
   cancelled: '已取消',
 }
 
-const statusSeverityMap: Record<string, string> = {
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
   draft: 'secondary',
-  pending: 'warning',
-  approved: 'info',
-  executing: 'success',
-  completed: 'success',
-  cancelled: 'danger',
+  pending: 'outline',
+  approved: 'secondary',
+  executing: 'default',
+  completed: 'default',
+  cancelled: 'destructive',
 }
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'secondary'
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString('zh-CN')
@@ -579,76 +547,20 @@ const editPlan = (plan: any) => {
   console.log('编辑计划:', plan.plan_name)
 }
 
-const submitPlan = async (plan: any) => {
-  confirm.require({
-    message: `确定要提交计划 ${plan.plan_name} 进行审核吗？`,
-    header: '提交审核',
-    icon: 'pi pi-send',
-    accept: async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const index = mockPlans.value.findIndex(p => p.id === plan.id)
-        if (index !== -1 && mockPlans.value[index]) {
-          mockPlans.value[index]!.status = 'pending'
-        }
-      } catch (error) {
-        console.error('提交失败:', error)
-      }
-    },
-  })
+const submitPlan = async (_plan: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
-const approvePlan = async (plan: any) => {
-  confirm.require({
-    message: `确定要审核通过计划 ${plan.plan_name} 吗？`,
-    header: '审核通过',
-    icon: 'pi pi-check',
-    accept: async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const index = mockPlans.value.findIndex(p => p.id === plan.id)
-        if (index !== -1 && mockPlans.value[index]) {
-          mockPlans.value[index]!.status = 'approved'
-        }
-      } catch (error) {
-        console.error('审核失败:', error)
-      }
-    },
-  })
+const approvePlan = async (_plan: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
-const startPlan = async (plan: any) => {
-  confirm.require({
-    message: `确定要开始执行计划 ${plan.plan_name} 吗？`,
-    header: '开始执行',
-    icon: 'pi pi-play',
-    accept: async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const index = mockPlans.value.findIndex(p => p.id === plan.id)
-        if (index !== -1 && mockPlans.value[index]) {
-          mockPlans.value[index]!.status = 'executing'
-        }
-      } catch (error) {
-        console.error('开始执行失败:', error)
-      }
-    },
-  })
+const startPlan = async (_plan: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
-const confirmDeletePlan = (plan: any) => {
-  confirm.require({
-    message: `确定要删除计划 ${plan.plan_name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deletePlan(plan.id)
-    },
-  })
-}
-
-const deletePlan = (planId: string) => {
-  mockPlans.value = mockPlans.value.filter(plan => plan.id !== planId)
+const confirmDeletePlan = (_plan: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
 const addPlanOrder = () => {
@@ -690,9 +602,11 @@ const savePlan = async () => {
       description: '',
       orders: [],
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存计划失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

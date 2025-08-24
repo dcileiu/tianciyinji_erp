@@ -28,7 +28,7 @@
             <select
               id="status"
               v-model="selectedStatus"
-              class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              class="flex h-10 w-full -md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
             >
               <option value="">全部状态</option>
               <option value="active">活跃</option>
@@ -40,7 +40,7 @@
             <select
               id="type"
               v-model="selectedType"
-              class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              class="flex h-10 w-full -md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
             >
               <option value="">全部类型</option>
               <option value="raw_material">原材料</option>
@@ -78,10 +78,10 @@
           <div
             v-for="supplier in filteredSuppliers"
             :key="supplier.id"
-            class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+            class="flex items-center justify-between p-4 border -lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
           >
             <div class="flex items-center space-x-4">
-              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 -full flex items-center justify-center">
                 <Truck class="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
@@ -104,28 +104,28 @@
                   {{ supplier.contact_phone }}
                 </p>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
+              <SelectMenu>
+                <SelectMenuTrigger>
                   <Button variant="ghost" size="sm">
                     <MoreHorizontal class="h-4 w-4" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem @click="viewSupplier(supplier)">
-                    <Eye class="mr-2 h-4 w-4" />
-                    查看详情
-                  </DropdownMenuItem>
-                  <DropdownMenuItem @click="editSupplier(supplier)">
-                    <Edit class="mr-2 h-4 w-4" />
-                    编辑
-                  </DropdownMenuItem>
-                  <DropdownMenuItem class="text-destructive" @click="deleteSupplier(supplier)">
-                    <Trash2 class="mr-2 h-4 w-4" />
-                    删除
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem @click="viewSupplier(supplier)">
+                      <Eye class="mr-2 h-4 w-4" />
+                      查看详情
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="editSupplier(supplier)">
+                      <Edit class="mr-2 h-4 w-4" />
+                      编辑
+                    </DropdownMenuItem>
+                    <DropdownMenuItem class="text-destructive" @click="deleteSupplier(supplier)">
+                      <Trash2 class="mr-2 h-4 w-4" />
+                      删除
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                  </DropdownMenu>
+                </selectmenutrigger></selectmenu></div>
           </div>
         </div>
       </CardContent>
@@ -164,7 +164,7 @@
             <select
               id="type"
               v-model="supplierForm.type"
-              class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+              class="flex h-10 w-full -md border border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
             >
               <option value="">请选择类型</option>
               <option value="raw_material">原材料</option>
@@ -190,13 +190,26 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref, reactive, computed, onMounted } from 'vue'
-import { Plus, Search, MoreHorizontal, Truck, Eye, Edit, Trash2, Loader2 } from 'lucide-vue-next'
+import { Edit, Eye, Loader2, MoreHorizontal, Plus, Search, Trash2, Truck } from 'lucide-vue-next'
 
 // 导入组件
 
+// 类型定义
+interface Supplier {
+  id: number
+  supplier_no: string
+  name: string
+  contact_person: string
+  contact_phone: string
+  email: string
+  supplier_type: string
+  status: string
+  address: string
+  created_at: string
+}
+
 // 响应式数据
-const suppliers = ref([])
+const suppliers = ref<Supplier[]>([])
 const loading = ref(false)
 const searchQuery = ref('')
 const selectedStatus = ref('')
@@ -220,7 +233,7 @@ const filteredSuppliers = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      supplier => supplier.name.toLowerCase().includes(query) || supplier.supplier_no.toLowerCase().includes(query)
+      supplier => supplier.name.toLowerCase().includes(query) || supplier.supplier_no.toLowerCase().includes(query),
     )
   }
 
@@ -344,9 +357,11 @@ onMounted(async () => {
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
     suppliers.value = mockSuppliers
-  } catch (error) {
+  }
+  catch (error) {
     console.error('获取供应商数据失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 })

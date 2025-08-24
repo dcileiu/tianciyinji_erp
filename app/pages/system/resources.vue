@@ -101,7 +101,7 @@
 
       <CardContent>
         <div v-if="loading" class="flex items-center justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
 
         <div v-else-if="filteredResources.length === 0" class="text-center py-8 text-gray-500">暂无资源数据</div>
@@ -110,7 +110,7 @@
           <TableHeader>
             <TableRow>
               <TableHead class="w-12">
-                <input type="checkbox" class="rounded" />
+                <input type="checkbox" class="" />
               </TableHead>
               <TableHead>资源键值</TableHead>
               <TableHead>资源名称</TableHead>
@@ -124,11 +124,11 @@
           <TableBody>
             <TableRow v-for="resource in filteredResources" :key="resource.id">
               <TableCell>
-                <input type="checkbox" class="rounded" />
+                <input type="checkbox" class="" />
               </TableCell>
 
               <TableCell>
-                <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">
+                <code class="bg-gray-100 px-2 py-1 text-sm font-mono">
                   {{ resource.key }}
                 </code>
               </TableCell>
@@ -213,7 +213,7 @@
                   <SelectValue placeholder="选择资源类型" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="type in resourceTypes" :key="type.value" :value="type.value">
+                  <SelectItem v-for="type in typeOptions" :key="type.value" :value="type.value">
                     {{ type.label }}
                   </SelectItem>
                 </SelectContent>
@@ -268,14 +268,13 @@
     </Dialog>
 
     <!-- 确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, onMounted, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 import { Database, Download, Edit, Eye, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
@@ -409,9 +408,9 @@ const filteredResources = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       resource =>
-        resource.key.toLowerCase().includes(query) ||
-        resource.name.toLowerCase().includes(query) ||
-        (resource.description && resource.description.toLowerCase().includes(query))
+        resource.key.toLowerCase().includes(query)
+        || resource.name.toLowerCase().includes(query)
+        || (resource.description && resource.description.toLowerCase().includes(query)),
     )
   }
 
@@ -438,13 +437,13 @@ const typeMap: Record<string, string> = {
   menu: '菜单',
 }
 
-const severityMap: Record<string, string> = {
-  page: 'info',
-  function: 'success',
-  data: 'warn',
-  api: 'danger',
+const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  page: 'secondary',
+  function: 'default',
+  data: 'outline',
+  api: 'destructive',
   button: 'secondary',
-  menu: 'contrast',
+  menu: 'secondary',
 }
 
 // 方法
@@ -462,17 +461,8 @@ const getResourceIcon = (type: string) => {
 
 const getTypeDisplayName = (type: string) => typeMap[type] || type
 
-const getTypeSeverity = (type: string) => severityMap[type] || 'info'
-
-// 获取状态Badge变体
-const getStatusSeverity = (status: string) => {
-  const severityMap: Record<string, string> = {
-    active: 'default',
-    inactive: 'destructive',
-    pending: 'secondary',
-  }
-  return severityMap[status] || 'outline'
-}
+const getTypeSeverity = (type: string): 'default' | 'destructive' | 'outline' | 'secondary' =>
+  (severityMap[type] as 'default' | 'destructive' | 'outline' | 'secondary') || 'secondary'
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleString('zh-CN')
@@ -482,9 +472,11 @@ const loadResources = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } catch (error) {
+  }
+  catch (error) {
     console.error('加载资源失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -547,7 +539,8 @@ const saveResource = async () => {
         }
       }
       toast.success('资源更新成功')
-    } else {
+    }
+    else {
       // 新增资源
       const newResource = {
         id: Date.now().toString(),
@@ -559,9 +552,11 @@ const saveResource = async () => {
     }
 
     closeDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存资源失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

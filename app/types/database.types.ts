@@ -19,7 +19,7 @@ export type ProductionStatus = 'pending' | 'in_progress' | 'completed' | 'cancel
 
 // 导出所有需要的类型
 export type {} from // 不再导出ProcessRoute和ProcessStep，因为它们未被使用
-'./production'
+  './production'
 
 // 数据库表结构类型定义
 export interface Database {

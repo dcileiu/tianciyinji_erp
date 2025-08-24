@@ -1,13 +1,13 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 // UI组件现在自动导入，无需手动导入
 
+import { cn } from '@/lib/utils'
 import type { BulletLegendItemInterface } from '@unovis/ts'
-import type { BaseChartProps } from '.'
 import { Axis, GroupedBar, StackedBar } from '@unovis/ts'
 import { VisAxis, VisGroupedBar, VisStackedBar, VisXYContainer } from '@unovis/vue'
 import { useMounted } from '@vueuse/core'
 import { type Component, computed, ref } from 'vue'
-import { cn } from '@/lib/utils'
+import type { BaseChartProps } from '.'
 
 const props = withDefaults(
   defineProps<
@@ -38,7 +38,7 @@ const props = withDefaults(
     showTooltip: true,
     showLegend: true,
     showGridLine: true,
-  }
+  },
 )
 const emits = defineEmits<{
   legendItemClick: [d: BulletLegendItemInterface, i: number]
@@ -48,13 +48,13 @@ type KeyOfT = Extract<keyof T, string>
 type Data = (typeof props.data)[number]
 
 const index = computed(() => props.index as KeyOfT)
-const colors = computed(() => (props.colors?.length ? props.colors : defaultColors(props.categories.length)))
+const colors = computed(() => (props.colors?.length ? props.colors : ['#8b5cf6']))
 const legendItems = ref<BulletLegendItemInterface[]>(
   props.categories.map((category, i) => ({
     name: category,
     color: colors.value[i],
     inactive: false,
-  }))
+  })),
 )
 
 const isMounted = useMounted()
@@ -82,7 +82,7 @@ const selectorsBar = computed(() => (props.type === 'grouped' ? GroupedBar.selec
 
       <VisBarComponent
         :x="(d: Data, i: number) => i"
-        :y="categories.map(category => (d: Data) => d[category])"
+        :y="categories.map((category) => (d: Data) => d[category])"
         :color="colors"
         :rounded-corners="roundedCorners"
         :bar-padding="0.05"
@@ -119,7 +119,7 @@ const selectorsBar = computed(() => (props.type === 'grouped' ? GroupedBar.selec
         tick-text-color="hsl(var(--vis-text-color))"
       />
 
-      <slot />
+      <slot></slot>
     </VisXYContainer>
   </div>
 </template>

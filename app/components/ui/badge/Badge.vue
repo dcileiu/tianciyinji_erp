@@ -19,6 +19,6 @@ const delegatedProps = reactiveOmit(props, 'class')
 
 <template>
   <Primitive data-slot="badge" :class="cn(badgeVariants({ variant }), props.class)" v-bind="delegatedProps">
-    <slot />
+    <slot ></slot>
   </Primitive>
 </template>

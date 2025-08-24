@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import type { VariantProps } from 'class-variance-authority'
-import type { ToggleGroupItemProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { ToggleGroupItem, useForwardProps } from 'reka-ui'
-import { inject } from 'vue'
+import { toggleVariants } from '@/components/ui/toggle'
 import { cn } from '@/lib/utils'
+import { reactiveOmit } from '@vueuse/core'
+import type { VariantProps } from 'class-variance-authority'
+import { ToggleGroupItem, type ToggleGroupItemProps, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+import { inject } from 'vue'
 
 type ToggleGroupVariants = VariantProps<typeof toggleVariants>
 
@@ -39,10 +39,10 @@ const forwardedProps = useForwardProps(delegatedProps)
           size: context?.size || size,
         }),
         'min-w-0 flex-1 shrink-0 rounded-none shadow-none first:rounded-l-md last:rounded-r-md focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l',
-        props.class
+        props.class,
       )
     "
   >
-    <slot v-bind="slotProps" />
+    <slot v-bind="slotProps"></slot>
   </ToggleGroupItem>
 </template>

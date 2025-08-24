@@ -52,7 +52,7 @@
       </CardHeader>
       <CardContent>
         <div v-if="loading" class="flex items-center justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
           <span class="ml-2 text-gray-600 dark:text-gray-400">加载中...</span>
         </div>
 
@@ -69,7 +69,7 @@
             <TableHeader>
               <TableRow>
                 <TableHead class="w-12">
-                  <input type="checkbox" class="rounded" />
+                  <input type="checkbox" class="" />
                 </TableHead>
                 <TableHead>菜单名称</TableHead>
                 <TableHead>路径</TableHead>
@@ -84,7 +84,7 @@
               <template v-for="menu in filteredMenus" :key="menu.id">
                 <TableRow>
                   <TableCell>
-                    <input type="checkbox" class="rounded" />
+                    <input type="checkbox" class="" />
                   </TableCell>
                   <TableCell>
                     <div class="flex items-center space-x-2">
@@ -93,7 +93,7 @@
                     </div>
                   </TableCell>
                   <TableCell>
-                    <code v-if="menu.path" class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm">
+                    <code v-if="menu.path" class="bg-gray-100 dark:bg-gray-800 px-2 py-1 text-sm">
                       {{ menu.path }}
                     </code>
                     <span v-else class="text-gray-500">-</span>
@@ -119,13 +119,13 @@
                   </TableCell>
                   <TableCell>
                     <div class="flex items-center space-x-1">
-                      <Button variant="ghost" size="sm" @click="addChildMenu(menu)" title="添加子菜单">
+                      <Button variant="ghost" size="sm" title="添加子菜单" @click="addChildMenu(menu)">
                         <Plus class="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" @click="editMenu(menu)" title="编辑">
+                      <Button variant="ghost" size="sm" title="编辑" @click="editMenu(menu)">
                         <Edit class="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" @click="confirmDeleteMenu(menu)" title="删除">
+                      <Button variant="ghost" size="sm" title="删除" @click="confirmDeleteMenu(menu)">
                         <Trash2 class="w-4 h-4 text-red-500" />
                       </Button>
                     </div>
@@ -135,7 +135,7 @@
                 <template v-if="menu.children && menu.children.length > 0">
                   <TableRow v-for="child in menu.children" :key="child.id" class="bg-gray-50 dark:bg-gray-900/50">
                     <TableCell>
-                      <input type="checkbox" class="rounded" />
+                      <input type="checkbox" class="" />
                     </TableCell>
                     <TableCell>
                       <div class="flex items-center space-x-2 pl-6">
@@ -144,7 +144,7 @@
                       </div>
                     </TableCell>
                     <TableCell>
-                      <code v-if="child.path" class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm">
+                      <code v-if="child.path" class="bg-gray-100 dark:bg-gray-800 px-2 py-1 text-sm">
                         {{ child.path }}
                       </code>
                       <span v-else class="text-gray-500">-</span>
@@ -170,13 +170,13 @@
                     </TableCell>
                     <TableCell>
                       <div class="flex items-center space-x-1">
-                        <Button variant="ghost" size="sm" @click="addChildMenu(child)" title="添加子菜单">
+                        <Button variant="ghost" size="sm" title="添加子菜单" @click="addChildMenu(child)">
                           <Plus class="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" @click="editMenu(child)" title="编辑">
+                        <Button variant="ghost" size="sm" title="编辑" @click="editMenu(child)">
                           <Edit class="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" @click="confirmDeleteMenu(child)" title="删除">
+                        <Button variant="ghost" size="sm" title="删除" @click="confirmDeleteMenu(child)">
                           <Trash2 class="w-4 h-4 text-red-500" />
                         </Button>
                       </div>
@@ -230,7 +230,7 @@
               <Label for="menu-icon">菜单图标</Label>
               <div class="flex space-x-2">
                 <Input id="menu-icon" v-model="menuForm.icon" placeholder="例如: Home" class="flex-1" />
-                <div class="flex items-center justify-center w-10 h-10 border rounded">
+                <div class="flex items-center justify-center w-10 h-10 border ">
                   <component :is="getMenuIcon(menuForm.icon)" class="w-5 h-5" />
                 </div>
               </div>
@@ -271,13 +271,13 @@
 
             <div class="space-y-2">
               <Label for="external-url">外部链接</Label>
-              <Input id="external-url" v-model="menuForm.external_url" placeholder="例如: https://example.com" />
+              <Input id="external-url" v-model="menuForm.externalUrl" placeholder="例如: https://example.com" />
             </div>
           </div>
 
           <div class="flex items-center space-x-4">
             <div class="flex items-center space-x-2">
-              <input id="is-hidden" v-model="menuForm.is_hidden" type="checkbox" class="rounded border-gray-300" />
+              <input id="is-hidden" v-model="menuForm.is_hidden" type="checkbox" class="border-gray-300" />
               <Label for="is-hidden">隐藏菜单</Label>
             </div>
           </div>
@@ -285,7 +285,7 @@
 
         <DialogFooter>
           <Button variant="outline" @click="closeMenuDialog"> 取消 </Button>
-          <Button @click="saveMenu" :disabled="saving"> 保存 </Button>
+          <Button :disabled="saving" @click="saveMenu"> 保存 </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -295,7 +295,6 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, onMounted, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 import {
@@ -333,8 +332,6 @@ const saving = ref(false)
 const error = ref('')
 const showMenuDialog = ref(false)
 const editingMenu = ref(null as any)
-const selectedMenus = ref([])
-// 移除useConfirm，使用原生confirm
 
 // 搜索和筛选
 const searchQuery = ref('')
@@ -347,6 +344,7 @@ const menuForm = ref({
   path: '',
   icon: '',
   sort_order: 0,
+  externalUrl: '',
   status: 'active',
   description: '',
   permission: '',
@@ -520,7 +518,7 @@ const filteredMenus = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      menu => menu.name.toLowerCase().includes(query) || (menu.path && menu.path.toLowerCase().includes(query))
+      menu => menu.name.toLowerCase().includes(query) || (menu.path && menu.path.toLowerCase().includes(query)),
     )
   }
 
@@ -529,18 +527,6 @@ const filteredMenus = computed(() => {
   }
 
   return result
-})
-
-const menuTreeOptions = computed(() => {
-  const buildTreeOptions = (menus: any[], level = 0): any[] => {
-    return menus.map(menu => ({
-      key: menu.id,
-      label: menu.name,
-      children: menu.children ? buildTreeOptions(menu.children, level + 1) : [],
-    }))
-  }
-
-  return [{ key: 'root', label: '根菜单', children: buildTreeOptions(mockMenus.value) }]
 })
 
 // 方法
@@ -553,10 +539,12 @@ const loadMenus = async () => {
   error.value = ''
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } catch (err) {
+  }
+  catch (err) {
     error.value = '加载菜单失败'
     console.error('加载菜单失败:', err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -631,7 +619,7 @@ const saveMenu = async () => {
     if (editingMenu.value) {
       // 更新菜单
       const updateMenuInTree = (menus: any[]): any[] => {
-        return menus.map(menu => {
+        return menus.map((menu) => {
           if (menu.id === editingMenu.value.id) {
             return { ...menu, ...menuForm.value }
           }
@@ -642,7 +630,8 @@ const saveMenu = async () => {
         })
       }
       mockMenus.value = updateMenuInTree(mockMenus.value)
-    } else {
+    }
+    else {
       // 新增菜单
       const newMenu = {
         id: Date.now().toString(),
@@ -654,7 +643,7 @@ const saveMenu = async () => {
       if (menuForm.value.parent_id) {
         // 添加为子菜单
         const addToParent = (menus: any[]): any[] => {
-          return menus.map(menu => {
+          return menus.map((menu) => {
             if (menu.id === menuForm.value.parent_id) {
               return { ...menu, children: [...(menu.children || []), newMenu] }
             }
@@ -665,16 +654,19 @@ const saveMenu = async () => {
           })
         }
         mockMenus.value = addToParent(mockMenus.value)
-      } else {
+      }
+      else {
         // 添加为根菜单
         mockMenus.value.push(newMenu)
       }
     }
 
     closeMenuDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存菜单失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
@@ -687,7 +679,7 @@ const confirmDeleteMenu = (menu: any) => {
 
 const deleteMenu = (menuId: string) => {
   const deleteFromTree = (menus: any[]): any[] => {
-    return menus.filter(menu => {
+    return menus.filter((menu) => {
       if (menu.id === menuId) {
         return false
       }

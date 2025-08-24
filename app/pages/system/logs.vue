@@ -71,7 +71,7 @@
               <p class="text-sm text-muted-foreground">总日志数</p>
               <p class="text-2xl font-bold text-blue-600">{{ logStats.total }}</p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 -lg flex items-center justify-center">
               <FileText class="text-blue-600 w-6 h-6" />
             </div>
           </div>
@@ -85,8 +85,8 @@
               <p class="text-sm text-muted-foreground">今日操作</p>
               <p class="text-2xl font-bold text-green-600">{{ logStats.today }}</p>
             </div>
-            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-              <Calendar class="text-green-600 w-6 h-6" />
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 -lg flex items-center justify-center">
+              <!-- Calendar 组件需要手动替换为 DatePicker -->
             </div>
           </div>
         </CardContent>
@@ -99,7 +99,7 @@
               <p class="text-sm text-muted-foreground">错误日志</p>
               <p class="text-2xl font-bold text-red-600">{{ logStats.errors }}</p>
             </div>
-            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 -lg flex items-center justify-center">
               <AlertTriangle class="text-red-600 w-6 h-6" />
             </div>
           </div>
@@ -113,7 +113,7 @@
               <p class="text-sm text-muted-foreground">活跃用户</p>
               <p class="text-2xl font-bold text-purple-600">{{ logStats.activeUsers }}</p>
             </div>
-            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 -lg flex items-center justify-center">
               <Users class="text-purple-600 w-6 h-6" />
             </div>
           </div>
@@ -131,7 +131,7 @@
       </CardHeader>
 
       <CardContent>
-        <div class="rounded-md border">
+        <div class="-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -150,7 +150,7 @@
               <TableRow v-if="loading">
                 <TableCell colspan="9" class="text-center py-8">
                   <div class="flex items-center justify-center">
-                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                    <div class="animate-spin -full h-6 w-6 border-b-2 border-primary"></div>
                     <span class="ml-2">加载中...</span>
                   </div>
                 </TableCell>
@@ -158,13 +158,13 @@
               <TableRow v-else-if="filteredLogs.length === 0">
                 <TableCell colspan="9" class="text-center py-8 text-muted-foreground"> 暂无数据 </TableCell>
               </TableRow>
-              <TableRow v-else v-for="log in filteredLogs" :key="log.id">
+              <TableRow v-for="log in filteredLogs" v-else :key="log.id">
                 <TableCell>
                   <Badge
                     :variant="
-                      getLogTypeSeverity(log.type) === 'danger'
+                      getLogTypeSeverity(log.type) === 'destructive'
                         ? 'destructive'
-                        : getLogTypeSeverity(log.type) === 'success'
+                        : getLogTypeSeverity(log.type) === 'default'
                           ? 'default'
                           : 'secondary'
                     "
@@ -174,9 +174,7 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center space-x-2">
-                    <div
-                      class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium"
-                    >
+                    <div class="w-8 h-8 bg-primary/10 -full flex items-center justify-center text-sm font-medium">
                       {{ log.user_name.charAt(0) }}
                     </div>
                     <span class="font-medium">{{ log.user_name }}</span>
@@ -186,7 +184,7 @@
                   <span class="font-medium">{{ log.action }}</span>
                 </TableCell>
                 <TableCell>
-                  <code class="bg-muted px-2 py-1 rounded text-sm">
+                  <code class="bg-muted px-2 py-1 text-sm">
                     {{ log.resource }}
                   </code>
                 </TableCell>
@@ -199,8 +197,8 @@
                   </span>
                 </TableCell>
                 <TableCell>
-                  <Badge :variant="log.status === 'success' ? 'default' : 'destructive'">
-                    {{ log.status === 'success' ? '成功' : '失败' }}
+                  <Badge :variant="log.status === 'default' ? 'default' : 'destructive'">
+                    {{ log.status === 'default' ? '成功' : '失败' }}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -233,9 +231,9 @@
               <div class="mt-1">
                 <Badge
                   :variant="
-                    getLogTypeSeverity(selectedLog.type) === 'danger'
+                    getLogTypeSeverity(selectedLog.type) === 'destructive'
                       ? 'destructive'
-                      : getLogTypeSeverity(selectedLog.type) === 'success'
+                      : getLogTypeSeverity(selectedLog.type) === 'default'
                         ? 'default'
                         : 'secondary'
                   "
@@ -247,8 +245,8 @@
             <div>
               <Label class="text-sm font-medium">状态</Label>
               <div class="mt-1">
-                <Badge :variant="selectedLog.status === 'success' ? 'default' : 'destructive'">
-                  {{ selectedLog.status === 'success' ? '成功' : '失败' }}
+                <Badge :variant="selectedLog.status === 'default' ? 'default' : 'destructive'">
+                  {{ selectedLog.status === 'default' ? '成功' : '失败' }}
                 </Badge>
               </div>
             </div>
@@ -272,7 +270,7 @@
 
           <div>
             <Label class="text-sm font-medium">资源</Label>
-            <code class="bg-muted px-2 py-1 rounded text-sm mt-1 block">
+            <code class="bg-muted px-2 py-1 text-sm mt-1 block">
               {{ selectedLog.resource }}
             </code>
           </div>
@@ -295,14 +293,14 @@
 
           <div v-if="selectedLog.error_message">
             <Label class="text-sm font-medium">错误信息</Label>
-            <div class="bg-red-50 dark:bg-red-900/20 p-3 rounded border mt-1">
+            <div class="bg-red-50 dark:bg-red-900/20 p-3 border mt-1">
               <p class="text-sm text-red-600 dark:text-red-400">{{ selectedLog.error_message }}</p>
             </div>
           </div>
 
           <div v-if="selectedLog.request_data">
             <Label class="text-sm font-medium">请求数据</Label>
-            <div class="bg-muted p-3 rounded mt-1">
+            <div class="bg-muted p-3 mt-1">
               <pre class="text-sm overflow-auto">{{ JSON.stringify(selectedLog.request_data, null, 2) }}</pre>
             </div>
           </div>
@@ -318,9 +316,7 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, onMounted, ref } from 'vue'
-
-import { AlertTriangle, Calendar, Download, Eye, FileText, RefreshCw, Search, Trash2, Users } from 'lucide-vue-next'
+import { AlertTriangle, Download, Eye, FileText, RefreshCw, Search, Trash2, Users } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 // 页面配置
@@ -341,8 +337,8 @@ const selectedLog = ref(null as any)
 const searchQuery = ref('')
 const logTypeFilter = ref('')
 const dateRange = ref({
-  start: null as Date | null,
-  end: null as Date | null,
+  start: null as string | null,
+  end: null as string | null,
 })
 
 // 统计数据
@@ -372,7 +368,7 @@ const mockLogs = ref([
     ip_address: '192.168.1.100',
     user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     method: 'POST',
-    status: 'success',
+    status: 'default',
     created_at: new Date('2024-01-15 10:30:00'),
     request_data: { username: 'admin', remember: true },
     error_message: null,
@@ -386,7 +382,7 @@ const mockLogs = ref([
     ip_address: '192.168.1.101',
     user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
     method: 'POST',
-    status: 'success',
+    status: 'default',
     created_at: new Date('2024-01-15 10:25:00'),
     request_data: { name: '李四', email: 'lisi@example.com' },
     error_message: null,
@@ -414,7 +410,7 @@ const mockLogs = ref([
     ip_address: '127.0.0.1',
     user_agent: 'System Process',
     method: 'SYSTEM',
-    status: 'success',
+    status: 'default',
     created_at: new Date('2024-01-15 09:00:00'),
     request_data: null,
     error_message: null,
@@ -429,9 +425,9 @@ const filteredLogs = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       log =>
-        log.user_name.toLowerCase().includes(query) ||
-        log.action.toLowerCase().includes(query) ||
-        log.resource.toLowerCase().includes(query)
+        log.user_name.toLowerCase().includes(query)
+        || log.action.toLowerCase().includes(query)
+        || log.resource.toLowerCase().includes(query),
     )
   }
 
@@ -440,7 +436,7 @@ const filteredLogs = computed(() => {
   }
 
   if (dateRange.value.start && dateRange.value.end) {
-    result = result.filter(log => {
+    result = result.filter((log) => {
       const logDate = new Date(log.created_at)
       return logDate >= dateRange.value.start! && logDate <= dateRange.value.end!
     })
@@ -457,17 +453,17 @@ const logTypeMap: Record<string, string> = {
   system: '系统日志',
 }
 
-const logTypeSeverityMap: Record<string, string> = {
-  login: 'info',
-  operation: 'success',
-  error: 'danger',
+const logTypeSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  login: 'secondary',
+  operation: 'default',
+  error: 'destructive',
   system: 'secondary',
 }
 
 // 方法
 const getLogTypeDisplayName = (type: string) => logTypeMap[type] || type
 
-const getLogTypeSeverity = (type: string) => logTypeSeverityMap[type] || 'info'
+const getLogTypeSeverity = (type: string) => logTypeSeverityMap[type] || 'secondary'
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleString('zh-CN')

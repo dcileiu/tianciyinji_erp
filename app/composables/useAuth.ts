@@ -1,7 +1,6 @@
-import type { LoginForm, UserState, AuthError as CustomAuthError } from '~/types/auth'
-import type { User } from '~/types/database'
+import { computed, readonly, ref } from 'vue'
+import type { LoginForm, UserState } from '~/types/auth'
 import type { Database } from '~/types/database.types'
-import { ref, computed, readonly, watch } from 'vue'
 
 // 简单的AuthError类型定义
 interface AuthError {
@@ -51,7 +50,8 @@ export const useAuth = () => {
       }
 
       throw new Error('登录失败')
-    } catch (error: unknown) {
+    }
+    catch (error: unknown) {
       const err = error as Error
       return {
         success: false,
@@ -59,7 +59,8 @@ export const useAuth = () => {
           message: err.message || '登录失败，请重试',
         },
       }
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -87,14 +88,16 @@ export const useAuth = () => {
         user: data.user,
         needsEmailConfirmation: !data.session,
       }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return {
         success: false,
         error: {
           message: error.message || '注册失败，请重试',
         },
       }
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -115,14 +118,16 @@ export const useAuth = () => {
 
       await router.push('/login')
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return {
         success: false,
         error: {
           message: error.message || '登出失败',
         },
       }
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -139,7 +144,8 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return {
         success: false,
         error: {
@@ -161,7 +167,8 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return {
         success: false,
         error: {
@@ -172,7 +179,7 @@ export const useAuth = () => {
   }
 
   // 更新用户信息
-  const updateProfile = async (updates: { email?: string; data?: Record<string, any> }) => {
+  const updateProfile = async (updates: { email?: string, data?: Record<string, any> }) => {
     try {
       const { error } = await supabase.auth.updateUser(updates)
 
@@ -181,7 +188,8 @@ export const useAuth = () => {
       }
 
       return { success: true }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       return {
         success: false,
         error: {
@@ -201,7 +209,8 @@ export const useAuth = () => {
       }
 
       return data.session
-    } catch (error) {
+    }
+    catch (error) {
       console.error('获取会话失败:', error)
       return null
     }
@@ -222,7 +231,8 @@ export const useAuth = () => {
       }
 
       return data.session
-    } catch (error) {
+    }
+    catch (error) {
       console.error('刷新会话失败:', error)
       return null
     }
@@ -236,15 +246,18 @@ export const useAuth = () => {
       if (session?.user) {
         userState.value.user = session.user
         userState.value.isAuthenticated = true
-      } else {
+      }
+      else {
         userState.value.user = null
         userState.value.isAuthenticated = false
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('初始化认证状态失败:', error)
       userState.value.user = null
       userState.value.isAuthenticated = false
-    } finally {
+    }
+    finally {
       userState.value.isLoading = false
     }
   }
@@ -256,7 +269,8 @@ export const useAuth = () => {
       if (session?.user) {
         userState.value.user = session.user
         userState.value.isAuthenticated = true
-      } else {
+      }
+      else {
         userState.value.user = null
         userState.value.isAuthenticated = false
       }

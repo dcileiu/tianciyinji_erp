@@ -18,6 +18,6 @@ const forwardedProps = useForwardProps(delegatedProps)
     :class="cn('flex justify-center pt-1 relative items-center w-full', props.class)"
     v-bind="forwardedProps"
   >
-    <slot />
+    <slot ></slot>
   </RangeCalendarHeader>
 </template>

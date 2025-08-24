@@ -1,13 +1,12 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 // UI组件现在自动导入，无需手动导入
 
-import type { BaseChartProps } from '.'
-import { type BulletLegendItemInterface, CurveType } from '@unovis/ts'
-import { Axis, Line } from '@unovis/ts'
+import { cn } from '@/lib/utils'
+import { Axis, type BulletLegendItemInterface, CurveType, Line } from '@unovis/ts'
 import { VisAxis, VisLine, VisXYContainer } from '@unovis/vue'
 import { useMounted } from '@vueuse/core'
 import { type Component, computed, ref } from 'vue'
-import { cn } from '@/lib/utils'
+import type { BaseChartProps } from '.'
 
 const props = withDefaults(
   defineProps<
@@ -31,7 +30,7 @@ const props = withDefaults(
     showTooltip: true,
     showLegend: true,
     showGridLine: true,
-  }
+  },
 )
 
 const emits = defineEmits<{
@@ -42,14 +41,14 @@ type KeyOfT = Extract<keyof T, string>
 type Data = (typeof props.data)[number]
 
 const index = computed(() => props.index as KeyOfT)
-const colors = computed(() => (props.colors?.length ? props.colors : defaultColors(props.categories.length)))
+const colors = computed(() => (props.colors?.length ? props.colors : ['#8b5cf6']))
 
 const legendItems = ref<BulletLegendItemInterface[]>(
   props.categories.map((category, i) => ({
     name: category,
     color: colors.value[i],
     inactive: false,
-  }))
+  })),
 )
 
 const isMounted = useMounted()
@@ -80,7 +79,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
           :color="colors[i]"
           :attributes="{
             [Line.selectors.line]: {
-              opacity: legendItems.find(item => item.name === category)?.inactive ? filterOpacity : 1,
+              opacity: legendItems.find((item) => item.name === category)?.inactive ? filterOpacity : 1,
             },
           }"
         />
@@ -109,7 +108,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
         tick-text-color="hsl(var(--vis-text-color))"
       />
 
-      <slot />
+      <slot></slot>
     </VisXYContainer>
   </div>
 </template>

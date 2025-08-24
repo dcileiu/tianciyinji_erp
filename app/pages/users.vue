@@ -7,7 +7,7 @@
         <p class="text-muted-color">管理系统用户账户、角色权限和访问控制</p>
       </div>
       <PermissionWrapper :has-permission="canCreateUser">
-        <Button label="新增用户" icon="pi pi-plus" @click="openCreateDialog" />
+        <Button @click="openCreateDialog" />
       </PermissionWrapper>
     </div>
 
@@ -20,7 +20,7 @@
               <p class="text-blue-600 dark:text-blue-400 text-sm font-medium">总用户数</p>
               <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ userStats.totalUsers }}</p>
             </div>
-            <div class="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
+            <div class="bg-blue-100 dark:bg-blue-800 p-3 -full">
               <i class="pi pi-users text-blue-600 dark:text-blue-400 text-xl"></i>
             </div>
           </div>
@@ -34,7 +34,7 @@
               <p class="text-green-600 dark:text-green-400 text-sm font-medium">活跃用户</p>
               <p class="text-2xl font-bold text-green-900 dark:text-green-100">{{ userStats.activeUsers }}</p>
             </div>
-            <div class="bg-green-100 dark:bg-green-800 p-3 rounded-full">
+            <div class="bg-green-100 dark:bg-green-800 p-3 -full">
               <i class="pi pi-user-plus text-green-600 dark:text-green-400 text-xl"></i>
             </div>
           </div>
@@ -48,7 +48,7 @@
               <p class="text-purple-600 dark:text-purple-400 text-sm font-medium">管理员</p>
               <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">{{ userStats.adminUsers }}</p>
             </div>
-            <div class="bg-purple-100 dark:bg-purple-800 p-3 rounded-full">
+            <div class="bg-purple-100 dark:bg-purple-800 p-3 -full">
               <i class="pi pi-shield text-purple-600 dark:text-purple-400 text-xl"></i>
             </div>
           </div>
@@ -62,7 +62,7 @@
               <p class="text-red-600 dark:text-red-400 text-sm font-medium">停用用户</p>
               <p class="text-2xl font-bold text-red-900 dark:text-red-100">{{ userStats.inactiveUsers }}</p>
             </div>
-            <div class="bg-red-100 dark:bg-red-800 p-3 rounded-full">
+            <div class="bg-red-100 dark:bg-red-800 p-3 -full">
               <i class="pi pi-user-minus text-red-600 dark:text-red-400 text-xl"></i>
             </div>
           </div>
@@ -79,16 +79,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color">搜索用户</label>
-            <InputText v-model="searchQuery" placeholder="用户名、邮箱..." class="w-full" />
+            <Input v-model="searchQuery" placeholder="用户名、邮箱..." class="w-full" />
           </div>
 
           <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color">角色</label>
-            <Dropdown
+            <Select
               v-model="selectedRole"
               :options="roleOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部角色"
               class="w-full"
               show-clear
@@ -97,11 +96,10 @@
 
           <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color">状态</label>
-            <Dropdown
+            <Select
               v-model="selectedStatus"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部状态"
               class="w-full"
               show-clear
@@ -110,7 +108,7 @@
 
           <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color opacity-0">操作</label>
-            <Button label="重置筛选" icon="pi pi-refresh" outlined class="w-full" @click="resetFilters" />
+            <Button class="w-full" @click="resetFilters" />
           </div>
         </div>
       </template>
@@ -122,7 +120,7 @@
         <h3 class="text-lg font-semibold text-color">用户列表</h3>
       </template>
       <template #content>
-        <DataTable
+        <Table
           :value="filteredUsers"
           :loading="loading"
           striped-rows
@@ -153,17 +151,16 @@
               <i class="pi pi-users text-6xl mb-4 opacity-50"></i>
               <h3 class="text-lg mb-2">暂无用户数据</h3>
               <p class="mb-4">开始创建第一个用户</p>
-              <Button label="新增用户" icon="pi pi-plus" @click="openCreateDialog" />
+              <Button @click="openCreateDialog" />
             </div>
           </template>
 
-          <Column header="用户信息">
+          <TableHead header="用户信息">
             <template #body="slotProps">
               <div class="flex align-items-center gap-3">
                 <Avatar
                   :image="slotProps.data.avatar"
-                  :label="slotProps.data.name?.charAt(0)"
-                  size="large"
+                  size="lg"
                   shape="circle"
                 />
                 <div>
@@ -172,77 +169,65 @@
                 </div>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="role" header="角色">
+          <TableHead field="role" header="角色">
             <template #body="slotProps">
               <Tag :value="getRoleDisplayName(slotProps.data.role)" :severity="getRoleSeverity(slotProps.data.role)" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态">
+          <TableHead field="status" header="状态">
             <template #body="slotProps">
               <Tag
                 :value="getStatusDisplayName(slotProps.data.status)"
                 :severity="getStatusSeverity(slotProps.data.status)"
               />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="last_login" header="最后登录">
+          <TableHead field="last_login" header="最后登录">
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
                 {{ formatLastLogin(slotProps.data.last_login) }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="created_at" header="创建时间">
+          <TableHead field="created_at" header="创建时间">
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
                 {{ formatDate(slotProps.data.created_at) }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" style="width: 150px">
+          <TableHead header="操作" style="width: 150px">
             <template #body="slotProps">
               <div class="flex gap-2">
                 <PermissionWrapper :has-permission="canEditUser">
                   <Button
-                    v-tooltip="'查看详情'"
-                    icon="pi pi-eye"
-                    outlined
-                    rounded
-                    size="small"
+                    size="sm"
                     @click="viewUser(slotProps.data)"
                   />
                 </PermissionWrapper>
                 <PermissionWrapper :has-permission="canEditUser">
                   <Button
-                    v-tooltip="'编辑'"
-                    icon="pi pi-pencil"
-                    outlined
-                    rounded
-                    size="small"
+                    size="sm"
                     @click="editUser(slotProps.data)"
                   />
                 </PermissionWrapper>
                 <PermissionWrapper :has-permission="canDeleteUser">
                   <Button
-                    v-tooltip="'删除'"
-                    icon="pi pi-trash"
-                    outlined
-                    rounded
-                    size="small"
+                    size="sm"
                     severity="danger"
                     @click="confirmDeleteUser(slotProps.data)"
                   />
                 </PermissionWrapper>
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
@@ -259,21 +244,20 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">用户名 *</label>
-              <InputText v-model="userForm.name" placeholder="请输入用户名" required />
+              <Input v-model="userForm.name" placeholder="请输入用户名" required />
             </div>
 
             <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">邮箱 *</label>
-              <InputText v-model="userForm.email" type="email" placeholder="请输入邮箱" required />
+              <Input v-model="userForm.email" type="email" placeholder="请输入邮箱" required />
             </div>
 
             <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">角色 *</label>
-              <Dropdown
+              <Select
                 v-model="userForm.role"
                 :options="roleOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择角色"
                 required
               />
@@ -281,19 +265,19 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">状态</label>
-              <Dropdown
+              <Select
                 v-model="userForm.status"
                 :options="statusOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择状态"
               />
             </div>
 
             <div v-if="!editingUser" class="space-y-2 md:col-span-2">
               <label class="block text-sm font-medium text-color">初始密码 *</label>
-              <Password
+              <Input
                 v-model="userForm.password"
+                type="password"
                 placeholder="请输入初始密码"
                 :feedback="false"
                 toggle-mask
@@ -311,33 +295,18 @@
 
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button label="取消" icon="pi pi-times" outlined @click="closeUserDialog" />
-          <Button label="保存" icon="pi pi-check" :loading="submitting" @click="submitUser" />
+          <Button @click="closeUserDialog" />
+          <Button :loading="submitting" @click="submitUser" />
         </div>
       </template>
     </Dialog>
 
     <!-- 确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import Password from 'primevue/password'
-import Textarea from 'primevue/textarea'
-import ConfirmDialog from 'primevue/confirmdialog'
-import Skeleton from 'primevue/skeleton'
-import { useConfirm } from 'primevue/useconfirm'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
 // 页面配置
@@ -357,8 +326,7 @@ const showUserDialog = ref(false)
 const editingUser = ref(null)
 const submitting = ref(false)
 const loading = ref(false)
-const confirm = useConfirm()
-
+// const confirm = useConfirm() // 已移除
 // 权限检查（模拟）
 const canCreateUser = ref(true)
 const canEditUser = ref(true)
@@ -449,11 +417,11 @@ const users = ref([
 
 // 计算属性
 const filteredUsers = computed(() => {
-  return users.value.filter(user => {
-    const matchesSearch =
-      !searchQuery.value ||
-      user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return users.value.filter((user) => {
+    const matchesSearch
+      = !searchQuery.value
+        || user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesRole = !selectedRole.value || user.role === selectedRole.value
     const matchesStatus = !selectedStatus.value || user.status === selectedStatus.value
 
@@ -474,11 +442,11 @@ const getRoleDisplayName = (role: string): string => {
 }
 
 const getRoleSeverity = (role: string): string => {
-  const severityMap: Record<string, string> = {
-    super_admin: 'danger',
-    admin: 'warn',
-    business_admin: 'info',
-    user: 'success',
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    super_admin: 'destructive',
+    admin: 'outline',
+    business_admin: 'secondary',
+    user: 'default',
     readonly: 'secondary',
   }
   return severityMap[role] || 'secondary'
@@ -494,10 +462,10 @@ const getStatusDisplayName = (status: string): string => {
 }
 
 const getStatusSeverity = (status: string): string => {
-  const severityMap: Record<string, string> = {
-    active: 'success',
-    inactive: 'warn',
-    locked: 'danger',
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    active: 'default',
+    inactive: 'outline',
+    locked: 'destructive',
   }
   return severityMap[status] || 'secondary'
 }
@@ -513,11 +481,14 @@ const formatLastLogin = (date: Date): string => {
 
   if (days === 0) {
     return '今天'
-  } else if (days === 1) {
+  }
+  else if (days === 1) {
     return '昨天'
-  } else if (days < 7) {
+  }
+  else if (days < 7) {
     return `${days}天前`
-  } else {
+  }
+  else {
     return date.toLocaleDateString('zh-CN')
   }
 }
@@ -579,7 +550,8 @@ const submitUser = async () => {
           remark: userForm.remark,
         })
       }
-    } else {
+    }
+    else {
       // 新增用户
       const newUser = {
         id: Date.now().toString(),
@@ -593,27 +565,17 @@ const submitUser = async () => {
 
     closeUserDialog()
     updateStats()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存用户失败:', error)
-  } finally {
+  }
+  finally {
     submitting.value = false
   }
 }
 
-const confirmDeleteUser = (user: any) => {
-  confirm.require({
-    message: `确定要删除用户 ${user.name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteUser(user.id)
-    },
-  })
-}
-
-const deleteUser = (userId: string) => {
-  users.value = users.value.filter(user => user.id !== userId)
-  updateStats()
+const confirmDeleteUser = (_user: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
 const updateStats = () => {

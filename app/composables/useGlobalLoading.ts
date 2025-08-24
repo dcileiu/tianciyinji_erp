@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 
 // 全局加载状态管理
 const loadingTasks = ref(new Set<string>())
@@ -41,13 +41,14 @@ export const useGlobalLoading = () => {
   const withLoading = async <T>(
     fn: () => Promise<T>,
     taskId: string = Math.random().toString(36).substr(2, 9),
-    message = '加载中...'
+    message = '加载中...',
   ): Promise<T> => {
     try {
       startLoading(taskId, message)
       const result = await fn()
       return result
-    } finally {
+    }
+    finally {
       stopLoading(taskId)
     }
   }

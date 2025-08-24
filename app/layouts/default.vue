@@ -64,7 +64,7 @@
       <!-- 页面内容 -->
       <main class="flex-1 overflow-hidden">
         <div class="h-full overflow-y-auto p-6">
-          <slot />
+          <slot ></slot>
         </div>
       </main>
     </div>
@@ -77,7 +77,7 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { Search, Bell, Sun, Moon, Minimize, Maximize, ChevronRight } from 'lucide-vue-next'
+import { Bell, ChevronRight, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next'
 
 // 获取路由信息
 const route = useRoute()
@@ -100,28 +100,28 @@ const breadcrumbItems = computed(() => {
 
     // 路径映射
     const pathLabels: Record<string, string> = {
-      dashboard: '仪表盘',
-      sales: '销售管理',
-      purchase: '采购管理',
-      warehouse: '库存管理',
-      production: '生产管理',
-      finance: '财务管理',
+      'dashboard': '仪表盘',
+      'sales': '销售管理',
+      'purchase': '采购管理',
+      'warehouse': '库存管理',
+      'production': '生产管理',
+      'finance': '财务管理',
       'master-data': '基础数据',
-      reports: '报表分析',
-      system: '系统设置',
-      orders: '订单管理',
-      customers: '客户管理',
-      suppliers: '供应商管理',
-      inventory: '库存管理',
-      products: '产品管理',
-      invoices: '发票管理',
-      payments: '付款管理',
-      receipts: '收款管理',
-      plans: '计划管理',
-      bom: '物料清单',
-      config: '系统配置',
-      users: '用户管理',
-      roles: '角色权限',
+      'reports': '报表分析',
+      'system': '系统设置',
+      'orders': '订单管理',
+      'customers': '客户管理',
+      'suppliers': '供应商管理',
+      'inventory': '库存管理',
+      'products': '产品管理',
+      'invoices': '发票管理',
+      'payments': '付款管理',
+      'receipts': '收款管理',
+      'plans': '计划管理',
+      'bom': '物料清单',
+      'config': '系统配置',
+      'users': '用户管理',
+      'roles': '角色权限',
     }
 
     items.push({
@@ -148,7 +148,8 @@ const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen()
     isFullscreen.value = true
-  } else {
+  }
+  else {
     document.exitFullscreen()
     isFullscreen.value = false
   }

@@ -71,7 +71,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 -lg flex items-center justify-center text-white"
             >
               <DollarSign class="w-6 h-6" />
             </div>
@@ -91,7 +91,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 -lg flex items-center justify-center text-white"
             >
               <ShoppingCart class="w-6 h-6" />
             </div>
@@ -113,7 +113,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 -lg flex items-center justify-center text-white"
             >
               <Calculator class="w-6 h-6" />
             </div>
@@ -133,7 +133,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 -lg flex items-center justify-center text-white"
             >
               <Users class="w-6 h-6" />
             </div>
@@ -243,20 +243,19 @@
 
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
-
-import { ref, computed } from 'vue'
+// Vue 钩子也自动导入，无需手动导入
 
 import {
-  Download,
-  RefreshCw,
-  Search,
-  DollarSign,
-  ShoppingCart,
-  Calculator,
-  Users,
   ArrowUp,
   BarChart3,
+  Calculator,
+  DollarSign,
+  Download,
   Eye,
+  RefreshCw,
+  Search,
+  ShoppingCart,
+  Users,
 } from 'lucide-vue-next'
 
 // 页面配置
@@ -346,9 +345,9 @@ const filteredSalesData = computed(() => {
   if (searchQuery.value) {
     result = result.filter(
       item =>
-        item.order_no.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        item.customer_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        item.order_no.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || item.customer_name.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
 
@@ -389,14 +388,19 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
-const getStatusVariant = (status: string) => {
-  const variantMap: Record<string, string> = {
+const getStatusVariant = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     pending: 'secondary',
     processing: 'default',
     completed: 'default',
     cancelled: 'destructive',
   }
   return variantMap[status] || 'secondary'
+}
+
+const exportReport = () => {
+  console.log('导出报表')
+  // 这里可以实现导出功能
 }
 
 const exportData = () => {

@@ -4,21 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   modules: ['@nuxtjs/supabase', '@nuxt/eslint', 'shadcn-nuxt'],
 
-  devtools: { enabled: true },
-
-  app: {
-    head: {
-      title: 'ERP管理系统',
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: '现代化企业资源规划系统' },
-      ],
-    },
-  },
-
-  css: ['~/assets/css/tailwind.css'],
-
   // 组件自动导入配置
   components: [
     // 启用嵌套组件扫描
@@ -46,6 +31,21 @@ export default defineNuxtConfig({
       'types/**',
     ],
   },
+
+  devtools: { enabled: true },
+
+  app: {
+    head: {
+      title: 'ERP管理系统',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: '现代化企业资源规划系统' },
+      ],
+    },
+  },
+
+  css: ['~/assets/css/tailwind.css'],
 
   runtimeConfig: {
     public: {

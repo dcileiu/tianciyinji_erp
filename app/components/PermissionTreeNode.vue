@@ -115,9 +115,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { Ban, ChevronRight, Database, EyeOff, FileText, Globe, Menu, Settings, Shield, Zap } from 'lucide-vue-next'
 import { computed } from 'vue'
-import { ChevronRight, EyeOff, Ban, Menu, Shield, Database, Settings, FileText, Globe, Zap } from 'lucide-vue-next'
 
 // Props
 const props = defineProps({
@@ -163,13 +163,13 @@ const isIndeterminate = computed(() => {
   if (!hasChildren.value) return false
 
   const childIds = getAllChildIds(props.item.children)
-  const selectedChildIds = childIds.filter(id => props.selectedIds.includes(id))
+  const selectedChildIds = childIds.filter((id: any) => props.selectedIds.includes(id))
 
   return selectedChildIds.length > 0 && selectedChildIds.length < childIds.length
 })
 
 const iconComponent = computed(() => {
-  const iconMap = {
+  const iconMap: Record<string, any> = {
     menu: Menu,
     page: FileText,
     function: Zap,
@@ -179,12 +179,12 @@ const iconComponent = computed(() => {
     security: Shield,
   }
 
-  return iconMap[props.item.type] || null
+  return iconMap[props.item.type as string] || null
 })
 
 // 方法
-const getAllChildIds = children => {
-  const ids = []
+const getAllChildIds = (children: any[]): any[] => {
+  const ids: any[] = []
   for (const child of children) {
     ids.push(child.id)
     if (child.children && child.children.length > 0) {
@@ -194,8 +194,8 @@ const getAllChildIds = children => {
   return ids
 }
 
-const getTypeIcon = type => {
-  const iconMap = {
+const getTypeIcon = (type: string) => {
+  const iconMap: Record<string, string> = {
     menu: '📋',
     page: '📄',
     function: '⚡',
@@ -207,8 +207,8 @@ const getTypeIcon = type => {
   return iconMap[type] || '📦'
 }
 
-const getTypeLabel = type => {
-  const labelMap = {
+const getTypeLabel = (type: string) => {
+  const labelMap: Record<string, string> = {
     menu: '菜单',
     page: '页面',
     function: '功能',
@@ -220,8 +220,8 @@ const getTypeLabel = type => {
   return labelMap[type] || type
 }
 
-const getTypeClass = type => {
-  const classMap = {
+const getTypeClass = (type: string) => {
+  const classMap: Record<string, string> = {
     menu: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
     page: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     function: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
@@ -233,7 +233,7 @@ const getTypeClass = type => {
   return classMap[type] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
 }
 
-const handleToggleSelection = event => {
+const handleToggleSelection = (event: any) => {
   if (props.disabled) return
 
   emit('toggle-selection', props.item.id, event.target.checked)

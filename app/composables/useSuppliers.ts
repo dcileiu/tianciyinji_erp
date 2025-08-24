@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Database } from '~/types/database.types'
 
 type Supplier = Database['public']['Tables']['suppliers']['Row']
@@ -7,7 +7,6 @@ type SupplierUpdate = Database['public']['Tables']['suppliers']['Update']
 
 export const useSuppliers = () => {
   const supabase = useSupabaseClient<Database>()
-  const user = useSupabaseUser()
 
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -30,7 +29,7 @@ export const useSuppliers = () => {
   })
 
   // 获取供应商列表
-  const getSuppliers = async (filters?: { status?: string; type?: string; name?: string }) => {
+  const getSuppliers = async (filters?: { status?: string, type?: string, name?: string }) => {
     try {
       loading.value = true
       error.value = null
@@ -54,10 +53,12 @@ export const useSuppliers = () => {
 
       suppliers.value = data || []
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取供应商列表失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -74,10 +75,12 @@ export const useSuppliers = () => {
 
       currentSupplier.value = data
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取供应商详情失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -100,10 +103,12 @@ export const useSuppliers = () => {
       await getSuppliers()
 
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '创建供应商失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -134,10 +139,12 @@ export const useSuppliers = () => {
       }
 
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新供应商失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -160,10 +167,12 @@ export const useSuppliers = () => {
       }
 
       return true
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '删除供应商失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }

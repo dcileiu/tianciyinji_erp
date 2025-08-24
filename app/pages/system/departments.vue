@@ -7,7 +7,7 @@
         <p class="text-gray-600">管理组织架构和部门层级关系</p>
       </div>
       <div>
-        <Button @click="showCreateDialog = true" class="bg-blue-600 hover:bg-blue-700">
+        <Button class="bg-blue-600 hover:bg-blue-700" @click="showCreateDialog = true">
           <Building class="w-4 h-4 mr-2" />
           新增部门
         </Button>
@@ -50,7 +50,7 @@
       </CardHeader>
       <CardContent>
         <div v-if="loading" class="flex justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
 
         <div v-else-if="filteredDepartments.length === 0" class="text-center py-12 text-gray-500">
@@ -63,7 +63,7 @@
           </Button>
         </div>
 
-        <div v-else class="rounded-md border">
+        <div v-else class="-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -79,7 +79,7 @@
               <TableRow v-for="department in filteredDepartments" :key="department.id">
                 <TableCell>
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 bg-blue-100 -lg flex items-center justify-center">
                       <Building class="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
@@ -91,7 +91,7 @@
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <div
-                      class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 text-sm font-medium"
+                      class="w-8 h-8 bg-gray-200 -full flex items-center justify-center text-gray-700 text-sm font-medium"
                     >
                       {{ department.manager?.charAt(0) || 'N' }}
                     </div>
@@ -152,7 +152,7 @@
 
           <div class="space-y-2">
             <Label for="parent">上级部门</Label>
-            <Select v-model="departmentForm.parentDepartment">
+            <Select v-model="departmentForm.parentId">
               <SelectTrigger>
                 <SelectValue placeholder="请选择上级部门" />
               </SelectTrigger>
@@ -173,7 +173,7 @@
             <Label for="count">员工数量</Label>
             <Input
               id="count"
-              v-model.number="departmentForm.employeeCount"
+              v-model.number="departmentForm.sort"
               type="number"
               placeholder="请输入员工数量"
               :min="0"
@@ -206,14 +206,11 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, ref } from 'vue'
-
 import { Building, Edit, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 // 页面状态
 const loading = ref(false)
-const saving = ref(false)
 const searchQuery = ref('')
 const statusFilter = ref('')
 
@@ -231,12 +228,6 @@ const departmentForm = ref({
   manager: '',
   sort: 0,
 })
-
-// 状态选项
-const statusOptions = [
-  { label: '启用', value: 'active' },
-  { label: '停用', value: 'inactive' },
-]
 
 // 状态筛选选项
 const statusFilterOptions = [
@@ -304,8 +295,8 @@ const filteredDepartments = computed(() => {
   if (searchQuery.value) {
     result = result.filter(
       dept =>
-        dept.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        dept.manager.toLowerCase().includes(searchQuery.value.toLowerCase())
+        dept.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || dept.manager.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
 
@@ -321,7 +312,7 @@ const parentDepartmentOptions = computed(() => {
 
   // 只显示顶级部门作为上级部门选项
   const topLevelDepts = departments.value.filter(dept => !dept.parentId)
-  topLevelDepts.forEach(dept => {
+  topLevelDepts.forEach((dept) => {
     if (!editingDepartment.value || dept.id !== editingDepartment.value.id) {
       options.push({ label: dept.name, value: dept.id })
     }
@@ -364,13 +355,13 @@ const addSubDepartment = (parentDepartment: any) => {
   showCreateDialog.value = true
 }
 
-const confirmDelete = department => {
+const confirmDelete = (department: any) => {
   if (confirm(`确定要删除部门 "${department.name}" 吗？`)) {
     deleteDepartment(department.id)
   }
 }
 
-const deleteDepartment = id => {
+const deleteDepartment = (id: any) => {
   departments.value = departments.value.filter(d => d.id !== id)
   toast.success('部门删除成功')
 }
@@ -399,15 +390,18 @@ const saveDepartment = () => {
     // 更新部门
     const index = departments.value.findIndex(d => d.id === editingDepartment.value.id)
     if (index !== -1) {
-      departments.value[index] = { ...departmentForm.value, id: editingDepartment.value.id }
+      departments.value[index] = { ...departmentForm.value, id: editingDepartment.value.id, parentDepartment: '', employeeCount: 0 }
     }
     toast.success('部门更新成功')
-  } else {
+  }
+  else {
     // 新增部门
     const newDepartment = {
       ...departmentForm.value,
-      id: Date.now(),
+      id: Date.now().toString(),
       createdAt: new Date().toISOString(),
+      parentDepartment: '',
+      employeeCount: 0,
     }
     departments.value.push(newDepartment)
     toast.success('部门创建成功')

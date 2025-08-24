@@ -2,7 +2,7 @@
   <div class="max-w-4xl mx-auto space-y-8">
     <!-- 欢迎标题 -->
     <div class="text-center">
-      <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <div class="w-16 h-16 bg-blue-600 -2xl flex items-center justify-center mx-auto mb-4">
         <span class="text-white font-bold text-2xl">E</span>
       </div>
       <h1 class="text-3xl font-bold text-color mb-2">欢迎使用 ERP 管理系统！</h1>
@@ -19,21 +19,21 @@
       </template>
       <template #content>
         <div class="grid md:grid-cols-3 gap-4">
-          <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+          <div class="bg-green-50 dark:bg-green-900/20 p-4 -lg">
             <div class="flex items-center">
               <i class="pi pi-check text-green-600 mr-2"></i>
               <span class="font-medium">认证系统</span>
             </div>
             <p class="text-sm text-muted-color mt-1">用户登录、注册、密码重置等功能已完成</p>
           </div>
-          <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+          <div class="bg-green-50 dark:bg-green-900/20 p-4 -lg">
             <div class="flex items-center">
               <i class="pi pi-check text-green-600 mr-2"></i>
               <span class="font-medium">数据库结构</span>
             </div>
             <p class="text-sm text-muted-color mt-1">完整的业务数据表结构已设计</p>
           </div>
-          <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+          <div class="bg-blue-50 dark:bg-blue-900/20 p-4 -lg">
             <div class="flex items-center">
               <i class="pi pi-clock text-blue-600 mr-2"></i>
               <span class="font-medium">业务模块</span>
@@ -52,9 +52,9 @@
       <template #content>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- 基础数据 -->
-          <div class="border border-border rounded-lg p-4">
+          <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-3">
+              <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 -lg flex items-center justify-center mr-3">
                 <i class="pi pi-database text-blue-600"></i>
               </div>
               <h3 class="font-semibold">基础数据</h3>
@@ -68,9 +68,9 @@
           </div>
 
           <!-- 销售管理 -->
-          <div class="border border-border rounded-lg p-4">
+          <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-3">
+              <div class="w-10 h-10 bg-green-100 dark:bg-green-900 -lg flex items-center justify-center mr-3">
                 <i class="pi pi-shopping-cart text-green-600"></i>
               </div>
               <h3 class="font-semibold">销售管理</h3>
@@ -84,9 +84,9 @@
           </div>
 
           <!-- 采购管理 -->
-          <div class="border border-border rounded-lg p-4">
+          <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-3">
+              <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 -lg flex items-center justify-center mr-3">
                 <i class="pi pi-shopping-bag text-purple-600"></i>
               </div>
               <h3 class="font-semibold">采购管理</h3>
@@ -100,9 +100,9 @@
           </div>
 
           <!-- 库存管理 -->
-          <div class="border border-border rounded-lg p-4">
+          <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center mr-3">
+              <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 -lg flex items-center justify-center mr-3">
                 <i class="pi pi-box text-yellow-600"></i>
               </div>
               <h3 class="font-semibold">库存管理</h3>
@@ -116,9 +116,9 @@
           </div>
 
           <!-- 生产管理 -->
-          <div class="border border-border rounded-lg p-4">
+          <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mr-3">
+              <div class="w-10 h-10 bg-red-100 dark:bg-red-900 -lg flex items-center justify-center mr-3">
                 <i class="pi pi-cog text-red-600"></i>
               </div>
               <h3 class="font-semibold">生产管理</h3>
@@ -132,9 +132,9 @@
           </div>
 
           <!-- 财务管理 -->
-          <div class="border border-border rounded-lg p-4">
+          <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center mr-3">
+              <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 -lg flex items-center justify-center mr-3">
                 <i class="pi pi-chart-line text-indigo-600"></i>
               </div>
               <h3 class="font-semibold">财务管理</h3>
@@ -189,7 +189,7 @@
           </div>
 
           <div
-            class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4"
+            class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 -lg p-4"
           >
             <h4 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-2 flex items-center">
               <i class="pi pi-exclamation-triangle mr-2"></i>
@@ -273,17 +273,16 @@
     <div class="text-center space-y-4">
       <h2 class="text-xl font-semibold">准备好开始了吗？</h2>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <Button label="配置数据库" icon="pi pi-database" @click="navigateTo('/db-init')" />
-        <Button label="查看仪表板" icon="pi pi-chart-bar" outlined @click="navigateTo('/dashboard')" />
+        <Button @click="navigateTo('/db-init')" />
+        <Button @click="navigateTo('/dashboard')" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
 // 页面配置
 definePageMeta({
   layout: 'default',

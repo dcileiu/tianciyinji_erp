@@ -1,12 +1,11 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import type { PaginationListItemProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import type { ButtonVariants } from '@/components/ui/button'
-import { reactiveOmit } from '@vueuse/core'
-import { PaginationListItem } from 'reka-ui'
+import { type ButtonVariants, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { reactiveOmit } from '@vueuse/core'
+import { PaginationListItem, type PaginationListItemProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 
 const props = withDefaults(
   defineProps<
@@ -18,7 +17,7 @@ const props = withDefaults(
   >(),
   {
     size: 'icon',
-  }
+  },
 )
 
 const delegatedProps = reactiveOmit(props, 'class', 'size', 'isActive')
@@ -34,10 +33,10 @@ const delegatedProps = reactiveOmit(props, 'class', 'size', 'isActive')
           variant: isActive ? 'outline' : 'ghost',
           size,
         }),
-        props.class
+        props.class,
       )
     "
   >
-    <slot />
+    <slot></slot>
   </PaginationListItem>
 </template>

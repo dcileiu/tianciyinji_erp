@@ -6,7 +6,7 @@
         <h1 class="text-3xl font-bold text-color">客户档案管理</h1>
         <p class="text-muted-color mt-1">管理客户基础信息，维护客户关系和联系方式</p>
       </div>
-      <Button label="新增客户" icon="pi pi-plus" @click="openCreateForm" />
+      <Button @click="openCreateForm" />
     </div>
 
     <!-- 搜索和筛选 -->
@@ -19,22 +19,21 @@
           <!-- 搜索框 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 搜索客户 </label>
-            <IconField icon-position="left">
-              <InputIcon>
-                <i class="pi pi-search"></i>
-              </InputIcon>
-              <InputText v-model="searchQuery" placeholder="客户名称、编号..." class="w-full" />
-            </IconField>
+            <!-- IconField 已移除 -->
+            <!-- InputIcon 已移除 -->
+            <i class="pi pi-search"></i>
+            <!-- /InputIcon -->
+            <Input v-model="searchQuery" placeholder="客户名称、编号..." class="w-full" />
+            <!-- /IconField -->
           </div>
 
           <!-- 客户类型筛选 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 客户类型 </label>
-            <Dropdown
+            <Select
               v-model="typeFilter"
               :options="typeOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部类型"
               show-clear
               class="w-full"
@@ -44,11 +43,10 @@
           <!-- 地区筛选 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 所在地区 </label>
-            <Dropdown
+            <Select
               v-model="regionFilter"
               :options="regionOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部地区"
               show-clear
               class="w-full"
@@ -58,11 +56,10 @@
           <!-- 状态筛选 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 客户状态 </label>
-            <Dropdown
+            <Select
               v-model="statusFilter"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部状态"
               show-clear
               class="w-full"
@@ -85,7 +82,7 @@
                 <span class="text-xs text-muted-color ml-2">本月新增</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-100 -lg flex items-center justify-center">
               <i class="pi pi-users text-blue-600 text-xl"></i>
             </div>
           </div>
@@ -100,12 +97,12 @@
               <p class="text-2xl font-bold text-green-600">{{ customerStats.active }}</p>
               <div class="mt-2">
                 <span class="text-xs text-green-600"
-                  >{{ Math.round((customerStats.active / customerStats.total) * 100) }}%</span
+                >{{ Math.round((customerStats.active / customerStats.total) * 100) }}%</span
                 >
                 <span class="text-xs text-muted-color ml-2">活跃率</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-green-100 -lg flex items-center justify-center">
               <i class="pi pi-check-circle text-green-600 text-xl"></i>
             </div>
           </div>
@@ -120,12 +117,12 @@
               <p class="text-2xl font-bold text-purple-600">{{ customerStats.enterprise }}</p>
               <div class="mt-2">
                 <span class="text-xs text-purple-600"
-                  >{{ Math.round((customerStats.enterprise / customerStats.total) * 100) }}%</span
+                >{{ Math.round((customerStats.enterprise / customerStats.total) * 100) }}%</span
                 >
                 <span class="text-xs text-muted-color ml-2">占比</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-purple-100 -lg flex items-center justify-center">
               <i class="pi pi-building text-purple-600 text-xl"></i>
             </div>
           </div>
@@ -140,12 +137,12 @@
               <p class="text-2xl font-bold text-orange-600">{{ customerStats.potential }}</p>
               <div class="mt-2">
                 <span class="text-xs text-orange-600"
-                  >{{ Math.round((customerStats.potential / customerStats.total) * 100) }}%</span
+                >{{ Math.round((customerStats.potential / customerStats.total) * 100) }}%</span
                 >
                 <span class="text-xs text-muted-color ml-2">占比</span>
               </div>
             </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 -lg flex items-center justify-center">
               <i class="pi pi-eye text-orange-600 text-xl"></i>
             </div>
           </div>
@@ -159,14 +156,14 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">客户列表</h3>
           <div class="flex items-center gap-2">
-            <Button label="批量操作" icon="pi pi-cog" outlined size="small" />
-            <Button label="导出数据" icon="pi pi-download" outlined size="small" />
+            <Button size="sm" />
+            <Button size="sm" />
           </div>
         </div>
       </template>
 
       <template #content>
-        <DataTable
+        <Table
           v-model:selection="selectedCustomers"
           :value="filteredCustomers"
           :loading="loading"
@@ -190,140 +187,122 @@
               </div>
             </div>
           </template>
-          <Column selection-mode="multiple" :exportable="false"></Column>
+          <TableHead selection-mode="multiple" :exportable="false"/>
 
-          <Column field="customer_no" header="客户编号" sortable>
+          <TableHead field="customer_no" header="客户编号" sortable>
             <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+              <code class="bg-surface-100 px-2 py-1 text-sm font-mono">
                 {{ slotProps.data.customer_no }}
               </code>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="name" header="客户名称" sortable>
+          <TableHead field="name" header="客户名称" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Avatar :label="slotProps.data.name.charAt(0)" shape="circle" size="small" />
+                <Avatar :shape="'circle'" size="sm" />
                 <div>
                   <span class="font-medium">{{ slotProps.data.name }}</span>
                   <p class="text-xs text-muted-color">{{ slotProps.data.contact_person }}</p>
                 </div>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="type" header="客户类型" sortable>
+          <TableHead field="type" header="客户类型" sortable>
             <template #body="slotProps">
               <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="phone" header="联系电话" sortable>
+          <TableHead field="phone" header="联系电话" sortable>
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.phone }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="email" header="邮箱" sortable>
+          <TableHead field="email" header="邮箱" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">{{ slotProps.data.email }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="region" header="地区" sortable>
+          <TableHead field="region" header="地区" sortable>
             <template #body="slotProps">
               <span class="text-sm">{{ getRegionDisplayName(slotProps.data.region) }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="total_orders" header="订单总数" sortable>
+          <TableHead field="total_orders" header="订单总数" sortable>
             <template #body="slotProps">
               <span class="font-medium text-blue-600">{{ slotProps.data.total_orders }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="total_amount" header="累计金额" sortable>
+          <TableHead field="total_amount" header="累计金额" sortable>
             <template #body="slotProps">
               <span class="font-medium text-green-600"> ¥{{ slotProps.data.total_amount.toLocaleString() }} </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态" sortable>
+          <TableHead field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
                 :value="getStatusDisplayName(slotProps.data.status)"
                 :severity="getStatusSeverity(slotProps.data.status)"
               />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="created_at" header="创建时间" sortable>
+          <TableHead field="created_at" header="创建时间" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
                 {{ formatDate(slotProps.data.created_at) }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" :exportable="false">
+          <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
                 <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="viewCustomer(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="editCustomer(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'查看订单'"
-                  icon="pi pi-shopping-cart"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="viewOrders(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'联系客户'"
-                  icon="pi pi-phone"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="contactCustomer(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'active'"
-                  v-tooltip="'停用'"
-                  icon="pi pi-pause"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   severity="warning"
                   @click="toggleStatus(slotProps.data, 'inactive')"
                 />
                 <Button
                   v-else
-                  v-tooltip="'启用'"
-                  icon="pi pi-play"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   severity="success"
                   @click="toggleStatus(slotProps.data, 'active')"
                 />
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
@@ -340,12 +319,12 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户编号</label>
-              <InputText v-model="customerForm.customer_no" :disabled="true" placeholder="系统自动生成" />
+              <Input v-model="customerForm.customer_no" :disabled="true" placeholder="系统自动生成" />
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户名称 *</label>
-              <InputText
+              <Input
                 v-model="customerForm.name"
                 placeholder="请输入客户名称"
                 :disabled="dialogMode === 'view'"
@@ -357,11 +336,10 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户类型 *</label>
-              <Dropdown
+              <Select
                 v-model="customerForm.type"
                 :options="typeOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择客户类型"
                 :disabled="dialogMode === 'view'"
                 required
@@ -370,11 +348,10 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">所在地区</label>
-              <Dropdown
+              <Select
                 v-model="customerForm.region"
                 :options="regionOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择地区"
                 :disabled="dialogMode === 'view'"
               />
@@ -384,7 +361,7 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系人</label>
-              <InputText
+              <Input
                 v-model="customerForm.contact_person"
                 placeholder="请输入联系人姓名"
                 :disabled="dialogMode === 'view'"
@@ -393,23 +370,22 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系电话</label>
-              <InputText v-model="customerForm.phone" placeholder="请输入联系电话" :disabled="dialogMode === 'view'" />
+              <Input v-model="customerForm.phone" placeholder="请输入联系电话" :disabled="dialogMode === 'view'" />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">邮箱地址</label>
-              <InputText v-model="customerForm.email" placeholder="请输入邮箱地址" :disabled="dialogMode === 'view'" />
+              <Input v-model="customerForm.email" placeholder="请输入邮箱地址" :disabled="dialogMode === 'view'" />
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">客户状态</label>
-              <Dropdown
+              <Select
                 v-model="customerForm.status"
                 :options="statusOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择状态"
                 :disabled="dialogMode === 'view'"
               />
@@ -440,11 +416,9 @@
 
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button label="取消" icon="pi pi-times" outlined @click="closeCustomerDialog" />
+          <Button @click="closeCustomerDialog" />
           <Button
             v-if="dialogMode !== 'view'"
-            label="保存"
-            icon="pi pi-check"
             :loading="saving"
             @click="saveCustomer"
           />
@@ -455,21 +429,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import Skeleton from 'primevue/skeleton'
-
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import IconField from 'primevue/iconfield' // 已移除PrimeVue导入
+// import InputIcon from 'primevue/inputicon' // 已移除PrimeVue导入
+// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
+// import Textarea from 'primevue/textarea' // 已移除PrimeVue导入
+// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
+// import Column from 'primevue/column' // 已移除PrimeVue导入
+// import Tag from 'primevue/tag' // 已移除PrimeVue导入
+// import Avatar from 'primevue/avatar' // 已移除PrimeVue导入
+// import Dialog from 'primevue/dialog' // 已移除PrimeVue导入
+// import Skeleton from 'primevue/skeleton' // 已移除PrimeVue导入
 // 页面配置
 definePageMeta({
   layout: 'default',
@@ -579,9 +551,9 @@ const filteredCustomers = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       customer =>
-        customer.customer_no.toLowerCase().includes(query) ||
-        customer.name.toLowerCase().includes(query) ||
-        customer.contact_person.toLowerCase().includes(query)
+        customer.customer_no.toLowerCase().includes(query)
+        || customer.name.toLowerCase().includes(query)
+        || customer.contact_person.toLowerCase().includes(query),
     )
   }
 
@@ -607,10 +579,10 @@ const typeMap: Record<string, string> = {
   distributor: '经销商',
 }
 
-const typeSeverityMap: Record<string, string> = {
-  enterprise: 'info',
-  individual: 'success',
-  distributor: 'warning',
+const typeSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  enterprise: 'secondary',
+  individual: 'default',
+  distributor: 'outline',
 }
 
 const regionMap: Record<string, string> = {
@@ -626,18 +598,18 @@ const statusMap: Record<string, string> = {
   potential: '潜在客户',
 }
 
-const statusSeverityMap: Record<string, string> = {
-  active: 'success',
-  inactive: 'danger',
-  potential: 'warning',
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  active: 'default',
+  inactive: 'destructive',
+  potential: 'outline',
 }
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type
-const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'info'
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'secondary'
 const getRegionDisplayName = (region: string) => regionMap[region] || region
 const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'secondary'
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString('zh-CN')
@@ -690,7 +662,8 @@ const toggleStatus = async (customer: any, newStatus: string) => {
     if (index !== -1 && mockCustomers.value[index]) {
       mockCustomers.value[index]!.status = newStatus
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('操作失败:', error)
   }
 }
@@ -714,7 +687,8 @@ const saveCustomer = async () => {
         created_at: new Date(),
       }
       mockCustomers.value.push(newCustomer)
-    } else if (dialogMode.value === 'edit') {
+    }
+    else if (dialogMode.value === 'edit') {
       const index = mockCustomers.value.findIndex(c => c.id === editingCustomer.value?.id)
       if (index !== -1 && mockCustomers.value[index]) {
         mockCustomers.value[index] = {
@@ -729,9 +703,11 @@ const saveCustomer = async () => {
     }
 
     closeCustomerDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存客户失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

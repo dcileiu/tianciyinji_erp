@@ -1,14 +1,10 @@
-import type { Database } from '~/types/database.types'
-
 export const useProductionReports = () => {
-  const supabase = useSupabaseClient<Database>()
-
   // 响应式状态
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
   // 获取生产报表统计
-  const getProductionReport = async (params: { startDate: string; endDate: string; workshopId?: string }) => {
+  const getProductionReport = async (_params: { startDate: string, endDate: string, workshopId?: string }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -28,17 +24,19 @@ export const useProductionReports = () => {
       }
 
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产报表失败'
       console.error('Get production report error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
   // 获取生产明细
-  const getProductionDetails = async (params: {
+  const getProductionDetails = async (_params: {
     startDate: string
     endDate: string
     workshopId?: string
@@ -83,17 +81,19 @@ export const useProductionReports = () => {
       ]
 
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产明细失败'
       console.error('Get production details error:', err)
       return []
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
   // 获取车间生产排行
-  const getTopWorkshops = async (params: { startDate: string; endDate: string; limit?: number }) => {
+  const getTopWorkshops = async (_params: { startDate: string, endDate: string, limit?: number }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -107,18 +107,20 @@ export const useProductionReports = () => {
         { id: '5', name: '维修车间', orders: 15, completion_rate: 78.9, output: 1500 },
       ]
 
-      return mockData.slice(0, params.limit || 10)
-    } catch (err: any) {
+      return mockData.slice(0, _params.limit || 10)
+    }
+    catch (err: any) {
       error.value = err.message || '获取车间排行失败'
       console.error('Get top workshops error:', err)
       return []
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
   // 获取产品生产排行
-  const getTopProducts = async (params: { startDate: string; endDate: string; limit?: number }) => {
+  const getTopProducts = async (_params: { startDate: string, endDate: string, limit?: number }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -132,18 +134,20 @@ export const useProductionReports = () => {
         { id: '5', name: '耳机E型', orders: 10, total_quantity: 10000, completion_rate: 94.1 },
       ]
 
-      return mockData.slice(0, params.limit || 10)
-    } catch (err: any) {
+      return mockData.slice(0, _params.limit || 10)
+    }
+    catch (err: any) {
       error.value = err.message || '获取产品排行失败'
       console.error('Get top products error:', err)
       return []
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
   // 获取生产趋势数据
-  const getProductionTrend = async (params: {
+  const getProductionTrend = async (_params: {
     startDate: string
     endDate: string
     period: 'day' | 'week' | 'month'
@@ -170,17 +174,19 @@ export const useProductionReports = () => {
       }
 
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产趋势失败'
       console.error('Get production trend error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
   // 获取生产效率分析
-  const getProductionEfficiency = async (params: { startDate: string; endDate: string }) => {
+  const getProductionEfficiency = async (_params: { startDate: string, endDate: string }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -203,17 +209,19 @@ export const useProductionReports = () => {
       }
 
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取生产效率分析失败'
       console.error('Get production efficiency error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
   // 获取质量分析
-  const getQualityAnalysis = async (params: { startDate: string; endDate: string }) => {
+  const getQualityAnalysis = async (_params: { startDate: string, endDate: string }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -238,11 +246,13 @@ export const useProductionReports = () => {
       }
 
       return mockData
-    } catch (err: any) {
+    }
+    catch (err: any) {
       error.value = err.message || '获取质量分析失败'
       console.error('Get quality analysis error:', err)
       return null
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }

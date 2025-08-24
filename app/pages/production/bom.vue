@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold text-color">BOM物料清单管理</h1>
         <p class="text-muted-color mt-1">管理产品物料清单，维护产品结构和用料关系</p>
       </div>
-      <Button label="新建BOM" icon="pi pi-plus" @click="showCreateDialog = true" />
+      <Button @click="showCreateDialog = true" />
     </div>
 
     <!-- BOM概览 -->
@@ -20,7 +20,7 @@
                 {{ stats.totalBOMs }}
               </p>
             </div>
-            <div class="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
+            <div class="bg-blue-100 dark:bg-blue-800 p-3 -full">
               <i class="pi pi-file-text text-blue-600 dark:text-blue-400 text-xl"></i>
             </div>
           </div>
@@ -36,7 +36,7 @@
                 {{ stats.approvedBOMs }}
               </p>
             </div>
-            <div class="bg-green-100 dark:bg-green-800 p-3 rounded-full">
+            <div class="bg-green-100 dark:bg-green-800 p-3 -full">
               <i class="pi pi-check-circle text-green-600 dark:text-green-400 text-xl"></i>
             </div>
           </div>
@@ -52,7 +52,7 @@
                 {{ stats.pendingBOMs }}
               </p>
             </div>
-            <div class="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-full">
+            <div class="bg-yellow-100 dark:bg-yellow-800 p-3 -full">
               <i class="pi pi-clock text-yellow-600 dark:text-yellow-400 text-xl"></i>
             </div>
           </div>
@@ -68,7 +68,7 @@
                 {{ stats.totalMaterials }}
               </p>
             </div>
-            <div class="bg-purple-100 dark:bg-purple-800 p-3 rounded-full">
+            <div class="bg-purple-100 dark:bg-purple-800 p-3 -full">
               <i class="pi pi-box text-purple-600 dark:text-purple-400 text-xl"></i>
             </div>
           </div>
@@ -85,16 +85,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color"> 产品名称 </label>
-            <InputText v-model="searchQuery" placeholder="输入产品名称搜索" class="w-full" />
+            <Input v-model="searchQuery" placeholder="输入产品名称搜索" class="w-full" />
           </div>
 
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color"> BOM状态 </label>
-            <Dropdown
+            <Select
               v-model="selectedStatus"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部状态"
               class="w-full"
               show-clear
@@ -103,11 +102,10 @@
 
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color"> 产品类别 </label>
-            <Dropdown
+            <Select
               v-model="selectedCategory"
               :options="categoryOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部类别"
               class="w-full"
               show-clear
@@ -116,7 +114,7 @@
 
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color"> BOM版本 </label>
-            <InputText v-model="selectedVersion" placeholder="输入版本号" class="w-full" />
+            <Input v-model="selectedVersion" placeholder="输入版本号" class="w-full" />
           </div>
         </div>
       </template>
@@ -128,7 +126,7 @@
         <h3 class="text-lg font-semibold text-color">BOM列表</h3>
       </template>
       <template #content>
-        <DataTable
+        <Table
           :value="paginatedBOMs"
           :loading="loading"
           striped-rows
@@ -141,11 +139,11 @@
               <i class="pi pi-file-text text-6xl mb-4 opacity-50"></i>
               <h3 class="text-lg mb-2">暂无BOM数据</h3>
               <p class="mb-4">开始创建您的第一个BOM</p>
-              <Button label="新建BOM" icon="pi pi-plus" @click="showCreateDialog = true" />
+              <Button @click="showCreateDialog = true" />
             </div>
           </template>
 
-          <Column field="product_name" header="产品信息" :sortable="true">
+          <TableHead field="product_name" header="产品信息" :sortable="true">
             <template #body="slotProps">
               <div>
                 <span class="font-medium text-color">{{ slotProps.data.product_name }}</span>
@@ -153,110 +151,86 @@
                 <div class="text-sm text-muted-color">类别: {{ getCategoryText(slotProps.data.product_category) }}</div>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="version" header="BOM版本" :sortable="true">
+          <TableHead field="version" header="BOM版本" :sortable="true">
             <template #body="slotProps">
-              <span class="font-mono bg-surface-100 px-2 py-1 rounded text-primary text-sm">
+              <span class="font-mono bg-surface-100 px-2 py-1 text-primary text-sm">
                 {{ slotProps.data.version }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态" :sortable="true">
+          <TableHead field="status" header="状态" :sortable="true">
             <template #body="slotProps">
               <Tag :value="getStatusText(slotProps.data.status)" :severity="getStatusSeverity(slotProps.data.status)" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="material_count" header="物料数量" :sortable="true">
+          <TableHead field="material_count" header="物料数量" :sortable="true">
             <template #body="slotProps">
               <span class="font-semibold">{{ slotProps.data.material_count }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="total_cost" header="总成本" :sortable="true">
+          <TableHead field="total_cost" header="总成本" :sortable="true">
             <template #body="slotProps">
               <span class="font-semibold text-green-600"> ¥{{ slotProps.data.total_cost.toFixed(2) }} </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="effective_date" header="生效日期" :sortable="true">
+          <TableHead field="effective_date" header="生效日期" :sortable="true">
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
                 {{ formatDate(slotProps.data.effective_date) }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" class="w-40">
+          <TableHead header="操作" class="w-40">
             <template #body="slotProps">
               <div class="flex gap-2">
                 <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   @click="viewBOM(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   @click="editBOM(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'复制'"
-                  icon="pi pi-copy"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   @click="copyBOM(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   severity="danger"
                   @click="confirmDelete(slotProps.data)"
                 />
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
     <!-- 分页 -->
     <div class="flex justify-between items-center">
       <span class="text-sm text-muted-color"> 共 {{ filteredBOMs.length }} 条记录，每页显示 {{ pageSize }} 条 </span>
-      <Paginator
-        v-model:first="firstRecord"
-        :rows="pageSize"
-        :total-records="filteredBOMs.length"
-        :rows-per-page-options="[10, 20, 50]"
-        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-      />
+      <!-- Paginator 组件已移除 -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Paginator from 'primevue/paginator'
-
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
+// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
+// import Column from 'primevue/column' // 已移除PrimeVue导入
+// import Tag from 'primevue/tag' // 已移除PrimeVue导入
+// import Paginator from 'primevue/paginator' // 已移除PrimeVue导入
 // 响应式数据
 const loading = ref(false)
 const searchQuery = ref('')
@@ -265,7 +239,6 @@ const selectedCategory = ref('')
 const selectedVersion = ref('')
 const currentPage = ref(1)
 const pageSize = ref(10)
-const firstRecord = ref(0)
 const showCreateDialog = ref(false)
 
 // 选项数据
@@ -374,12 +347,12 @@ const boms = ref([
 
 // 筛选后的BOM
 const filteredBOMs = computed(() => {
-  return boms.value.filter(bom => {
+  return boms.value.filter((bom) => {
     const matchesSearch = !searchQuery.value || bom.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesStatus = !selectedStatus.value || bom.status === selectedStatus.value
     const matchesCategory = !selectedCategory.value || bom.product_category === selectedCategory.value
-    const matchesVersion =
-      !selectedVersion.value || bom.version.toLowerCase().includes(selectedVersion.value.toLowerCase())
+    const matchesVersion
+      = !selectedVersion.value || bom.version.toLowerCase().includes(selectedVersion.value.toLowerCase())
 
     return matchesSearch && matchesStatus && matchesCategory && matchesVersion
   })
@@ -392,11 +365,6 @@ const paginatedBOMs = computed(() => {
   return filteredBOMs.value.slice(start, end)
 })
 
-// 总页数
-const totalPages = computed(() => {
-  return Math.ceil(filteredBOMs.value.length / pageSize.value)
-})
-
 // 辅助函数
 const getCategoryText = (category: string): string => {
   const categories: Record<string, string> = {
@@ -405,16 +373,6 @@ const getCategoryText = (category: string): string => {
     chemical: '化工产品',
   }
   return categories[category] || '未知类别'
-}
-
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-800',
-    approved: 'bg-blue-100 text-blue-800',
-    active: 'bg-green-100 text-green-800',
-    inactive: 'bg-red-100 text-red-800',
-  }
-  return colors[status] || 'bg-gray-100 text-gray-800'
 }
 
 const getStatusText = (status: string): string => {
@@ -428,11 +386,11 @@ const getStatusText = (status: string): string => {
 }
 
 const getStatusSeverity = (status: string): string => {
-  const severityMap: Record<string, string> = {
-    draft: 'warn',
-    approved: 'info',
-    active: 'success',
-    inactive: 'danger',
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    draft: 'outline',
+    approved: 'secondary',
+    active: 'default',
+    inactive: 'destructive',
   }
   return severityMap[status] || 'secondary'
 }

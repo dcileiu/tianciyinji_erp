@@ -6,7 +6,7 @@
         <h1 class="text-3xl font-bold text-color">仓库管理</h1>
         <p class="text-muted-color mt-2">管理仓库基础信息和库位设置</p>
       </div>
-      <Button label="新建仓库" icon="pi pi-plus" @click="openWarehouseDialog()" />
+      <Button @click="openWarehouseDialog()" />
     </div>
 
     <!-- 筛选区域 -->
@@ -15,11 +15,10 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label class="text-sm font-medium mb-2 block text-color">仓库类型</label>
-            <Dropdown
+            <Select
               v-model="filters.type"
               :options="typeOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部类型"
               show-clear
               class="w-full"
@@ -27,11 +26,10 @@
           </div>
           <div>
             <label class="text-sm font-medium mb-2 block text-color">状态</label>
-            <Dropdown
+            <Select
               v-model="filters.status"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部状态"
               show-clear
               class="w-full"
@@ -39,16 +37,16 @@
           </div>
           <div>
             <label class="text-sm font-medium mb-2 block text-color">搜索</label>
-            <IconField icon-position="left">
-              <InputIcon>
-                <i class="pi pi-search"></i>
-              </InputIcon>
-              <InputText v-model="filters.search" placeholder="搜索仓库名称、编码..." class="w-full" />
-            </IconField>
+            <!-- IconField 已移除 -->
+            <!-- InputIcon 已移除 -->
+            <i class="pi pi-search"></i>
+            <!-- /InputIcon -->
+            <Input v-model="filters.search" placeholder="搜索仓库名称、编码..." class="w-full" />
+            <!-- /IconField -->
           </div>
           <div class="flex items-end gap-2">
-            <Button label="刷新" icon="pi pi-refresh" outlined @click="loadWarehouses" />
-            <Button label="导出" icon="pi pi-download" outlined @click="exportWarehouses" />
+            <Button @click="loadWarehouses" />
+            <Button @click="exportWarehouses" />
           </div>
         </div>
       </template>
@@ -64,7 +62,7 @@
       </template>
 
       <template #content>
-        <DataTable
+        <Table
           :value="filteredWarehouses"
           :loading="loading"
           :paginator="true"
@@ -85,93 +83,81 @@
               </div>
             </div>
           </template>
-          <Column field="warehouse_no" header="仓库编码" sortable>
+          <TableHead field="warehouse_no" header="仓库编码" sortable>
             <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+              <code class="bg-surface-100 px-2 py-1 text-sm font-mono">
                 {{ slotProps.data.warehouse_no }}
               </code>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="name" header="仓库名称" sortable>
+          <TableHead field="name" header="仓库名称" sortable>
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
                 <i class="pi pi-home text-primary"></i>
                 <span class="font-medium">{{ slotProps.data.name }}</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="type" header="类型" sortable>
+          <TableHead field="type" header="类型" sortable>
             <template #body="slotProps">
               <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="location" header="位置">
+          <TableHead field="location" header="位置">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
                 <i class="pi pi-map-marker text-muted-color"></i>
                 <span class="text-sm">{{ slotProps.data.location || '-' }}</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="manager" header="负责人">
+          <TableHead field="manager" header="负责人">
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.manager || '-' }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态" sortable>
+          <TableHead field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
                 :value="getStatusDisplayName(slotProps.data.status)"
                 :severity="getStatusSeverity(slotProps.data.status)"
               />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" :exportable="false">
+          <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
                 <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="viewWarehouse(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="editWarehouse(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'库位管理'"
-                  icon="pi pi-cog"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="manageLocations(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   severity="danger"
                   @click="confirmDeleteWarehouse(slotProps.data)"
                 />
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
@@ -188,23 +174,22 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">仓库编码 *</label>
-              <InputText v-model="warehouseForm.warehouse_no" placeholder="请输入仓库编码" required />
+              <Input v-model="warehouseForm.warehouse_no" placeholder="请输入仓库编码" required />
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">仓库名称 *</label>
-              <InputText v-model="warehouseForm.name" placeholder="请输入仓库名称" required />
+              <Input v-model="warehouseForm.name" placeholder="请输入仓库名称" required />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">仓库类型 *</label>
-              <Dropdown
+              <Select
                 v-model="warehouseForm.type"
                 :options="typeOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择类型"
                 required
               />
@@ -212,11 +197,10 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">状态</label>
-              <Dropdown
+              <Select
                 v-model="warehouseForm.status"
                 :options="statusOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择状态"
               />
             </div>
@@ -224,46 +208,45 @@
 
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">仓库地址</label>
-            <InputText v-model="warehouseForm.location" placeholder="请输入仓库地址" />
+            <Input v-model="warehouseForm.location" placeholder="请输入仓库地址" />
           </div>
 
           <div class="space-y-2">
             <label class="block text-sm font-medium text-color">负责人</label>
-            <InputText v-model="warehouseForm.manager" placeholder="请输入负责人姓名" />
+            <Input v-model="warehouseForm.manager" placeholder="请输入负责人姓名" />
           </div>
         </div>
       </template>
 
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button label="取消" icon="pi pi-times" outlined @click="closeDialog" />
-          <Button label="保存" icon="pi pi-check" :loading="saving" @click="saveWarehouse" />
+          <Button @click="closeDialog" />
+          <Button :loading="saving" @click="saveWarehouse" />
         </div>
       </template>
     </Dialog>
 
     <!-- 确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Dialog from 'primevue/dialog'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import Skeleton from 'primevue/skeleton'
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import InputNumber from 'primevue/inputnumber' // 已移除PrimeVue导入
+// import IconField from 'primevue/iconfield' // 已移除PrimeVue导入
+// import InputIcon from 'primevue/inputicon' // 已移除PrimeVue导入
+// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
+// import Textarea from 'primevue/textarea' // 已移除PrimeVue导入
+// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
+// import Column from 'primevue/column' // 已移除PrimeVue导入
+// import Tag from 'primevue/tag' // 已移除PrimeVue导入
+// import Dialog from 'primevue/dialog' // 已移除PrimeVue导入
+// import ConfirmDialog from 'primevue/confirmdialog' // 已移除PrimeVue导入
+// import { useConfirm } from 'primevue/useconfirm' // 已移除PrimeVue导入
+// import Skeleton from 'primevue/skeleton' // 已移除PrimeVue导入
 import type { Warehouse } from '~/types/database'
 
 // 页面配置
@@ -280,8 +263,7 @@ const loading = ref(false)
 const saving = ref(false)
 const showDialog = ref(false)
 const editingWarehouse = ref(null as any)
-const confirm = useConfirm()
-
+// const confirm = useConfirm() // 已移除
 // 筛选条件
 const filters = ref({
   type: '',
@@ -356,7 +338,7 @@ const filteredWarehouses = computed(() => {
   if (filters.value.search) {
     const query = filters.value.search.toLowerCase()
     result = result.filter(
-      warehouse => warehouse.name.toLowerCase().includes(query) || warehouse.warehouse_no.toLowerCase().includes(query)
+      warehouse => warehouse.name.toLowerCase().includes(query) || warehouse.warehouse_no.toLowerCase().includes(query),
     )
   }
 
@@ -386,34 +368,36 @@ const statusMap: Record<string, string> = {
   inactive: '停用',
 }
 
-const typeSeverityMap: Record<string, string> = {
-  main: 'info',
-  raw_material: 'info',
-  finished_goods: 'success',
+const typeSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  main: 'secondary',
+  raw_material: 'secondary',
+  finished_goods: 'default',
   backup: 'secondary',
 }
 
-const statusSeverityMap: Record<string, string> = {
-  active: 'success',
-  inactive: 'danger',
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  active: 'default',
+  inactive: 'destructive',
 }
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type
 
-const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'info'
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'secondary'
 
 const getStatusDisplayName = (status: string) => statusMap[status] || status
 
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'secondary'
 
 const loadWarehouses = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } catch (error) {
+  }
+  catch (error) {
     console.error('加载仓库失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -429,7 +413,8 @@ const openWarehouseDialog = (warehouse: any = null) => {
       manager: warehouse.manager,
       status: warehouse.status,
     })
-  } else {
+  }
+  else {
     editingWarehouse.value = null
     Object.assign(warehouseForm.value, {
       warehouse_no: '',
@@ -484,7 +469,8 @@ const saveWarehouse = async () => {
           }
         }
       }
-    } else {
+    }
+    else {
       // 新增仓库
       const newWarehouse: Warehouse = {
         id: Date.now().toString(),
@@ -501,26 +487,17 @@ const saveWarehouse = async () => {
     }
 
     closeDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存仓库失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
 
-const confirmDeleteWarehouse = (warehouse: any) => {
-  confirm.require({
-    message: `确定要删除仓库 ${warehouse.name} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteWarehouse(warehouse.id)
-    },
-  })
-}
-
-const deleteWarehouse = (warehouseId: string) => {
-  mockWarehouses.value = mockWarehouses.value.filter(warehouse => warehouse.id !== warehouseId)
+const confirmDeleteWarehouse = (_warehouse: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
 const exportWarehouses = () => {

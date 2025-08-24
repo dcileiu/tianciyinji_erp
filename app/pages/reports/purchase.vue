@@ -67,7 +67,7 @@
                 较上月增长 {{ purchaseStats.orderGrowth }}%
               </p>
             </div>
-            <div class="bg-blue-100 p-3 rounded-full">
+            <div class="bg-blue-100 p-3 -full">
               <ShoppingBag class="text-blue-600 w-5 h-5" />
             </div>
           </div>
@@ -85,7 +85,7 @@
                 较上月增长 {{ purchaseStats.amountGrowth }}%
               </p>
             </div>
-            <div class="bg-green-100 p-3 rounded-full">
+            <div class="bg-green-100 p-3 -full">
               <Calculator class="text-green-600 w-5 h-5" />
             </div>
           </div>
@@ -103,7 +103,7 @@
                 较上月增长 {{ purchaseStats.supplierGrowth }}%
               </p>
             </div>
-            <div class="bg-purple-100 p-3 rounded-full">
+            <div class="bg-purple-100 p-3 -full">
               <Users class="text-purple-600 w-5 h-5" />
             </div>
           </div>
@@ -115,13 +115,13 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-muted-foreground">平均订单金额</p>
-              <p class="text-2xl font-bold text-foreground">¥{{ averageOrderAmount.toLocaleString() }}</p>
+              <p class="text-2xl font-bold text-foreground">¥{{ avgOrderAmount.toLocaleString() }}</p>
               <p class="text-xs text-orange-600 flex items-center mt-1">
                 <TrendingDown class="w-3 h-3 mr-1" />
                 较上月变化 {{ purchaseStats.avgGrowth }}%
               </p>
             </div>
-            <div class="bg-orange-100 p-3 rounded-full">
+            <div class="bg-orange-100 p-3 -full">
               <LineChart class="text-orange-600 w-5 h-5" />
             </div>
           </div>
@@ -139,7 +139,7 @@
           </div>
         </CardHeader>
         <CardContent>
-          <div class="h-64 flex items-center justify-center bg-muted rounded-lg">
+          <div class="h-64 flex items-center justify-center bg-muted -lg">
             <div class="text-center">
               <LineChart class="w-12 h-12 text-muted-foreground mb-2 mx-auto" />
               <p class="text-muted-foreground">采购趋势图表</p>
@@ -156,7 +156,7 @@
           </div>
         </CardHeader>
         <CardContent>
-          <div class="h-64 flex items-center justify-center bg-muted rounded-lg">
+          <div class="h-64 flex items-center justify-center bg-muted -lg">
             <div class="text-center">
               <PieChart class="w-12 h-12 text-muted-foreground mb-2 mx-auto" />
               <p class="text-muted-foreground">采购分布图表</p>
@@ -179,7 +179,7 @@
       </CardHeader>
 
       <CardContent>
-        <div class="rounded-md border">
+        <div class="-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -215,7 +215,7 @@
               </template>
               <TableRow v-for="item in purchaseDetails" :key="item.id">
                 <TableCell>
-                  <code class="bg-muted px-2 py-1 rounded text-sm font-mono">
+                  <code class="bg-muted px-2 py-1 text-sm font-mono">
                     {{ item.order_no }}
                   </code>
                 </TableCell>
@@ -299,8 +299,6 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, onMounted, ref } from 'vue'
-
 import {
   Calculator,
   Download,
@@ -330,8 +328,8 @@ const loading = ref(false)
 
 // 筛选条件
 const dateRange = ref({
-  start: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-  end: new Date(),
+  start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
+  end: new Date().toISOString().split('T')[0],
 })
 const supplierFilter = ref('')
 
@@ -348,6 +346,10 @@ const purchaseStats = ref({
   totalOrders: 156,
   avgOrderAmount: 18269,
   activeSuppliers: 23,
+  orderGrowth: 0,
+  amountGrowth: 0,
+  supplierGrowth: 0,
+  avgGrowth: 0,
 })
 
 // 模拟数据
@@ -396,17 +398,17 @@ const statusMap: Record<string, string> = {
   cancelled: '已取消',
 }
 
-const statusSeverityMap: Record<string, string> = {
-  pending: 'warning',
-  confirmed: 'info',
-  shipped: 'info',
-  completed: 'success',
-  cancelled: 'danger',
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  pending: 'outline',
+  confirmed: 'secondary',
+  shipped: 'secondary',
+  completed: 'default',
+  cancelled: 'destructive',
 }
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusVariant = (status: string) => {
+const getStatusVariant = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
   switch (status) {
     case 'pending':
       return 'secondary'

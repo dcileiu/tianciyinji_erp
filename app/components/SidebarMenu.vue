@@ -114,7 +114,7 @@
           <Button v-if="!sidebarCollapsed" variant="ghost" size="sm" @click="goToSettings">
             <Settings class="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" @click="logout" class="text-red-400 hover:text-red-300">
+          <Button variant="ghost" size="sm" class="text-red-400 hover:text-red-300" @click="logout">
             <LogOut class="h-4 w-4" />
           </Button>
         </div>
@@ -126,42 +126,57 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref } from 'vue'
-
+// 类型定义
 import {
+  BarChart3,
+  Book,
+  Briefcase,
+  Building,
+  Calendar,
   ChevronLeft,
   ChevronRight,
-  Home,
-  ShoppingCart,
-  Users,
-  ShoppingBag,
-  Truck,
-  Package,
-  Building,
-  RotateCcw,
-  Settings as SettingsIcon,
-  Calendar,
-  List,
-  FileText,
   CreditCard,
+  Database,
+  FileCheck,
+  FileText,
+  Home,
+  List,
+  LogOut,
+  Menu as MenuIcon,
+  Package,
+  PieChart,
   Receipt,
+  RotateCcw,
+  Settings,
+  Settings as SettingsIcon,
+  Shield,
+  ShoppingBag,
+  ShoppingCart,
   Tag as TagIcon,
   TrendingUp,
-  BarChart3,
-  PieChart,
-  Shield,
-  Sitemap,
-  Menu as MenuIcon,
-  Briefcase,
-  Database,
-  Book,
-  FileCheck,
-  Settings,
-  LogOut,
+  Truck,
+  Users,
 } from 'lucide-vue-next'
 
+interface MenuItem {
+  label: string
+  icon: string
+  route: string
+  badge?: string
+  shortcut?: string
+}
+
+interface MenuGroup {
+  label?: string
+  separator?: boolean
+  items?: MenuItem[]
+  icon?: string
+  route?: string
+  badge?: string
+}
+
 // Props
-const props = defineProps<{
+defineProps<{
   sidebarCollapsed: boolean
 }>()
 
@@ -174,7 +189,8 @@ const emit = defineEmits<{
 const user = useSupabaseUser()
 
 // 图标映射函数
-const getIcon = (iconClass: string) => {
+const getIcon = (iconClass?: string) => {
+  if (!iconClass) return Home
   const iconMap: Record<string, any> = {
     'pi pi-home': Home,
     'pi pi-shopping-cart': ShoppingCart,
@@ -196,7 +212,7 @@ const getIcon = (iconClass: string) => {
     'pi pi-chart-pie': PieChart,
     'pi pi-user': Users,
     'pi pi-shield': Shield,
-    'pi pi-sitemap': Sitemap,
+    'pi pi-sitemap': Map,
     'pi pi-bars': MenuIcon,
     'pi pi-briefcase': Briefcase,
     'pi pi-database': Database,
@@ -207,7 +223,7 @@ const getIcon = (iconClass: string) => {
 }
 
 // 菜单项配置
-const items = ref([
+const items = ref<MenuGroup[]>([
   {
     separator: true,
   },

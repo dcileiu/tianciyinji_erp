@@ -1,6 +1,6 @@
 <template>
   <div v-if="hasPermission">
-    <slot />
+    <slot></slot>
   </div>
   <div v-else-if="showFallback" class="flex items-center justify-center min-h-[200px]">
     <slot name="fallback">
@@ -34,7 +34,7 @@ interface Props {
   showBackButton?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   hasPermission: true,
   showFallback: true,
   showBackButton: true,

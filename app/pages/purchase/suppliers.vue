@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold text-color">供应商管理</h1>
         <p class="text-muted-color mt-1">管理供应商基础信息，维护供应商关系和合作协议</p>
       </div>
-      <Button label="新增供应商" icon="pi pi-plus" @click="openCreateForm" />
+      <Button @click="openCreateForm" />
     </div>
 
     <!-- 搜索和筛选 -->
@@ -16,22 +16,21 @@
           <!-- 搜索框 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 搜索供应商 </label>
-            <IconField icon-position="left">
-              <InputIcon>
-                <i class="pi pi-search"></i>
-              </InputIcon>
-              <InputText v-model="searchQuery" placeholder="供应商名称、编号..." class="w-full" />
-            </IconField>
+            <!-- IconField 已移除 -->
+            <!-- InputIcon 已移除 -->
+            <i class="pi pi-search"></i>
+            <!-- /InputIcon -->
+            <Input v-model="searchQuery" placeholder="供应商名称、编号..." class="w-full" />
+            <!-- /IconField -->
           </div>
 
           <!-- 供应商类型筛选 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 供应商类型 </label>
-            <Dropdown
+            <Select
               v-model="typeFilter"
               :options="typeOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部类型"
               show-clear
               class="w-full"
@@ -41,11 +40,10 @@
           <!-- 合作状态筛选 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 合作状态 </label>
-            <Dropdown
+            <Select
               v-model="statusFilter"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部状态"
               show-clear
               class="w-full"
@@ -55,11 +53,10 @@
           <!-- 评级筛选 -->
           <div>
             <label class="block text-sm font-medium text-color mb-2"> 供应商评级 </label>
-            <Dropdown
+            <Select
               v-model="ratingFilter"
               :options="ratingOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部评级"
               show-clear
               class="w-full"
@@ -78,7 +75,7 @@
               <p class="text-sm text-muted-color">总供应商数</p>
               <p class="text-2xl font-bold text-color">{{ stats.totalSuppliers }}</p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-100 -lg flex items-center justify-center">
               <i class="pi pi-building text-blue-600 text-xl"></i>
             </div>
           </div>
@@ -92,7 +89,7 @@
               <p class="text-sm text-muted-color">活跃供应商</p>
               <p class="text-2xl font-bold text-green-600">{{ stats.activeSuppliers }}</p>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-green-100 -lg flex items-center justify-center">
               <i class="pi pi-check-circle text-green-600 text-xl"></i>
             </div>
           </div>
@@ -106,7 +103,7 @@
               <p class="text-sm text-muted-color">A级供应商</p>
               <p class="text-2xl font-bold text-orange-600">{{ stats.aGradeSuppliers }}</p>
             </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 -lg flex items-center justify-center">
               <i class="pi pi-star text-orange-600 text-xl"></i>
             </div>
           </div>
@@ -120,7 +117,7 @@
               <p class="text-sm text-muted-color">本月新增</p>
               <p class="text-2xl font-bold text-purple-600">{{ stats.newThisMonth }}</p>
             </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-purple-100 -lg flex items-center justify-center">
               <i class="pi pi-plus text-purple-600 text-xl"></i>
             </div>
           </div>
@@ -134,14 +131,14 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">供应商列表</h3>
           <div class="flex items-center gap-2">
-            <Button label="批量操作" icon="pi pi-cog" outlined size="small" />
-            <Button label="导出数据" icon="pi pi-download" outlined size="small" />
+            <Button size="sm" />
+            <Button size="sm" />
           </div>
         </div>
       </template>
 
       <template #content>
-        <DataTable
+        <Table
           v-model:selection="selectedSuppliers"
           :value="filteredSuppliers"
           :loading="loading"
@@ -164,135 +161,117 @@
               </div>
             </div>
           </template>
-          <Column selection-mode="multiple" :exportable="false"></Column>
+          <TableHead selection-mode="multiple" :exportable="false"/>
 
-          <Column field="supplier_no" header="供应商编号" sortable>
+          <TableHead field="supplier_no" header="供应商编号" sortable>
             <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+              <code class="bg-surface-100 px-2 py-1 text-sm font-mono">
                 {{ slotProps.data.supplier_no }}
               </code>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="name" header="供应商名称" sortable>
+          <TableHead field="name" header="供应商名称" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Avatar :label="slotProps.data.name.charAt(0)" shape="circle" size="small" />
+                <Avatar :shape="'circle'" size="sm" />
                 <div>
                   <span class="font-medium">{{ slotProps.data.name }}</span>
                   <p class="text-xs text-muted-color">{{ slotProps.data.contact_person }}</p>
                 </div>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="type" header="供应商类型" sortable>
+          <TableHead field="type" header="供应商类型" sortable>
             <template #body="slotProps">
               <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="phone" header="联系电话" sortable>
+          <TableHead field="phone" header="联系电话" sortable>
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.phone }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="email" header="邮箱" sortable>
+          <TableHead field="email" header="邮箱" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">{{ slotProps.data.email }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="rating" header="评级" sortable>
+          <TableHead field="rating" header="评级" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
                 <Tag :value="slotProps.data.rating + '级'" :severity="getRatingSeverity(slotProps.data.rating)" />
-                <Rating :model-value="getRatingValue(slotProps.data.rating)" readonly :stars="5" size="small" />
+                <!-- Rating 组件已移除 -->
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="total_orders" header="订单总数" sortable>
+          <TableHead field="total_orders" header="订单总数" sortable>
             <template #body="slotProps">
               <span class="font-medium text-blue-600">{{ slotProps.data.total_orders }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="total_amount" header="累计金额" sortable>
+          <TableHead field="total_amount" header="累计金额" sortable>
             <template #body="slotProps">
               <span class="font-medium text-green-600"> ¥{{ slotProps.data.total_amount.toLocaleString() }} </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态" sortable>
+          <TableHead field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
                 :value="getStatusDisplayName(slotProps.data.status)"
                 :severity="getStatusSeverity(slotProps.data.status)"
               />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" :exportable="false">
+          <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
                 <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="viewSupplier(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="editSupplier(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'查看订单'"
-                  icon="pi pi-shopping-cart"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="viewOrders(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'评级'"
-                  icon="pi pi-star"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="rateSupplier(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'active'"
-                  v-tooltip="'暂停合作'"
-                  icon="pi pi-pause"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   severity="warning"
                   @click="toggleStatus(slotProps.data, 'suspended')"
                 />
                 <Button
                   v-else
-                  v-tooltip="'恢复合作'"
-                  icon="pi pi-play"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   severity="success"
                   @click="toggleStatus(slotProps.data, 'active')"
                 />
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
@@ -309,12 +288,12 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商编号</label>
-              <InputText v-model="supplierForm.supplier_no" :disabled="true" placeholder="系统自动生成" />
+              <Input v-model="supplierForm.supplier_no" :disabled="true" placeholder="系统自动生成" />
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商名称 *</label>
-              <InputText
+              <Input
                 v-model="supplierForm.name"
                 placeholder="请输入供应商名称"
                 :disabled="dialogMode === 'view'"
@@ -326,11 +305,10 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商类型 *</label>
-              <Dropdown
+              <Select
                 v-model="supplierForm.type"
                 :options="typeOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择供应商类型"
                 :disabled="dialogMode === 'view'"
                 required
@@ -339,11 +317,10 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">评级</label>
-              <Dropdown
+              <Select
                 v-model="supplierForm.rating"
                 :options="ratingOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择评级"
                 :disabled="dialogMode === 'view'"
               />
@@ -353,7 +330,7 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系人</label>
-              <InputText
+              <Input
                 v-model="supplierForm.contact_person"
                 placeholder="请输入联系人姓名"
                 :disabled="dialogMode === 'view'"
@@ -362,23 +339,22 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系电话</label>
-              <InputText v-model="supplierForm.phone" placeholder="请输入联系电话" :disabled="dialogMode === 'view'" />
+              <Input v-model="supplierForm.phone" placeholder="请输入联系电话" :disabled="dialogMode === 'view'" />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">邮箱地址</label>
-              <InputText v-model="supplierForm.email" placeholder="请输入邮箱地址" :disabled="dialogMode === 'view'" />
+              <Input v-model="supplierForm.email" placeholder="请输入邮箱地址" :disabled="dialogMode === 'view'" />
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">合作状态</label>
-              <Dropdown
+              <Select
                 v-model="supplierForm.status"
                 :options="statusOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择状态"
                 :disabled="dialogMode === 'view'"
               />
@@ -409,11 +385,9 @@
 
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button label="取消" icon="pi pi-times" outlined @click="closeSupplierDialog" />
+          <Button @click="closeSupplierDialog" />
           <Button
             v-if="dialogMode !== 'view'"
-            label="保存"
-            icon="pi pi-check"
             :loading="saving"
             @click="saveSupplier"
           />
@@ -424,22 +398,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Rating from 'primevue/rating'
-import Dialog from 'primevue/dialog'
-import Skeleton from 'primevue/skeleton'
-
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import IconField from 'primevue/iconfield' // 已移除PrimeVue导入
+// import InputIcon from 'primevue/inputicon' // 已移除PrimeVue导入
+// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
+// import Textarea from 'primevue/textarea' // 已移除PrimeVue导入
+// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
+// import Column from 'primevue/column' // 已移除PrimeVue导入
+// import Tag from 'primevue/tag' // 已移除PrimeVue导入
+// import Avatar from 'primevue/avatar' // 已移除PrimeVue导入
+// import Rating from 'primevue/rating' // 已移除PrimeVue导入
+// import Dialog from 'primevue/dialog' // 已移除PrimeVue导入
+// import Skeleton from 'primevue/skeleton' // 已移除PrimeVue导入
 // 页面配置
 definePageMeta({
   layout: 'default',
@@ -551,9 +523,9 @@ const filteredSuppliers = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       supplier =>
-        supplier.supplier_no.toLowerCase().includes(query) ||
-        supplier.name.toLowerCase().includes(query) ||
-        supplier.contact_person.toLowerCase().includes(query)
+        supplier.supplier_no.toLowerCase().includes(query)
+        || supplier.name.toLowerCase().includes(query)
+        || supplier.contact_person.toLowerCase().includes(query),
     )
   }
 
@@ -580,10 +552,10 @@ const typeMap: Record<string, string> = {
   logistics: '物流供应商',
 }
 
-const typeSeverityMap: Record<string, string> = {
-  raw_material: 'info',
-  equipment: 'success',
-  service: 'warning',
+const typeSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  raw_material: 'secondary',
+  equipment: 'default',
+  service: 'outline',
   logistics: 'secondary',
 }
 
@@ -594,31 +566,26 @@ const statusMap: Record<string, string> = {
   potential: '潜在供应商',
 }
 
-const statusSeverityMap: Record<string, string> = {
-  active: 'success',
-  suspended: 'warning',
-  terminated: 'danger',
-  potential: 'info',
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  active: 'default',
+  suspended: 'outline',
+  terminated: 'destructive',
+  potential: 'secondary',
 }
 
-const ratingSeverityMap: Record<string, string> = {
-  A: 'success',
-  B: 'info',
-  C: 'warning',
-  D: 'danger',
+const ratingSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  A: 'default',
+  B: 'secondary',
+  C: 'outline',
+  D: 'destructive',
 }
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type
-const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'info'
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'secondary'
 const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
-const getRatingSeverity = (rating: string) => ratingSeverityMap[rating] || 'info'
-
-const getRatingValue = (rating: string) => {
-  const ratingMap: Record<string, number> = { A: 5, B: 4, C: 3, D: 2 }
-  return ratingMap[rating] || 0
-}
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'secondary'
+const getRatingSeverity = (rating: string) => ratingSeverityMap[rating] || 'secondary'
 
 const openCreateForm = () => {
   editingSupplier.value = null
@@ -667,7 +634,8 @@ const toggleStatus = async (supplier: any, newStatus: string) => {
     if (index !== -1 && mockSuppliers.value[index]) {
       mockSuppliers.value[index]!.status = newStatus
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('操作失败:', error)
   }
 }
@@ -691,7 +659,8 @@ const saveSupplier = async () => {
         created_at: new Date(),
       }
       mockSuppliers.value.push(newSupplier)
-    } else if (dialogMode.value === 'edit') {
+    }
+    else if (dialogMode.value === 'edit') {
       const index = mockSuppliers.value.findIndex(s => s.id === editingSupplier.value?.id)
       if (index !== -1 && mockSuppliers.value[index]) {
         mockSuppliers.value[index] = {
@@ -706,9 +675,11 @@ const saveSupplier = async () => {
     }
 
     closeSupplierDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存供应商失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

@@ -38,7 +38,7 @@ const props = withDefaults(
     showLegend: true,
     showGridLine: true,
     showGradiant: true,
-  }
+  },
 )
 
 const emits = defineEmits<{
@@ -51,14 +51,14 @@ type Data = (typeof props.data)[number]
 const chartRef = useId()
 
 const index = computed(() => props.index as KeyOfT)
-const colors = computed(() => (props.colors?.length ? props.colors : defaultColors(props.categories.length)))
+const colors = computed(() => (props.colors?.length ? props.colors : (() => ['#8b5cf6'])(props.categories.length)))
 
 const legendItems = ref<BulletLegendItemInterface[]>(
   props.categories.map((category, i) => ({
     name: category,
     color: colors.value[i],
     inactive: false,
-  }))
+  })),
 )
 
 const isMounted = useMounted()
@@ -155,7 +155,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
         tick-text-color="hsl(var(--vis-text-color))"
       />
 
-      <slot />
+      <slot ></slot>
     </VisXYContainer>
   </div>
 </template>

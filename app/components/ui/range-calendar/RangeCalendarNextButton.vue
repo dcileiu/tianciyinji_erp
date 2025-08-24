@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 // UI组件现在自动导入，无需手动导入
 
-import type { RangeCalendarNextProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { reactiveOmit } from '@vueuse/core'
 import { ChevronRight } from 'lucide-vue-next'
-import { RangeCalendarNext, useForwardProps } from 'reka-ui'
-import { cn } from '@/lib/utils'
+import { RangeCalendarNext, type RangeCalendarNextProps, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 
 const props = defineProps<RangeCalendarNextProps & { class?: HTMLAttributes['class'] }>()
 
@@ -23,7 +23,7 @@ const forwardedProps = useForwardProps(delegatedProps)
         buttonVariants({ variant: 'outline' }),
         'absolute right-1',
         'size-7 bg-transparent p-0 opacity-50 hover:opacity-100',
-        props.class
+        props.class,
       )
     "
     v-bind="forwardedProps"

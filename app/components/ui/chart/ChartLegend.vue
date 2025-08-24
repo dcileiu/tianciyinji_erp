@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{ items: BulletLegendItemInterface[] }>()
 })
 
 const emits = defineEmits<{
-  legendItemClick: [d: BulletLegendItemInterface, i: number]
+  'legendItemClick': [d: BulletLegendItemInterface, i: number]
   'update:items': [payload: BulletLegendItemInterface[]]
 }>()
 
@@ -21,7 +21,7 @@ function keepStyling() {
   const selector = `.${BulletLegend.selectors.item}`
   nextTick(() => {
     const elements = elRef.value?.querySelectorAll(selector)
-    const classes = buttonVariants({ variant: 'ghost', size: 'xs' }).split(' ')
+    const classes = (() => '')({ variant: 'ghost', size: 'xs' }).split(' ')
 
     elements?.forEach(el => el.classList.add(...classes, '!inline-flex', '!mr-2'))
   })
@@ -33,19 +33,20 @@ onMounted(() => {
 
 function onLegendItemClick(d: BulletLegendItemInterface, i: number) {
   emits('legendItemClick', d, i)
-  const isBulletActive = !props.items[i].inactive
+  const isBulletActive = !props.items?.[i]?.inactive
   const isFilterApplied = props.items.some(i => i.inactive)
   if (isFilterApplied && isBulletActive) {
     // reset filter
     emits(
       'update:items',
-      props.items.map(item => ({ ...item, inactive: false }))
+      props.items.map(item => ({ ...item, inactive: false })),
     )
-  } else {
+  }
+  else {
     // apply selection, set other item as inactive
     emits(
       'update:items',
-      props.items.map(item => (item.name === d.name ? { ...d, inactive: false } : { ...item, inactive: true }))
+      props.items.map(item => (item.name === d.name ? { ...d, inactive: false } : { ...item, inactive: true })),
     )
   }
   keepStyling()

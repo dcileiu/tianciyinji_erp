@@ -1,9 +1,9 @@
 <script setup lang="ts" generic="U extends ZodAny">
-import type { ZodAny } from 'zod'
-import type { Config, ConfigItem, Shape } from './interface'
 import { computed } from 'vue'
+import type { ZodAny } from 'zod'
 import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from './constant'
 import useDependencies from './dependencies'
+import type { Config, ConfigItem, Shape } from './interface'
 
 const props = defineProps<{
   fieldName: string
@@ -30,7 +30,7 @@ const { isDisabled, isHidden, isRequired, overrideOptions } = useDependencies(pr
         ? typeof config.component === 'string'
           ? INPUT_COMPONENTS[config.component!]
           : config.component
-        : INPUT_COMPONENTS[DEFAULT_ZOD_HANDLERS[shape.type]]
+        : INPUT_COMPONENTS[DEFAULT_ZOD_HANDLERS[shape.type] || 'input']
     "
     v-if="!isHidden"
     :field-name="fieldName"
@@ -41,6 +41,6 @@ const { isDisabled, isHidden, isRequired, overrideOptions } = useDependencies(pr
     :config="config"
     v-bind="delegatedProps"
   >
-    <slot />
+    <slot></slot>
   </component>
 </template>

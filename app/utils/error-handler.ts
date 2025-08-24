@@ -105,12 +105,13 @@ export function handleError(error: unknown, context?: string): AppError {
 // 处理异步操作的错误
 export async function handleAsyncError<T>(
   operation: () => Promise<T>,
-  context?: string
-): Promise<{ success: true; data: T } | { success: false; error: AppError }> {
+  context?: string,
+): Promise<{ success: true, data: T } | { success: false, error: AppError }> {
   try {
     const data = await operation()
     return { success: true, data }
-  } catch (error) {
+  }
+  catch (error) {
     const appError = handleError(error, context)
     return { success: false, error: appError }
   }

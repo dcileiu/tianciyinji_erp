@@ -131,7 +131,7 @@
       <CardContent>
         <div v-if="loading" class="space-y-4">
           <div v-for="i in 5" :key="i" class="flex items-center space-x-4 p-4">
-            <Skeleton class="w-12 h-12 rounded-full" />
+            <Skeleton class="w-12 h-12 -full" />
             <div class="flex-1 space-y-2">
               <Skeleton class="h-4 w-full" />
               <Skeleton class="h-4 w-4/5" />
@@ -160,7 +160,7 @@
               <TableRow v-for="role in filteredRoles" :key="role.id">
                 <TableCell>
                   <div class="flex items-center">
-                    <div class="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center mr-3">
+                    <div class="bg-primary/10 text-primary w-8 h-8 -full flex items-center justify-center mr-3">
                       <Shield class="w-4 h-4" />
                     </div>
                     <div>
@@ -286,14 +286,14 @@
               <CardTitle class="text-lg">权限配置</CardTitle>
             </CardHeader>
             <CardContent>
-              <div class="bg-muted/50 p-4 rounded-lg max-h-96 overflow-y-auto">
+              <div class="bg-muted/50 p-4 -lg max-h-96 overflow-y-auto">
                 <div class="space-y-4">
                   <div v-for="group in permissionTree" :key="group.key" class="space-y-2">
                     <div class="flex items-center space-x-2">
                       <input
                         :id="group.key"
                         type="checkbox"
-                        class="rounded border-gray-300"
+                        class="border-gray-300"
                         @change="toggleGroupPermissions(group)"
                       />
                       <Label :for="group.key" class="font-medium flex items-center">
@@ -307,7 +307,7 @@
                           :id="child.key"
                           v-model="selectedPermissions[child.key]"
                           type="checkbox"
-                          class="rounded border-gray-300"
+                          class="border-gray-300"
                         />
                         <Label :for="child.key" class="text-sm flex items-center">
                           <component :is="getIconComponent(child.icon)" class="w-4 h-4 mr-2" />
@@ -373,13 +373,11 @@
     </Dialog>
 
     <!-- 确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-// UI组件现在自动导入，无需手动导入
 import {
   Check,
   CheckCircle,
@@ -418,7 +416,7 @@ const viewingRole = ref(null as any)
 const submitting = ref(false)
 const loading = ref(false)
 // 图标组件映射
-const getIconComponent = iconName => {
+const getIconComponent = (iconName: any) => {
   const iconMap = {
     Users: Users,
     Shield: Shield,
@@ -429,13 +427,13 @@ const getIconComponent = iconName => {
     Plus: Plus,
     Trash2: Trash2,
   }
-  return iconMap[iconName] || Shield
+  return iconMap[iconName as keyof typeof iconMap] || Shield
 }
 
 // 切换权限组
-const toggleGroupPermissions = group => {
-  const allSelected = group.children.every(child => selectedPermissions.value[child.key])
-  group.children.forEach(child => {
+const toggleGroupPermissions = (group: any) => {
+  const allSelected = group.children.every((child: any) => selectedPermissions.value[child.key])
+  group.children.forEach((child: any) => {
     selectedPermissions.value[child.key] = !allSelected
   })
 }
@@ -558,11 +556,11 @@ const roles = ref([
 
 // 计算属性
 const filteredRoles = computed(() => {
-  return roles.value.filter(role => {
-    const matchesSearch =
-      !searchQuery.value ||
-      role.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      role.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return roles.value.filter((role) => {
+    const matchesSearch
+      = !searchQuery.value
+        || role.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || role.description.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesType = !selectedType.value || role.type === selectedType.value
     const matchesStatus = !selectedStatus.value || role.status === selectedStatus.value
 
@@ -579,8 +577,8 @@ const getTypeDisplayName = (type: string): string => {
   return typeMap[type] || type
 }
 
-const getTypeVariant = (type: string): string => {
-  const variantMap: Record<string, string> = {
+const getTypeVariant = (type: string): 'default' | 'outline' | 'destructive' | 'secondary' => {
+  const variantMap: Record<string, 'default' | 'outline' | 'destructive' | 'secondary'> = {
     system: 'destructive',
     custom: 'default',
     business: 'secondary',
@@ -596,12 +594,12 @@ const getStatusDisplayName = (status: string): string => {
   return statusMap[status] || status
 }
 
-const getStatusVariant = (status: string): string => {
-  const variantMap: Record<string, string> = {
+const getStatusVariant = (status: string): 'default' | 'outline' | 'destructive' | 'secondary' => {
+  const variantMap: Record<string, 'default' | 'outline' | 'destructive' | 'secondary'> = {
     active: 'default',
     inactive: 'secondary',
   }
-  return variantMap[status] || 'secondary'
+  return variantMap[status] || 'default'
 }
 
 const formatDate = (date: Date): string => {
@@ -697,7 +695,8 @@ const submitRole = async () => {
           permissions,
         })
       }
-    } else {
+    }
+    else {
       // 新增角色
       const newRole = {
         id: Date.now().toString(),
@@ -711,9 +710,11 @@ const submitRole = async () => {
 
     closeRoleDialog()
     updateStats()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存角色失败:', error)
-  } finally {
+  }
+  finally {
     submitting.value = false
   }
 }

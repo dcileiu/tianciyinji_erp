@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import type { SidebarProps } from '@/registry/new-york/ui/sidebar'
+import type { SidebarProps } from '@/components/ui/sidebar'
 
-import {
-  ShoppingCart,
-  Package,
-  Warehouse,
-  Factory,
-  Calculator,
-  Database,
-  BarChart3,
-  Settings,
-  Users,
-  FileText,
-  Truck,
-  Building2,
-} from 'lucide-vue-next'
 import NavMain from '@/components/NavMain.vue'
 import NavUser from '@/components/NavUser.vue'
+import {
+  BarChart3,
+  Building2,
+  Calculator,
+  Database,
+  Factory,
+  Package,
+  Settings,
+  ShoppingCart,
+  Warehouse,
+} from 'lucide-vue-next'
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/registry/new-york/ui/sidebar'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',

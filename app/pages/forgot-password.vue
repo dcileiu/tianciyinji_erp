@@ -4,7 +4,7 @@
   >
     <div class="w-full max-w-md mx-auto px-4 sm:px-0">
       <!-- 忘记密码卡片 -->
-      <Panel
+      <Card
         class="shadow-2xl border-0 overflow-hidden"
         :pt="{
           root: { class: 'border-none' },
@@ -20,55 +20,51 @@
         <form class="flex flex-column gap-4" @submit.prevent="handleForgotPassword">
           <!-- 邮箱输入 -->
           <div class="field">
-            <FloatLabel variant="on">
-              <IconField class="w-full">
-                <InputIcon class="pi pi-envelope" />
-                <InputText
-                  id="email"
-                  v-model="form.email"
-                  type="email"
-                  class="w-full"
-                  :class="{ 'p-invalid': emailError }"
-                  :disabled="loading"
-                  required
-                />
-              </IconField>
-              <label for="email">邮箱地址</label>
-            </FloatLabel>
+            <!-- FloatLabel 组件已移除 -->
+            <!-- IconField 已移除 -->
+            <!-- InputIcon 已移除 -->
+            <Input
+              id="email"
+              v-model="form.email"
+              type="email"
+              class="w-full"
+              :class="{ 'p-invalid': emailError }"
+              :disabled="loading"
+              required
+            />
+            <!-- /IconField -->
+            <label for="email">邮箱地址</label>
+            <!-- /FloatLabel -->
             <small v-if="emailError" class="p-error">{{ emailError }}</small>
           </div>
 
           <!-- 错误提示 -->
-          <Message v-if="error" severity="error" :closable="false">
-            {{ error }}
-          </Message>
+          <!-- Message 组件已移除 -->
+          {{ error }}
+          <!-- /Message -->
 
           <!-- 成功提示 -->
-          <Message v-if="success" severity="success" :closable="false">
-            {{ success }}
-          </Message>
+          <!-- Message 组件已移除 -->
+          {{ success }}
+          <!-- /Message -->
 
           <!-- 发送重置邮件按钮 -->
           <Button
             type="submit"
-            label="发送重置邮件"
-            icon="pi pi-send"
             class="w-full"
             :loading="loading"
             :disabled="!isFormValid || loading"
-            size="large"
+            size="lg"
           />
 
           <!-- 分割线 -->
-          <Divider align="center" class="my-4">
-            <Chip label="或" class="px-3" />
-          </Divider>
+          <!-- Divider 组件已移除 -->
+          <!-- Chip 组件已移除 -->
+          <!-- /Divider -->
 
           <!-- 其他操作 -->
           <div class="flex flex-column gap-3">
             <Button
-              label="返回登录"
-              icon="pi pi-arrow-left"
               link
               class="w-full justify-content-center"
               @click="$router.push('/login')"
@@ -76,11 +72,11 @@
 
             <div class="text-center text-sm text-surface-600">
               还没有账户？
-              <Button label="立即注册" link class="p-0 text-primary" @click="$router.push('/register')" />
+              <Button link class="p-0 text-primary" @click="$router.push('/register')" />
             </div>
           </div>
         </form>
-      </Panel>
+      </Card>
 
       <!-- 版权信息 -->
       <div class="text-center mt-4 text-sm text-surface-500">© 2025 ERP管理系统. 保留所有权利.</div>
@@ -89,16 +85,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import Panel from 'primevue/panel'
-import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Divider from 'primevue/divider'
-import FloatLabel from 'primevue/floatlabel'
-import Message from 'primevue/message'
-import Chip from 'primevue/chip'
+// import Panel from 'primevue/panel' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import IconField from 'primevue/iconfield' // 已移除PrimeVue导入
+// import InputIcon from 'primevue/inputicon' // 已移除PrimeVue导入
+// import Divider from 'primevue/divider' // 已移除PrimeVue导入
+// import FloatLabel from 'primevue/floatlabel' // 已移除PrimeVue导入
+// import Message from 'primevue/message' // 已移除PrimeVue导入
+// import Chip from 'primevue/chip' // 已移除PrimeVue导入
 import { useAuth } from '~/composables/useAuth'
 
 // 页面配置 - 禁用布局，让忘记密码页面全屏显示
@@ -146,13 +141,16 @@ const handleForgotPassword = async () => {
       setTimeout(() => {
         router.push('/login')
       }, 5000)
-    } else {
+    }
+    else {
       error.value = result.error?.message || '发送重置邮件失败，请重试'
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Reset password error:', err)
     error.value = '发送重置邮件过程中发生错误，请重试'
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

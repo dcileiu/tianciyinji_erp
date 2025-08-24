@@ -75,7 +75,7 @@
 
       <CardContent>
         <div v-if="loading" class="flex justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
 
         <div v-else-if="filteredPositions.length === 0" class="text-center py-8 text-gray-500">暂无岗位数据</div>
@@ -101,7 +101,7 @@
                 <TableCell>
                   <div>
                     <div class="font-medium">{{ position.name }}</div>
-                    <div class="text-sm text-gray-500">{{ position.department?.name }}</div>
+                    <div class="text-sm text-gray-500">{{ position.department_name }}</div>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -111,8 +111,8 @@
                 </TableCell>
                 <TableCell>
                   <div class="text-sm">
-                    {{ position.minSalary?.toLocaleString() }} -
-                    {{ position.maxSalary?.toLocaleString() }}
+                    {{ position.min_salary?.toLocaleString() }} -
+                    {{ position.max_salary?.toLocaleString() }}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -122,7 +122,7 @@
                 </TableCell>
                 <TableCell>
                   <div class="text-sm text-gray-500">
-                    {{ formatDate(position.createdAt) }}
+                    {{ position.created_at }}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -259,7 +259,7 @@
 
         <DialogFooter>
           <Button variant="outline" @click="closeDialog"> 取消 </Button>
-          <Button @click="savePosition" :disabled="saving"> 保存 </Button>
+          <Button :disabled="saving" @click="savePosition"> 保存 </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -268,8 +268,6 @@
 
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
-
-import { computed, onMounted, ref } from 'vue'
 
 import { Briefcase, Edit, Eye, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
@@ -402,7 +400,7 @@ const filteredPositions = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      position => position.name.toLowerCase().includes(query) || position.code.toLowerCase().includes(query)
+      position => position.name.toLowerCase().includes(query) || position.code.toLowerCase().includes(query),
     )
   }
 
@@ -428,21 +426,11 @@ const levelMap: Record<string, string> = {
   director: '总监',
 }
 
-const levelSeverityMap: Record<string, string> = {
-  junior: 'info',
-  intermediate: 'success',
-  senior: 'warn',
-  expert: 'danger',
-  supervisor: 'secondary',
-  manager: 'contrast',
-  director: 'primary',
-}
-
 // 方法
 const getLevelDisplayName = (level: string) => levelMap[level] || level
 
-const getLevelSeverity = (level: string) => {
-  const severityMap: Record<string, string> = {
+const getLevelSeverity = (level: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     junior: 'secondary',
     intermediate: 'default',
     senior: 'outline',
@@ -508,7 +496,8 @@ const savePosition = () => {
       }
     }
     toast.success('岗位更新成功')
-  } else {
+  }
+  else {
     // 添加新岗位
     const department = departments.value.find(d => d.id === positionForm.value.department_id)
     const newPosition = {

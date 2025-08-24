@@ -7,7 +7,7 @@
         <p class="text-muted-color">管理生产车间和工作中心，监控设备状态和产能</p>
       </div>
       <div>
-        <Button label="新建车间" icon="pi pi-plus" class="create-btn" @click="showCreateDialog = true" />
+        <Button class="create-btn" @click="showCreateDialog = true" />
       </div>
     </div>
 
@@ -27,7 +27,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-border flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 -border flex items-center justify-center text-white"
             >
               <i class="pi pi-home text-xl"></i>
             </div>
@@ -49,7 +49,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-border flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 -border flex items-center justify-center text-white"
             >
               <i class="pi pi-check-circle text-xl"></i>
             </div>
@@ -71,7 +71,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-border flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 -border flex items-center justify-center text-white"
             >
               <i class="pi pi-exclamation-triangle text-xl"></i>
             </div>
@@ -93,7 +93,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-border flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 -border flex items-center justify-center text-white"
             >
               <i class="pi pi-cog text-xl"></i>
             </div>
@@ -111,11 +111,10 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-color">车间状态</label>
-            <Dropdown
+            <Select
               v-model="statusFilter"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="选择状态"
               show-clear
             />
@@ -123,11 +122,10 @@
 
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-color">车间类型</label>
-            <Dropdown
+            <Select
               v-model="typeFilter"
               :options="typeOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="选择类型"
               show-clear
             />
@@ -135,11 +133,10 @@
 
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-color">负责人</label>
-            <Dropdown
+            <Select
               v-model="managerFilter"
               :options="managerOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="选择负责人"
               show-clear
             />
@@ -149,7 +146,7 @@
             <label class="text-sm font-medium text-color">搜索</label>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <InputText v-model="searchQuery" placeholder="搜索车间名称、编码..." />
+              <Input v-model="searchQuery" placeholder="搜索车间名称、编码..." />
             </span>
           </div>
         </div>
@@ -165,7 +162,7 @@
         </div>
       </template>
       <template #content>
-        <DataTable
+        <Table
           :value="filteredWorkshops"
           :loading="loading"
           :paginator="true"
@@ -195,14 +192,14 @@
               <i class="pi pi-home text-6xl mb-4 opacity-50"></i>
               <h3 class="text-lg mb-2">暂无车间数据</h3>
               <p class="mb-4">开始创建您的第一个车间</p>
-              <Button label="新建车间" icon="pi pi-plus" @click="showCreateDialog = true" />
+              <Button @click="showCreateDialog = true" />
             </div>
           </template>
 
-          <Column field="name" header="车间名称" :sortable="true">
+          <TableHead field="name" header="车间名称" :sortable="true">
             <template #body="slotProps">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary-100 rounded-border flex items-center justify-center">
+                <div class="w-10 h-10 bg-primary-100 -border flex items-center justify-center">
                   <i class="pi pi-home text-primary"></i>
                 </div>
                 <div>
@@ -211,106 +208,85 @@
                 </div>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="type" header="车间类型" :sortable="true">
+          <TableHead field="type" header="车间类型" :sortable="true">
             <template #body="slotProps">
               <Tag :value="getTypeText(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="manager" header="负责人" :sortable="true">
+          <TableHead field="manager" header="负责人" :sortable="true">
             <template #body="slotProps">
               <div class="flex items-center gap-2">
                 <Avatar
-                  :label="slotProps.data.manager?.charAt(0)"
-                  shape="circle"
+                  :shape="'circle'"
                   size="normal"
                   class="bg-surface-200 text-surface-700"
                 />
                 <span class="font-medium">{{ slotProps.data.manager || '未指定' }}</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="equipment_count" header="设备数量" :sortable="true">
+          <TableHead field="equipment_count" header="设备数量" :sortable="true">
             <template #body="slotProps">
               <div class="flex items-center gap-2">
                 <span class="font-semibold text-lg">{{ slotProps.data.equipment_count }}</span>
                 <span class="text-sm text-muted-color">台</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="capacity" header="设计产能" :sortable="true">
+          <TableHead field="capacity" header="设计产能" :sortable="true">
             <template #body="slotProps">
               <span class="font-medium">{{ slotProps.data.capacity }} 件/日</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="utilization" header="产能利用率" :sortable="true">
+          <TableHead field="utilization" header="产能利用率" :sortable="true">
             <template #body="slotProps">
               <div class="flex items-center gap-2">
-                <ProgressBar
-                  :value="slotProps.data.utilization"
-                  class="w-20"
-                  :class="{
-                    'bg-green-100': slotProps.data.utilization >= 80,
-                    'bg-orange-100': slotProps.data.utilization >= 60 && slotProps.data.utilization < 80,
-                    'bg-red-100': slotProps.data.utilization < 60,
-                  }"
+                <!-- ProgressBar 组件已移除 -->= 80,
+                'bg-orange-100': slotProps.data.utilization >= 60 && slotProps.data.utilization < 80,
+                'bg-red-100': slotProps.data.utilization < 60,
+                }"
                 />
                 <span class="text-sm font-medium">{{ slotProps.data.utilization }}%</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态" :sortable="true">
+          <TableHead field="status" header="状态" :sortable="true">
             <template #body="slotProps">
               <Tag :value="getStatusText(slotProps.data.status)" :severity="getStatusSeverity(slotProps.data.status)" />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" class="w-40">
+          <TableHead header="操作" class="w-40">
             <template #body="slotProps">
               <div class="flex gap-2">
                 <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   @click="viewWorkshop(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   @click="editWorkshop(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'设备管理'"
-                  icon="pi pi-cog"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   @click="manageEquipment(slotProps.data)"
                 />
                 <Button
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  outlined
-                  rounded
-                  size="small"
+                  size="sm"
                   severity="danger"
                   @click="confirmDelete(slotProps.data)"
                 />
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
@@ -325,7 +301,7 @@
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
             <label for="workshopCode" class="text-sm font-medium text-color">车间编码</label>
-            <InputText
+            <Input
               id="workshopCode"
               v-model="workshopForm.code"
               placeholder="输入车间编码"
@@ -334,30 +310,28 @@
           </div>
           <div class="flex flex-col gap-2">
             <label for="workshopName" class="text-sm font-medium text-color">车间名称</label>
-            <InputText id="workshopName" v-model="workshopForm.name" placeholder="输入车间名称" />
+            <Input id="workshopName" v-model="workshopForm.name" placeholder="输入车间名称" />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
             <label for="workshopType" class="text-sm font-medium text-color">车间类型</label>
-            <Dropdown
+            <Select
               id="workshopType"
               v-model="workshopForm.type"
               :options="typeOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="选择车间类型"
             />
           </div>
           <div class="flex flex-col gap-2">
             <label for="workshopStatus" class="text-sm font-medium text-color">状态</label>
-            <Dropdown
+            <Select
               id="workshopStatus"
               v-model="workshopForm.status"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="选择状态"
             />
           </div>
@@ -366,17 +340,17 @@
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
             <label for="workshopManager" class="text-sm font-medium text-color">负责人</label>
-            <InputText id="workshopManager" v-model="workshopForm.manager" placeholder="输入负责人姓名" />
+            <Input id="workshopManager" v-model="workshopForm.manager" placeholder="输入负责人姓名" />
           </div>
           <div class="flex flex-col gap-2">
             <label for="workshopCapacity" class="text-sm font-medium text-color">设计产能（件/日）</label>
-            <InputNumber id="workshopCapacity" v-model="workshopForm.capacity" placeholder="输入设计产能" :min="0" />
+            <Input id="workshopCapacity" v-model="workshopForm.capacity" type="number" placeholder="输入设计产能" :min="0" />
           </div>
         </div>
 
         <div class="flex flex-col gap-2">
           <label for="workshopLocation" class="text-sm font-medium text-color">车间位置</label>
-          <InputText id="workshopLocation" v-model="workshopForm.location" placeholder="输入车间位置" />
+          <Input id="workshopLocation" v-model="workshopForm.location" placeholder="输入车间位置" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -387,34 +361,33 @@
 
       <template #footer>
         <div class="flex justify-end gap-3">
-          <Button label="取消" outlined @click="closeCreateDialog" />
-          <Button :label="editingWorkshop ? '更新' : '创建'" :loading="saving" @click="saveWorkshop" />
+          <Button @click="closeCreateDialog" />
+          <Button ::loading="saving" @click="saveWorkshop" />
         </div>
       </template>
     </Dialog>
 
     <!-- 删除确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import ProgressBar from 'primevue/progressbar'
-import Dialog from 'primevue/dialog'
-import Textarea from 'primevue/textarea'
-import InputNumber from 'primevue/inputnumber'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import Skeleton from 'primevue/skeleton'
-
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
+// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
+// import Column from 'primevue/column' // 已移除PrimeVue导入
+// import Tag from 'primevue/tag' // 已移除PrimeVue导入
+// import Avatar from 'primevue/avatar' // 已移除PrimeVue导入
+// import ProgressBar from 'primevue/progressbar' // 已移除PrimeVue导入
+// import Dialog from 'primevue/dialog' // 已移除PrimeVue导入
+// import Textarea from 'primevue/textarea' // 已移除PrimeVue导入
+// import InputNumber from 'primevue/inputnumber' // 已移除PrimeVue导入
+// import ConfirmDialog from 'primevue/confirmdialog' // 已移除PrimeVue导入
+// import { useConfirm } from 'primevue/useconfirm' // 已移除PrimeVue导入
+// import Skeleton from 'primevue/skeleton' // 已移除PrimeVue导入
 // 页面状态
 const loading = ref(false)
 const saving = ref(false)
@@ -426,8 +399,7 @@ const searchQuery = ref('')
 // 对话框状态
 const showCreateDialog = ref(false)
 const editingWorkshop = ref<any>(null)
-const confirm = useConfirm()
-
+// const confirm = useConfirm() // 已移除
 // 车间表单
 const workshopForm = ref({
   code: '',
@@ -535,8 +507,8 @@ const filteredWorkshops = computed(() => {
   if (searchQuery.value) {
     result = result.filter(
       workshop =>
-        workshop.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        workshop.code.toLowerCase().includes(searchQuery.value.toLowerCase())
+        workshop.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || workshop.code.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
 
@@ -568,12 +540,12 @@ const getTypeText = (type: string) => {
 }
 
 const getTypeSeverity = (type: string) => {
-  const severityMap: Record<string, string> = {
-    machining: 'info',
-    assembly: 'success',
-    testing: 'warn',
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    machining: 'secondary',
+    assembly: 'default',
+    testing: 'outline',
     packaging: 'secondary',
-    painting: 'help',
+    painting: 'outline',
   }
   return severityMap[type] || 'secondary'
 }
@@ -588,10 +560,10 @@ const getStatusText = (status: string) => {
 }
 
 const getStatusSeverity = (status: string) => {
-  const severityMap: Record<string, string> = {
-    active: 'success',
-    maintenance: 'warn',
-    inactive: 'danger',
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    active: 'default',
+    maintenance: 'outline',
+    inactive: 'destructive',
   }
   return severityMap[status] || 'secondary'
 }
@@ -621,22 +593,8 @@ const manageEquipment = (workshop: any) => {
   // 这里可以实现设备管理功能
 }
 
-const confirmDelete = (workshop: any) => {
-  confirm.require({
-    message: `确定要删除车间 "${workshop.name}" 吗？此操作不可撤销。`,
-    header: '删除确认',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteWorkshop(workshop.id)
-    },
-  })
-}
-
-const deleteWorkshop = async (id: string) => {
-  const index = workshops.value.findIndex(w => w.id === id)
-  if (index !== -1) {
-    workshops.value.splice(index, 1)
-  }
+const confirmDelete = (_workshop: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
 const closeCreateDialog = () => {
@@ -674,7 +632,8 @@ const saveWorkshop = async () => {
           description: workshopForm.value.description,
         }
       }
-    } else {
+    }
+    else {
       // 新增车间
       const newWorkshop = {
         id: Date.now().toString(),
@@ -693,7 +652,8 @@ const saveWorkshop = async () => {
     }
 
     closeCreateDialog()
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

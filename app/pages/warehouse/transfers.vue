@@ -6,7 +6,7 @@
         <h1 class="text-3xl font-bold text-color">库存调拨</h1>
         <p class="text-muted-color mt-2">管理仓库间库存调拨</p>
       </div>
-      <Button label="新建调拨单" icon="pi pi-plus" @click="openTransferDialog()" />
+      <Button @click="openTransferDialog()" />
     </div>
 
     <!-- 筛选区域 -->
@@ -15,11 +15,10 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label class="text-sm font-medium mb-2 block text-color">状态</label>
-            <Dropdown
+            <Select
               v-model="filters.status"
               :options="statusOptions"
-              option-label="label"
-              option-value="value"
+              option-option-value="value"
               placeholder="全部状态"
               show-clear
               class="w-full"
@@ -27,11 +26,10 @@
           </div>
           <div>
             <label class="text-sm font-medium mb-2 block text-color">调出仓库</label>
-            <Dropdown
+            <Select
               v-model="filters.from_warehouse"
               :options="warehouses"
-              option-label="name"
-              option-value="id"
+              option-option-value="id"
               placeholder="全部仓库"
               show-clear
               class="w-full"
@@ -39,16 +37,16 @@
           </div>
           <div>
             <label class="text-sm font-medium mb-2 block text-color">搜索</label>
-            <IconField icon-position="left">
-              <InputIcon>
-                <i class="pi pi-search"></i>
-              </InputIcon>
-              <InputText v-model="filters.search" placeholder="搜索调拨单号、商品..." class="w-full" />
-            </IconField>
+            <!-- IconField 已移除 -->
+            <!-- InputIcon 已移除 -->
+            <i class="pi pi-search"></i>
+            <!-- /InputIcon -->
+            <Input v-model="filters.search" placeholder="搜索调拨单号、商品..." class="w-full" />
+            <!-- /IconField -->
           </div>
           <div class="flex items-end gap-2">
-            <Button label="刷新" icon="pi pi-refresh" outlined @click="loadTransfers" />
-            <Button label="导出" icon="pi pi-download" outlined @click="exportTransfers" />
+            <Button @click="loadTransfers" />
+            <Button @click="exportTransfers" />
           </div>
         </div>
       </template>
@@ -64,7 +62,7 @@
       </template>
 
       <template #content>
-        <DataTable
+        <Table
           :value="filteredTransfers"
           :loading="loading"
           :paginator="true"
@@ -73,113 +71,101 @@
           data-key="id"
           class="p-datatable-sm"
         >
-          <Column field="transfer_no" header="调拨单号" sortable>
+          <TableHead field="transfer_no" header="调拨单号" sortable>
             <template #body="slotProps">
-              <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
+              <code class="bg-surface-100 px-2 py-1 text-sm font-mono">
                 {{ slotProps.data.transfer_no }}
               </code>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="from_warehouse_name" header="调出仓库" sortable>
+          <TableHead field="from_warehouse_name" header="调出仓库" sortable>
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
                 <i class="pi pi-home text-blue-600"></i>
                 <span>{{ slotProps.data.from_warehouse_name }}</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="to_warehouse_name" header="调入仓库" sortable>
+          <TableHead field="to_warehouse_name" header="调入仓库" sortable>
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
                 <i class="pi pi-home text-green-600"></i>
                 <span>{{ slotProps.data.to_warehouse_name }}</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="items_count" header="商品数量">
+          <TableHead field="items_count" header="商品数量">
             <template #body="slotProps">
               <span class="text-sm">{{ slotProps.data.items.length }} 种商品</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="total_quantity" header="总数量">
+          <TableHead field="total_quantity" header="总数量">
             <template #body="slotProps">
               <span class="font-medium">{{ slotProps.data.total_quantity }}</span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="status" header="状态" sortable>
+          <TableHead field="status" header="状态" sortable>
             <template #body="slotProps">
               <Tag
                 :value="getStatusDisplayName(slotProps.data.status)"
                 :severity="getStatusSeverity(slotProps.data.status)"
               />
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="operator_name" header="操作人">
+          <TableHead field="operator_name" header="操作人">
             <template #body="slotProps">
               <div class="flex items-center space-x-2">
-                <Avatar :label="slotProps.data.operator_name.charAt(0)" shape="circle" size="small" />
+                <Avatar :shape="'circle'" size="sm" />
                 <span class="text-sm">{{ slotProps.data.operator_name }}</span>
               </div>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column field="created_at" header="创建时间" sortable>
+          <TableHead field="created_at" header="创建时间" sortable>
             <template #body="slotProps">
               <span class="text-sm text-muted-color">
                 {{ formatDate(slotProps.data.created_at) }}
               </span>
             </template>
-          </Column>
+          </TableHead>
 
-          <Column header="操作" :exportable="false">
+          <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
                 <Button
-                  v-tooltip="'查看详情'"
-                  icon="pi pi-eye"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="viewTransfer(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'draft'"
-                  v-tooltip="'编辑'"
-                  icon="pi pi-pencil"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="editTransfer(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'pending'"
-                  v-tooltip="'审核'"
-                  icon="pi pi-check"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   @click="approveTransfer(slotProps.data)"
                 />
                 <Button
                   v-if="slotProps.data.status === 'draft'"
-                  v-tooltip="'删除'"
-                  icon="pi pi-trash"
-                  rounded
                   text
-                  size="small"
+                  size="sm"
                   severity="danger"
                   @click="confirmDeleteTransfer(slotProps.data)"
                 />
               </div>
             </template>
-          </Column>
-        </DataTable>
+          </TableHead>
+        </Table>
       </template>
     </Card>
 
@@ -196,16 +182,15 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">调拨单号</label>
-              <InputText v-model="transferForm.transfer_no" :disabled="true" placeholder="系统自动生成" />
+              <Input v-model="transferForm.transfer_no" :disabled="true" placeholder="系统自动生成" />
             </div>
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">状态</label>
-              <Dropdown
+              <Select
                 v-model="transferForm.status"
                 :options="statusOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="选择状态"
                 :disabled="dialogMode === 'view'"
               />
@@ -215,11 +200,10 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">调出仓库 *</label>
-              <Dropdown
+              <Select
                 v-model="transferForm.from_warehouse_id"
                 :options="warehouses"
-                option-label="name"
-                option-value="id"
+                option-option-value="id"
                 placeholder="选择调出仓库"
                 :disabled="dialogMode === 'view'"
                 required
@@ -228,11 +212,10 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">调入仓库 *</label>
-              <Dropdown
+              <Select
                 v-model="transferForm.to_warehouse_id"
                 :options="warehouses"
-                option-label="name"
-                option-value="id"
+                option-option-value="id"
                 placeholder="选择调入仓库"
                 :disabled="dialogMode === 'view'"
                 required
@@ -256,61 +239,58 @@
               <label class="block text-sm font-medium text-color">调拨商品</label>
               <Button
                 v-if="dialogMode !== 'view'"
-                label="添加商品"
-                icon="pi pi-plus"
                 text
-                size="small"
+                size="sm"
                 @click="addTransferItem"
               />
             </div>
 
-            <DataTable :value="transferForm.items" class="p-datatable-sm">
-              <Column field="product_name" header="商品名称">
+            <Table :value="transferForm.items" class="p-datatable-sm">
+              <TableHead field="product_name" header="商品名称">
                 <template #body="slotProps">
                   <span class="font-medium">{{ slotProps.data.product_name }}</span>
                 </template>
-              </Column>
+              </TableHead>
 
-              <Column field="current_stock" header="当前库存">
+              <TableHead field="current_stock" header="当前库存">
                 <template #body="slotProps">
                   <span class="text-sm">{{ slotProps.data.current_stock }} {{ slotProps.data.unit }}</span>
                 </template>
-              </Column>
+              </TableHead>
 
-              <Column field="transfer_quantity" header="调拨数量">
+              <TableHead field="transfer_quantity" header="调拨数量">
                 <template #body="slotProps">
                   <div v-if="dialogMode === 'view'">
                     <span>{{ slotProps.data.transfer_quantity }} {{ slotProps.data.unit }}</span>
                   </div>
-                  <InputNumber
+                  <Input
                     v-else
                     v-model="slotProps.data.transfer_quantity"
+                    type="number"
                     :min="1"
                     :max="slotProps.data.current_stock"
                     show-buttons
                   />
                 </template>
-              </Column>
+              </TableHead>
 
-              <Column field="unit" header="单位">
+              <TableHead field="unit" header="单位">
                 <template #body="slotProps">
                   <span class="text-sm text-muted-color">{{ slotProps.data.unit }}</span>
                 </template>
-              </Column>
+              </TableHead>
 
-              <Column v-if="dialogMode !== 'view'" header="操作" :exportable="false">
+              <TableHead v-if="dialogMode !== 'view'" header="操作" :exportable="false">
                 <template #body="slotProps">
                   <Button
-                    icon="pi pi-trash"
-                    rounded
                     text
-                    size="small"
+                    size="sm"
                     severity="danger"
                     @click="removeTransferItem(slotProps.index)"
                   />
                 </template>
-              </Column>
-            </DataTable>
+              </TableHead>
+            </Table>
           </div>
 
           <!-- 总计 -->
@@ -325,11 +305,9 @@
 
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button label="取消" icon="pi pi-times" outlined @click="closeTransferDialog" />
+          <Button @click="closeTransferDialog" />
           <Button
             v-if="dialogMode !== 'view'"
-            label="保存"
-            icon="pi pi-check"
             :loading="saving"
             @click="saveTransfer"
           />
@@ -338,28 +316,12 @@
     </Dialog>
 
     <!-- 确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import type { Transfer, TransferItem } from '~/types/database'
+import type { Transfer } from '~/types/database'
 
 // 页面配置
 definePageMeta({
@@ -376,8 +338,7 @@ const saving = ref(false)
 const showDialog = ref(false)
 const dialogMode = ref<'view' | 'create' | 'edit'>('view')
 const editingTransfer = ref<Transfer | null>(null)
-const confirm = useConfirm()
-
+// const confirm = useConfirm() // 已移除
 // 筛选条件
 const filters = ref({
   status: '',
@@ -471,8 +432,8 @@ const filteredTransfers = computed(() => {
     const query = filters.value.search.toLowerCase()
     result = result.filter(
       transfer =>
-        transfer.transfer_no.toLowerCase().includes(query) ||
-        transfer.items.some(item => item.product_name.toLowerCase().includes(query))
+        transfer.transfer_no.toLowerCase().includes(query)
+        || transfer.items.some(item => item.product_name.toLowerCase().includes(query)),
     )
   }
 
@@ -505,19 +466,19 @@ const statusMap: Record<string, string> = {
   cancelled: '已取消',
 }
 
-const statusSeverityMap: Record<string, string> = {
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
   draft: 'secondary',
-  pending: 'warn',
-  approved: 'info',
-  in_transit: 'primary',
-  completed: 'success',
-  cancelled: 'danger',
+  pending: 'outline',
+  approved: 'secondary',
+  in_transit: 'default',
+  completed: 'default',
+  cancelled: 'destructive',
 }
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status
 
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'secondary'
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString('zh-CN')
@@ -528,9 +489,11 @@ const loadTransfers = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } catch (error) {
+  }
+  catch (error) {
     console.error('加载调拨单失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -547,7 +510,8 @@ const openTransferDialog = (transfer: any = null) => {
       remark: transfer.remark,
       items: [...transfer.items],
     })
-  } else {
+  }
+  else {
     editingTransfer.value = null
     dialogMode.value = 'create'
     transferForm.value = {
@@ -580,38 +544,12 @@ const editTransfer = (transfer: any) => {
   openTransferDialog(transfer)
 }
 
-const approveTransfer = async (transfer: any) => {
-  confirm.require({
-    message: `确定要审核通过调拨单 ${transfer.transfer_no} 吗？`,
-    header: '确认审核',
-    icon: 'pi pi-check',
-    accept: async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const index = mockTransfers.value.findIndex(t => t.id === transfer.id)
-        if (index !== -1 && mockTransfers.value[index]) {
-          mockTransfers.value[index].status = 'approved'
-        }
-      } catch (error) {
-        console.error('审核失败:', error)
-      }
-    },
-  })
+const approveTransfer = async (_transfer: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
-const confirmDeleteTransfer = (transfer: any) => {
-  confirm.require({
-    message: `确定要删除调拨单 ${transfer.transfer_no} 吗？`,
-    header: '确认删除',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      deleteTransfer(transfer.id)
-    },
-  })
-}
-
-const deleteTransfer = (transferId: string) => {
-  mockTransfers.value = mockTransfers.value.filter(transfer => transfer.id !== transferId)
+const confirmDeleteTransfer = (_transfer: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
 const closeTransferDialog = () => {
@@ -630,7 +568,8 @@ const saveTransfer = () => {
         created_at: mockTransfers.value[index].created_at,
       } as Transfer
     }
-  } else {
+  }
+  else {
     // 新增模式
     const newTransfer: Transfer = {
       ...transferForm.value,

@@ -41,7 +41,7 @@ const props = withDefaults(
     filterOpacity: 0.2,
     showTooltip: true,
     showLegend: true,
-  }
+  },
 )
 
 type KeyOfT = Extract<keyof T, string>
@@ -54,20 +54,20 @@ const index = computed(() => props.index as KeyOfT)
 const isMounted = useMounted()
 const activeSegmentKey = ref<string>()
 const colors = computed(() =>
-  props.colors?.length ? props.colors : defaultColors(props.data.filter(d => d[props.category]).filter(Boolean).length)
+  props.colors?.length ? props.colors : (() => ['#8b5cf6'])(props.data.filter(d => d[props.category]).filter(Boolean).length),
 )
 const legendItems = computed(() =>
   props.data.map((item, i) => ({
     name: item[props.index],
     color: colors.value[i],
     inactive: false,
-  }))
+  })),
 )
 
 const totalValue = computed(() =>
   props.data.reduce((prev, curr) => {
     return prev + curr[props.category]
-  }, 0)
+  }, 0),
 )
 </script>
 
@@ -95,17 +95,18 @@ const totalValue = computed(() =>
               if (d?.data?.[index] === activeSegmentKey) {
                 activeSegmentKey = undefined
                 elements.forEach(el => (el.style.opacity = '1'))
-              } else {
+              }
+              else {
                 activeSegmentKey = d?.data?.[index]
                 elements.forEach(el => (el.style.opacity = `${filterOpacity}`))
-                elements[i].style.opacity = '1'
+                elements[i]?.style.opacity = '1'
               }
             },
           },
         }"
       />
 
-      <slot />
+      <slot ></slot>
     </VisSingleContainer>
   </div>
 </template>

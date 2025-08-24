@@ -96,7 +96,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 -lg flex items-center justify-center text-white"
             >
               <Box class="w-6 h-6" />
             </div>
@@ -120,7 +120,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 -lg flex items-center justify-center text-white"
             >
               <Database class="w-6 h-6" />
             </div>
@@ -144,7 +144,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 -lg flex items-center justify-center text-white"
             >
               <AlertTriangle class="w-6 h-6" />
             </div>
@@ -168,7 +168,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 -lg flex items-center justify-center text-white"
             >
               <DollarSign class="w-6 h-6" />
             </div>
@@ -186,7 +186,7 @@
         </div>
       </CardHeader>
       <CardContent>
-        <div class="rounded-md border">
+        <div class="-md border">
           <Table>
             <TableHeader v-if="!loading && filteredInventoryItems.length > 0">
               <TableRow>
@@ -226,14 +226,14 @@
               <template v-else>
                 <TableRow v-for="item in filteredInventoryItems" :key="item.id">
                   <TableCell>
-                    <span class="font-mono bg-muted px-2 py-1 rounded text-primary text-sm">
+                    <span class="font-mono bg-muted px-2 py-1 text-primary text-sm">
                       {{ item.product_code }}
                     </span>
                   </TableCell>
 
                   <TableCell>
                     <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <div class="w-10 h-10 bg-primary/10 -lg flex items-center justify-center">
                         <Box class="w-5 h-5 text-primary" />
                       </div>
                       <div>
@@ -286,10 +286,10 @@
 
                   <TableCell class="w-32">
                     <div class="flex gap-2">
-                      <Button variant="ghost" size="sm" @click="viewItem(item)" title="查看详情">
+                      <Button variant="ghost" size="sm" title="查看详情" @click="viewItem(item)">
                         <Eye class="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" @click="viewHistory(item)" title="库存记录">
+                      <Button variant="ghost" size="sm" title="库存记录" @click="viewHistory(item)">
                         <History class="w-4 h-4" />
                       </Button>
                     </div>
@@ -307,20 +307,19 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref, computed } from 'vue'
 import {
-  Search,
-  RefreshCw,
-  Download,
+  AlertTriangle,
+  ArrowDown,
   ArrowUp,
   Box,
   Database,
-  ArrowDown,
-  AlertTriangle,
   DollarSign,
+  Download,
   Eye,
   History,
   Inbox,
+  RefreshCw,
+  Search,
 } from 'lucide-vue-next'
 
 // 页面配置
@@ -432,8 +431,8 @@ const filteredInventoryItems = computed(() => {
   if (searchQuery.value) {
     result = result.filter(
       item =>
-        item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        item.product_code.toLowerCase().includes(searchQuery.value.toLowerCase())
+        item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        || item.product_code.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
 
@@ -446,12 +445,14 @@ const filteredInventoryItems = computed(() => {
   }
 
   if (stockStatusFilter.value) {
-    result = result.filter(item => {
+    result = result.filter((item) => {
       if (stockStatusFilter.value === 'normal') {
         return item.current_stock > item.min_stock
-      } else if (stockStatusFilter.value === 'low') {
+      }
+      else if (stockStatusFilter.value === 'low') {
         return item.current_stock <= item.min_stock && item.current_stock > 0
-      } else if (stockStatusFilter.value === 'out') {
+      }
+      else if (stockStatusFilter.value === 'out') {
         return item.current_stock === 0
       }
       return true
@@ -495,16 +496,6 @@ const getWarehouseText = (warehouse: string) => {
     backup: '备用仓',
   }
   return warehouseMap[warehouse] || warehouse
-}
-
-const getWarehouseSeverity = (warehouse: string) => {
-  const severityMap: Record<string, string> = {
-    main: 'success',
-    raw_material: 'info',
-    finished_goods: 'warn',
-    backup: 'secondary',
-  }
-  return severityMap[warehouse] || 'secondary'
 }
 
 const exportReport = () => {

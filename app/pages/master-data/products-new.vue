@@ -15,7 +15,7 @@
           批量导入
         </Button>
         <PermissionWrapper :has-permission="canCreateProduct">
-          <Button @click="openCreateDialog" class="bg-blue-600 hover:bg-blue-700">
+          <Button class="bg-blue-600 hover:bg-blue-700" @click="openCreateDialog">
             <Plus class="h-4 w-4 mr-2" />
             新增产品
           </Button>
@@ -28,7 +28,7 @@
       <Card>
         <CardContent class="p-6">
           <div class="flex items-center">
-            <div class="p-3 bg-blue-500/10 rounded-full">
+            <div class="p-3 bg-blue-500/10 -full">
               <Package class="h-6 w-6 text-blue-600" />
             </div>
             <div class="ml-4">
@@ -42,7 +42,7 @@
       <Card>
         <CardContent class="p-6">
           <div class="flex items-center">
-            <div class="p-3 bg-green-500/10 rounded-full">
+            <div class="p-3 bg-green-500/10 -full">
               <TrendingUp class="h-6 w-6 text-green-600" />
             </div>
             <div class="ml-4">
@@ -56,7 +56,7 @@
       <Card>
         <CardContent class="p-6">
           <div class="flex items-center">
-            <div class="p-3 bg-yellow-500/10 rounded-full">
+            <div class="p-3 bg-yellow-500/10 -full">
               <AlertTriangle class="h-6 w-6 text-yellow-600" />
             </div>
             <div class="ml-4">
@@ -70,7 +70,7 @@
       <Card>
         <CardContent class="p-6">
           <div class="flex items-center">
-            <div class="p-3 bg-red-500/10 rounded-full">
+            <div class="p-3 bg-red-500/10 -full">
               <XCircle class="h-6 w-6 text-red-600" />
             </div>
             <div class="ml-4">
@@ -91,7 +91,7 @@
             <Input v-model="searchQuery" placeholder="搜索产品名称、编码或规格..." class="pl-10" />
           </div>
           <div class="flex gap-2">
-            <Select v-model="selectedCategory">
+            <Select v-model="categoryFilter">
               <SelectTrigger class="w-48">
                 <SelectValue placeholder="选择分类" />
               </SelectTrigger>
@@ -105,7 +105,7 @@
               </SelectContent>
             </Select>
 
-            <Select v-model="selectedStockStatus">
+            <Select v-model="stockStatusFilter">
               <SelectTrigger class="w-32">
                 <SelectValue placeholder="库存状态" />
               </SelectTrigger>
@@ -119,7 +119,7 @@
               </SelectContent>
             </Select>
 
-            <Select v-model="selectedStatus">
+            <Select v-model="statusFilter">
               <SelectTrigger class="w-32">
                 <SelectValue placeholder="产品状态" />
               </SelectTrigger>
@@ -133,7 +133,7 @@
               </SelectContent>
             </Select>
 
-            <Button variant="outline" size="icon" @click="resetFilters" title="重置筛选">
+            <Button variant="outline" size="icon" title="重置筛选" @click="resetFilters">
               <FilterX class="h-4 w-4" />
             </Button>
           </div>
@@ -150,10 +150,10 @@
             产品列表
           </CardTitle>
           <div class="flex items-center gap-2">
-            <Button variant="outline" size="sm" @click="openSettings">
+            <Button variant="outline" size="sm" @click="openCreateDialog">
               <Settings class="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm" @click="exportProducts">
+            <Button variant="outline" size="sm" @click="importProducts">
               <Download class="h-4 w-4" />
             </Button>
           </div>
@@ -162,7 +162,7 @@
       <CardContent>
         <div v-if="loading" class="space-y-4">
           <div v-for="i in 5" :key="i" class="flex items-center space-x-4">
-            <Skeleton class="h-12 w-12 rounded" />
+            <Skeleton class="h-12 w-12" />
             <div class="space-y-2">
               <Skeleton class="h-4 w-[250px]" />
               <Skeleton class="h-4 w-[200px]" />
@@ -185,7 +185,7 @@
             <TableHeader>
               <TableRow>
                 <TableHead class="w-12">
-                  <input type="checkbox" class="rounded" />
+                  <input type="checkbox" class="" />
                 </TableHead>
                 <TableHead>产品编码</TableHead>
                 <TableHead>产品名称</TableHead>
@@ -201,14 +201,14 @@
             <TableBody>
               <TableRow v-for="product in filteredProducts" :key="product.id" class="hover:bg-muted/50">
                 <TableCell>
-                  <input type="checkbox" class="rounded" />
+                  <input type="checkbox" class="" />
                 </TableCell>
                 <TableCell>
                   <span class="font-mono text-sm">{{ product.product_no }}</span>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded bg-muted flex items-center justify-center">
+                    <div class="h-10 w-10 bg-muted flex items-center justify-center">
                       <Package class="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
@@ -218,7 +218,7 @@
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge :variant="getCategoryVariant(product.category)">
+                  <Badge :variant="getCategorySeverity(product.category as any)">
                     {{ getCategoryDisplayName(product.category) }}
                   </Badge>
                 </TableCell>
@@ -231,8 +231,8 @@
                   ¥{{ formatCurrency(product.cost_price) }}
                 </TableCell>
                 <TableCell>
-                  <Badge :variant="getStatusVariant(product.status)">
-                    {{ getStatusDisplayName(product.status) }}
+                  <Badge :variant="getStatusVariant(product.status as any)">
+                    {{ getStatusDisplayName(product.status as any) }}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -243,8 +243,8 @@
                     <Button variant="ghost" size="sm" @click="viewProduct(product)">
                       <Eye class="h-4 w-4" />
                     </Button>
-                    <PermissionWrapper :has-permission="canEditProduct">
-                      <Button variant="ghost" size="sm" @click="editProduct(product)">
+                    <PermissionWrapper :has-permission="canCreateProduct">
+                      <Button variant="ghost" size="sm" @click="openCreateDialog">
                         <Edit class="h-4 w-4" />
                       </Button>
                     </PermissionWrapper>
@@ -261,7 +261,7 @@
                     >
                       <component :is="product.status === 'active' ? Pause : Play" class="h-4 w-4" />
                     </Button>
-                    <PermissionWrapper :has-permission="canDeleteProduct">
+                    <PermissionWrapper :has-permission="canCreateProduct">
                       <Button variant="ghost" size="sm" @click="confirmDeleteProduct(product)">
                         <Trash2 class="h-4 w-4 text-destructive" />
                       </Button>
@@ -491,7 +491,7 @@
             <X class="h-4 w-4 mr-2" />
             取消
           </Button>
-          <Button v-if="dialogMode !== 'view'" @click="saveProduct" :disabled="saving">
+          <Button v-if="dialogMode !== 'view'" :disabled="saving" @click="saveProduct">
             <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
             <Check v-else class="h-4 w-4 mr-2" />
             保存
@@ -505,32 +505,30 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref, computed, onMounted } from 'vue'
-
 import {
-  Package,
-  Upload,
-  Plus,
-  TrendingUp,
   AlertTriangle,
-  XCircle,
-  Search,
-  FilterX,
-  List,
-  Settings,
-  Download,
-  Eye,
-  Edit,
-  Copy,
   BarChart3,
+  Check,
+  Copy,
+  DollarSign,
+  Download,
+  Edit,
+  Eye,
+  FilterX,
+  Info,
+  List,
+  Loader2,
+  Package,
   Pause,
   Play,
+  Plus,
+  Search,
+  Settings,
   Trash2,
-  Info,
-  DollarSign,
+  TrendingUp,
+  Upload,
   X,
-  Check,
-  Loader2,
+  XCircle,
 } from 'lucide-vue-next'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
@@ -548,8 +546,7 @@ const loading = ref(false)
 const saving = ref(false)
 const showProductDialog = ref(false)
 const dialogMode = ref<'view' | 'create' | 'edit'>('view')
-const editingProduct = ref(null as any)
-const selectedProducts = ref([])
+const editingProduct = ref<any>(null)
 
 // 权限检查
 const canCreateProduct = ref(true)
@@ -662,7 +659,7 @@ const filteredProducts = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      product => product.product_no.toLowerCase().includes(query) || product.name.toLowerCase().includes(query)
+      product => product.product_no.toLowerCase().includes(query) || product.name.toLowerCase().includes(query),
     )
   }
 
@@ -671,7 +668,7 @@ const filteredProducts = computed(() => {
   }
 
   if (stockStatusFilter.value) {
-    result = result.filter(product => {
+    result = result.filter((product) => {
       if (stockStatusFilter.value === 'low') {
         return product.current_stock <= product.min_stock
       }
@@ -697,10 +694,10 @@ const categoryMap: Record<string, string> = {
   accessory: '配件',
 }
 
-const categorySeverityMap: Record<string, string> = {
-  raw_material: 'info',
-  semi_finished: 'warning',
-  finished_product: 'success',
+const categorySeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  raw_material: 'secondary',
+  semi_finished: 'outline',
+  finished_product: 'default',
   accessory: 'secondary',
 }
 
@@ -709,17 +706,17 @@ const statusMap: Record<string, string> = {
   inactive: '停用',
 }
 
-const statusSeverityMap: Record<string, string> = {
-  active: 'success',
-  inactive: 'danger',
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  active: 'default',
+  inactive: 'destructive',
 }
 
 // 方法
 const getCategoryDisplayName = (category: string) => categoryMap[category] || category
-const getCategorySeverity = (category: string) => categorySeverityMap[category] || 'info'
+const getCategorySeverity = (category: string) => categorySeverityMap[category] || 'secondary'
 const getStatusDisplayName = (status: string) => statusMap[status] || status
 const getStatusVariant = (status: string) => {
-  const variantMap = {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     active: 'default',
     inactive: 'secondary',
   }
@@ -808,7 +805,8 @@ const toggleStatus = async (product: any, newStatus: string) => {
           mockProducts.value[index]!.status = newStatus
         }
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('操作失败:', error)
     }
   }
@@ -842,7 +840,8 @@ const saveProduct = async () => {
         image: null,
       }
       mockProducts.value.push(newProduct as any)
-    } else if (dialogMode.value === 'edit') {
+    }
+    else if (dialogMode.value === 'edit') {
       const index = mockProducts.value.findIndex(p => p.id === editingProduct.value?.id)
       if (index !== -1 && mockProducts.value[index]) {
         mockProducts.value[index] = {
@@ -854,9 +853,11 @@ const saveProduct = async () => {
     }
 
     closeProductDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存产品失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

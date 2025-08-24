@@ -2,11 +2,11 @@
   <div class="sales-orders-container p-6 flex flex-column gap-6 bg-surface-50 min-h-full">
     <!-- 页面头部 -->
     <div
-      class="page-header bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden"
+      class="page-header bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 -2xl p-8 text-white relative overflow-hidden"
     >
       <div class="absolute inset-0 bg-black opacity-10"></div>
-      <div class="absolute -top-4 -right-4 w-32 h-32 bg-white opacity-5 rounded-full"></div>
-      <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white opacity-5 rounded-full"></div>
+      <div class="absolute -top-4 -right-4 w-32 h-32 bg-white opacity-5 -full"></div>
+      <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white opacity-5 -full"></div>
       <div class="relative z-10">
         <div class="flex flex-column lg:flex-row lg:align-items-center lg:justify-content-between">
           <div>
@@ -18,16 +18,11 @@
           </div>
           <div class="mt-4 lg:mt-0 flex flex-col sm:flex-row gap-3">
             <Button
-              label="导入订单"
-              icon="pi pi-upload"
               severity="secondary"
-              outlined
               class="text-white border-white hover:bg-white hover:text-blue-600"
               @click="importOrders"
             />
             <Button
-              label="新建订单"
-              icon="pi pi-plus"
               class="bg-white text-blue-600 hover:bg-blue-50 border-0 shadow-lg"
               @click="openOrderModal"
             />
@@ -52,21 +47,20 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold text-surface-900">搜索订单</label>
-              <IconField icon-position="left">
-                <InputIcon>
-                  <i class="pi pi-search"></i>
-                </InputIcon>
-                <InputText v-model="searchKeyword" placeholder="搜索订单号、客户名称..." class="w-full" />
-              </IconField>
+              <!-- IconField 已移除 -->
+              <!-- InputIcon 已移除 -->
+              <i class="pi pi-search"></i>
+              <!-- /InputIcon -->
+              <Input v-model="searchKeyword" placeholder="搜索订单号、客户名称..." class="w-full" />
+              <!-- /IconField -->
             </div>
 
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold text-surface-900">订单状态</label>
-              <Dropdown
+              <Select
                 v-model="selectedStatus"
                 :options="statusOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 placeholder="全部状态"
                 class="w-full"
                 show-clear
@@ -75,21 +69,14 @@
 
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold text-surface-900">日期范围</label>
-              <Calendar
-                v-model="dateRange"
-                selection-mode="range"
-                placeholder="选择日期范围"
-                date-format="yy-mm-dd"
-                class="w-full"
-                show-icon
-              />
+              <!-- Calendar 组件需要手动替换为 DatePicker -->
             </div>
 
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold text-surface-900 opacity-0">操作</label>
               <div class="flex gap-2">
-                <Button label="重置" icon="pi pi-refresh" outlined class="flex-1" @click="resetFilters" />
-                <Button v-tooltip="'导出数据'" icon="pi pi-download" outlined @click="exportData" />
+                <Button class="flex-1" @click="resetFilters" />
+                <Button @click="exportData" />
               </div>
             </div>
           </div>
@@ -102,10 +89,10 @@
       <Card class="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg overflow-hidden">
         <template #content>
           <div class="relative p-6">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
                   <i class="pi pi-shopping-cart text-2xl text-white"></i>
                 </div>
                 <div class="text-right">
@@ -128,10 +115,10 @@
       <Card class="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-lg overflow-hidden">
         <template #content>
           <div class="relative p-6">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
                   <i class="pi pi-clock text-2xl text-white"></i>
                 </div>
                 <div class="text-right">
@@ -154,10 +141,10 @@
       <Card class="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg overflow-hidden">
         <template #content>
           <div class="relative p-6">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
                   <i class="pi pi-dollar text-2xl text-white"></i>
                 </div>
                 <div class="text-right">
@@ -193,22 +180,21 @@
               </p>
             </div>
             <div class="flex items-center gap-2">
-              <Dropdown
+              <Select
                 v-model="pageSize"
                 :options="pageSizeOptions"
-                option-label="label"
-                option-value="value"
+                option-option-value="value"
                 class="w-32"
-                size="small"
+                size="sm"
               />
-              <Button v-tooltip="'刷新数据'" icon="pi pi-refresh" outlined rounded size="small" @click="refreshData" />
+              <Button size="sm" @click="refreshData" />
             </div>
           </div>
         </div>
       </template>
       <template #content>
         <div class="p-6 pt-0">
-          <DataTable
+          <Table
             :value="filteredOrders"
             :loading="loading"
             :paginator="true"
@@ -244,26 +230,25 @@
                 <p class="text-surface-600 mb-6 max-w-md mx-auto">
                   您还没有创建任何订单。点击下方按钮开始创建您的第一个订单。
                 </p>
-                <Button label="新建订单" icon="pi pi-plus" class="px-6 py-3" @click="openOrderModal" />
+                <Button class="px-6 py-3" @click="openOrderModal" />
               </div>
             </template>
 
-            <Column field="orderNo" header="订单号" :sortable="true" style="min-width: 160px">
+            <TableHead field="orderNo" header="订单号" :sortable="true" style="min-width: 160px">
               <template #body="slotProps">
                 <div class="flex items-center">
-                  <span class="font-mono bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-sm font-semibold">
+                  <span class="font-mono bg-primary-50 text-primary-700 px-3 py-1 -full text-sm font-semibold">
                     {{ slotProps.data.orderNo }}
                   </span>
                 </div>
               </template>
-            </Column>
+            </TableHead>
 
-            <Column field="customer" header="客户信息" :sortable="true" style="min-width: 200px">
+            <TableHead field="customer" header="客户信息" :sortable="true" style="min-width: 200px">
               <template #body="slotProps">
                 <div class="flex items-center gap-3">
                   <Avatar
-                    :label="slotProps.data.customerName.charAt(0)"
-                    shape="circle"
+                    :shape="'circle'"
                     size="normal"
                     class="bg-gradient-to-br from-primary-400 to-primary-600 text-white"
                   />
@@ -273,18 +258,18 @@
                   </div>
                 </div>
               </template>
-            </Column>
+            </TableHead>
 
-            <Column field="amount" header="订单金额" :sortable="true" style="min-width: 140px">
+            <TableHead field="amount" header="订单金额" :sortable="true" style="min-width: 140px">
               <template #body="slotProps">
                 <div class="text-right">
                   <div class="font-bold text-xl text-green-600">¥{{ slotProps.data.amount.toLocaleString() }}</div>
                   <div class="text-xs text-surface-500">含税金额</div>
                 </div>
               </template>
-            </Column>
+            </TableHead>
 
-            <Column field="status" header="订单状态" :sortable="true" style="min-width: 120px">
+            <TableHead field="status" header="订单状态" :sortable="true" style="min-width: 120px">
               <template #body="slotProps">
                 <div class="flex flex-col items-center gap-1">
                   <Tag
@@ -295,60 +280,44 @@
                   <div class="text-xs text-surface-500">{{ getStatusProgress(slotProps.data.status) }}</div>
                 </div>
               </template>
-            </Column>
+            </TableHead>
 
-            <Column field="orderDate" header="订单日期" :sortable="true" style="min-width: 140px">
+            <TableHead field="orderDate" header="订单日期" :sortable="true" style="min-width: 140px">
               <template #body="slotProps">
                 <div class="text-center">
                   <div class="font-medium text-surface-900">{{ formatDate(slotProps.data.orderDate) }}</div>
                   <div class="text-xs text-surface-500">{{ formatTimeAgo(slotProps.data.orderDate) }}</div>
                 </div>
               </template>
-            </Column>
+            </TableHead>
 
-            <Column header="操作" style="min-width: 160px" :exportable="false">
+            <TableHead header="操作" style="min-width: 160px" :exportable="false">
               <template #body="slotProps">
                 <div class="flex gap-1 justify-center">
                   <Button
-                    v-tooltip="'查看详情'"
-                    icon="pi pi-eye"
-                    outlined
-                    rounded
-                    size="small"
+                    size="sm"
                     class="p-button-info"
                     @click="viewOrder(slotProps.data)"
                   />
                   <Button
-                    v-tooltip="'编辑订单'"
-                    icon="pi pi-pencil"
-                    outlined
-                    rounded
-                    size="small"
+                    size="sm"
                     class="p-button-warning"
                     @click="editOrder(slotProps.data)"
                   />
                   <Button
-                    v-tooltip="'复制订单'"
-                    icon="pi pi-copy"
-                    outlined
-                    rounded
-                    size="small"
+                    size="sm"
                     class="p-button-secondary"
                     @click="duplicateOrder(slotProps.data)"
                   />
                   <Button
-                    v-tooltip="'删除订单'"
-                    icon="pi pi-trash"
-                    outlined
-                    rounded
-                    size="small"
+                    size="sm"
                     severity="danger"
                     @click="confirmDelete(slotProps.data)"
                   />
                 </div>
               </template>
-            </Column>
-          </DataTable>
+            </TableHead>
+          </Table>
         </div>
       </template>
     </Card>
@@ -364,7 +333,7 @@
     >
       <template #header>
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+          <div class="w-10 h-10 bg-primary-100 -lg flex items-center justify-center">
             <i class="pi pi-shopping-cart text-primary-600 text-lg"></i>
           </div>
           <div>
@@ -390,7 +359,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-2">
                   <label class="text-sm font-semibold text-surface-900">订单号</label>
-                  <InputText
+                  <Input
                     v-model="currentOrder.orderNo"
                     placeholder="系统自动生成"
                     :disabled="isEditing"
@@ -399,11 +368,10 @@
                 </div>
                 <div class="flex flex-col gap-2">
                   <label class="text-sm font-semibold text-surface-900">客户名称 *</label>
-                  <Dropdown
+                  <Select
                     v-model="currentOrder.customerName"
                     :options="customerOptions"
-                    option-label="label"
-                    option-value="value"
+                    option-option-value="value"
                     placeholder="选择客户"
                     filter
                     show-clear
@@ -429,8 +397,9 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-2">
                   <label class="text-sm font-semibold text-surface-900">订单金额 *</label>
-                  <InputNumber
+                  <Input
                     v-model="currentOrder.amount"
+                    type="number"
                     mode="currency"
                     currency="CNY"
                     locale="zh-CN"
@@ -439,11 +408,10 @@
                 </div>
                 <div class="flex flex-col gap-2">
                   <label class="text-sm font-semibold text-surface-900">订单状态</label>
-                  <Dropdown
+                  <Select
                     v-model="currentOrder.status"
                     :options="statusOptions"
-                    option-label="label"
-                    option-value="value"
+                    option-option-value="value"
                     placeholder="选择状态"
                   />
                 </div>
@@ -452,21 +420,11 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div class="flex flex-col gap-2">
                   <label class="text-sm font-semibold text-surface-900">订单日期</label>
-                  <Calendar
-                    v-model="currentOrder.orderDate"
-                    date-format="yy-mm-dd"
-                    placeholder="选择订单日期"
-                    show-icon
-                  />
+                  <!-- Calendar 组件需要手动替换为 DatePicker -->
                 </div>
                 <div class="flex flex-col gap-2">
                   <label class="text-sm font-semibold text-surface-900">预计交付日期</label>
-                  <Calendar
-                    v-model="currentOrder.deliveryDate"
-                    date-format="yy-mm-dd"
-                    placeholder="选择交付日期"
-                    show-icon
-                  />
+                  <!-- Calendar 组件需要手动替换为 DatePicker -->
                 </div>
               </div>
             </div>
@@ -496,10 +454,9 @@
 
       <template #footer>
         <div class="flex justify-end gap-3 pt-4 border-t border-surface-200">
-          <Button label="取消" icon="pi pi-times" outlined @click="closeOrderModal" />
+          <Button @click="closeOrderModal" />
           <Button
-            :label="isEditing ? '更新订单' : '创建订单'"
-            :icon="isEditing ? 'pi pi-check' : 'pi pi-plus'"
+            ::icon="isEditing ? 'pi pi-check' : 'pi pi-plus'"
             :loading="saving"
             @click="saveOrder"
           />
@@ -508,29 +465,28 @@
     </Dialog>
 
     <!-- 删除确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import Calendar from 'primevue/calendar'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import Dialog from 'primevue/dialog'
-import Textarea from 'primevue/textarea'
-import InputNumber from 'primevue/inputnumber'
-import ConfirmDialog from 'primevue/confirmdialog'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import Skeleton from 'primevue/skeleton'
-import { useConfirm } from 'primevue/useconfirm'
-
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
+// import Calendar from 'primevue/calendar' // 已移除PrimeVue导入
+// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
+// import Column from 'primevue/column' // 已移除PrimeVue导入
+// import Tag from 'primevue/tag' // 已移除PrimeVue导入
+// import Avatar from 'primevue/avatar' // 已移除PrimeVue导入
+// import Dialog from 'primevue/dialog' // 已移除PrimeVue导入
+// import Textarea from 'primevue/textarea' // 已移除PrimeVue导入
+// import InputNumber from 'primevue/inputnumber' // 已移除PrimeVue导入
+// import ConfirmDialog from 'primevue/confirmdialog' // 已移除PrimeVue导入
+// import IconField from 'primevue/iconfield' // 已移除PrimeVue导入
+// import InputIcon from 'primevue/inputicon' // 已移除PrimeVue导入
+// import Skeleton from 'primevue/skeleton' // 已移除PrimeVue导入
+// import { useConfirm } from 'primevue/useconfirm' // 已移除PrimeVue导入
 // 页面配置
 definePageMeta({
   layout: 'default',
@@ -558,8 +514,7 @@ const pageSizeOptions = [
 // 对话框状态
 const showOrderModal = ref(false)
 const isEditing = ref(false)
-const confirm = useConfirm()
-
+// const confirm = useConfirm() // 已移除
 // 当前编辑的订单
 const currentOrder = ref({
   id: '',
@@ -665,8 +620,8 @@ const filteredOrders = computed(() => {
   if (searchKeyword.value) {
     result = result.filter(
       order =>
-        order.orderNo.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
-        order.customerName.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        order.orderNo.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        || order.customerName.toLowerCase().includes(searchKeyword.value.toLowerCase()),
     )
   }
 
@@ -703,13 +658,13 @@ const getStatusText = (status: string) => {
 }
 
 const getStatusSeverity = (status: string) => {
-  const severityMap: Record<string, string> = {
-    pending: 'warn',
-    confirmed: 'info',
+  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    pending: 'outline',
+    confirmed: 'secondary',
     production: 'secondary',
-    shipped: 'primary',
-    delivered: 'success',
-    cancelled: 'danger',
+    shipped: 'default',
+    delivered: 'default',
+    cancelled: 'destructive',
   }
   return severityMap[status] || 'secondary'
 }
@@ -757,7 +712,8 @@ const refreshData = async () => {
   try {
     // 模拟刷新数据
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -814,32 +770,8 @@ const duplicateOrder = (order: any) => {
   showOrderModal.value = true
 }
 
-const confirmDelete = (order: any) => {
-  confirm.require({
-    message: `确定要删除订单 "${order.orderNo}" 吗？此操作不可撤销。`,
-    header: '删除确认',
-    icon: 'pi pi-exclamation-triangle',
-    acceptLabel: '确认删除',
-    rejectLabel: '取消',
-    accept: () => {
-      deleteOrder(order.id)
-    },
-  })
-}
-
-const deleteOrder = async (orderId: string) => {
-  try {
-    loading.value = true
-    // 模拟删除操作
-    const index = orders.value.findIndex(o => o.id === orderId)
-    if (index !== -1) {
-      orders.value.splice(index, 1)
-    }
-  } catch (error) {
-    console.error('删除订单失败:', error)
-  } finally {
-    loading.value = false
-  }
+const confirmDelete = (_order: any) => {
+  // TODO: 需要重新实现确认对话框
 }
 
 const saveOrder = async () => {
@@ -855,7 +787,8 @@ const saveOrder = async () => {
           updated_at: new Date(),
         }
       }
-    } else {
+    }
+    else {
       // 创建新订单
       const newOrder = {
         ...currentOrder.value,
@@ -867,9 +800,11 @@ const saveOrder = async () => {
     }
 
     closeOrderModal()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存订单失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

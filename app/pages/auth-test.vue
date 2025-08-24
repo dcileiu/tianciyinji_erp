@@ -42,17 +42,17 @@
               <div class="flex flex-column gap-4">
                 <h3 class="text-lg font-semibold text-surface-900">🔐 登录测试</h3>
                 <div class="flex flex-column gap-3">
-                  <FloatLabel>
-                    <InputText id="loginEmail" v-model="loginForm.email" type="email" class="w-full" />
-                    <label for="loginEmail">邮箱</label>
-                  </FloatLabel>
+                  <!-- FloatLabel 组件已移除 -->
+                  <Input id="loginEmail" v-model="loginForm.email" type="email" class="w-full" />
+                  <label for="loginEmail">邮箱</label>
+                  <!-- /FloatLabel -->
 
-                  <FloatLabel>
-                    <Password v-model="loginForm.password" class="w-full" input-class="w-full" toggle-mask />
-                    <label>密码</label>
-                  </FloatLabel>
+                  <!-- FloatLabel 组件已移除 -->
+                  <Input v-model="loginForm.password" type="password" class="w-full" input-class="w-full" toggle-mask />
+                  <label>密码</label>
+                  <!-- /FloatLabel -->
 
-                  <Button :loading="testing.login" label="测试登录" class="w-full" @click="testLogin" />
+                  <Button :loading="testing.login" class="w-full" @click="testLogin" />
                 </div>
               </div>
 
@@ -60,22 +60,22 @@
               <div class="flex flex-column gap-4">
                 <h3 class="text-lg font-semibold text-surface-900">📝 注册测试</h3>
                 <div class="flex flex-column gap-3">
-                  <FloatLabel>
-                    <InputText id="registerName" v-model="registerForm.name" class="w-full" />
-                    <label for="registerName">姓名</label>
-                  </FloatLabel>
+                  <!-- FloatLabel 组件已移除 -->
+                  <Input id="registerName" v-model="registerForm.name" class="w-full" />
+                  <label for="registerName">姓名</label>
+                  <!-- /FloatLabel -->
 
-                  <FloatLabel>
-                    <InputText id="registerEmail" v-model="registerForm.email" type="email" class="w-full" />
-                    <label for="registerEmail">邮箱</label>
-                  </FloatLabel>
+                  <!-- FloatLabel 组件已移除 -->
+                  <Input id="registerEmail" v-model="registerForm.email" type="email" class="w-full" />
+                  <label for="registerEmail">邮箱</label>
+                  <!-- /FloatLabel -->
 
-                  <FloatLabel>
-                    <Password v-model="registerForm.password" class="w-full" input-class="w-full" toggle-mask />
-                    <label>密码</label>
-                  </FloatLabel>
+                  <!-- FloatLabel 组件已移除 -->
+                  <Input v-model="registerForm.password" type="password" class="w-full" input-class="w-full" toggle-mask />
+                  <label>密码</label>
+                  <!-- /FloatLabel -->
 
-                  <Button :loading="testing.register" label="测试注册" class="w-full" @click="testRegister" />
+                  <Button :loading="testing.register" class="w-full" @click="testRegister" />
                 </div>
               </div>
 
@@ -83,12 +83,12 @@
               <div class="flex flex-column gap-4">
                 <h3 class="text-lg font-semibold text-surface-900">🔄 忘记密码测试</h3>
                 <div class="flex flex-column gap-3">
-                  <FloatLabel>
-                    <InputText id="resetEmail" v-model="resetForm.email" type="email" class="w-full" />
-                    <label for="resetEmail">邮箱</label>
-                  </FloatLabel>
+                  <!-- FloatLabel 组件已移除 -->
+                  <Input id="resetEmail" v-model="resetForm.email" type="email" class="w-full" />
+                  <label for="resetEmail">邮箱</label>
+                  <!-- /FloatLabel -->
 
-                  <Button :loading="testing.reset" label="发送重置邮件" class="w-full" @click="testResetPassword" />
+                  <Button :loading="testing.reset" class="w-full" @click="testResetPassword" />
                 </div>
               </div>
 
@@ -98,23 +98,18 @@
                 <div class="flex flex-column gap-3">
                   <Button
                     :loading="testing.session"
-                    label="获取当前会话"
                     class="w-full"
-                    outlined
                     @click="testGetSession"
                   />
 
                   <Button
                     :loading="testing.refresh"
-                    label="刷新会话"
                     class="w-full"
-                    outlined
                     @click="testRefreshSession"
                   />
 
                   <Button
                     :loading="testing.logout"
-                    label="登出"
                     class="w-full"
                     severity="danger"
                     :disabled="!isAuthenticated"
@@ -148,9 +143,7 @@
               </div>
               <Button
                 v-if="testResults.length > 0"
-                label="清空结果"
-                outlined
-                size="small"
+                size="sm"
                 class="mt-2"
                 @click="clearResults"
               />
@@ -163,12 +156,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Button from 'primevue/button'
-import FloatLabel from 'primevue/floatlabel'
+// import Card from 'primevue/card' // 已移除PrimeVue导入
+// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
+// import Password from 'primevue/password' // 已移除PrimeVue导入
+// import Button from 'primevue/button' // 已移除PrimeVue导入
+// import FloatLabel from 'primevue/floatlabel' // 已移除PrimeVue导入
 import { useAuth } from '~/composables/useAuth'
 
 // 页面配置
@@ -181,8 +173,8 @@ useHead({
 })
 
 // 认证状态
-const { user, isAuthenticated, isLoading, login, register, resetPassword, logout, getSession, refreshSession } =
-  useAuth()
+const { user, isAuthenticated, isLoading, login, register, resetPassword, logout, getSession, refreshSession }
+  = useAuth()
 
 // 表单数据
 const loginForm = ref({
@@ -236,12 +228,15 @@ const testLogin = async () => {
     const result = await login(loginForm.value)
     if (result.success) {
       addResult('登录测试', true, `登录成功: ${result.user?.email}`)
-    } else {
+    }
+    else {
       addResult('登录测试', false, result.error?.message || '登录失败')
     }
-  } catch (error: any) {
+  }
+  catch (error: any) {
     addResult('登录测试', false, `错误: ${error.message}`)
-  } finally {
+  }
+  finally {
     testing.value.login = false
   }
 }
@@ -255,15 +250,19 @@ const testRegister = async () => {
     if (result.success) {
       if (result.needsEmailConfirmation) {
         addResult('注册测试', true, '注册成功，需要邮箱验证')
-      } else {
+      }
+      else {
         addResult('注册测试', true, '注册成功，无需邮箱验证')
       }
-    } else {
+    }
+    else {
       addResult('注册测试', false, result.error?.message || '注册失败')
     }
-  } catch (error: any) {
+  }
+  catch (error: any) {
     addResult('注册测试', false, `错误: ${error.message}`)
-  } finally {
+  }
+  finally {
     testing.value.register = false
   }
 }
@@ -274,12 +273,15 @@ const testResetPassword = async () => {
     const result = await resetPassword(resetForm.value.email)
     if (result.success) {
       addResult('密码重置', true, '重置邮件发送成功')
-    } else {
+    }
+    else {
       addResult('密码重置', false, result.error?.message || '发送失败')
     }
-  } catch (error: any) {
+  }
+  catch (error: any) {
     addResult('密码重置', false, `错误: ${error.message}`)
-  } finally {
+  }
+  finally {
     testing.value.reset = false
   }
 }
@@ -290,12 +292,15 @@ const testLogout = async () => {
     const result = await logout()
     if (result.success) {
       addResult('登出测试', true, '登出成功')
-    } else {
+    }
+    else {
       addResult('登出测试', false, result.error?.message || '登出失败')
     }
-  } catch (error: any) {
+  }
+  catch (error: any) {
     addResult('登出测试', false, `错误: ${error.message}`)
-  } finally {
+  }
+  finally {
     testing.value.logout = false
   }
 }
@@ -306,12 +311,15 @@ const testGetSession = async () => {
     const session = await getSession()
     if (session) {
       addResult('获取会话', true, `会话有效: ${session.user?.email}`)
-    } else {
+    }
+    else {
       addResult('获取会话', false, '无有效会话')
     }
-  } catch (error: any) {
+  }
+  catch (error: any) {
     addResult('获取会话', false, `错误: ${error.message}`)
-  } finally {
+  }
+  finally {
     testing.value.session = false
   }
 }
@@ -322,12 +330,15 @@ const testRefreshSession = async () => {
     const session = await refreshSession()
     if (session) {
       addResult('刷新会话', true, '会话刷新成功')
-    } else {
+    }
+    else {
       addResult('刷新会话', false, '会话刷新失败')
     }
-  } catch (error: any) {
+  }
+  catch (error: any) {
     addResult('刷新会话', false, `错误: ${error.message}`)
-  } finally {
+  }
+  finally {
     testing.value.refresh = false
   }
 }

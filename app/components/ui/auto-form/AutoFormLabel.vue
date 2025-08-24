@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <FormLabel>
-    <slot />
+    <slot ></slot>
     <span v-if="required" class="text-destructive"> *</span>
   </FormLabel>
 </template>

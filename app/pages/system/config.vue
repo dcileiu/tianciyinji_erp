@@ -383,8 +383,6 @@
 <script setup>
 // UI组件现在自动导入，无需手动导入
 
-import { onMounted, ref } from 'vue'
-
 import { Briefcase, Database, Download, Mail, Save, Send, Settings, Shield } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
@@ -478,9 +476,11 @@ const saveAllConfigs = async () => {
       email: emailConfig.value,
       backup: backupConfig.value,
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存配置失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
@@ -491,9 +491,13 @@ const saveBasicConfig = async () => {
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
     toast.success('基础配置保存成功')
-  } catch (error) {
-    toast.error('保存失败，请重试')
-  } finally {
+  }
+  catch (error) {
+    toast.error('保存失败，请重试', {
+      description: error.message,
+    })
+  }
+  finally {
     saving.value = false
   }
 }
@@ -503,9 +507,13 @@ const saveBusinessConfig = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     toast.success('业务配置保存成功')
-  } catch (error) {
-    toast.error('保存失败，请重试')
-  } finally {
+  }
+  catch (error) {
+    toast.error('保存失败，请重试', {
+      description: error.message,
+    })
+  }
+  finally {
     saving.value = false
   }
 }
@@ -515,9 +523,13 @@ const saveSecurityConfig = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     toast.success('安全配置保存成功')
-  } catch (error) {
-    toast.error('保存失败，请重试')
-  } finally {
+  }
+  catch (error) {
+    toast.error('保存失败，请重试', {
+      description: error.message,
+    })
+  }
+  finally {
     saving.value = false
   }
 }
@@ -527,9 +539,13 @@ const saveEmailConfig = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     toast.success('邮件配置保存成功')
-  } catch (error) {
-    toast.error('保存失败，请重试')
-  } finally {
+  }
+  catch (error) {
+    toast.error('保存失败，请重试', {
+      description: error.message,
+    })
+  }
+  finally {
     saving.value = false
   }
 }
@@ -539,9 +555,13 @@ const saveBackupConfig = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     toast.success('备份配置保存成功')
-  } catch (error) {
-    toast.error('保存失败，请重试')
-  } finally {
+  }
+  catch (error) {
+    toast.error('保存失败，请重试', {
+      description: error.message,
+    })
+  }
+  finally {
     saving.value = false
   }
 }
@@ -551,9 +571,13 @@ const testEmailConnection = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 2000))
     toast.success('邮件连接测试成功')
-  } catch (error) {
-    toast.error('邮件连接测试失败')
-  } finally {
+  }
+  catch (error) {
+    toast.error('邮件连接测试失败', {
+      description: error.message,
+    })
+  }
+  finally {
     testing.value = false
   }
 }
@@ -563,9 +587,13 @@ const performBackup = async () => {
   try {
     await new Promise(resolve => setTimeout(resolve, 3000))
     toast.success('数据备份完成')
-  } catch (error) {
-    toast.error('数据备份失败')
-  } finally {
+  }
+  catch (error) {
+    toast.error('数据备份失败', {
+      description: error.message,
+    })
+  }
+  finally {
     backing.value = false
   }
 }

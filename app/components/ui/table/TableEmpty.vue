@@ -12,7 +12,7 @@ const props = withDefaults(
   }>(),
   {
     colspan: 1,
-  }
+  },
 )
 
 const delegatedProps = reactiveOmit(props, 'class')
@@ -25,7 +25,7 @@ const delegatedProps = reactiveOmit(props, 'class')
       v-bind="delegatedProps"
     >
       <div class="flex items-center justify-center py-10">
-        <slot />
+        <slot ></slot>
       </div>
     </TableCell>
   </TableRow>

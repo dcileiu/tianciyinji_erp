@@ -1,13 +1,12 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import type { PaginationFirstProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import type { ButtonVariants } from '@/components/ui/button'
+import { type ButtonVariants, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { reactiveOmit } from '@vueuse/core'
 import { ChevronLeftIcon } from 'lucide-vue-next'
-import { PaginationFirst, useForwardProps } from 'reka-ui'
-import { cn } from '@/lib/utils'
+import { PaginationFirst, type PaginationFirstProps, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 
 const props = withDefaults(
   defineProps<
@@ -18,7 +17,7 @@ const props = withDefaults(
   >(),
   {
     size: 'default',
-  }
+  },
 )
 
 const delegatedProps = reactiveOmit(props, 'class', 'size')

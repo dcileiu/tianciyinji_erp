@@ -77,7 +77,7 @@
               <div class="text-2xl font-bold text-blue-600 mb-1">{{ filteredPayments.length }}</div>
               <div class="text-sm text-blue-700">总支付数</div>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-100 -full flex items-center justify-center">
               <CreditCard class="w-6 h-6 text-blue-600" />
             </div>
           </div>
@@ -91,7 +91,7 @@
               <div class="text-2xl font-bold text-orange-600 mb-1">{{ pendingPaymentsCount }}</div>
               <div class="text-sm text-orange-700">待支付</div>
             </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 -full flex items-center justify-center">
               <Clock class="w-6 h-6 text-orange-600" />
             </div>
           </div>
@@ -105,7 +105,7 @@
               <div class="text-2xl font-bold text-green-600 mb-1">¥{{ totalAmount.toLocaleString() }}</div>
               <div class="text-sm text-green-700">总金额</div>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-green-100 -full flex items-center justify-center">
               <DollarSign class="w-6 h-6 text-green-600" />
             </div>
           </div>
@@ -134,7 +134,7 @@
             新建支付
           </Button>
         </div>
-        <div v-else class="rounded-md border">
+        <div v-else class="-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -150,11 +150,11 @@
             <TableBody>
               <TableRow v-for="payment in filteredPayments" :key="payment.id">
                 <TableCell>
-                  <span class="font-mono bg-muted px-2 py-1 rounded text-primary text-sm">{{ payment.paymentNo }}</span>
+                  <span class="font-mono bg-muted px-2 py-1 text-primary text-sm">{{ payment.paymentNo }}</span>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                    <div class="w-8 h-8 bg-primary/10 -full flex items-center justify-center">
                       <span class="text-sm font-medium text-primary">{{ payment.supplier.charAt(0) }}</span>
                     </div>
                     <span class="font-medium">{{ payment.supplier }}</span>
@@ -272,7 +272,7 @@
 
         <DialogFooter>
           <Button variant="outline" @click="closePaymentModal"> 取消 </Button>
-          <Button @click="savePayment" :disabled="saving">
+          <Button :disabled="saving" @click="savePayment">
             <Loader2 v-if="saving" class="w-4 h-4 mr-2 animate-spin" />
             {{ isEditing ? '更新' : '创建' }}
           </Button>
@@ -281,16 +281,14 @@
     </Dialog>
 
     <!-- 删除确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref, computed } from 'vue'
-
-import { Plus, Search, RefreshCw, CreditCard, Clock, DollarSign, Eye, Edit, Trash2, Loader2 } from 'lucide-vue-next'
+import { Clock, CreditCard, DollarSign, Edit, Eye, Loader2, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
 
 // 页面状态
 const loading = ref(false)
@@ -300,18 +298,17 @@ const saving = ref(false)
 const searchKeyword = ref('')
 const selectedStatus = ref('')
 const selectedMethod = ref('')
-const startDate = ref('')
-const endDate = ref('')
+const dateRange = ref<string | undefined>(undefined)
 
 // 对话框状态
 const showPaymentModal = ref(false)
 const isEditing = ref(false)
-const currentPayment = ref({})
+const currentPayment = ref<any>({})
 const dialogMode = ref('create')
 
 // 初始化当前支付记录
 const initCurrentPayment = () => ({
-  id: null,
+  id: '',
   paymentNo: '',
   supplier: '',
   amount: 0,
@@ -319,6 +316,8 @@ const initCurrentPayment = () => ({
   status: 'pending',
   paymentDate: '',
   description: '',
+  created_at: new Date(),
+  updated_at: new Date(),
 })
 
 currentPayment.value = initCurrentPayment()
@@ -396,8 +395,8 @@ const filteredPayments = computed(() => {
   if (searchKeyword.value) {
     result = result.filter(
       payment =>
-        payment.paymentNo.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
-        payment.supplier.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        payment.paymentNo.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        || payment.supplier.toLowerCase().includes(searchKeyword.value.toLowerCase()),
     )
   }
 
@@ -435,8 +434,8 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
-const getStatusVariant = (status: string) => {
-  const variantMap: Record<string, string> = {
+const getStatusVariant = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     pending: 'secondary',
     processing: 'outline',
     completed: 'default',
@@ -456,8 +455,8 @@ const getMethodText = (method: string) => {
   return methodMap[method] || method
 }
 
-const getMethodVariant = (method: string) => {
-  const variantMap: Record<string, string> = {
+const getMethodVariant = (method: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     bank_transfer: 'outline',
     credit_card: 'secondary',
     alipay: 'default',
@@ -479,7 +478,7 @@ const resetFilters = () => {
   searchKeyword.value = ''
   selectedStatus.value = ''
   selectedMethod.value = ''
-  dateRange.value = null
+  dateRange.value = undefined
 }
 
 const openPaymentModal = () => {
@@ -529,9 +528,11 @@ const deletePayment = async (payment: any) => {
     }
 
     console.log('支付记录已删除')
-  } catch (error) {
+  }
+  catch (error) {
     console.error('删除支付记录失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -542,11 +543,12 @@ const savePayment = async () => {
 
     if (isEditing.value) {
       // 更新现有支付记录
-      const index = payments.value.findIndex(p => p.id === currentPayment.value.id)
+      const index = payments.value.findIndex((p: any) => p.id === currentPayment.value.id)
       if (index > -1) {
-        payments.value[index] = { ...currentPayment.value, updated_at: new Date() }
+        payments.value[index] = { ...currentPayment.value, updated_at: new Date() } as any
       }
-    } else {
+    }
+    else {
       // 创建新支付记录
       const newPayment = {
         ...currentPayment.value,
@@ -555,14 +557,16 @@ const savePayment = async () => {
         created_at: new Date(),
         updated_at: new Date(),
       }
-      payments.value.unshift(newPayment)
+      payments.value.unshift(newPayment as any)
     }
 
     closePaymentModal()
     console.log('支付记录保存成功')
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存支付记录失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

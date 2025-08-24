@@ -63,11 +63,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref, computed, watch } from 'vue'
-import { ChevronDown, ChevronUp, Check, X, Search } from 'lucide-vue-next'
+import { Check, ChevronDown, ChevronUp, Search, X } from 'lucide-vue-next'
+import { computed, ref, watch } from 'vue'
 
 import PermissionTreeNode from './PermissionTreeNode.vue'
 
@@ -102,7 +102,7 @@ const expandedIds = ref(new Set())
 const selectedCount = computed(() => props.selectedIds.length)
 
 const totalCount = computed(() => {
-  const countItems = items => {
+  const countItems = (items: any) => {
     let count = 0
     for (const item of items) {
       count++
@@ -115,21 +115,22 @@ const totalCount = computed(() => {
   return countItems(props.treeData)
 })
 
+// 过滤后的树形数据
 const filteredTreeData = computed(() => {
   if (!searchQuery.value.trim()) {
     return props.treeData
   }
 
-  const filterItems = items => {
-    const filtered = []
+  const filterItems = (items: any[]): any[] => {
+    const filtered: any[] = []
 
     for (const item of items) {
-      const matchesSearch =
-        item.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        item.key?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
+      const matchesSearch
+        = item.name?.toLowerCase().includes(searchQuery.value.toLowerCase())
+          || item.key?.toLowerCase().includes(searchQuery.value.toLowerCase())
+          || item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
 
-      let filteredChildren = []
+      let filteredChildren: any[] = []
       if (item.children && item.children.length > 0) {
         filteredChildren = filterItems(item.children)
       }
@@ -155,14 +156,14 @@ const filteredTreeData = computed(() => {
 })
 
 // 方法
-const handleToggleSelection = (id, selected) => {
+const handleToggleSelection = (id: any, selected: boolean) => {
   if (props.disabled) return
 
   const newSelectedIds = [...props.selectedIds]
 
   if (selected) {
     // 添加选中项及其所有子项
-    const addItemAndChildren = items => {
+    const addItemAndChildren = (items: any[]) => {
       for (const item of items) {
         if (!newSelectedIds.includes(item.id)) {
           newSelectedIds.push(item.id)
@@ -173,13 +174,13 @@ const handleToggleSelection = (id, selected) => {
       }
     }
 
-    const findItem = (items, targetId) => {
+    const findItem = (items: any[], targetId: any): any => {
       for (const item of items) {
         if (item.id === targetId) {
           return item
         }
         if (item.children && item.children.length > 0) {
-          const found = findItem(item.children, targetId)
+          const found: any = findItem(item.children, targetId)
           if (found) return found
         }
       }
@@ -190,9 +191,10 @@ const handleToggleSelection = (id, selected) => {
     if (targetItem) {
       addItemAndChildren([targetItem])
     }
-  } else {
+  }
+  else {
     // 移除选中项及其所有子项
-    const removeItemAndChildren = items => {
+    const removeItemAndChildren = (items: any[]) => {
       for (const item of items) {
         const index = newSelectedIds.indexOf(item.id)
         if (index > -1) {
@@ -204,13 +206,13 @@ const handleToggleSelection = (id, selected) => {
       }
     }
 
-    const findItem = (items, targetId) => {
+    const findItem = (items: any[], targetId: any): any => {
       for (const item of items) {
         if (item.id === targetId) {
           return item
         }
         if (item.children && item.children.length > 0) {
-          const found = findItem(item.children, targetId)
+          const found: any = findItem(item.children, targetId)
           if (found) return found
         }
       }
@@ -226,17 +228,18 @@ const handleToggleSelection = (id, selected) => {
   emit('update:selectedIds', newSelectedIds)
 }
 
-const handleToggleExpand = id => {
+const handleToggleExpand = (id: any) => {
   if (expandedIds.value.has(id)) {
     expandedIds.value.delete(id)
-  } else {
+  }
+  else {
     expandedIds.value.add(id)
   }
 }
 
 const expandAll = () => {
-  const getAllIds = items => {
-    const ids = []
+  const getAllIds = (items: any[]): any[] => {
+    const ids: any[] = []
     for (const item of items) {
       ids.push(item.id)
       if (item.children && item.children.length > 0) {
@@ -256,8 +259,8 @@ const collapseAll = () => {
 const selectAll = () => {
   if (props.disabled) return
 
-  const getAllIds = items => {
-    const ids = []
+  const getAllIds = (items: any[]): any[] => {
+    const ids: any[] = []
     for (const item of items) {
       ids.push(item.id)
       if (item.children && item.children.length > 0) {
@@ -276,7 +279,7 @@ const clearAll = () => {
 }
 
 // 监听搜索变化，自动展开相关节点
-watch(searchQuery, newQuery => {
+watch(searchQuery, (newQuery) => {
   if (newQuery.trim()) {
     // 搜索时自动展开所有匹配的父节点
     // 这个逻辑已经在 filteredTreeData 中处理了
@@ -285,7 +288,7 @@ watch(searchQuery, newQuery => {
 
 // 初始化时展开第一级节点
 const initializeExpanded = () => {
-  const firstLevelIds = props.treeData.map(item => item.id)
+  const firstLevelIds = props.treeData.map((item: any) => item.id)
   expandedIds.value = new Set(firstLevelIds)
 }
 
@@ -297,7 +300,7 @@ watch(
       initializeExpanded()
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
 

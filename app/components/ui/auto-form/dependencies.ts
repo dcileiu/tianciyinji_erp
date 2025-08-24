@@ -6,8 +6,8 @@ import { computed, ref, watch } from 'vue'
 import { type Dependency, DependencyType, type EnumValues } from './interface'
 import { getFromPath, getIndexIfArray } from './utils'
 
-export const [injectDependencies, provideDependencies] =
-  createContext<Ref<Dependency<z.infer<z.ZodObject<any>>>[] | undefined>>('AutoFormDependencies')
+export const [injectDependencies, provideDependencies]
+  = createContext<Ref<Dependency<z.infer<z.ZodObject<any>>>[] | undefined>>('AutoFormDependencies')
 
 export default function useDependencies(fieldName: string) {
   const form = useFormValues()
@@ -24,7 +24,7 @@ export default function useDependencies(fieldName: string) {
   const overrideOptions = ref<EnumValues | undefined>()
 
   const currentFieldDependencies = computed(() =>
-    dependencies.value?.filter(dependency => dependency.targetField === currentFieldName)
+    dependencies.value?.filter(dependency => dependency.targetField === currentFieldName),
   )
 
   function getSourceValue(dep: Dependency<any>) {
@@ -54,7 +54,7 @@ export default function useDependencies(fieldName: string) {
     [sourceFieldValues, dependencies],
     () => {
       resetConditionState()
-      currentFieldDependencies.value?.forEach(dep => {
+      currentFieldDependencies.value?.forEach((dep) => {
         const sourceValue = getSourceValue(dep)
         const conditionMet = dep.when(sourceValue, currentFieldValue.value)
 
@@ -78,7 +78,7 @@ export default function useDependencies(fieldName: string) {
         }
       })
     },
-    { immediate: true, deep: true }
+    { immediate: true, deep: true },
   )
 
   return {

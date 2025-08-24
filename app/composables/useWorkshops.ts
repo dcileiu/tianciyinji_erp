@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Database } from '~/types/database.types'
 
 type Workshop = Database['public']['Tables']['workshops']['Row']
@@ -7,7 +7,6 @@ type WorkshopUpdate = Database['public']['Tables']['workshops']['Update']
 
 export const useWorkshops = () => {
   const supabase = useSupabaseClient<Database>()
-  const user = useSupabaseUser()
 
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -46,7 +45,7 @@ export const useWorkshops = () => {
   // 按类型分组的车间
   const workshopsByType = computed(() => {
     const grouped: Record<string, Workshop[]> = {}
-    workshops.value.forEach(workshop => {
+    workshops.value.forEach((workshop) => {
       const type = workshop.type || 'other'
       if (!grouped[type]) {
         grouped[type] = []
@@ -89,10 +88,12 @@ export const useWorkshops = () => {
 
       workshops.value = data || []
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取车间列表失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -109,10 +110,12 @@ export const useWorkshops = () => {
 
       currentWorkshop.value = data
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取车间详情失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -141,10 +144,12 @@ export const useWorkshops = () => {
       await fetchWorkshops()
 
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '创建车间失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -175,10 +180,12 @@ export const useWorkshops = () => {
       }
 
       return data
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新车间失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -211,10 +218,12 @@ export const useWorkshops = () => {
       }
 
       return true
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '删除车间失败'
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -224,20 +233,22 @@ export const useWorkshops = () => {
     try {
       const updates: WorkshopUpdate = { status }
       return await updateWorkshop(id, updates)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新车间状态失败'
       throw err
     }
   }
 
   // 更新设备数量
-  const updateEquipmentCount = async (id: string, equipmentCount: number, activeCount: number) => {
+  const updateEquipmentCount = async (id: string, equipmentCount: number) => {
     try {
       const updates: WorkshopUpdate = {
         equipment_count: equipmentCount,
       }
       return await updateWorkshop(id, updates)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新设备数量失败'
       throw err
     }
@@ -250,7 +261,8 @@ export const useWorkshops = () => {
         utilization: utilization,
       }
       return await updateWorkshop(id, updates)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '更新产能利用率失败'
       throw err
     }
@@ -265,7 +277,7 @@ export const useWorkshops = () => {
           `
           *,
           products:product_id(id, product_name, product_code)
-        `
+        `,
         )
         .eq('workshop_id', workshopId)
         .order('created_at', { ascending: false })
@@ -279,7 +291,8 @@ export const useWorkshops = () => {
       if (fetchError) throw fetchError
 
       return data || []
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : '获取车间生产订单失败'
       throw err
     }

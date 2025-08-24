@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 // UI组件现在自动导入，无需手动导入
 
-import type { RangeCalendarCellTriggerProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { RangeCalendarCellTrigger, useForwardProps } from 'reka-ui'
+import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { reactiveOmit } from '@vueuse/core'
+import { RangeCalendarCellTrigger, type RangeCalendarCellTriggerProps, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 
 const props = withDefaults(defineProps<RangeCalendarCellTriggerProps & { class?: HTMLAttributes['class'] }>(), {
   as: 'button',
@@ -34,11 +34,11 @@ const forwardedProps = useForwardProps(delegatedProps)
         'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50',
         // Unavailable
         'data-[unavailable]:text-destructive-foreground data-[unavailable]:line-through',
-        props.class
+        props.class,
       )
     "
     v-bind="forwardedProps"
   >
-    <slot />
+    <slot></slot>
   </RangeCalendarCellTrigger>
 </template>

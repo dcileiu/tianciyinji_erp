@@ -19,7 +19,7 @@
       <div v-if="errorMsg" class="space-y-4">
         <AlertTriangle class="h-8 w-8 mx-auto text-red-600" />
         <h2 class="text-xl font-semibold text-red-600">验证失败</h2>
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="bg-red-50 border border-red-200 -lg p-4">
           <p class="text-sm text-red-700 font-medium">
             {{ errorMsg }}
           </p>
@@ -32,7 +32,7 @@
         <!-- 调试信息（开发环境） -->
         <details v-if="$config.public.dev" class="mt-4">
           <summary class="text-xs text-gray-500 cursor-pointer">显示调试信息</summary>
-          <div class="mt-2 p-2 bg-gray-100 rounded text-xs">
+          <div class="mt-2 p-2 bg-gray-100 text-xs">
             <p><strong>URL:</strong> {{ $route.fullPath }}</p>
             <p><strong>Query:</strong> {{ JSON.stringify($route.query) }}</p>
           </div>
@@ -45,8 +45,7 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref, onMounted } from 'vue'
-import { Loader2, CheckCircle, AlertTriangle } from 'lucide-vue-next'
+import { AlertTriangle, CheckCircle, Loader2 } from 'lucide-vue-next'
 
 // 使用认证布局
 definePageMeta({
@@ -86,7 +85,8 @@ const handleEmailConfirmation = async () => {
       if (verifyError) {
         throw verifyError
       }
-    } else {
+    }
+    else {
       // 对于 PKCE 流程，@nuxtjs/supabase 模块会自动处理
       // 只需等待一下让模块处理完成，然后检查认证状态
       await new Promise(resolve => setTimeout(resolve, 1500))
@@ -110,7 +110,8 @@ const handleEmailConfirmation = async () => {
     setTimeout(() => {
       router.push('/dashboard')
     }, 2000)
-  } catch (err: any) {
+  }
+  catch (err: any) {
     console.error('Email confirmation error:', err)
 
     // 处理常见的 Supabase 错误消息，转换为中文
@@ -120,14 +121,16 @@ const handleEmailConfirmation = async () => {
       // 如果没有匹配的本地化消息，使用原始消息或默认消息
       if (err.message) {
         errorMessage = `验证失败：${err.message}`
-      } else {
+      }
+      else {
         errorMessage = '邮箱验证失败，请重试或联系管理员'
       }
     }
 
     errorMsg.value = errorMessage
     console.log('errorMsg.value：', errorMsg.value)
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }

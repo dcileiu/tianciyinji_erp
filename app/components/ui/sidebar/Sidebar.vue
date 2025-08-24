@@ -29,7 +29,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
     :class="cn('bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col', props.class)"
     v-bind="$attrs"
   >
-    <slot />
+    <slot ></slot>
   </div>
 
   <Sheet v-else-if="isMobile" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile">
@@ -48,7 +48,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
         <SheetDescription>Displays the mobile sidebar.</SheetDescription>
       </SheetHeader>
       <div class="flex h-full w-full flex-col">
-        <slot />
+        <slot ></slot>
       </div>
     </SheetContent>
   </Sheet>
@@ -71,10 +71,10 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)'
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
         )
       "
-    />
+    ></div>
     <div
       :class="
         cn(
@@ -86,7 +86,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
-          props.class
+          props.class,
         )
       "
       v-bind="$attrs"
@@ -95,7 +95,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
         data-sidebar="sidebar"
         class="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
       >
-        <slot />
+        <slot ></slot>
       </div>
     </div>
   </div>

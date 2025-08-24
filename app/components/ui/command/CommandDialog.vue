@@ -16,7 +16,7 @@ const props = withDefaults(
   {
     title: 'Command Palette',
     description: 'Search for a command to run...',
-  }
+  },
 )
 const emits = defineEmits<DialogRootEmits>()
 
@@ -31,7 +31,7 @@ const forwarded = useForwardPropsEmits(props, emits)
         <DialogDescription>{{ description }}</DialogDescription>
       </DialogHeader>
       <Command>
-        <slot />
+        <slot ></slot>
       </Command>
     </DialogContent>
   </Dialog>

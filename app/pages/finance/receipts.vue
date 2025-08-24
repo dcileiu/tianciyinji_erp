@@ -21,7 +21,7 @@
               <div class="text-2xl font-bold text-blue-600 mb-1">{{ receiptStats.totalReceipts }}</div>
               <div class="text-sm text-blue-700">总收款数</div>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-100 -full flex items-center justify-center">
               <CreditCard class="w-6 h-6 text-blue-600" />
             </div>
           </div>
@@ -35,7 +35,7 @@
               <div class="text-2xl font-bold text-orange-600 mb-1">{{ receiptStats.draftReceipts }}</div>
               <div class="text-sm text-orange-700">待确认</div>
             </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 -full flex items-center justify-center">
               <Clock class="w-6 h-6 text-orange-600" />
             </div>
           </div>
@@ -49,7 +49,7 @@
               <div class="text-2xl font-bold text-green-600 mb-1">{{ receiptStats.confirmedReceipts }}</div>
               <div class="text-sm text-green-700">已确认</div>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-green-100 -full flex items-center justify-center">
               <CheckCircle class="w-6 h-6 text-green-600" />
             </div>
           </div>
@@ -63,7 +63,7 @@
               <div class="text-2xl font-bold text-purple-600 mb-1">¥{{ formatCurrency(receiptStats.totalAmount) }}</div>
               <div class="text-sm text-purple-700">总收入</div>
             </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-purple-100 -full flex items-center justify-center">
               <DollarSign class="w-6 h-6 text-purple-600" />
             </div>
           </div>
@@ -120,12 +120,12 @@
 
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">开始日期</Label>
-            <Input v-model="startDate" type="date" placeholder="开始日期" />
+            <Input v-model="dateRange" type="date" placeholder="开始日期" />
           </div>
 
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">结束日期</Label>
-            <Input v-model="endDate" type="date" placeholder="结束日期" />
+            <Input v-model="dateRange" type="date" placeholder="结束日期" />
           </div>
 
           <div class="flex flex-col gap-2">
@@ -179,7 +179,7 @@
               <TableRow v-for="receipt in filteredReceipts" :key="receipt.id">
                 <TableCell>
                   <div>
-                    <span class="font-mono bg-gray-100 px-2 py-1 rounded text-blue-600 text-sm">
+                    <span class="font-mono bg-gray-100 px-2 py-1 text-blue-600 text-sm">
                       {{ receipt.receipt_no }}
                     </span>
                     <div class="text-sm text-gray-500 mt-1">
@@ -189,7 +189,7 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <div class="w-8 h-8 bg-blue-100 -full flex items-center justify-center">
                       <span class="text-blue-600 text-sm font-medium">
                         {{ receipt.customer_name.charAt(0) }}
                       </span>
@@ -366,8 +366,6 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, onMounted, ref } from 'vue'
-
 import {
   CheckCircle,
   Clock,
@@ -396,14 +394,14 @@ useHead({
 const loading = ref(false)
 const saving = ref(false)
 const showCreateDialog = ref(false)
-const editingReceipt = ref(null)
+const editingReceipt = ref<any>(null)
 const dialogMode = ref('create')
 
 // 收款单表单初始化函数
 const initReceiptForm = () => ({
   receipt_no: '',
   receipt_date: new Date().toISOString().split('T')[0],
-  customer_id: null,
+  customer_id: '',
   amount: 0,
   payment_method: '',
   receiver_account: '',
@@ -417,8 +415,7 @@ const initReceiptForm = () => ({
 const searchQuery = ref('')
 const statusFilter = ref('')
 const paymentMethodFilter = ref('')
-const startDate = ref('')
-const endDate = ref('')
+const dateRange = ref<string | undefined>(undefined)
 
 // 状态选项
 const statusOptions = ref([
@@ -491,7 +488,7 @@ const filteredReceipts = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      receipt => receipt.receipt_no.toLowerCase().includes(query) || receipt.customer_name.toLowerCase().includes(query)
+      receipt => receipt.receipt_no.toLowerCase().includes(query) || receipt.customer_name.toLowerCase().includes(query),
     )
   }
 
@@ -545,25 +542,13 @@ const getPaymentMethodName = (method: string) => {
   return nameMap[method] || method
 }
 
-const getStatusVariant = (status: string) => {
-  const variantMap: Record<string, string> = {
+const getStatusVariant = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     draft: 'secondary',
     confirmed: 'default',
     cancelled: 'destructive',
   }
   return variantMap[status] || 'secondary'
-}
-
-// 获取支付方式变体
-const getPaymentMethodVariant = (method: string) => {
-  const variantMap: Record<string, string> = {
-    cash: 'default',
-    bank_transfer: 'secondary',
-    alipay: 'outline',
-    wechat: 'default',
-    other: 'secondary',
-  }
-  return variantMap[method] || 'secondary'
 }
 
 // 收款单操作
@@ -584,7 +569,8 @@ const confirmReceipt = async (id: string) => {
     if (receipt) {
       receipt.status = 'confirmed'
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.error('确认收款单失败:', err)
   }
 }
@@ -593,7 +579,8 @@ const deleteReceipt = async (id: string) => {
   try {
     console.log('删除收款单:', id)
     receipts.value = receipts.value.filter(receipt => receipt.id !== id)
-  } catch (err) {
+  }
+  catch (err) {
     console.error('删除收款单失败:', err)
   }
 }
@@ -622,10 +609,11 @@ const saveReceipt = async () => {
       // 更新现有收款单
       const index = receipts.value.findIndex(r => r.id === editingReceipt.value.id)
       if (index !== -1) {
-        receipts.value[index] = { ...receiptForm.value, id: editingReceipt.value.id, updated_at: new Date() }
+        receipts.value[index] = { ...receiptForm.value, id: editingReceipt.value.id, updated_at: new Date() } as any
       }
       console.log('收款单更新成功')
-    } else {
+    }
+    else {
       // 创建新收款单
       const newReceipt = {
         ...receiptForm.value,
@@ -634,14 +622,16 @@ const saveReceipt = async () => {
         created_at: new Date(),
         updated_at: new Date(),
       }
-      receipts.value.unshift(newReceipt)
+      receipts.value.unshift(newReceipt as any)
       console.log('收款单创建成功')
     }
 
     closeCreateDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存收款单失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
@@ -651,8 +641,7 @@ const resetFilters = () => {
   searchQuery.value = ''
   statusFilter.value = ''
   paymentMethodFilter.value = ''
-  startDate.value = ''
-  endDate.value = ''
+  dateRange.value = undefined
 }
 
 // 初始化数据

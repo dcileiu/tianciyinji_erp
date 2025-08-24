@@ -31,12 +31,12 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
       :class="
         cn(
           'placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
-          props.class
+          props.class,
         )
       "
       v-bind="{ ...forwarded, ...$attrs }"
     >
-      <slot />
+      <slot ></slot>
     </ComboboxInput>
   </div>
 </template>

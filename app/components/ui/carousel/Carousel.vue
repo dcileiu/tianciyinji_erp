@@ -9,8 +9,8 @@ const props = withDefaults(defineProps<CarouselProps & WithClassAsProps>(), {
 
 const emits = defineEmits<CarouselEmits>()
 
-const { canScrollNext, canScrollPrev, carouselApi, carouselRef, orientation, scrollNext, scrollPrev } =
-  useProvideCarousel(props, emits)
+const { canScrollNext, canScrollPrev, carouselApi, carouselRef, orientation, scrollNext, scrollPrev }
+  = useProvideCarousel(props, emits)
 
 defineExpose({
   canScrollNext,
@@ -49,6 +49,13 @@ function onKeyDown(event: KeyboardEvent) {
     tabindex="0"
     @keydown="onKeyDown"
   >
-    <slot :can-scroll-next :can-scroll-prev :carousel-api :carousel-ref :orientation :scroll-next :scroll-prev />
+    <slot
+      :can-scroll-next
+      :can-scroll-prev
+      :carousel-api
+      :carousel-ref
+      :orientation
+      :scroll-next
+      :scroll-prev ></slot>
   </div>
 </template>

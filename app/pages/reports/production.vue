@@ -32,7 +32,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">车间筛选</label>
-            <select v-model="workshopFilter" class="w-full px-3 py-2 border rounded-md">
+            <select v-model="workshopFilter" class="w-full px-3 py-2 border -md">
               <option value="">全部车间</option>
               <option v-for="workshop in workshops" :key="workshop.id" :value="workshop.id">
                 {{ workshop.name }}
@@ -60,7 +60,7 @@
                 {{ productionStats.totalOrders }}
               </p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-100 -lg flex items-center justify-center">
               <ClipboardList class="w-6 h-6 text-blue-600" />
             </div>
           </div>
@@ -78,7 +78,7 @@
               <p class="text-sm text-muted-foreground">完成率</p>
               <p class="text-2xl font-bold text-green-600">{{ productionStats.completionRate }}%</p>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-green-100 -lg flex items-center justify-center">
               <CheckCircle class="w-6 h-6 text-green-600" />
             </div>
           </div>
@@ -96,7 +96,7 @@
               <p class="text-sm text-muted-foreground">生产效率</p>
               <p class="text-2xl font-bold text-orange-600">{{ productionStats.efficiency }}%</p>
             </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 -lg flex items-center justify-center">
               <TrendingUp class="w-6 h-6 text-orange-600" />
             </div>
           </div>
@@ -114,7 +114,7 @@
               <p class="text-sm text-muted-foreground">不良品率</p>
               <p class="text-2xl font-bold text-red-600">{{ productionStats.defectRate }}%</p>
             </div>
-            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-red-100 -lg flex items-center justify-center">
               <AlertTriangle class="w-6 h-6 text-red-600" />
             </div>
           </div>
@@ -132,7 +132,7 @@
         <h3 class="text-lg font-semibold">生产趋势分析</h3>
       </div>
       <div class="p-6">
-        <div class="h-80 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div class="h-80 flex items-center justify-center bg-gray-50 dark:bg-gray-800 -lg">
           <div class="text-center text-muted-foreground">
             <BarChart3 class="w-16 h-16 mx-auto mb-4" />
             <p class="text-lg font-medium">生产趋势图</p>
@@ -176,7 +176,7 @@
                     'bg-yellow-100 text-yellow-800': order.status === 'planned',
                     'bg-red-100 text-red-800': order.status === 'cancelled',
                   }"
-                  class="px-2 py-1 rounded-full text-xs font-medium"
+                  class="px-2 py-1 -full text-xs font-medium"
                 >
                   {{ getStatusName(order.status) }}
                 </span>
@@ -214,7 +214,7 @@
             <div v-for="(workshop, index) in topWorkshops" :key="workshop.id" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <div
-                  class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                  class="w-8 h-8 -full flex items-center justify-center text-white text-sm font-medium"
                   :class="{
                     'bg-yellow-500': index === 0,
                     'bg-gray-400': index === 1,
@@ -247,7 +247,7 @@
             <div v-for="(product, index) in topProducts" :key="product.id" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <div
-                  class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                  class="w-8 h-8 -full flex items-center justify-center text-white text-sm font-medium"
                   :class="{
                     'bg-yellow-500': index === 0,
                     'bg-gray-400': index === 1,
@@ -276,14 +276,14 @@
 
 <script setup lang="ts">
 import {
+  AlertTriangle,
+  BarChart3,
+  CheckCircle,
+  ClipboardList,
   Download,
   RefreshCw,
   Search,
-  ClipboardList,
-  CheckCircle,
   TrendingUp,
-  AlertTriangle,
-  BarChart3,
 } from 'lucide-vue-next'
 
 // 页面配置
@@ -296,7 +296,6 @@ useHead({
 })
 
 // 数据管理
-const { getProductionReport, getProductionDetails, getTopWorkshops, getTopProducts } = useProductionReports()
 const { workshops } = useWorkshops()
 
 // 响应式数据

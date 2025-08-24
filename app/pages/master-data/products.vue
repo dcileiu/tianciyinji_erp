@@ -9,7 +9,7 @@
           <p class="text-gray-600">管理产品信息、库存和定价</p>
         </div>
       </div>
-      <Button @click="openProductModal" class="bg-blue-600 hover:bg-blue-700">
+      <Button class="bg-blue-600 hover:bg-blue-700" @click="openProductModal">
         <Plus class="h-4 w-4 mr-2" />
         新增产品
       </Button>
@@ -117,7 +117,7 @@
           <Package class="h-16 w-16 mx-auto text-gray-300 mb-4" />
           <h3 class="text-lg font-medium text-gray-900 mb-2">暂无产品</h3>
           <p class="text-gray-600 mb-4">开始创建您的第一个产品</p>
-          <Button @click="openProductModal" class="bg-blue-600 hover:bg-blue-700">
+          <Button class="bg-blue-600 hover:bg-blue-700" @click="openProductModal">
             <Plus class="h-4 w-4 mr-2" />
             新增产品
           </Button>
@@ -140,7 +140,7 @@
               <TableRow v-for="product in filteredProducts" :key="product.id" class="hover:bg-gray-50">
                 <TableCell>
                   <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <div class="h-10 w-10 -full bg-blue-100 flex items-center justify-center">
                       <span class="text-blue-600 font-medium">{{ product.name.charAt(0) }}</span>
                     </div>
                     <div>
@@ -190,8 +190,8 @@
                     <Button
                       variant="ghost"
                       size="sm"
-                      @click="confirmDeleteProduct(product)"
                       class="text-red-600 hover:text-red-700"
+                      @click="confirmDeleteProduct(product)"
                     >
                       <Trash2 class="h-4 w-4" />
                     </Button>
@@ -330,7 +330,7 @@
             <X class="h-4 w-4 mr-2" />
             取消
           </Button>
-          <Button @click="saveProduct" :disabled="saving" class="bg-blue-600 hover:bg-blue-700">
+          <Button :disabled="saving" class="bg-blue-600 hover:bg-blue-700" @click="saveProduct">
             <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
             <Check v-else class="h-4 w-4 mr-2" />
             {{ isEditing ? '更新' : '创建' }}
@@ -345,23 +345,23 @@
 // UI组件现在自动导入，无需手动导入
 
 import {
+  AlertTriangle,
+  Check,
+  CheckCircle,
+  Copy,
+  DollarSign,
+  Edit,
+  Eye,
+  Info,
+  List,
+  Loader2,
   Package,
   Plus,
-  Search,
   RefreshCw,
-  CheckCircle,
-  AlertTriangle,
-  XCircle,
-  List,
-  Eye,
-  Edit,
-  Copy,
+  Search,
   Trash2,
-  Info,
-  DollarSign,
   X,
-  Check,
-  Loader2,
+  XCircle,
 } from 'lucide-vue-next'
 
 // 页面状态
@@ -370,7 +370,6 @@ const saving = ref(false)
 const searchKeyword = ref('')
 const selectedCategory = ref('')
 const selectedStatus = ref('')
-const pageSize = ref(10)
 
 // 对话框状态
 const showProductModal = ref(false)
@@ -453,8 +452,8 @@ const filteredProducts = computed(() => {
   if (searchKeyword.value) {
     result = result.filter(
       product =>
-        product.name.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
-        product.code.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        product.name.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        || product.code.toLowerCase().includes(searchKeyword.value.toLowerCase()),
     )
   }
 
@@ -546,16 +545,6 @@ const confirmDeleteProduct = (product: any) => {
   }
 }
 
-// 获取状态样式
-const getStatusVariant = status => {
-  const variantMap = {
-    active: 'default',
-    inactive: 'secondary',
-    'out-of-stock': 'destructive',
-  }
-  return variantMap[status] || 'outline'
-}
-
 const deleteProduct = async (productId: string) => {
   try {
     loading.value = true
@@ -564,9 +553,11 @@ const deleteProduct = async (productId: string) => {
     if (index !== -1) {
       products.value.splice(index, 1)
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('删除产品失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -584,7 +575,8 @@ const saveProduct = async () => {
           updated_at: new Date(),
         }
       }
-    } else {
+    }
+    else {
       // 创建新产品
       const newProduct = {
         ...currentProduct.value,
@@ -596,9 +588,11 @@ const saveProduct = async () => {
     }
 
     closeProductModal()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存产品失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

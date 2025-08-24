@@ -14,7 +14,7 @@ const props = withDefaults(
   }>(),
   {
     colors: () => [],
-  }
+  },
 )
 
 // Use weakmap to store reference to each datapoint for Tooltip
@@ -22,7 +22,8 @@ const wm = new WeakMap()
 function template(d: any) {
   if (wm.has(d)) {
     return wm.get(d)
-  } else {
+  }
+  else {
     const componentDiv = document.createElement('div')
     const omittedData = Object.entries(omit(d, [props.index])).map(([key, value]) => {
       const legendReference = props.items.find(i => i.name === key)

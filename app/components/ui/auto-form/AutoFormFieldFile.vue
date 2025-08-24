@@ -18,7 +18,7 @@ async function parseFileAsString(file: File | undefined): Promise<string> {
       reader.onloadend = () => {
         resolve(reader.result as string)
       }
-      reader.onerror = err => {
+      reader.onerror = (err) => {
         reject(err)
       }
       reader.readAsDataURL(file)

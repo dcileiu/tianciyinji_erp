@@ -60,7 +60,7 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { Building2, Sun, Moon } from 'lucide-vue-next'
+import { Building2, Moon, Sun } from 'lucide-vue-next'
 
 // 主题管理
 const isDark = ref(false)
@@ -71,7 +71,8 @@ const toggleTheme = () => {
   // 这里可以实现主题切换逻辑
   if (isDark.value) {
     document.documentElement.classList.add('dark')
-  } else {
+  }
+  else {
     document.documentElement.classList.remove('dark')
   }
   console.log('切换主题:', isDark.value ? '深色' : '浅色')

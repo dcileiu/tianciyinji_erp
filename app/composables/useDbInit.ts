@@ -127,7 +127,7 @@ export const useDbInit = () => {
   const withRetry = async <T>(
     operation: () => Promise<T>,
     operationName: string,
-    config: RetryConfig = defaultRetryConfig
+    config: RetryConfig = defaultRetryConfig,
   ): Promise<T> => {
     let lastError: Error
 
@@ -139,7 +139,8 @@ export const useDbInit = () => {
           addLog('success', `${operationName} 在第 ${attempt} 次尝试后成功`)
         }
         return result
-      } catch (error: any) {
+      }
+      catch (error: any) {
         lastError = error
         addLog('warning', `${operationName} 第 ${attempt} 次尝试失败: ${error.message}`)
 
@@ -168,7 +169,8 @@ export const useDbInit = () => {
       }
 
       return data || false
-    } catch (error: any) {
+    }
+    catch (error: any) {
       addLog('error', `权限检查异常: ${error.message}`)
       return false
     }
@@ -192,11 +194,11 @@ export const useDbInit = () => {
       ]
 
       const permissionResults = await Promise.all(
-        criticalPermissions.map(async permission => {
+        criticalPermissions.map(async (permission) => {
           const hasPermission = await checkUserPermission(userId, permission)
           addLog(hasPermission ? 'success' : 'warning', `权限 ${permission}: ${hasPermission ? '✓' : '✗'}`)
           return { permission, hasPermission }
-        })
+        }),
       )
 
       const missingPermissions = permissionResults
@@ -210,7 +212,8 @@ export const useDbInit = () => {
 
       addLog('success', '管理员权限验证通过')
       return true
-    } catch (error: any) {
+    }
+    catch (error: any) {
       addLog('error', `权限验证失败: ${error.message}`)
       return false
     }
@@ -236,7 +239,8 @@ export const useDbInit = () => {
       }
       addLog('info', '用户信息已刷新', { userId: user?.id })
       return user
-    } catch (error: any) {
+    }
+    catch (error: any) {
       addLog('error', '刷新用户信息异常', { error: error.message })
       return null
     }
@@ -254,7 +258,8 @@ export const useDbInit = () => {
         addLog('info', `当前用户: ${currentUser.value.email}`, {
           userId: currentUser.value.id,
         })
-      } else {
+      }
+      else {
         addLog('info', '当前无认证用户')
       }
 
@@ -263,6 +268,8 @@ export const useDbInit = () => {
         // 使用 RPC 调用来测试连接，避免直接查询可能不存在的表
         const { data, error } = await supabase.rpc('check_connection' as any)
 
+        console.log('data：', data)
+
         if (error && error.code !== '42883') {
           // 42883 表示函数不存在，这是正常的
           // 如果 RPC 失败，尝试简单的认证状态检查
@@ -270,6 +277,8 @@ export const useDbInit = () => {
             data: { user },
             error: authError,
           } = await supabase.auth.getUser()
+
+          console.log('user：', user)
           if (authError) {
             throw new Error(`数据库连接错误: ${authError.message}`)
           }
@@ -288,7 +297,8 @@ export const useDbInit = () => {
       updateStepStatus('check-connection', 'completed', 100)
       addLog('success', '数据库连接成功')
       return true
-    } catch (error: any) {
+    }
+    catch (error: any) {
       connectionStatus.value = 'error'
       updateStepStatus('check-connection', 'error', 0)
       addLog('error', `数据库连接失败: ${error.message}`, {
@@ -338,13 +348,14 @@ export const useDbInit = () => {
               return data
             },
             `表 ${table} 检查`,
-            { maxRetries: 2, delay: 500, backoff: false }
+            { maxRetries: 2, delay: 500, backoff: false },
           )
 
           addLog('success', `表 ${table} 检查通过`)
           tableCheckResults.push({ table, status: 'ok' })
           updateStepStatus('check-tables', 'running', progress)
-        } catch (error: any) {
+        }
+        catch (error: any) {
           addLog('error', `表 ${table} 检查失败: ${error.message}`)
           tableCheckResults.push({
             table,
@@ -360,7 +371,8 @@ export const useDbInit = () => {
         results: tableCheckResults,
       })
       return true
-    } catch (error: any) {
+    }
+    catch (error: any) {
       updateStepStatus('check-tables', 'error', 0)
       addLog('error', `表结构检查失败: ${error.message}`, {
         error: error.stack,
@@ -405,13 +417,15 @@ export const useDbInit = () => {
           addLog('warning', `检查角色权限失败: ${resourceError.message}`, {
             error: resourceError,
           })
-        } else {
+        }
+        else {
           const resourceCount = roleResources?.length || 0
           addLog('info', `管理员角色拥有 ${resourceCount} 个资源权限`)
 
           if (resourceCount === 0) {
             addLog('warning', '管理员角色暂无资源权限，可能需要重新运行迁移')
-          } else {
+          }
+          else {
             // 显示部分权限详情
             const sampleResources = roleResources
               ?.slice(0, 3)
@@ -422,14 +436,16 @@ export const useDbInit = () => {
             }
           }
         }
-      } catch (permissionError: any) {
+      }
+      catch (permissionError: any) {
         addLog('warning', `权限检查异常: ${permissionError.message}`)
       }
 
       updateStepStatus('check-admin-role', 'completed', 100)
       addLog('success', '管理员角色检查完成')
       return adminRole
-    } catch (error: any) {
+    }
+    catch (error: any) {
       updateStepStatus('check-admin-role', 'error', 0)
       addLog('error', `检查管理员角色失败: ${error.message}`, {
         error: error.stack,
@@ -454,7 +470,7 @@ export const useDbInit = () => {
             name,
             permissions
           )
-        `
+        `,
         )
         .eq('user_id', userId)
 
@@ -473,7 +489,8 @@ export const useDbInit = () => {
       })
 
       return { hasAdminRole, permissions: allPermissions }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       addLog('error', '权限检查异常', { error: error.message })
       return { hasAdminRole: false, permissions: [] }
     }
@@ -514,7 +531,7 @@ export const useDbInit = () => {
           return authUser?.users?.find(user => user.email === adminEmail) || null
         },
         '认证用户检查',
-        { maxRetries: 2, delay: 1000, backoff: false }
+        { maxRetries: 2, delay: 1000, backoff: false },
       )
 
       let userId: string
@@ -540,7 +557,7 @@ export const useDbInit = () => {
             return error?.code === 'PGRST116' ? null : data
           },
           '用户信息检查',
-          { maxRetries: 2, delay: 1000, backoff: false }
+          { maxRetries: 2, delay: 1000, backoff: false },
         )
 
         if (customUserCheck) {
@@ -594,7 +611,7 @@ export const useDbInit = () => {
             return data
           },
           '创建用户记录',
-          { maxRetries: 2, delay: 1000, backoff: false }
+          { maxRetries: 2, delay: 1000, backoff: false },
         )
 
         if (!insertUserResult) {
@@ -609,7 +626,8 @@ export const useDbInit = () => {
           email: (insertUserResult as any).email,
           status: (insertUserResult as any).status,
         })
-      } else {
+      }
+      else {
         // 创建新的管理员认证账号
         addLog('info', '创建新的管理员认证账号...', { email: adminEmail })
         updateStepStatus('create-admin', 'running', 75)
@@ -633,7 +651,7 @@ export const useDbInit = () => {
             return newUser.user
           },
           '创建认证账号',
-          { maxRetries: 2, delay: 1500, backoff: false }
+          { maxRetries: 2, delay: 1500, backoff: false },
         )
 
         userId = createUserResult.id
@@ -686,7 +704,7 @@ export const useDbInit = () => {
             return data
           },
           '插入用户信息',
-          { maxRetries: 2, delay: 1500, backoff: false }
+          { maxRetries: 2, delay: 1500, backoff: false },
         )
 
         addLog('success', '管理员用户信息创建成功', {
@@ -701,14 +719,16 @@ export const useDbInit = () => {
       const { hasAdminRole } = await checkUserPermissions(userId)
       if (!hasAdminRole) {
         addLog('warning', '管理员账号创建成功，但尚未分配管理员角色')
-      } else {
+      }
+      else {
         addLog('success', '管理员账号创建完成，权限验证通过')
       }
 
       updateStepStatus('create-admin', 'completed', 100)
       addLog('success', `管理员账号创建完成: ${adminEmail}`)
       return { success: true, userId }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       updateStepStatus('create-admin', 'error', 0)
       addLog('error', `创建管理员账号失败: ${error.message}`)
       return { success: false }
@@ -764,7 +784,8 @@ export const useDbInit = () => {
           userRoleId: (existingRoleCheck as any).id,
           assignedAt: (existingRoleCheck as any).created_at,
         })
-      } else {
+      }
+      else {
         // 分配角色
         addLog('info', '正在分配管理员角色...')
         updateStepStatus('assign-role', 'running', 90)
@@ -788,7 +809,7 @@ export const useDbInit = () => {
             return data
           },
           '分配管理员角色',
-          { maxRetries: 2, delay: 1500, backoff: false }
+          { maxRetries: 2, delay: 1500, backoff: false },
         )
 
         addLog('success', '管理员角色分配成功', {
@@ -804,7 +825,8 @@ export const useDbInit = () => {
 
       if (hasValidPermissions) {
         addLog('success', '管理员权限验证通过')
-      } else {
+      }
+      else {
         addLog('warning', 'admin 角色权限验证失败，请检查角色权限配置', {
           roleId: (adminRole as any).id,
           roleName: (adminRole as any).name,
@@ -819,14 +841,16 @@ export const useDbInit = () => {
 
       if (roleResources && roleResources.length > 0) {
         addLog('info', `admin 角色已有 ${roleResources.length} 个资源权限`)
-      } else {
+      }
+      else {
         addLog('warning', 'admin 角色暂无资源权限，请检查迁移文件是否正确执行')
       }
 
       updateStepStatus('assign-role', 'completed', 100)
       addLog('success', '管理员角色分配完成')
       return true
-    } catch (error: any) {
+    }
+    catch (error: any) {
       updateStepStatus('assign-role', 'error', 0)
       addLog('error', `分配管理员角色失败: ${error.message}`)
       return false
@@ -863,7 +887,7 @@ export const useDbInit = () => {
       addLog('info', '✅ Supabase 配置验证通过')
 
       // 重置所有步骤状态
-      steps.value.forEach(step => {
+      steps.value.forEach((step) => {
         step.status = 'pending'
         step.progress = 0
       })
@@ -924,7 +948,8 @@ export const useDbInit = () => {
           adminUserId: adminResult.userId,
           completedAt: new Date().toISOString(),
         })
-      } else {
+      }
+      else {
         addLog('warning', '⚠️ 初始化完成，但权限验证未通过，请手动检查权限配置')
       }
 
@@ -936,7 +961,8 @@ export const useDbInit = () => {
 
       initializationProgress.value = 100
       return true
-    } catch (error: any) {
+    }
+    catch (error: any) {
       addLog('error', `❌ 初始化失败: ${error.message}`, {
         stack: error.stack,
         timestamp: new Date().toISOString(),
@@ -944,7 +970,8 @@ export const useDbInit = () => {
       addLog('info', '💡 建议检查: 1) Supabase 连接配置 2) 数据库迁移状态 3) RLS 策略设置')
       initializationProgress.value = 0
       return false
-    } finally {
+    }
+    finally {
       isInitializing.value = false
     }
   }
@@ -952,7 +979,7 @@ export const useDbInit = () => {
   // 重置初始化状态
   const resetInitialization = () => {
     logs.value = []
-    steps.value.forEach(step => {
+    steps.value.forEach((step) => {
       step.status = 'pending'
       step.progress = 0
     })

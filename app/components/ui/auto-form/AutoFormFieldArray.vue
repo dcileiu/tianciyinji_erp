@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends z.ZodAny">
 // UI组件现在自动导入，无需手动导入
 
-import type { Config, ConfigItem } from './interface'
+import type { Config, ConfigItem, Shape } from './interface'
 
 import { PlusIcon, TrashIcon } from 'lucide-vue-next'
 import { FieldArray, FieldContextKey, useField } from 'vee-validate'
@@ -33,8 +33,7 @@ const itemShape = computed(() => {
   const schema: z.ZodAny = isZodArray(props.schema)
     ? props.schema._def.type
     : isZodDefault(props.schema)
-      ? // @ts-expect-error missing schema
-        props.schema._def.innerType._def.type
+      ? props.schema._def.innerType._def.type
       : null
 
   return {
@@ -66,7 +65,7 @@ provide(FieldContextKey, fieldContext)
                   <AutoFormField
                     :field-name="`${fieldName}[${index}]`"
                     :label="fieldName"
-                    :shape="itemShape!"
+                    :shape="itemShape as Shape"
                     :config="config as ConfigItem"
                   />
 

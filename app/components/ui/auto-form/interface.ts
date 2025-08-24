@@ -1,5 +1,5 @@
 import type { Component, InputHTMLAttributes } from 'vue'
-import type { z, ZodAny } from 'zod'
+import type { ZodAny, z } from 'zod'
 import type { INPUT_COMPONENTS } from './constant'
 
 export interface FieldProps {
@@ -30,6 +30,7 @@ export interface InputComponents {
   file: Component
   array: Component
   object: Component
+  input: Component
 }
 
 export interface ConfigItem {
@@ -83,6 +84,6 @@ export type OptionsDependency<SchemaType extends z.infer<z.ZodObject<any, any>>>
   options: EnumValues
 }
 
-export type Dependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
-  | ValueDependency<SchemaType>
-  | OptionsDependency<SchemaType>
+export type Dependency<SchemaType extends z.infer<z.ZodObject<any, any>>>
+  = | ValueDependency<SchemaType>
+    | OptionsDependency<SchemaType>

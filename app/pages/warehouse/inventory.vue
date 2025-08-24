@@ -2,11 +2,11 @@
   <div class="space-y-6 p-6 min-h-screen bg-background">
     <!-- 页面头部 -->
     <div
-      class="bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 rounded-2xl p-8 text-white relative overflow-hidden"
+      class="bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 -2xl p-8 text-white relative overflow-hidden"
     >
       <div class="absolute inset-0 bg-black/10"></div>
-      <div class="absolute -top-4 -right-4 w-32 h-32 bg-white/5 rounded-full"></div>
-      <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white/5 rounded-full"></div>
+      <div class="absolute -top-4 -right-4 w-32 h-32 bg-white/5 -full"></div>
+      <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white/5 -full"></div>
       <div class="relative z-10">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -42,10 +42,10 @@
       <Card class="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg overflow-hidden">
         <CardContent class="p-6">
           <div class="relative">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full"></div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 -full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                <div class="w-14 h-14 bg-white/20 -xl flex items-center justify-center">
                   <Package class="h-6 w-6 text-white" />
                 </div>
                 <div class="text-right">
@@ -68,10 +68,10 @@
       <Card class="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg overflow-hidden">
         <CardContent class="p-6">
           <div class="relative">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full"></div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 -full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                <div class="w-14 h-14 bg-white/20 -xl flex items-center justify-center">
                   <TrendingUp class="h-6 w-6 text-white" />
                 </div>
                 <div class="text-right">
@@ -94,10 +94,10 @@
       <Card class="bg-gradient-to-br from-red-500 to-red-600 text-white border-0 shadow-lg overflow-hidden">
         <CardContent class="p-6">
           <div class="relative">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full"></div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 -full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                <div class="w-14 h-14 bg-white/20 -xl flex items-center justify-center">
                   <AlertTriangle class="h-6 w-6 text-white" />
                 </div>
                 <div class="text-right">
@@ -120,10 +120,10 @@
       <Card class="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg overflow-hidden">
         <CardContent class="p-6">
           <div class="relative">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full"></div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 -full"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                <div class="w-14 h-14 bg-white/20 -xl flex items-center justify-center">
                   <Warehouse class="h-6 w-6 text-white" />
                 </div>
                 <div class="text-right">
@@ -208,15 +208,15 @@
 
         <!-- 操作按钮 -->
         <div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200">
-          <Button @click="resetFilters" variant="outline" class="flex items-center gap-2">
+          <Button variant="outline" class="flex items-center gap-2" @click="resetFilters">
             <FilterX class="h-4 w-4" />
             重置筛选
           </Button>
-          <Button @click="exportInventory" variant="outline" class="flex items-center gap-2">
+          <Button variant="outline" class="flex items-center gap-2" @click="exportInventory">
             <Download class="h-4 w-4" />
             导出数据
           </Button>
-          <Button @click="refreshData" :disabled="loading" class="flex items-center gap-2">
+          <Button :disabled="loading" class="flex items-center gap-2" @click="refreshData">
             <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
             刷新数据
           </Button>
@@ -266,7 +266,7 @@
           </Button>
         </div>
 
-        <div v-else class="rounded-md border">
+        <div v-else class="-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -284,13 +284,13 @@
             <TableBody>
               <TableRow v-for="item in filteredInventory" :key="item.id">
                 <TableCell>
-                  <span class="font-mono text-sm bg-muted px-2 py-1 rounded">
+                  <span class="font-mono text-sm bg-muted px-2 py-1 ">
                     {{ item.product_code }}
                   </span>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                    <div class="w-12 h-12 bg-muted -lg flex items-center justify-center">
                       <Package class="h-6 w-6 text-muted-foreground" />
                     </div>
                     <div>
@@ -458,24 +458,41 @@
     </Dialog>
 
     <!-- 确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
+// Vue 钩子也自动导入，无需手动导入
 
-import { ref, computed, onMounted } from 'vue'
-
-import { Package, Upload, Plus, TrendingUp, AlertTriangle, Warehouse, Search, FilterX, Download, RefreshCw, Loader2, Settings, Eye, Edit, History, ArrowRightLeft, Info } from 'lucide-vue-next'
+import {
+  AlertTriangle,
+  ArrowRightLeft,
+  Download,
+  Edit,
+  Eye,
+  FilterX,
+  History,
+  Info,
+  Loader2,
+  Package,
+  Plus,
+  RefreshCw,
+  Search,
+  Settings,
+  TrendingUp,
+  Upload,
+  Warehouse,
+} from 'lucide-vue-next'
 
 // 页面配置
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 useHead({
-  title: '库存管理 - 智能ERP管理系统'
+  title: '库存管理 - 智能ERP管理系统',
 })
 
 // 状态管理
@@ -488,14 +505,6 @@ const searchQuery = ref('')
 const warehouseFilter = ref('')
 const categoryFilter = ref('')
 const statusFilter = ref('')
-const pageRows = ref(20)
-
-// 分页选项
-const rowsPerPageOptions = [
-  { label: '10条/页', value: 10 },
-  { label: '20条/页', value: 20 },
-  { label: '50条/页', value: 50 }
-]
 
 // 调整表单
 const adjustForm = ref({
@@ -503,7 +512,7 @@ const adjustForm = ref({
   warehouse_id: '',
   adjust_type: 'in',
   quantity: 0,
-  reason: ''
+  reason: '',
 })
 
 // 选项数据
@@ -511,7 +520,7 @@ const warehouses = ref([
   { id: '1', name: '原料仓库A' },
   { id: '2', name: '成品仓库B' },
   { id: '3', name: '工具仓库C' },
-  { id: '4', name: '备品仓库D' }
+  { id: '4', name: '备品仓库D' },
 ])
 
 const categories = ref([
@@ -519,7 +528,7 @@ const categories = ref([
   { id: '2', name: '服装鞋帽' },
   { id: '3', name: '食品饮料' },
   { id: '4', name: '办公用品' },
-  { id: '5', name: '工业原料' }
+  { id: '5', name: '工业原料' },
 ])
 
 const products = ref([
@@ -527,14 +536,14 @@ const products = ref([
   { id: '2', name: '华为 Mate 60' },
   { id: '3', name: '小米 14' },
   { id: '4', name: '钢材A型' },
-  { id: '5', name: '塑料原料B' }
+  { id: '5', name: '塑料原料B' },
 ])
 
 const statusOptions = ref([
   { label: '正常', value: 'normal' },
   { label: '低库存', value: 'low' },
   { label: '缺货', value: 'out_of_stock' },
-  { label: '超储', value: 'overstock' }
+  { label: '超储', value: 'overstock' },
 ])
 
 const adjustTypes = ref([
@@ -542,7 +551,7 @@ const adjustTypes = ref([
   { label: '出库', value: 'out' },
   { label: '盘点调整', value: 'adjust' },
   { label: '损耗', value: 'loss' },
-  { label: '退货入库', value: 'return' }
+  { label: '退货入库', value: 'return' },
 ])
 
 // 模拟数据
@@ -564,7 +573,7 @@ const mockInventory = ref([
     min_stock: 50,
     max_stock: 500,
     cost_price: 8000,
-    last_updated: new Date('2025-01-15')
+    last_updated: new Date('2025-01-15'),
   },
   {
     id: '2',
@@ -583,7 +592,7 @@ const mockInventory = ref([
     min_stock: 20,
     max_stock: 200,
     cost_price: 7500,
-    last_updated: new Date('2025-01-14')
+    last_updated: new Date('2025-01-14'),
   },
   {
     id: '3',
@@ -602,7 +611,7 @@ const mockInventory = ref([
     min_stock: 30,
     max_stock: 300,
     cost_price: 4500,
-    last_updated: new Date('2025-01-13')
+    last_updated: new Date('2025-01-13'),
   },
   {
     id: '4',
@@ -621,7 +630,7 @@ const mockInventory = ref([
     min_stock: 100,
     max_stock: 500,
     cost_price: 3500,
-    last_updated: new Date('2025-01-16')
+    last_updated: new Date('2025-01-16'),
   },
   {
     id: '5',
@@ -640,8 +649,8 @@ const mockInventory = ref([
     min_stock: 50,
     max_stock: 300,
     cost_price: 12000,
-    last_updated: new Date('2025-01-12')
-  }
+    last_updated: new Date('2025-01-12'),
+  },
 ])
 
 // 计算属性
@@ -650,9 +659,8 @@ const filteredInventory = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(item =>
-      item.product_name.toLowerCase().includes(query)
-      || item.product_code.toLowerCase().includes(query)
+    result = result.filter(
+      item => item.product_name.toLowerCase().includes(query) || item.product_code.toLowerCase().includes(query),
     )
   }
 
@@ -673,40 +681,34 @@ const filteredInventory = computed(() => {
 
 const totalInventoryValue = computed(() => {
   return filteredInventory.value.reduce((total, item) => {
-    return total + (item.current_stock * (item.cost_price || 0))
+    return total + item.current_stock * (item.cost_price || 0)
   }, 0)
 })
 
 const lowStockCount = computed(() => {
-  return mockInventory.value.filter(item =>
-    item.stock_status === 'low' || item.stock_status === 'out_of_stock'
-  ).length
+  return mockInventory.value.filter(item => item.stock_status === 'low' || item.stock_status === 'out_of_stock').length
 })
 
 // 状态映射
-const statusMap = {
+const statusMap: Record<string, string> = {
   normal: '正常',
   low: '低库存',
   out_of_stock: '缺货',
-  overstock: '超储'
+  overstock: '超储',
 }
 
-const statusVariantMap = {
+const statusVariantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
   normal: 'default',
   low: 'secondary',
   out_of_stock: 'destructive',
-  overstock: 'outline'
+  overstock: 'outline',
 }
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status
 
-const getStatusVariant = (status: string) => statusVariantMap[status] || 'default'
-
-const getStockPercentage = (item: any) => {
-  if (item.max_stock <= 0) return 0
-  return Math.round((item.current_stock / item.max_stock) * 100)
-}
+const getStatusVariant = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' =>
+  statusVariantMap[status] || 'default'
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString('zh-CN')
@@ -735,9 +737,11 @@ const refreshData = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } catch (error) {
+  }
+  catch (error) {
     console.error('刷新数据失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -775,7 +779,7 @@ const closeAdjustDialog = () => {
     warehouse_id: '',
     adjust_type: 'in',
     quantity: 0,
-    reason: ''
+    reason: '',
   })
 }
 
@@ -785,9 +789,11 @@ const confirmAdjust = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000))
     console.log('库存调整:', adjustForm.value)
     closeAdjustDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('库存调整失败:', error)
-  } finally {
+  }
+  finally {
     adjusting.value = false
   }
 }

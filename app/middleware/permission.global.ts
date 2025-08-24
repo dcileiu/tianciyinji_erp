@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware(async to => {
+export default defineNuxtRouteMiddleware(async (to) => {
   const user = useSupabaseUser()
 
   // 公开路由，无需权限检查

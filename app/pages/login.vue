@@ -7,7 +7,7 @@
       <Card class="shadow-2xl">
         <CardContent class="p-6">
           <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div class="w-16 h-16 bg-primary -2xl flex items-center justify-center mx-auto mb-4">
               <Building2 class="w-8 h-8 text-primary-foreground" />
             </div>
             <h1 class="text-2xl font-bold text-foreground mb-2">欢迎回来</h1>
@@ -81,7 +81,7 @@
             <!-- 分割线 -->
             <div class="relative my-4">
               <div class="absolute inset-0 flex items-center">
-                <span class="w-full border-t" />
+                <span class="w-full border-t" ></span>
               </div>
               <div class="relative flex justify-center text-xs uppercase">
                 <span class="bg-background px-2 text-muted-foreground">或</span>
@@ -115,8 +115,7 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { ref, computed } from 'vue'
-import { Building2, Mail, Lock, Eye, EyeOff, LogIn, HelpCircle, AlertCircle, Loader2 } from 'lucide-vue-next'
+import { AlertCircle, Building2, Eye, EyeOff, HelpCircle, Loader2, Lock, LogIn, Mail } from 'lucide-vue-next'
 import { useAuth } from '~/composables/useAuth'
 import type { LoginForm } from '~/types/auth'
 
@@ -167,14 +166,17 @@ const handleLogin = async () => {
     if (result.success) {
       // 登录成功，跳转到仪表盘
       await router.push('/dashboard')
-    } else {
+    }
+    else {
       // 显示错误信息
       error.value = result.error?.message || '登录失败，请重试'
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Login error:', err)
     error.value = '登录过程中发生错误，请重试'
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

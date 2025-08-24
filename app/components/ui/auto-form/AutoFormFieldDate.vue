@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import type { FieldProps } from './interface'
 import { cn } from '@/lib/utils'
+import type { FieldProps } from './interface'
 
 import { DateFormatter, getLocalTimeZone } from '@internationalized/date'
 import { CalendarIcon } from 'lucide-vue-next'
@@ -32,7 +32,7 @@ const df = new DateFormatter('en-US', {
                   :class="
                     cn(
                       'w-full justify-start text-left font-normal',
-                      !slotProps.componentField.modelValue && 'text-muted-foreground'
+                      !slotProps.componentField.modelValue && 'text-muted-foreground',
                     )
                   "
                 >

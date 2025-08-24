@@ -77,17 +77,17 @@
       <CardContent>
         <div v-if="loading" class="p-6">
           <div v-for="i in 5" :key="i" class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-12 h-12 bg-gray-200 -full animate-pulse"></div>
             <div class="flex-1">
-              <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-              <div class="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              <div class="h-4 bg-gray-200 animate-pulse mb-2"></div>
+              <div class="h-3 bg-gray-200 animate-pulse w-3/4"></div>
             </div>
-            <div class="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
-            <div class="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div class="w-20 h-4 bg-gray-200 animate-pulse"></div>
+            <div class="w-16 h-4 bg-gray-200 animate-pulse"></div>
           </div>
         </div>
 
-        <div v-else class="rounded-md border">
+        <div v-else class="-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -106,7 +106,7 @@
             <TableBody>
               <TableRow v-for="invoice in filteredInvoices" :key="invoice.id">
                 <TableCell>
-                  <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">
+                  <code class="bg-gray-100 px-2 py-1 text-sm font-mono">
                     {{ invoice.invoice_no }}
                   </code>
                 </TableCell>
@@ -118,7 +118,7 @@
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <div
-                      class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium"
+                      class="w-8 h-8 bg-blue-500 text-white -full flex items-center justify-center text-sm font-medium"
                     >
                       {{ invoice.customer_name.charAt(0) }}
                     </div>
@@ -267,13 +267,13 @@
         <div class="space-y-4 col-span-full">
           <div class="flex justify-between items-center">
             <h4 class="text-lg font-semibold">发票项目</h4>
-            <Button size="sm" @click="addInvoiceItem" :disabled="saving">
+            <Button size="sm" :disabled="saving" @click="addInvoiceItem">
               <Plus class="h-4 w-4 mr-2" />
               添加项目
             </Button>
           </div>
 
-          <div class="border rounded-lg">
+          <div class="border -lg">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -318,7 +318,7 @@
                     <span class="font-medium text-green-600"> ¥{{ (item.amount || 0).toLocaleString() }} </span>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm" @click="removeInvoiceItem(index)" :disabled="saving">
+                    <Button variant="ghost" size="sm" :disabled="saving" @click="removeInvoiceItem(index)">
                       <Trash2 class="h-4 w-4" />
                     </Button>
                   </TableCell>
@@ -347,8 +347,8 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeInvoiceDialog" :disabled="saving"> 取消 </Button>
-          <Button v-if="dialogMode !== 'view'" @click="saveInvoice" :disabled="saving">
+          <Button variant="outline" :disabled="saving" @click="closeInvoiceDialog"> 取消 </Button>
+          <Button v-if="dialogMode !== 'view'" :disabled="saving" @click="saveInvoice">
             <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
             保存
           </Button>
@@ -360,8 +360,6 @@
 
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
-
-import { computed, onMounted, ref } from 'vue'
 
 import { Download, Edit, Eye, Loader2, Plus, Printer, RefreshCw, Search, Send, Trash2 } from 'lucide-vue-next'
 
@@ -387,19 +385,41 @@ const filters = ref({
   search: '',
 })
 
+// 下拉选项数据
+const invoiceTypes = ref([
+  { value: 'sales', label: '销售发票' },
+  { value: 'purchase', label: '采购发票' },
+])
+
+const invoiceStatuses = ref([
+  { value: 'draft', label: '草稿' },
+  { value: 'sent', label: '已发送' },
+  { value: 'paid', label: '已付款' },
+  { value: 'overdue', label: '逾期' },
+])
+
+// 类型定义
+interface InvoiceItem {
+  description: string
+  quantity: number
+  unit_price: number
+  amount: number
+}
+
 // 发票表单数据
 const invoiceForm = ref({
   invoice_no: '',
   type: '',
   status: 'draft',
   customer_name: '',
+  contact_person: '',
   amount: 0,
   tax_amount: 0,
   total_amount: 0,
   invoice_date: '',
   due_date: '',
   notes: '',
-  items: [],
+  items: [] as InvoiceItem[],
 })
 
 // 选项数据
@@ -459,7 +479,7 @@ const filteredInvoices = computed(() => {
   if (filters.value.search) {
     const query = filters.value.search.toLowerCase()
     result = result.filter(
-      invoice => invoice.invoice_no.toLowerCase().includes(query) || invoice.customer_name.toLowerCase().includes(query)
+      invoice => invoice.invoice_no.toLowerCase().includes(query) || invoice.customer_name.toLowerCase().includes(query),
     )
   }
 
@@ -504,9 +524,9 @@ const typeMap: Record<string, string> = {
   purchase: '采购发票',
 }
 
-const typeSeverityMap: Record<string, string> = {
-  sales: 'success',
-  purchase: 'info',
+const typeSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  sales: 'default',
+  purchase: 'secondary',
 }
 
 const statusMap: Record<string, string> = {
@@ -516,18 +536,20 @@ const statusMap: Record<string, string> = {
   overdue: '逾期',
 }
 
-const statusSeverityMap: Record<string, string> = {
+const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
   draft: 'secondary',
-  sent: 'info',
-  paid: 'success',
-  overdue: 'danger',
+  sent: 'outline',
+  paid: 'default',
+  overdue: 'destructive',
 }
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type
-const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'info'
+const getTypeSeverity = (type: string): 'default' | 'destructive' | 'outline' | 'secondary' =>
+  typeSeverityMap[type] || 'secondary'
 const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusSeverity = (status: string) => statusSeverityMap[status] || 'info'
+const getStatusSeverity = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' =>
+  statusSeverityMap[status] || 'secondary'
 
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString('zh-CN')
@@ -537,9 +559,11 @@ const loadInvoices = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } catch (error) {
+  }
+  catch (error) {
     console.error('加载发票失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -551,13 +575,15 @@ const openInvoiceDialog = (invoice: any = null) => {
       ...invoice,
       items: [...invoice.items],
     })
-  } else {
+  }
+  else {
     editingInvoice.value = null
     invoiceForm.value = {
       invoice_no: '',
       type: '',
       status: 'draft',
       customer_name: '',
+      contact_person: '',
       amount: 0,
       tax_amount: 0,
       total_amount: 0,
@@ -591,7 +617,8 @@ const sendInvoice = async (invoice: any) => {
       if (index !== -1 && mockInvoices.value[index]) {
         mockInvoices.value[index]!.status = 'sent'
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('发送失败:', error)
     }
   }
@@ -636,7 +663,8 @@ const saveInvoice = async () => {
         due_date: calculatedInvoice.due_date || new Date(),
       }
       mockInvoices.value.push(newInvoice)
-    } else {
+    }
+    else {
       const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value?.id)
       if (index !== -1) {
         mockInvoices.value[index] = {
@@ -649,9 +677,11 @@ const saveInvoice = async () => {
     }
 
     closeInvoiceDialog()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存发票失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }

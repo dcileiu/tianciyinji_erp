@@ -25,7 +25,7 @@ const shapes = computed(() => {
   if (!props.schema) return
   const shape = getBaseSchema(props.schema)?.shape
   if (!shape) return
-  Object.keys(shape).forEach(name => {
+  Object.keys(shape).forEach((name) => {
     const item = shape[name] as ZodAny
     const baseItem = getBaseSchema(item) as ZodAny
     let options = baseItem && 'values' in baseItem._def ? (baseItem._def.values as string[]) : undefined

@@ -3,11 +3,11 @@
     <div class="customers-container p-6 space-y-6 bg-gray-50 min-h-full">
       <!-- 页面头部 -->
       <div
-        class="page-header bg-gradient-to-r from-green-500 via-green-600 to-green-700 rounded-2xl p-8 text-white relative overflow-hidden"
+        class="page-header bg-gradient-to-r from-green-500 via-green-600 to-green-700 -2xl p-8 text-white relative overflow-hidden"
       >
         <div class="absolute inset-0 bg-black opacity-10"></div>
-        <div class="absolute -top-4 -right-4 w-32 h-32 bg-white opacity-5 rounded-full"></div>
-        <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white opacity-5 rounded-full"></div>
+        <div class="absolute -top-4 -right-4 w-32 h-32 bg-white opacity-5 -full"></div>
+        <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white opacity-5 -full"></div>
         <div class="relative z-10">
           <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -103,10 +103,10 @@
         <Card class="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg overflow-hidden">
           <CardContent class="p-6">
             <div class="relative">
-              <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                  <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
                     <Users class="h-6 w-6 text-white" />
                   </div>
                   <div class="text-right">
@@ -131,10 +131,10 @@
         <Card class="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg overflow-hidden">
           <CardContent class="p-6">
             <div class="relative">
-              <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                  <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
                     <CheckCircle class="h-6 w-6 text-white" />
                   </div>
                   <div class="text-right">
@@ -157,10 +157,10 @@
         <Card class="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg overflow-hidden">
           <CardContent class="p-6">
             <div class="relative">
-              <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                  <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
                     <UserPlus class="h-6 w-6 text-white" />
                   </div>
                   <div class="text-right">
@@ -186,7 +186,7 @@
         <CardHeader class="border-b border-gray-100">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div class="w-10 h-10 bg-blue-100 -lg flex items-center justify-center">
                 <List class="h-5 w-5 text-blue-600" />
               </div>
               <div>
@@ -214,7 +214,7 @@
         <CardContent class="p-0">
           <div v-if="loading" class="flex items-center justify-center py-8">
             <div class="flex flex-col items-center space-y-4">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
               <p class="text-sm text-gray-500">加载中...</p>
             </div>
           </div>
@@ -240,7 +240,7 @@
                 <TableRow v-for="customer in filteredCustomers" :key="customer.id">
                   <TableCell>
                     <div class="flex items-center space-x-3">
-                      <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <div class="w-8 h-8 bg-blue-100 -full flex items-center justify-center">
                         <span class="text-sm font-medium text-blue-600">{{ customer.name.charAt(0) }}</span>
                       </div>
                       <div>
@@ -308,7 +308,7 @@
           </div>
         </CardContent>
       </Card>
-      <DataTable
+      <Table
         :value="filteredCustomers"
         :loading="loading"
         :emptyMessage="emptyMessage"
@@ -345,34 +345,33 @@
             <p class="text-surface-600 mb-6 max-w-md mx-auto">
               您还没有添加任何客户。点击下方按钮开始添加您的第一个客户。
             </p>
-            <Button label="新建客户" icon="pi pi-plus" class="px-6 py-3" @click="openCustomerModal" />
+            <Button class="px-6 py-3" @click="openCustomerModal" />
           </div>
         </template>
 
-        <Column field="customer" header="客户信息" :sortable="true" style="min-width: 250px">
+        <TableHead field="customer" header="客户信息" :sortable="true" style="min-width: 250px">
           <template #body="slotProps">
             <div class="flex items-center gap-4">
               <div class="relative">
                 <Avatar
-                  :label="slotProps.data.name.charAt(0)"
-                  shape="circle"
-                  size="large"
+                  :shape="'circle'"
+                  size="lg"
                   class="bg-gradient-to-br from-primary-400 to-primary-600 text-white shadow-lg"
                 />
-                <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
+                <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white -full"></div>
               </div>
               <div>
                 <div class="font-bold text-lg text-surface-900">{{ slotProps.data.name }}</div>
-                <div class="text-sm text-primary-600 font-mono bg-primary-50 px-2 py-1 rounded">
+                <div class="text-sm text-primary-600 font-mono bg-primary-50 px-2 py-1">
                   {{ slotProps.data.code }}
                 </div>
                 <div class="text-xs text-surface-500 mt-1">创建于 {{ formatDate(slotProps.data.created_at) }}</div>
               </div>
             </div>
           </template>
-        </Column>
+        </TableHead>
 
-        <Column field="contact" header="联系方式" :sortable="true" style="min-width: 200px">
+        <TableHead field="contact" header="联系方式" :sortable="true" style="min-width: 200px">
           <template #body="slotProps">
             <div class="space-y-2">
               <div class="flex items-center gap-2">
@@ -387,9 +386,9 @@
               </div>
             </div>
           </template>
-        </Column>
+        </TableHead>
 
-        <Column field="email" header="邮箱地址" :sortable="true" style="min-width: 200px">
+        <TableHead field="email" header="邮箱地址" :sortable="true" style="min-width: 200px">
           <template #body="slotProps">
             <div v-if="slotProps.data.email" class="flex items-center gap-2">
               <i class="pi pi-envelope text-blue-600"></i>
@@ -399,9 +398,9 @@
             </div>
             <span v-else class="text-surface-400 italic">未设置邮箱</span>
           </template>
-        </Column>
+        </TableHead>
 
-        <Column field="address" header="地址信息" :sortable="true" style="min-width: 250px">
+        <TableHead field="address" header="地址信息" :sortable="true" style="min-width: 250px">
           <template #body="slotProps">
             <div class="flex items-start gap-2">
               <i class="pi pi-map-marker text-red-600 mt-1"></i>
@@ -411,9 +410,9 @@
               </div>
             </div>
           </template>
-        </Column>
+        </TableHead>
 
-        <Column field="status" header="客户状态" :sortable="true" style="min-width: 120px">
+        <TableHead field="status" header="客户状态" :sortable="true" style="min-width: 120px">
           <template #body="slotProps">
             <div class="flex flex-col items-center gap-2">
               <Tag
@@ -424,61 +423,25 @@
               <div class="text-xs text-surface-500">{{ getStatusDescription(slotProps.data.status) }}</div>
             </div>
           </template>
-        </Column>
+        </TableHead>
 
-        <Column header="操作" style="min-width: 180px" :exportable="false">
+        <TableHead header="操作" style="min-width: 180px" :exportable="false">
           <template #body="slotProps">
             <div class="flex gap-1 justify-center">
+              <Button size="sm" class="p-button-info" @click="viewCustomer(slotProps.data)" />
+              <Button size="sm" class="p-button-warning" @click="editCustomer(slotProps.data)" />
               <Button
-                v-tooltip="'查看详情'"
-                icon="pi pi-eye"
-                outlined
-                rounded
-                size="small"
-                class="p-button-info"
-                @click="viewCustomer(slotProps.data)"
-              />
-              <Button
-                v-tooltip="'编辑客户'"
-                icon="pi pi-pencil"
-                outlined
-                rounded
-                size="small"
-                class="p-button-warning"
-                @click="editCustomer(slotProps.data)"
-              />
-              <Button
-                v-tooltip="'发送邮件'"
-                icon="pi pi-send"
-                outlined
-                rounded
-                size="small"
+                size="sm"
                 class="p-button-secondary"
                 :disabled="!slotProps.data.email"
                 @click="sendEmail(slotProps.data)"
               />
-              <Button
-                v-tooltip="'客户订单'"
-                icon="pi pi-shopping-cart"
-                outlined
-                rounded
-                size="small"
-                class="p-button-primary"
-                @click="viewOrders(slotProps.data)"
-              />
-              <Button
-                v-tooltip="'删除客户'"
-                icon="pi pi-trash"
-                outlined
-                rounded
-                size="small"
-                severity="danger"
-                @click="confirmDelete(slotProps.data)"
-              />
+              <Button size="sm" class="p-button-primary" @click="viewOrders(slotProps.data)" />
+              <Button size="sm" severity="danger" @click="confirmDelete(slotProps.data)" />
             </div>
           </template>
-        </Column>
-      </DataTable>
+        </TableHead>
+      </Table>
     </div>
 
     <!-- 客户详情/编辑对话框 -->
@@ -486,7 +449,7 @@
       <DialogContent class="max-w-4xl">
         <DialogHeader>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+            <div class="w-10 h-10 bg-green-100 -lg flex items-center justify-center">
               <Users class="h-5 w-5 text-green-600" />
             </div>
             <div>
@@ -617,7 +580,7 @@
     </Dialog>
 
     <!-- 删除确认对话框 -->
-    <ConfirmDialog />
+    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
   </div>
 </template>
 
@@ -625,28 +588,28 @@
 // UI组件现在自动导入，无需手动导入
 
 import {
-  Users,
-  Upload,
-  Plus,
-  Search,
-  RefreshCw,
-  Download,
+  Check,
   CheckCircle,
-  UserPlus,
-  TrendingUp,
+  Download,
+  Edit,
+  Eye,
+  Info,
   List,
-  User,
-  Phone,
+  Loader2,
   Mail,
   MapPin,
-  Eye,
-  Edit,
+  Phone,
+  Plus,
+  RefreshCw,
+  Search,
   ShoppingCart,
   Trash2,
-  Info,
+  TrendingUp,
+  Upload,
+  User,
+  UserPlus,
+  Users,
   X,
-  Check,
-  Loader2,
 } from 'lucide-vue-next'
 
 // 页面配置
@@ -780,8 +743,8 @@ const filteredCustomers = computed(() => {
   if (searchKeyword.value) {
     result = result.filter(
       customer =>
-        customer.name.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
-        customer.code.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        customer.name.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        || customer.code.toLowerCase().includes(searchKeyword.value.toLowerCase()),
     )
   }
 
@@ -816,8 +779,8 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
-const getStatusVariant = (status: string) => {
-  const variantMap: Record<string, string> = {
+const getStatusVariant = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     active: 'default',
     inactive: 'secondary',
     suspended: 'outline',
@@ -853,7 +816,8 @@ const refreshData = async () => {
   try {
     // 模拟刷新数据
     await new Promise(resolve => setTimeout(resolve, 1000))
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -923,9 +887,11 @@ const deleteCustomer = async (customerId: string) => {
     if (index !== -1) {
       customers.value.splice(index, 1)
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('删除客户失败:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -950,7 +916,8 @@ const saveCustomer = async () => {
           updated_at: new Date(),
         }
       }
-    } else {
+    }
+    else {
       // 创建新客户
       const newCustomer = {
         ...currentCustomer.value,
@@ -962,9 +929,11 @@ const saveCustomer = async () => {
     }
 
     closeCustomerModal()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('保存客户失败:', error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
