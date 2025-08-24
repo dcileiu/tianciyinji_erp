@@ -1,7 +1,7 @@
 <template>
-  <div class="space-y-6">
+  <div class="flex flex-column gap-6">
     <!-- 页面标题 -->
-    <div class="flex items-center justify-between">
+    <div class="flex align-items-center justify-content-between">
       <div>
         <h1 class="text-3xl font-bold text-color">用户管理</h1>
         <p class="text-muted-color">管理系统用户账户、角色权限和访问控制</p>
@@ -81,7 +81,7 @@
       </template>
       <template #content>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="space-y-2">
+          <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color">搜索用户</label>
             <InputText
               v-model="searchQuery"
@@ -90,7 +90,7 @@
             />
           </div>
 
-          <div class="space-y-2">
+          <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color">角色</label>
             <Dropdown
               v-model="selectedRole"
@@ -103,7 +103,7 @@
             />
           </div>
 
-          <div class="space-y-2">
+          <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color">状态</label>
             <Dropdown
               v-model="selectedStatus"
@@ -116,7 +116,7 @@
             />
           </div>
 
-          <div class="space-y-2">
+          <div class="flex flex-column gap-2">
             <label class="block text-sm font-medium text-color opacity-0">操作</label>
             <Button
               label="重置筛选"
@@ -148,6 +148,20 @@
           paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
           current-page-report-template="显示 {first} 到 {last} 条，共 {totalRecords} 条记录"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="60%" height="1rem" />
+                </div>
+                <Skeleton width="6rem" height="1.5rem" />
+                <Skeleton width="4rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
+
           <template #empty>
             <div class="text-center py-12 text-muted-color">
               <i class="pi pi-users text-6xl mb-4 opacity-50"></i>
@@ -163,7 +177,7 @@
 
           <Column header="用户信息">
             <template #body="slotProps">
-              <div class="flex items-center space-x-3">
+              <div class="flex align-items-center gap-3">
                 <Avatar
                   :image="slotProps.data.avatar"
                   :label="slotProps.data.name?.charAt(0)"
@@ -262,9 +276,9 @@
       class="p-fluid"
     >
       <template #default>
-        <form class="space-y-6" @submit.prevent="submitUser">
+        <form class="flex flex-column gap-6" @submit.prevent="submitUser">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
+            <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">用户名 *</label>
               <InputText
                 v-model="userForm.name"
@@ -273,7 +287,7 @@
               />
             </div>
 
-            <div class="space-y-2">
+            <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">邮箱 *</label>
               <InputText
                 v-model="userForm.email"
@@ -283,7 +297,7 @@
               />
           </div>
           
-            <div class="space-y-2">
+            <div class="flex flex-column gap-2">
               <label class="block text-sm font-medium text-color">角色 *</label>
               <Dropdown
                 v-model="userForm.role"
@@ -366,6 +380,7 @@ import Dialog from 'primevue/dialog'
 import Password from 'primevue/password'
 import Textarea from 'primevue/textarea'
 import ConfirmDialog from 'primevue/confirmdialog'
+import Skeleton from 'primevue/skeleton'
 import { useConfirm } from 'primevue/useconfirm'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
 

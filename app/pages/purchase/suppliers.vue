@@ -179,9 +179,21 @@
           :rows="20"
           :rows-per-page-options="[10, 20, 50]"
           data-key="id"
-          class="p-datatable-sm"
           selection-mode="multiple"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column selection-mode="multiple" :exportable="false"></Column>
           
           <Column field="supplier_no" header="供应商编号" sortable>
@@ -194,7 +206,7 @@
           
           <Column field="name" header="供应商名称" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Avatar
                   :label="slotProps.data.name.charAt(0)"
                   shape="circle"
@@ -231,7 +243,7 @@
           
           <Column field="rating" header="评级" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Tag
                   :value="slotProps.data.rating + '级'"
                   :severity="getRatingSeverity(slotProps.data.rating)"
@@ -271,7 +283,7 @@
           
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
-              <div class="flex items-center space-x-1">
+              <div class="flex align-items-center gap-1">
                 <Button
                   v-tooltip="'查看详情'"
                   icon="pi pi-eye"
@@ -490,6 +502,7 @@ import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
 import Rating from 'primevue/rating'
 import Dialog from 'primevue/dialog'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -714,8 +727,8 @@ const toggleStatus = async (supplier: any, newStatus: string) => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     const index = mockSuppliers.value.findIndex(s => s.id === supplier.id)
-    if (index !== -1) {
-      mockSuppliers.value[index].status = newStatus
+    if (index !== -1 && mockSuppliers.value[index]) {
+      mockSuppliers.value[index]!.status = newStatus
     }
   }
   catch (error) {
@@ -741,14 +754,18 @@ const saveSupplier = async () => {
         total_amount: 0,
         created_at: new Date()
       }
-      mockSuppliers.value.push(newSupplier as any)
+      mockSuppliers.value.push(newSupplier)
     }
     else if (dialogMode.value === 'edit') {
-      const index = mockSuppliers.value.findIndex(s => s.id === editingSupplier.value.id)
-      if (index !== -1) {
+      const index = mockSuppliers.value.findIndex(s => s.id === editingSupplier.value?.id)
+      if (index !== -1 && mockSuppliers.value[index]) {
         mockSuppliers.value[index] = {
           ...mockSuppliers.value[index],
-          ...supplierForm.value
+          ...supplierForm.value,
+          id: mockSuppliers.value[index]!.id,
+          total_orders: mockSuppliers.value[index]!.total_orders,
+          total_amount: mockSuppliers.value[index]!.total_amount,
+          created_at: mockSuppliers.value[index]!.created_at
         }
       }
     }

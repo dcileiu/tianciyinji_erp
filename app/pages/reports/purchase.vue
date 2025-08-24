@@ -197,8 +197,20 @@
           :rows="15"
           :rows-per-page-options="[10, 15, 25]"
           data-key="id"
-          class="p-datatable-sm"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="2.5rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column field="order_no" header="采购单号" sortable>
             <template #body="slotProps">
               <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
@@ -340,6 +352,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({

@@ -163,6 +163,19 @@
           data-key="id"
           class="p-datatable-sm"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column field="order_no" header="订单号" sortable>
             <template #body="slotProps">
               <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
@@ -173,14 +186,14 @@
           
           <Column field="product_name" header="产品名称" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Avatar
                   :label="slotProps.data.product_name.charAt(0)"
                   shape="circle"
                   size="small"
                 />
                 <span class="font-medium">{{ slotProps.data.product_name }}</span>
-      </div>
+              </div>
             </template>
           </Column>
           
@@ -192,7 +205,7 @@
           
           <Column field="produced_quantity" header="已生产" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <span class="font-medium">{{ slotProps.data.produced_quantity.toLocaleString() }}</span>
                 <ProgressBar 
                   :value="(slotProps.data.produced_quantity / slotProps.data.quantity) * 100"
@@ -248,7 +261,7 @@
           
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
-              <div class="flex items-center space-x-1">
+              <div class="flex align-items-center gap-1">
                 <Button
                   v-tooltip="'查看详情'"
                   icon="pi pi-eye"
@@ -460,6 +473,7 @@ import ProgressBar from 'primevue/progressbar'
 import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -689,8 +703,8 @@ const confirmOrder = async (order: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockOrders.value.findIndex(o => o.id === order.id)
-        if (index !== -1) {
-          mockOrders.value[index].status = 'confirmed'
+        if (index !== -1 && mockOrders.value[index]) {
+          mockOrders.value[index]!.status = 'confirmed'
         }
       }
       catch (error) {
@@ -709,8 +723,8 @@ const startProduction = async (order: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockOrders.value.findIndex(o => o.id === order.id)
-        if (index !== -1) {
-          mockOrders.value[index].status = 'producing'
+        if (index !== -1 && mockOrders.value[index]) {
+          mockOrders.value[index]!.status = 'producing'
         }
       }
       catch (error) {
@@ -729,9 +743,9 @@ const completeProduction = async (order: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockOrders.value.findIndex(o => o.id === order.id)
-        if (index !== -1) {
-          mockOrders.value[index].status = 'completed'
-          mockOrders.value[index].produced_quantity = mockOrders.value[index].quantity
+        if (index !== -1 && mockOrders.value[index]) {
+          mockOrders.value[index]!.status = 'completed'
+          mockOrders.value[index]!.produced_quantity = mockOrders.value[index]!.quantity
         }
       }
       catch (error) {
@@ -754,8 +768,8 @@ const confirmCancelOrder = (order: any) => {
 
 const cancelOrder = (orderId: string) => {
   const index = mockOrders.value.findIndex(order => order.id === orderId)
-  if (index !== -1) {
-    mockOrders.value[index].status = 'cancelled'
+  if (index !== -1 && mockOrders.value[index]) {
+    mockOrders.value[index]!.status = 'cancelled'
   }
 }
 
@@ -776,18 +790,20 @@ const saveOrder = async () => {
         product_name: productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || '',
         workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || '',
         status: 'pending',
-        produced_quantity: 0
+        produced_quantity: 0,
+        due_date: orderForm.value.due_date || new Date()
       }
       mockOrders.value.push(newOrder as any)
     }
     else if (dialogMode.value === 'edit') {
-      const index = mockOrders.value.findIndex(o => o.id === editingOrder.value.id)
-      if (index !== -1) {
+      const index = mockOrders.value.findIndex(o => o.id === editingOrder.value?.id)
+      if (index !== -1 && mockOrders.value[index]) {
         mockOrders.value[index] = {
           ...mockOrders.value[index],
           ...orderForm.value,
-          product_name: productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || mockOrders.value[index].product_name,
-          workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || mockOrders.value[index].workshop_name
+          product_name: productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || mockOrders.value[index]!.product_name,
+          workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || mockOrders.value[index]!.workshop_name,
+          due_date: orderForm.value.due_date || new Date()
         }
       }
     }

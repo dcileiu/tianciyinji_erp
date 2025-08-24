@@ -190,8 +190,20 @@
           :rows="20"
           :rows-per-page-options="[10, 20, 50]"
           data-key="id"
-          class="p-datatable-sm"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column field="order_no" header="订单号" sortable>
             <template #body="slotProps">
               <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
@@ -202,7 +214,7 @@
           
           <Column field="supplier_name" header="供应商" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Avatar
                   :label="slotProps.data.supplier_name.charAt(0)"
                   shape="circle"
@@ -254,7 +266,7 @@
           
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
-              <div class="flex items-center space-x-1">
+              <div class="flex align-items-center gap-1">
                 <Button
                   v-tooltip="'查看详情'"
                   icon="pi pi-eye"
@@ -379,8 +391,17 @@
             
             <DataTable
               :value="orderForm.items"
-              class="p-datatable-sm"
             >
+              <template #loading>
+                <div class="p-6">
+                  <div v-for="i in 3" :key="i" class="flex align-items-center gap-4 mb-4">
+                    <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                    <Skeleton width="60%" height="1rem" />
+                    <Skeleton width="80%" height="1rem" />
+                    <Skeleton width="4rem" height="1.5rem" />
+                  </div>
+                </div>
+              </template>
               <Column field="product_name" header="商品名称">
                 <template #body="slotProps">
                   <span class="font-medium">{{ slotProps.data.product_name }}</span>
@@ -475,6 +496,7 @@ import Avatar from 'primevue/avatar'
 import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -505,7 +527,7 @@ const orderForm = ref({
   order_date: new Date(),
   expected_date: null,
   remark: '',
-  items: []
+  items: [] as Array<{product_name: string, quantity: number, unit: string, unit_price: number}>
 })
 
 // 统计数据
@@ -648,8 +670,11 @@ const viewOrder = (order: any) => {
   showOrderDialog.value = true
 }
 
+const editingOrder = ref<any>(null)
+
 const editOrder = (order: any) => {
   dialogMode.value = 'edit'
+  editingOrder.value = order
   Object.assign(orderForm.value, order)
   showOrderDialog.value = true
 }
@@ -663,8 +688,8 @@ const approveOrder = async (order: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockOrders.value.findIndex(o => o.id === order.id)
-        if (index !== -1) {
-          mockOrders.value[index].status = 'approved'
+        if (index !== -1 && mockOrders.value[index]) {
+          mockOrders.value[index]!.status = 'approved'
         }
       }
       catch (error) {
@@ -704,18 +729,21 @@ const saveOrder = async () => {
         ...orderForm.value,
         supplier_name: suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
         total_amount: totalAmount.value,
-        status: 'draft'
+        status: 'draft',
+        expected_date: orderForm.value.expected_date || new Date()
       }
       mockOrders.value.push(newOrder)
     }
     else if (dialogMode.value === 'edit') {
-      const index = mockOrders.value.findIndex(o => o.id === orderForm.value.id)
-      if (index !== -1) {
+      const index = mockOrders.value.findIndex(o => o.id === editingOrder.value?.id)
+      if (index !== -1 && mockOrders.value[index]) {
         mockOrders.value[index] = {
           ...mockOrders.value[index],
           ...orderForm.value,
+          id: mockOrders.value[index]!.id,
           supplier_name: suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
-          total_amount: totalAmount.value
+          total_amount: totalAmount.value,
+          expected_date: orderForm.value.expected_date || new Date()
         }
       }
     }

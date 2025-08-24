@@ -28,6 +28,7 @@ const userState = ref<UserState>({
 export const useAuth = () => {
   const supabase = useSupabaseClient<Database>()
   const router = useRouter()
+  const { $config } = useNuxtApp()
 
   // 登录
   const login = async (credentials: LoginForm) => {
@@ -75,7 +76,7 @@ export const useAuth = () => {
         password,
         options: {
           data: metadata,
-          emailRedirectTo: `${window.location.origin}/auth/callback`
+          emailRedirectTo: `${$config.public.siteUrl}/auth/callback`
         }
       })
 
@@ -136,7 +137,7 @@ export const useAuth = () => {
   const resetPassword = async (email: string) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`
+        redirectTo: `${$config.public.siteUrl}/auth/reset-password`
       })
 
       if (error) {
@@ -267,7 +268,7 @@ export const useAuth = () => {
 
   // 监听认证状态变化
   const watchAuthState = () => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((event: any, session: any) => {
       console.log('Auth state changed:', event, session?.user?.email)
       if (session?.user) {
         userState.value.user = session.user

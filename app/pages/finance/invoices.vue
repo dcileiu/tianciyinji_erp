@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="flex flex-column gap-6">
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
@@ -91,8 +91,20 @@
           :rows="20"
           :rows-per-page-options="[10, 20, 50]"
           data-key="id"
-          class="p-datatable-sm"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column field="invoice_no" header="发票号" sortable>
             <template #body="slotProps">
               <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
@@ -112,7 +124,7 @@
           
           <Column field="customer_name" header="客户/供应商" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Avatar
                   :label="slotProps.data.customer_name.charAt(0)"
                   shape="circle"
@@ -174,7 +186,7 @@
           
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
-              <div class="flex items-center space-x-1">
+              <div class="flex align-items-center gap-1">
                 <Button
                   v-tooltip="'查看详情'"
                   icon="pi pi-eye"
@@ -340,8 +352,17 @@
             
             <DataTable
               :value="invoiceForm.items"
-              class="p-datatable-sm"
             >
+              <template #loading>
+                <div class="p-6">
+                  <div v-for="i in 3" :key="i" class="flex align-items-center gap-4 mb-4">
+                    <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                    <Skeleton width="60%" height="1rem" />
+                    <Skeleton width="80%" height="1rem" />
+                    <Skeleton width="4rem" height="1.5rem" />
+                  </div>
+                </div>
+              </template>
               <Column field="description" header="描述">
                 <template #body="slotProps">
                   <InputText
@@ -468,6 +489,7 @@ import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -697,8 +719,8 @@ const sendInvoice = async (invoice: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockInvoices.value.findIndex(i => i.id === invoice.id)
-        if (index !== -1) {
-          mockInvoices.value[index].status = 'sent'
+        if (index !== -1 && mockInvoices.value[index]) {
+          mockInvoices.value[index]!.status = 'sent'
         }
       }
       catch (error) {
@@ -748,16 +770,19 @@ const saveInvoice = async () => {
     if (dialogMode.value === 'create') {
       const newInvoice = {
         id: Date.now().toString(),
-        ...calculatedInvoice
+        ...calculatedInvoice,
+        due_date: calculatedInvoice.due_date || new Date()
       }
       mockInvoices.value.push(newInvoice)
     }
     else if (dialogMode.value === 'edit') {
-      const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value.id)
+      const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value?.id)
       if (index !== -1) {
         mockInvoices.value[index] = {
           ...mockInvoices.value[index],
-          ...calculatedInvoice
+          ...calculatedInvoice,
+          id: mockInvoices.value[index]?.id || '',
+          due_date: calculatedInvoice.due_date || new Date()
         }
       }
     }

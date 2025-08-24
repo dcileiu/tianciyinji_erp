@@ -496,9 +496,9 @@ const saveDepartment = async () => {
         // 查找父部门名称
         const parentDept = departments.value.find(d => d.id === departmentForm.value.parentId)
         
-        const existingDept = departments.value[index]
-        departments.value[index] = {
-          id: existingDept.id,
+        const existingDept = departments.value.find(d => d.id === editingDepartment.value?.id)
+                  departments.value[index] = {
+            id: existingDept?.id || departments.value[index]?.id || '',
           code: departmentForm.value.code,
           name: departmentForm.value.name,
           description: departmentForm.value.description,
@@ -506,7 +506,7 @@ const saveDepartment = async () => {
           parentId: departmentForm.value.parentId,
           parentDepartment: parentDept?.name || '',
           manager: departmentForm.value.manager,
-          employeeCount: existingDept.employeeCount,
+          employeeCount: existingDept?.employeeCount || 0,
           sort: departmentForm.value.sort
         }
       }
@@ -515,6 +515,7 @@ const saveDepartment = async () => {
       // 新增部门
       const parentDept = departments.value.find(d => d.id === departmentForm.value.parentId)
       
+      const existingDept = departments.value.find(d => d.id === departmentForm.value.parentId)
       const newDept = {
         id: Date.now().toString(),
         code: departmentForm.value.code,

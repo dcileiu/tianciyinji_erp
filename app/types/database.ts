@@ -194,6 +194,30 @@ export interface InventoryMovement {
   created_at: string
 }
 
+// 库存调拨
+export interface Transfer {
+  id: string
+  transfer_no: string
+  from_warehouse_id: string
+  from_warehouse_name: string
+  to_warehouse_id: string
+  to_warehouse_name: string
+  status: 'draft' | 'pending' | 'approved' | 'in_transit' | 'completed' | 'cancelled'
+  operator_name: string
+  total_quantity: number
+  created_at: Date
+  remark: string
+  items: TransferItem[]
+}
+
+// 调拨明细
+export interface TransferItem {
+  product_name: string
+  current_stock: number
+  transfer_quantity: number
+  unit: string
+}
+
 // 部门管理
 export interface Department {
   id: string
@@ -270,4 +294,4 @@ export interface ApiResponse<T = any> {
   data?: T
   message?: string
   error?: string
-} 
+}

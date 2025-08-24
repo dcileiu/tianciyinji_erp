@@ -180,6 +180,19 @@
           class="p-datatable-sm"
           selection-mode="multiple"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column selection-mode="multiple" :exportable="false"></Column>
           
           <Column field="product_no" header="产品编码" sortable>
@@ -192,7 +205,7 @@
           
           <Column field="name" header="产品名称" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Avatar
                   v-if="slotProps.data.image"
                   :image="slotProps.data.image"
@@ -224,7 +237,7 @@
           
           <Column field="current_stock" header="当前库存" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <span 
                   :class="getStockClass(slotProps.data.current_stock, slotProps.data.min_stock)"
                   class="font-medium"
@@ -271,7 +284,7 @@
           
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
-              <div class="flex items-center space-x-1">
+              <div class="flex align-items-center gap-1">
                 <Button
                   v-tooltip="'查看详情'"
                   icon="pi pi-eye"
@@ -565,6 +578,7 @@ import TabPanel from 'primevue/tabpanel'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -836,7 +850,9 @@ const toggleStatus = async (product: any, newStatus: string) => {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockProducts.value.findIndex(p => p.id === product.id)
         if (index !== -1) {
-          mockProducts.value[index].status = newStatus
+          if (mockProducts.value[index]) {
+            mockProducts.value[index]!.status = newStatus
+          }
         }
       }
       catch (error) {
@@ -881,11 +897,12 @@ const saveProduct = async () => {
       mockProducts.value.push(newProduct as any)
     }
     else if (dialogMode.value === 'edit') {
-      const index = mockProducts.value.findIndex(p => p.id === editingProduct.value.id)
-      if (index !== -1) {
+      const index = mockProducts.value.findIndex(p => p.id === editingProduct.value?.id)
+      if (index !== -1 && mockProducts.value[index]) {
         mockProducts.value[index] = {
           ...mockProducts.value[index],
-          ...productForm.value
+          ...productForm.value,
+          id: mockProducts.value[index]!.id
         }
       }
     }

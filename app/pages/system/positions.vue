@@ -542,6 +542,9 @@ const savePosition = async () => {
         mockPositions.value[index] = {
           ...mockPositions.value[index],
           ...positionForm.value,
+          id: mockPositions.value[index]?.id || '',
+          employee_count: mockPositions.value[index]?.employee_count || 0,
+          created_at: mockPositions.value[index]?.created_at || new Date(),
           department_name: department?.name || ''
         }
       }

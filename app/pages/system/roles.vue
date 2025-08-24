@@ -148,6 +148,19 @@
           paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
           current-page-report-template="显示 {first} 到 {last} 条，共 {totalRecords} 条记录"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="60%" height="1rem" />
+                </div>
+                <Skeleton width="6rem" height="1.5rem" />
+                <Skeleton width="4rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <template #empty>
             <div class="text-center py-12 text-muted-color">
               <i class="pi pi-shield text-6xl mb-4 opacity-50"></i>
@@ -411,6 +424,7 @@ import Tree from 'primevue/tree'
 import Divider from 'primevue/divider'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 import PermissionWrapper from '~/components/PermissionWrapper.vue'
 
 // 页面配置

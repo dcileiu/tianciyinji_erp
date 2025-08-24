@@ -201,6 +201,19 @@
           class="p-datatable-sm"
           selection-mode="multiple"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column selection-mode="multiple" :exportable="false"></Column>
           
           <Column field="customer_no" header="客户编号" sortable>
@@ -213,7 +226,7 @@
           
           <Column field="name" header="客户名称" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Avatar
                   :label="slotProps.data.name.charAt(0)"
                   shape="circle"
@@ -287,7 +300,7 @@
           
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
-              <div class="flex items-center space-x-1">
+              <div class="flex align-items-center gap-1">
                 <Button
                   v-tooltip="'查看详情'"
                   icon="pi pi-eye"
@@ -505,6 +518,7 @@ import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
 import Dialog from 'primevue/dialog'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -722,8 +736,8 @@ const toggleStatus = async (customer: any, newStatus: string) => {
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
     const index = mockCustomers.value.findIndex(c => c.id === customer.id)
-    if (index !== -1) {
-      mockCustomers.value[index].status = newStatus
+    if (index !== -1 && mockCustomers.value[index]) {
+      mockCustomers.value[index]!.status = newStatus
     }
   }
   catch (error) {
@@ -749,14 +763,18 @@ const saveCustomer = async () => {
         total_amount: 0,
         created_at: new Date()
       }
-      mockCustomers.value.push(newCustomer as any)
+      mockCustomers.value.push(newCustomer)
     }
     else if (dialogMode.value === 'edit') {
-      const index = mockCustomers.value.findIndex(c => c.id === editingCustomer.value.id)
-      if (index !== -1) {
+      const index = mockCustomers.value.findIndex(c => c.id === editingCustomer.value?.id)
+      if (index !== -1 && mockCustomers.value[index]) {
         mockCustomers.value[index] = {
           ...mockCustomers.value[index],
-          ...customerForm.value
+          ...customerForm.value,
+          id: mockCustomers.value[index]!.id,
+          total_orders: mockCustomers.value[index]!.total_orders,
+          total_amount: mockCustomers.value[index]!.total_amount,
+          created_at: mockCustomers.value[index]!.created_at
         }
       }
     }

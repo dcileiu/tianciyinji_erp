@@ -30,9 +30,11 @@ export { requestIdleCallback, cancelIdleCallback } from '#app/compat/idle-callba
 export { setInterval } from '#app/compat/interval';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useAuth, RegisterForm } from '../app/composables/useAuth';
+export { useDbInit, InitStep, InitLog, RetryConfig } from '../app/composables/useDbInit';
 export { useGlobalLoading, LoadingTasks, LoadingMessages } from '../app/composables/useGlobalLoading';
 export { useProductionReports } from '../app/composables/useProductionReports';
 export { useProducts, supabase } from '../app/composables/useSupabase';
+export { useSuppliers } from '../app/composables/useSuppliers';
 export { useWorkshops } from '../app/composables/useWorkshops';
 export { ErrorCode, ErrorCode, createAppError, parseError, isAppError, handleError, handleAsyncError, getDisplayMessage, AppError } from '../app/utils/error-handler';
 export { useSupabaseClient } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseClient';
@@ -44,5 +46,5 @@ export { useStyle } from 'primevue/usestyle';
 export { useConfirm } from 'primevue/useconfirm';
 export { useToast } from 'primevue/usetoast';
 export { useDialog } from 'primevue/usedialog';
-export { useNuxtDevTools } from '../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_f21fe68d6a2c38ad2371ad2d40250bbf/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
+export { useNuxtDevTools } from '../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
 export { definePageMeta } from '../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/pages/runtime/composables';

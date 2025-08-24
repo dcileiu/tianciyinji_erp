@@ -104,11 +104,11 @@
                     {{ getStatusText(supplier.status) }}
                   </Badge>
                   <Badge variant="outline">
-                    {{ getTypeText(supplier.type) }}
+                    {{ getTypeText(supplier.supplier_type) }}
                   </Badge>
                 </div>
                 <p class="text-sm text-muted-foreground mt-1">
-                  {{ supplier.phone }}
+                  {{ supplier.contact_phone }}
                 </p>
               </div>
               <DropdownMenu>
@@ -259,7 +259,7 @@ const filteredSuppliers = computed(() => {
   }
   
   if (selectedType.value) {
-    result = result.filter(supplier => supplier.type === selectedType.value)
+    result = result.filter(supplier => supplier.supplier_type === selectedType.value)
   }
   
   return result
@@ -331,7 +331,7 @@ const getTypeText = (type: string) => {
 onMounted(async () => {
   try {
     const result = await getSuppliers()
-    suppliers.value = result.data || []
+    suppliers.value = result || []
   }
   catch (error) {
     console.error('获取供应商数据失败:', error)

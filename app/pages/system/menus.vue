@@ -358,7 +358,8 @@ const menuForm = ref({
   description: '',
   permission: '',
   is_external: false,
-  is_hidden: false
+  is_hidden: false,
+  type: 'MENU' // MENU | BUTTON 
 })
 
 // 选项数据
@@ -459,7 +460,7 @@ const menuTreeOptions = computed(() => {
   }
   
   return [
-    { key: null, label: '根菜单', children: buildTreeOptions(mockMenus.value) }
+    { key: 'root', label: '根菜单', children: buildTreeOptions(mockMenus.value) }
   ]
 })
 

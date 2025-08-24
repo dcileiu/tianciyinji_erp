@@ -87,6 +87,19 @@
           show-gridlines
           responsive-layout="scroll"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="6rem" height="1.5rem" />
+                <Skeleton width="4rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <template #empty>
             <div class="text-center py-12 text-muted-color">
               <i class="pi pi-database text-6xl mb-4 opacity-50"></i>
@@ -294,6 +307,16 @@
           striped-rows
           responsive-layout="scroll"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 3" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                <Skeleton width="60%" height="1rem" />
+                <Skeleton width="80%" height="1rem" />
+                <Skeleton width="4rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <template #empty>
             <div class="text-center py-8 text-muted-color">
               <i class="pi pi-inbox text-4xl mb-2 opacity-50"></i>
@@ -395,6 +418,7 @@ import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 
 // 页面状态
 const loading = ref(false)
@@ -603,10 +627,11 @@ const saveDictionary = async () => {
           if (editingDictionary.value) {
         // 更新字典
         const index = dictionaries.value.findIndex(d => d.id === currentDictionary.value.id)
-        if (index !== -1) {
+        if (index !== -1 && dictionaries.value[index]) {
           dictionaries.value[index] = {
             ...dictionaries.value[index],
             ...currentDictionary.value,
+            createdAt: dictionaries.value[index].createdAt || new Date(),
             updatedAt: new Date()
           }
         }
@@ -651,9 +676,9 @@ const removeItem = (index: number) => {
       saving.value = true
       if (selectedDictionary.value) {
         const index = dictionaries.value.findIndex(d => d.id === selectedDictionary.value!.id)
-        if (index !== -1) {
-          dictionaries.value[index].items = [...currentItems.value]
-          dictionaries.value[index].updatedAt = new Date()
+        if (index !== -1 && dictionaries.value[index]) {
+          dictionaries.value[index]!.items = [...currentItems.value]
+          dictionaries.value[index]!.updatedAt = new Date()
         }
       }
       showItemsDialog.value = false

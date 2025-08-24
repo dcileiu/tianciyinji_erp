@@ -16,10 +16,10 @@
               <div class="flex items-center">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <span class="text-white font-bold text-lg">E</span>
-                </div>
                 <span class="ml-2 text-xl font-bold text-gray-900">
                   ERP系统
                 </span>
+                </div>
               </div>
             </div>
           </div>

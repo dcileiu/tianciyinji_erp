@@ -397,6 +397,7 @@ import Avatar from 'primevue/avatar'
 import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import type { Transfer, TransferItem } from '~/types/database'
 
 // 页面配置
 definePageMeta({
@@ -412,7 +413,7 @@ const loading = ref(false)
 const saving = ref(false)
 const showDialog = ref(false)
 const dialogMode = ref<'view' | 'create' | 'edit'>('view')
-const editingTransfer = ref(null as any)
+const editingTransfer = ref<Transfer | null>(null)
 const confirm = useConfirm()
 
 // 筛选条件
@@ -628,7 +629,7 @@ const approveTransfer = async (transfer: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockTransfers.value.findIndex(t => t.id === transfer.id)
-        if (index !== -1) {
+        if (index !== -1 && mockTransfers.value[index]) {
           mockTransfers.value[index].status = 'approved'
         }
       }
@@ -659,44 +660,28 @@ const closeTransferDialog = () => {
   editingTransfer.value = null
 }
 
-const saveTransfer = async () => {
-  saving.value = true
-  try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    if (dialogMode.value === 'create') {
-      const newTransfer = {
-        id: Date.now().toString(),
+const saveTransfer = () => {
+  if (editingTransfer.value?.id) {
+    // 编辑模式
+    const index = mockTransfers.value.findIndex(t => t.id === editingTransfer.value!.id)
+    if (index !== -1 && mockTransfers.value[index]) {
+      mockTransfers.value[index] = {
         ...transferForm.value,
-        from_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.from_warehouse_id)?.name || '',
-        to_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.to_warehouse_id)?.name || '',
-        operator_name: '当前用户',
-        total_quantity: totalQuantity.value,
-        created_at: new Date()
-      }
-      mockTransfers.value.push(newTransfer)
+        id: editingTransfer.value.id,
+        created_at: mockTransfers.value[index].created_at
+      } as Transfer
     }
-    else if (dialogMode.value === 'edit') {
-      const index = mockTransfers.value.findIndex(t => t.id === editingTransfer.value.id)
-      if (index !== -1) {
-        mockTransfers.value[index] = {
-          ...mockTransfers.value[index],
-          ...transferForm.value,
-          from_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.from_warehouse_id)?.name || '',
-          to_warehouse_name: warehouses.value.find(w => w.id === transferForm.value.to_warehouse_id)?.name || '',
-          total_quantity: totalQuantity.value
-        }
-      }
-    }
-    
-    closeTransferDialog()
+  } else {
+    // 新增模式
+    const newTransfer: Transfer = {
+      ...transferForm.value,
+      id: Date.now().toString(),
+      created_at: new Date()
+    } as Transfer
+    mockTransfers.value.unshift(newTransfer)
   }
-  catch (error) {
-    console.error('保存调拨单失败:', error)
-  }
-  finally {
-    saving.value = false
-  }
+  
+  closeTransferDialog()
 }
 
 const addTransferItem = () => {
@@ -720,4 +705,4 @@ const exportTransfers = () => {
 onMounted(() => {
   loadTransfers()
 })
-</script> 
+</script>

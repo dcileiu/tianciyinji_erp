@@ -596,13 +596,15 @@ const saveResource = async () => {
       // 更新资源
       const index = mockResources.value.findIndex(r => r.id === editingResource.value.id)
       if (index !== -1) {
-        mockResources.value[index].key = resourceForm.value.key
-        mockResources.value[index].name = resourceForm.value.name
-        mockResources.value[index].type = resourceForm.value.type
-        mockResources.value[index].description = resourceForm.value.description
-        mockResources.value[index].path = resourceForm.value.path
-        mockResources.value[index].methods = resourceForm.value.methods
-        mockResources.value[index].status = resourceForm.value.status
+        if (mockResources.value[index]) {
+          mockResources.value[index]!.key = resourceForm.value.key
+          mockResources.value[index]!.name = resourceForm.value.name
+          mockResources.value[index]!.type = resourceForm.value.type
+          mockResources.value[index]!.description = resourceForm.value.description
+          mockResources.value[index]!.path = resourceForm.value.path
+          mockResources.value[index]!.methods = resourceForm.value.methods
+          mockResources.value[index]!.status = resourceForm.value.status
+        }
       }
     }
     else {

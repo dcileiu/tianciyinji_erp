@@ -1,82 +1,111 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen flex align-items-center justify-content-center py-6 px-4 sm:px-6 lg:px-8">
     <!-- 加载状态 -->
-    <div v-if="isLoading" class="text-center">
-      <ProgressSpinner style="width: 50px; height: 50px" stroke-width="3" />
-      <p class="mt-2 text-sm text-muted-color">
+    <Panel
+v-if="isLoading" class="text-center border-none" :pt="{
+      root: { class: 'bg-transparent' },
+      header: { class: 'hidden' },
+      content: { class: 'p-6' },
+    }">
+      <div class="flex flex-column align-items-center gap-3">
+        <Skeleton shape="circle" size="3rem" />
+        <Skeleton width="12rem" height="1rem" />
+      </div>
+      <p class="mt-3 text-sm text-surface-500">
         正在检查登录状态...
       </p>
-    </div>
+    </Panel>
 
     <!-- 未登录用户显示欢迎页面 -->
-    <div v-else-if="!isAuthenticated" class="text-center max-w-2xl mx-auto">
+    <div v-else-if="!isAuthenticated" class="text-center max-w-4xl mx-auto">
       <div class="mb-8">
-        <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div class="w-4rem h-4rem bg-primary border-round-2xl flex align-items-center justify-content-center mx-auto mb-4">
           <span class="text-white font-bold text-2xl">E</span>
         </div>
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        <h1 class="text-4xl font-bold text-surface-900 mb-4">
           ERP 管理系统
         </h1>
-        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+        <p class="text-xl text-surface-600 mb-8">
           企业资源规划系统，助力您的业务发展
         </p>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-8 mb-12">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <Panel
+class="shadow-lg border-0" :pt="{
+          root: { class: 'bg-surface-0' },
+          header: { class: 'hidden' },
+          content: { class: 'p-6' },
+        }">
+          <div class="w-3rem h-3rem bg-blue-100 border-round flex align-items-center justify-content-center mb-4">
             <i class="pi pi-shopping-cart text-blue-600 text-xl"></i>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 class="text-lg font-semibold text-surface-900 mb-2">
             销售管理
           </h3>
-          <p class="text-gray-600 dark:text-gray-300">
+          <p class="text-surface-600">
             客户管理、订单处理、发货跟踪等全流程销售管理
           </p>
-        </div>
+        </Panel>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4">
+        <Panel
+class="shadow-lg border-0" :pt="{
+          root: { class: 'bg-surface-0' },
+          header: { class: 'hidden' },
+          content: { class: 'p-6' },
+        }">
+          <div class="w-3rem h-3rem bg-green-100 border-round flex align-items-center justify-content-center mb-4">
             <i class="pi pi-box text-green-600 text-xl"></i>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 class="text-lg font-semibold text-surface-900 mb-2">
             库存管理
           </h3>
-          <p class="text-gray-600 dark:text-gray-300">
+          <p class="text-surface-600">
             实时库存监控、入出库管理、盘点调拨等仓储功能
           </p>
-        </div>
+        </Panel>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+        <Panel
+class="shadow-lg border-0" :pt="{
+          root: { class: 'bg-surface-0' },
+          header: { class: 'hidden' },
+          content: { class: 'p-6' },
+        }">
+          <div class="w-3rem h-3rem bg-purple-100 border-round flex align-items-center justify-content-center mb-4">
             <i class="pi pi-cog text-purple-600 text-xl"></i>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 class="text-lg font-semibold text-surface-900 mb-2">
             生产管理
           </h3>
-          <p class="text-gray-600 dark:text-gray-300">
+          <p class="text-surface-600">
             生产计划、工单管理、质量控制等生产流程管理
           </p>
-        </div>
+        </Panel>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mb-4">
+        <Panel
+class="shadow-lg border-0" :pt="{
+          root: { class: 'bg-surface-0' },
+          header: { class: 'hidden' },
+          content: { class: 'p-6' },
+        }">
+          <div class="w-3rem h-3rem bg-red-100 border-round flex align-items-center justify-content-center mb-4">
             <i class="pi pi-chart-line text-red-600 text-xl"></i>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 class="text-lg font-semibold text-surface-900 mb-2">
             财务管理
           </h3>
-          <p class="text-gray-600 dark:text-gray-300">
+          <p class="text-surface-600">
             应收应付、成本核算、财务报表等财务管理功能
           </p>
-        </div>
+        </Panel>
       </div>
 
-      <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+      <div class="flex flex-column sm:flex-row gap-4 justify-content-center">
         <Button 
           label="立即登录" 
           icon="pi pi-sign-in"
           class="w-full sm:w-auto"
+          size="large"
           @click="navigateTo('/login')"
         />
         <Button 
@@ -84,6 +113,7 @@
           icon="pi pi-info-circle"
           outlined
           class="w-full sm:w-auto"
+          size="large"
           @click="navigateTo('/getting-started')"
         />
       </div>
@@ -93,8 +123,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import ProgressSpinner from 'primevue/progressspinner'
+import Skeleton from 'primevue/skeleton'
 import Button from 'primevue/button'
+import Panel from 'primevue/panel'
 import { useAuth } from '~/composables/useAuth'
 
 // 页面元数据

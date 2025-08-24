@@ -113,6 +113,7 @@ declare global {
   const useCookie: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/cookie')['useCookie']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useDbInit: typeof import('../../app/composables/useDbInit')['useDbInit']
   const useDialog: typeof import('primevue/usedialog')['useDialog']
   const useError: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/error')['useError']
   const useFetch: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/fetch')['useFetch']
@@ -128,7 +129,7 @@ declare global {
   const useModel: typeof import('vue')['useModel']
   const useNuxtApp: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']
   const useNuxtData: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']
-  const useNuxtDevTools: typeof import('../../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_f21fe68d6a2c38ad2371ad2d40250bbf/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']
+  const useNuxtDevTools: typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']
   const usePreviewMode: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']
   const usePrimeVue: typeof import('primevue/config')['usePrimeVue']
   const useProductionReports: typeof import('../../app/composables/useProductionReports')['useProductionReports']
@@ -183,6 +184,7 @@ declare global {
   const useSupabaseCookieRedirect: typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseCookieRedirect')['useSupabaseCookieRedirect']
   const useSupabaseSession: typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseSession')['useSupabaseSession']
   const useSupabaseUser: typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser')['useSupabaseUser']
+  const useSuppliers: typeof import('../../app/composables/useSuppliers')['useSuppliers']
   const useTemplateRef: typeof import('vue')['useTemplateRef']
   const useToast: typeof import('primevue/usetoast')['useToast']
   const useTransitionState: typeof import('vue')['useTransitionState']
@@ -206,6 +208,9 @@ declare global {
   // @ts-ignore
   export type { RegisterForm } from '../../app/composables/useAuth'
   import('../../app/composables/useAuth')
+  // @ts-ignore
+  export type { InitStep, InitLog, RetryConfig } from '../../app/composables/useDbInit'
+  import('../../app/composables/useDbInit')
   // @ts-ignore
   export type { ErrorCode, AppError } from '../../app/utils/error-handler'
   import('../../app/utils/error-handler')
@@ -326,6 +331,7 @@ declare module 'vue' {
     readonly useCookie: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/cookie')['useCookie']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useDbInit: UnwrapRef<typeof import('../../app/composables/useDbInit')['useDbInit']>
     readonly useDialog: UnwrapRef<typeof import('primevue/usedialog')['useDialog']>
     readonly useError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/error')['useError']>
     readonly useFetch: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/fetch')['useFetch']>
@@ -341,7 +347,7 @@ declare module 'vue' {
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
-    readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_f21fe68d6a2c38ad2371ad2d40250bbf/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
+    readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@netlify+blobs@9_12217eec200f4d96d034a7d226e980c7/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
     readonly usePrimeVue: UnwrapRef<typeof import('primevue/config')['usePrimeVue']>
     readonly useProductionReports: UnwrapRef<typeof import('../../app/composables/useProductionReports')['useProductionReports']>
@@ -396,6 +402,7 @@ declare module 'vue' {
     readonly useSupabaseCookieRedirect: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseCookieRedirect')['useSupabaseCookieRedirect']>
     readonly useSupabaseSession: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseSession')['useSupabaseSession']>
     readonly useSupabaseUser: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser')['useSupabaseUser']>
+    readonly useSuppliers: UnwrapRef<typeof import('../../app/composables/useSuppliers')['useSuppliers']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useToast: UnwrapRef<typeof import('primevue/usetoast')['useToast']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>

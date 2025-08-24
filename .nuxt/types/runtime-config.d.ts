@@ -23,10 +23,12 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
 
    supabaseAnonKey: string,
 
+   siteUrl: string,
+
    supabase: {
       url: string,
 
-      key: any,
+      key: string,
 
       redirect: boolean,
 

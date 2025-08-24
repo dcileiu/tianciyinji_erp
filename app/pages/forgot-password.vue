@@ -1,227 +1,173 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <Card class="w-full max-w-md">
-      <template #content>
-        <div class="p-8">
-          <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-color">
-              找回密码
-            </h1>
-            <p class="text-sm text-muted-color mt-2">
-              输入您的邮箱地址，我们将发送重置密码的链接
-            </p>
-          </div>
-
-          <!-- 未发送状态 -->
-          <form v-if="!emailSent" class="space-y-6" @submit.prevent="handleForgotPassword">
-            <!-- 邮箱输入 -->
-            <div>
-              <label for="email" class="block text-sm font-medium text-color mb-2">
-                邮箱地址
-              </label>
-              <InputText
-                id="email"
-                v-model="form.email"
-                type="email"
-                required
-                autocomplete="email"
-                :class="errors.email ? 'p-invalid' : ''"
-                placeholder="请输入您的邮箱"
-                class="w-full"
-              />
-              <small v-if="errors.email" class="p-error">
-                {{ errors.email }}
-              </small>
-            </div>
-
-            <!-- 错误提示 -->
-            <InlineMessage v-if="resetError" severity="error" class="w-full">
-              <div class="flex items-center">
-                <i class="pi pi-exclamation-triangle mr-2"></i>
-                <span>{{ resetError }}</span>
-              </div>
-            </InlineMessage>
-
-            <!-- 发送按钮 -->
-            <Button
-              type="submit"
-              :disabled="isLoading"
-              :loading="isLoading"
-              label="发送重置链接"
-              class="w-full"
-            />
-          </form>
-
-          <!-- 已发送状态 -->
-          <div v-else class="space-y-6">
-            <InlineMessage severity="success" class="w-full">
-              <div class="flex items-start">
-                <i class="pi pi-check-circle mr-2 mt-0.5"></i>
-                <div>
-                  <p class="text-sm">
-                    重置密码邮件已发送到 <strong>{{ form.email }}</strong>
-                  </p>
-                  <p class="text-sm mt-1">
-                    请检查您的邮箱（包括垃圾邮件文件夹）并点击重置链接。
-                  </p>
-                </div>
-              </div>
-            </InlineMessage>
-
-            <!-- 重新发送按钮 -->
-            <Button
-              :disabled="isLoading || countdown > 0"
-              :loading="isLoading"
-              outlined
-              class="w-full"
-              @click="resendEmail"
-            >
-              <template v-if="countdown > 0">
-                {{ countdown }}秒后可重新发送
-              </template>
-              <template v-else-if="!isLoading">
-                重新发送邮件
-              </template>
-            </Button>
-          </div>
-
-          <!-- 返回登录 -->
-          <div class="mt-6 text-center">
-            <NuxtLink 
-              to="/login" 
-              class="text-sm text-primary hover:text-primary-700 flex items-center justify-center"
-            >
-              <i class="pi pi-arrow-left mr-2"></i>
-              返回登录
-            </NuxtLink>
-          </div>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex align-items-center justify-content-center p-4 forgot-password-container">
+    <div class="w-full max-w-md mx-auto px-4 sm:px-0">
+      <!-- 忘记密码卡片 -->
+      <Panel
+class="shadow-2xl border-0 overflow-hidden" :pt="{
+        root: { class: 'border-none' },
+        header: { class: 'hidden' },
+        content: { class: 'p-4 sm:p-6' },
+      }">
+        <div class="text-center mb-6">
+          <h1 class="text-base sm:text-2xl font-bold text-surface-700 mb-2">
+            忘记密码？
+          </h1>
+          <p class="text-sm text-surface-600">
+            输入您的邮箱地址，我们将发送重置密码的链接
+          </p>
         </div>
-      </template>
-    </Card>
+
+        <form class="flex flex-column gap-4" @submit.prevent="handleForgotPassword">
+          <!-- 邮箱输入 -->
+          <div class="field">
+            <FloatLabel variant="on">
+              <IconField class="w-full">
+                <InputIcon class="pi pi-envelope" />
+                <InputText
+                  id="email"
+                  v-model="form.email"
+                  type="email"
+                  class="w-full"
+                  :class="{ 'p-invalid': emailError }"
+                  :disabled="loading"
+                  required
+                />
+              </IconField>
+              <label for="email">邮箱地址</label>
+            </FloatLabel>
+            <small v-if="emailError" class="p-error">{{ emailError }}</small>
+          </div>
+
+          <!-- 错误提示 -->
+          <Message v-if="error" severity="error" :closable="false">
+            {{ error }}
+          </Message>
+
+          <!-- 成功提示 -->
+          <Message v-if="success" severity="success" :closable="false">
+            {{ success }}
+          </Message>
+
+          <!-- 发送重置邮件按钮 -->
+          <Button
+            type="submit"
+            label="发送重置邮件"
+            icon="pi pi-send"
+            class="w-full"
+            :loading="loading"
+            :disabled="!isFormValid || loading"
+            size="large"
+          />
+
+          <!-- 分割线 -->
+          <Divider align="center" class="my-4">
+            <Chip label="或" class="px-3" />
+          </Divider>
+
+          <!-- 其他操作 -->
+          <div class="flex flex-column gap-3">
+            <Button
+              label="返回登录"
+              icon="pi pi-arrow-left"
+              link
+              class="w-full justify-content-center"
+              @click="$router.push('/login')"
+            />
+
+            <div class="text-center text-sm text-surface-600">
+              还没有账户？
+              <Button
+                label="立即注册"
+                link
+                class="p-0 text-primary"
+                @click="$router.push('/register')"
+              />
+            </div>
+          </div>
+        </form>
+      </Panel>
+
+      <!-- 版权信息 -->
+      <div class="text-center mt-4 text-sm text-surface-500">
+        © 2025 ERP管理系统. 保留所有权利.
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
-import InlineMessage from 'primevue/inlinemessage'
+import { ref, computed } from "vue";
+import Panel from "primevue/panel";
+import InputText from "primevue/inputtext";
+import Button from "primevue/button";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
+import Divider from "primevue/divider";
+import FloatLabel from "primevue/floatlabel";
+import Message from "primevue/message";
+import Chip from "primevue/chip";
+import { useAuth } from "~/composables/useAuth";
 
-// 页面配置
+// 页面配置 - 禁用布局，让忘记密码页面全屏显示
 definePageMeta({
-  layout: 'auth'
-})
+  layout: false,
+});
 
-useHead({
-  title: '找回密码 - ERP 管理系统'
-})
+// 组合式函数
+const { resetPassword } = useAuth();
+const router = useRouter();
 
-// 状态管理
-const isLoading = ref(false)
-const emailSent = ref(false)
-const countdown = ref(0)
-const resetError = ref('')
-let countdownTimer: NodeJS.Timeout | null = null
-
-// 表单数据
+// 响应式数据
+const loading = ref(false);
+const error = ref("");
+const success = ref("");
 const form = ref({
-  email: ''
-})
+  email: "",
+});
 
-// 表单验证错误
-const errors = ref({
-  email: ''
-})
+// 表单验证
+const emailError = computed(() => {
+  if (!form.value.email) return "";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return !emailRegex.test(form.value.email) ? "请输入有效的邮箱地址" : "";
+});
 
-// 验证邮箱格式
-const validateEmail = (email: string) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
+const isFormValid = computed(() => {
+  return form.value.email && !emailError.value;
+});
 
-// 验证表单
-const validateForm = () => {
-  errors.value = { email: '' }
-  let isValid = true
-
-  if (!form.value.email) {
-    errors.value.email = '请输入邮箱地址'
-    isValid = false
-  }
-  else if (!validateEmail(form.value.email)) {
-    errors.value.email = '请输入有效的邮箱地址'
-    isValid = false
-  }
-
-  return isValid
-}
-
-// 处理密码重置请求
+// 处理忘记密码
 const handleForgotPassword = async () => {
-  resetError.value = ''
-  
-  if (!validateForm()) {
-    return
-  }
-
-  isLoading.value = true
+  if (!isFormValid.value) return;
 
   try {
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // 模拟成功响应
-    emailSent.value = true
-    startCountdown()
-  }
-  catch (error) {
-    resetError.value = '发送失败，请稍后重试'
-    console.error('密码重置失败:', error)
-  }
-  finally {
-    isLoading.value = false
-  }
-}
+    loading.value = true;
+    error.value = "";
+    success.value = "";
 
-// 重新发送邮件
-const resendEmail = async () => {
-  if (countdown.value > 0) return
-  
-  isLoading.value = true
-  resetError.value = ''
+    const result = await resetPassword(form.value.email);
 
-  try {
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    startCountdown()
-  }
-  catch (error) {
-    resetError.value = '重新发送失败，请稍后重试'
-    console.error('重新发送失败:', error)
-  }
-  finally {
-    isLoading.value = false
-  }
-}
-
-// 开始倒计时
-const startCountdown = () => {
-  countdown.value = 60
-  countdownTimer = setInterval(() => {
-    countdown.value--
-    if (countdown.value <= 0) {
-      clearInterval(countdownTimer!)
-      countdownTimer = null
+    if (result.success) {
+      success.value = "重置密码邮件已发送！请检查您的邮箱并按照说明重置密码。";
+      // 可以选择在一段时间后跳转回登录页面
+      setTimeout(() => {
+        router.push("/login");
+      }, 5000);
+    } else {
+      error.value = result.error?.message || "发送重置邮件失败，请重试";
     }
-  }, 1000)
-}
-
-// 清理定时器
-onUnmounted(() => {
-  if (countdownTimer) {
-    clearInterval(countdownTimer)
+  } catch (err) {
+    console.error("Reset password error:", err);
+    error.value = "发送重置邮件过程中发生错误，请重试";
+  } finally {
+    loading.value = false;
   }
-})
-</script> 
+};
+
+// 页面标题
+useHead({
+  title: "忘记密码 - ERP管理系统",
+});
+</script>
+
+ 

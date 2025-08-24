@@ -58,10 +58,10 @@
     <div class="mb-4">
       <div class="relative">
         <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-        <Input
+        <InputText
           v-model="searchQuery"
           placeholder="搜索权限项..."
-          class="pl-10"
+          class="pl-10 w-full"
         />
       </div>
     </div>
@@ -92,6 +92,8 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { ChevronDown, ChevronUp, Check, X, Search } from 'lucide-vue-next'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
 import PermissionTreeNode from './PermissionTreeNode.vue'
 
 // Props

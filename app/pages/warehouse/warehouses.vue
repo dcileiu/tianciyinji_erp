@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="flex flex-column gap-6">
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
@@ -91,8 +91,20 @@
           :rows="20"
           :rows-per-page-options="[10, 20, 50]"
           data-key="id"
-          class="p-datatable-sm"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column field="warehouse_no" header="仓库编码" sortable>
             <template #body="slotProps">
               <code class="bg-surface-100 px-2 py-1 rounded text-sm font-mono">
@@ -298,6 +310,7 @@ import Tag from 'primevue/tag'
 import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 import type { Warehouse } from '~/types/database'
 
 // 页面配置
@@ -507,10 +520,19 @@ const saveWarehouse = async () => {
       // 更新仓库
       const index = mockWarehouses.value.findIndex(w => w.id === editingWarehouse.value.id)
       if (index !== -1) {
-        mockWarehouses.value[index] = {
-          ...mockWarehouses.value[index],
-          ...warehouseForm.value,
-          updated_at: new Date().toISOString()
+        const existingWarehouse = mockWarehouses.value[index]
+        if (existingWarehouse) {
+          mockWarehouses.value[index] = {
+            id: existingWarehouse.id, // 确保 id 始终存在
+            warehouse_no: warehouseForm.value.warehouse_no,
+            name: warehouseForm.value.name,
+            type: warehouseForm.value.type,
+            location: warehouseForm.value.location,
+            manager: warehouseForm.value.manager,
+            status: warehouseForm.value.status,
+            created_at: existingWarehouse.created_at, // 保持原创建时间
+            updated_at: new Date().toISOString()
+          }
         }
       }
     }

@@ -167,7 +167,20 @@
           striped-rows
           show-gridlines
           responsive-layout="scroll"
-          class="p-4"
+        >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
         >
           <template #empty>
             <div class="text-center py-12 text-muted-color">
@@ -432,6 +445,7 @@ import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 
 // 页面状态
 const loading = ref(false)
@@ -677,9 +691,10 @@ const saveWorkshop = async () => {
     if (editingWorkshop.value) {
       // 更新车间
       const index = workshops.value.findIndex(w => w.id === editingWorkshop.value?.id)
-      if (index !== -1) {
+      if (index !== -1 && workshops.value[index]) {
         workshops.value[index] = {
           ...workshops.value[index],
+          id: workshops.value[index]!.id,
           code: workshopForm.value.code,
           name: workshopForm.value.name,
           type: workshopForm.value.type,

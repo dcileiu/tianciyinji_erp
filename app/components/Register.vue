@@ -18,13 +18,14 @@
           <label for="email" class="block text-sm font-medium text-foreground mb-2">
             邮箱地址
           </label>
-          <Input
+          <InputText
             id="email"
             v-model="form.email"
             type="email"
             required
             autocomplete="email"
             placeholder="请输入您的邮箱"
+            class="w-full"
           />
           <p v-if="errors.email" class="mt-1 text-sm text-destructive">
             {{ errors.email }}
@@ -36,13 +37,14 @@
           <label for="password" class="block text-sm font-medium text-foreground mb-2">
             密码
           </label>
-          <Input
+          <InputText
             id="password"
             v-model="form.password"
             type="password"
             required
             autocomplete="new-password"
             placeholder="请输入密码"
+            class="w-full"
           />
           <p v-if="errors.password" class="mt-1 text-sm text-destructive">
             {{ errors.password }}
@@ -54,13 +56,14 @@
           <label for="confirmPassword" class="block text-sm font-medium text-foreground mb-2">
             确认密码
           </label>
-          <Input
+          <InputText
             id="confirmPassword"
             v-model="form.confirmPassword"
             type="password"
             required
             autocomplete="new-password"
             placeholder="请再次输入密码"
+            class="w-full"
           />
           <p v-if="errors.confirmPassword" class="mt-1 text-sm text-destructive">
             {{ errors.confirmPassword }}
@@ -102,6 +105,10 @@
 </template>
 
 <script setup lang="ts">
+import Card from 'primevue/card'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
+
 const { register } = useAuth()
 
 const form = ref({
@@ -182,4 +189,4 @@ const handleRegister = async () => {
     isLoading.value = false
   }
 }
-</script> 
+</script>

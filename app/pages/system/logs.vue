@@ -160,8 +160,20 @@
           :rows="20"
           :rows-per-page-options="[10, 20, 50]"
           data-key="id"
-          class="p-datatable-sm"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="2.5rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="80%" height="1rem" />
+                </div>
+                <Skeleton width="6rem" height="1.5rem" />
+                <Skeleton width="8rem" height="1rem" />
+              </div>
+            </div>
+          </template>
           <Column field="type" header="类型" sortable>
             <template #body="slotProps">
               <Tag
@@ -357,6 +369,7 @@ import Avatar from 'primevue/avatar'
 import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({

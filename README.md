@@ -1,6 +1,6 @@
 # ERP 企业资源管理系统
 
-基于 Nuxt 4 + Supabase + PrimeVue 构建的现代化企业资源管理系统。
+基于 Nuxt 3(v4.x) + Supabase + PrimeVue 构建的现代化企业资源管理系统。
 
 ## 🚀 技术栈
 

@@ -56,5 +56,7 @@ export default withNuxt({
     '@stylistic/object-curly-spacing': 'off',
     // TypeScript类型相关规则 - 改为警告，不阻止运行
     '@typescript-eslint/no-explicit-any': 'warn',
+    // 禁用Vue属性连字符检查
+    'vue/attribute-hyphenation': 'off',
   }
 })

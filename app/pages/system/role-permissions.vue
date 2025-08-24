@@ -585,12 +585,12 @@ const saveRole = async () => {
     
     if (editingRole.value) {
       // 更新角色
-      const index = mockRoles.value.findIndex(r => r.id === editingRole.value.id)
-      if (index !== -1) {
-        mockRoles.value[index].name = roleForm.value.name
-        mockRoles.value[index].code = roleForm.value.code
-        mockRoles.value[index].description = roleForm.value.description
-        mockRoles.value[index].status = roleForm.value.status
+      const index = mockRoles.value.findIndex(r => r.id === editingRole.value?.id)
+      if (index !== -1 && mockRoles.value[index]) {
+        mockRoles.value[index]!.name = roleForm.value.name
+        mockRoles.value[index]!.code = roleForm.value.code
+        mockRoles.value[index]!.description = roleForm.value.description
+        mockRoles.value[index]!.status = roleForm.value.status
       }
     }
     else {

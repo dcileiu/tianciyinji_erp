@@ -179,11 +179,24 @@
           class="p-datatable-sm"
           selection-mode="multiple"
         >
+          <template #loading>
+            <div class="p-6">
+              <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
+                <Skeleton shape="circle" size="3rem" />
+                <div class="flex-1">
+                  <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                  <Skeleton width="70%" height="1rem" />
+                </div>
+                <Skeleton width="8rem" height="1.5rem" />
+                <Skeleton width="6rem" height="1.5rem" />
+              </div>
+            </div>
+          </template>
           <Column selection-mode="multiple" :exportable="false"></Column>
           
           <Column field="plan_name" header="计划名称" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <Avatar
                   :label="slotProps.data.plan_name.charAt(0)"
                   shape="circle"
@@ -227,7 +240,7 @@
           
           <Column field="completed_orders" header="已完成" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <span class="font-medium">{{ slotProps.data.completed_orders }}</span>
                 <ProgressBar 
                   :value="(slotProps.data.completed_orders / slotProps.data.total_orders) * 100"
@@ -240,7 +253,7 @@
           
           <Column field="capacity_utilization" header="产能利用率" sortable>
             <template #body="slotProps">
-              <div class="flex items-center space-x-2">
+              <div class="flex align-items-center gap-2">
                 <span class="font-medium">{{ slotProps.data.capacity_utilization }}%</span>
                 <ProgressBar 
                   :value="slotProps.data.capacity_utilization"
@@ -262,7 +275,7 @@
           
           <Column header="操作" :exportable="false">
             <template #body="slotProps">
-              <div class="flex items-center space-x-1">
+              <div class="flex align-items-center gap-1">
                 <Button
                   v-tooltip="'查看详情'"
                   icon="pi pi-eye"
@@ -403,6 +416,16 @@
               :value="planForm.orders"
               class="p-datatable-sm"
             >
+              <template #loading>
+                <div class="p-6">
+                  <div v-for="i in 3" :key="i" class="flex align-items-center gap-4 mb-4">
+                    <Skeleton width="100%" height="1.5rem" class="mb-2" />
+                    <Skeleton width="60%" height="1rem" />
+                    <Skeleton width="80%" height="1rem" />
+                    <Skeleton width="4rem" height="1.5rem" />
+                  </div>
+                </div>
+              </template>
               <Column field="order_no" header="订单号">
                 <template #body="slotProps">
                   <Dropdown
@@ -496,6 +519,7 @@ import ProgressBar from 'primevue/progressbar'
 import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import Skeleton from 'primevue/skeleton'
 
 // 页面配置
 definePageMeta({
@@ -664,8 +688,8 @@ const submitPlan = async (plan: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockPlans.value.findIndex(p => p.id === plan.id)
-        if (index !== -1) {
-          mockPlans.value[index].status = 'pending'
+        if (index !== -1 && mockPlans.value[index]) {
+          mockPlans.value[index]!.status = 'pending'
         }
       }
       catch (error) {
@@ -684,8 +708,8 @@ const approvePlan = async (plan: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockPlans.value.findIndex(p => p.id === plan.id)
-        if (index !== -1) {
-          mockPlans.value[index].status = 'approved'
+        if (index !== -1 && mockPlans.value[index]) {
+          mockPlans.value[index]!.status = 'approved'
         }
       }
       catch (error) {
@@ -704,8 +728,8 @@ const startPlan = async (plan: any) => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         const index = mockPlans.value.findIndex(p => p.id === plan.id)
-        if (index !== -1) {
-          mockPlans.value[index].status = 'executing'
+        if (index !== -1 && mockPlans.value[index]) {
+          mockPlans.value[index]!.status = 'executing'
         }
       }
       catch (error) {
