@@ -1,15 +1,15 @@
 <template>
-  <div class="role-permissions-container">
-    <div class="role-permissions-page">
+  <div class="container mx-auto">
+    <div class="p-6 space-y-6">
       <!-- 页面标题 -->
-      <div class="page-header">
-        <h1 class="page-title">角色权限配置</h1>
-        <p class="page-description">管理系统角色和权限分配</p>
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">角色权限配置</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">管理系统角色和权限分配</p>
       </div>
 
-      <div class="page-content">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- 左侧角色列表 -->
-        <Card class="role-list-card">
+        <Card class="lg:col-span-1">
           <CardHeader>
             <div class="card-header">
               <div class="header-title">
@@ -744,129 +744,3 @@ onMounted(() => {
   roles.value = mockRoles.value
 })
 </script>
-
-<style scoped>
-.role-permissions-page {
-  @apply p-6 space-y-6;
-}
-
-.page-header {
-  @apply mb-6;
-}
-
-.page-title {
-  @apply text-2xl font-bold text-gray-900 dark:text-white;
-}
-
-.page-description {
-  @apply text-gray-600 dark:text-gray-400 mt-1;
-}
-
-.page-content {
-  @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
-}
-
-.role-list-card {
-  @apply lg:col-span-1;
-}
-
-.card-header {
-  @apply flex items-center justify-between;
-}
-
-.header-title {
-  @apply flex items-center space-x-2 font-semibold;
-}
-
-.search-section {
-  @apply mb-4;
-}
-
-.role-list {
-  @apply space-y-2 max-h-96 overflow-y-auto;
-}
-
-.role-item {
-  @apply p-3 border -lg cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800;
-}
-
-.role-item.active {
-  @apply bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800;
-}
-
-.role-info {
-  @apply space-y-1;
-}
-
-.role-name {
-  @apply font-medium text-gray-900 dark:text-white;
-}
-
-.role-code {
-  @apply text-sm text-gray-500 dark:text-gray-400;
-}
-
-.role-description {
-  @apply text-sm text-gray-600 dark:text-gray-300;
-}
-
-.role-stats {
-  @apply flex flex-wrap gap-1 mt-2;
-}
-
-.role-actions {
-  @apply flex items-center space-x-1 mt-2;
-}
-
-.loading-state {
-  @apply flex flex-col items-center justify-center py-8 text-gray-500;
-}
-
-.menu-tree {
-  @apply max-h-96 overflow-y-auto;
-}
-
-.menu-item {
-  @apply space-y-2;
-}
-
-.resource-categories {
-  @apply max-h-96 overflow-y-auto;
-}
-
-.category-section {
-  @apply border -lg p-4;
-}
-
-.category-header {
-  @apply pb-3 border-b;
-}
-
-.category-title {
-  @apply text-lg font-medium;
-}
-
-.category-actions {
-  @apply flex space-x-2;
-}
-
-.resource-grid {
-  @apply mt-3;
-}
-
-.resource-item {
-  @apply transition-colors hover:bg-gray-50 dark:hover:bg-gray-800;
-}
-
-.resource-label {
-  @apply cursor-pointer;
-}
-
-.role-form {
-  @apply py-4;
-}
-
-.form-group {
-  @apply space-y-2;
-}
-</style>

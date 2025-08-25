@@ -17,6 +17,9 @@
   /* 自定义断点 */
   --breakpoint-3xl: 1600px;
 
+  /* Spacing utilities */
+  --spacing-6: 1.5rem;
+
   /* 防止 Tailwind 样式覆盖 PrimeVue 组件样式 */
   --tw-prose-body: initial;
 }

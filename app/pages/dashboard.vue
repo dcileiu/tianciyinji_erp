@@ -31,7 +31,7 @@
                 +12.5% 较上月
               </p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 -lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <DollarSign class="w-6 h-6 text-blue-600" />
             </div>
           </div>
@@ -49,7 +49,7 @@
                 +8.2% 较上月
               </p>
             </div>
-            <div class="w-12 h-12 bg-green-100 -lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
               <ShoppingCart class="w-6 h-6 text-green-600" />
             </div>
           </div>
@@ -67,7 +67,7 @@
                 -3.1% 较上月
               </p>
             </div>
-            <div class="w-12 h-12 bg-purple-100 -lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
               <Package class="w-6 h-6 text-purple-600" />
             </div>
           </div>
@@ -85,7 +85,7 @@
                 +15.3% 较上月
               </p>
             </div>
-            <div class="w-12 h-12 bg-orange-100 -lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
               <Users class="w-6 h-6 text-orange-600" />
             </div>
           </div>
@@ -102,7 +102,7 @@
           <CardDescription>过去12个月的销售数据</CardDescription>
         </CardHeader>
         <CardContent>
-          <div class="h-64 flex items-center justify-center bg-muted/20 -lg">
+          <div class="h-64 flex items-center justify-center bg-muted/20 rounded-lg">
             <div class="text-center">
               <BarChart3 class="w-12 h-12 text-muted-foreground mx-auto mb-2" />
               <p class="text-sm text-muted-foreground">销售趋势图表</p>
@@ -180,7 +180,7 @@
         </CardHeader>
         <CardContent>
           <div class="space-y-4">
-            <div class="flex items-center justify-between p-3 border -lg">
+            <div class="flex items-center justify-between p-3 border rounded-lg">
               <div>
                 <p class="font-medium">订单 #SO-2025-001</p>
                 <p class="text-sm text-muted-foreground">客户: 张三公司</p>
@@ -190,7 +190,7 @@
                 <Badge variant="secondary">待处理</Badge>
               </div>
             </div>
-            <div class="flex items-center justify-between p-3 border -lg">
+            <div class="flex items-center justify-between p-3 border rounded-lg">
               <div>
                 <p class="font-medium">订单 #SO-2025-002</p>
                 <p class="text-sm text-muted-foreground">客户: 李四贸易</p>
@@ -200,7 +200,7 @@
                 <Badge variant="default">已确认</Badge>
               </div>
             </div>
-            <div class="flex items-center justify-between p-3 border -lg">
+            <div class="flex items-center justify-between p-3 border rounded-lg">
               <div>
                 <p class="font-medium">订单 #SO-2025-003</p>
                 <p class="text-sm text-muted-foreground">客户: 王五集团</p>
@@ -218,7 +218,6 @@
 </template>
 
 <script setup>
-// UI组件现在自动导入，无需手动导入
 import {
   BarChart3,
   DollarSign,
