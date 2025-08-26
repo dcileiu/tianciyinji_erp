@@ -64,12 +64,18 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
 }
 
 const VisBarComponent = computed(() => (props.type === 'grouped' ? VisGroupedBar : VisStackedBar))
-const selectorsBar = computed(() => (props.type === 'grouped' ? GroupedBar.selectors.bar : StackedBar.selectors.bar))
+const selectorsBar = computed(() =>
+  props.type === 'grouped' ? GroupedBar.selectors.bar : StackedBar.selectors.bar,
+)
 </script>
 
 <template>
   <div :class="cn('w-full h-[400px] flex flex-col items-end', $attrs.class ?? '')">
-    <ChartLegend v-if="showLegend" v-model:items="legendItems" @legend-item-click="handleLegendItemClick" />
+    <ChartLegend
+      v-if="showLegend"
+      v-model:items="legendItems"
+      @legend-item-click="handleLegendItemClick"
+    />
 
     <VisXYContainer :data="data" :style="{ height: isMounted ? '100%' : 'auto' }" :margin="margin">
       <ChartCrosshair
@@ -82,7 +88,7 @@ const selectorsBar = computed(() => (props.type === 'grouped' ? GroupedBar.selec
 
       <VisBarComponent
         :x="(d: Data, i: number) => i"
-        :y="categories.map((category) => (d: Data) => d[category])"
+        :y="categories.map(category => (d: Data) => d[category])"
         :color="colors"
         :rounded-corners="roundedCorners"
         :bar-padding="0.05"

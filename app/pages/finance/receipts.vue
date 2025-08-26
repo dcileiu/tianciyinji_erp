@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50">
     <!-- 页面标题 -->
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 gap-4">
       <div>
@@ -18,7 +18,9 @@
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-2xl font-bold text-blue-600 mb-1">{{ receiptStats.totalReceipts }}</div>
+              <div class="text-2xl font-bold text-blue-600 mb-1">
+                {{ receiptStats.totalReceipts }}
+              </div>
               <div class="text-sm text-blue-700">总收款数</div>
             </div>
             <div class="w-12 h-12 bg-blue-100 -full flex items-center justify-center">
@@ -32,7 +34,9 @@
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-2xl font-bold text-orange-600 mb-1">{{ receiptStats.draftReceipts }}</div>
+              <div class="text-2xl font-bold text-orange-600 mb-1">
+                {{ receiptStats.draftReceipts }}
+              </div>
               <div class="text-sm text-orange-700">待确认</div>
             </div>
             <div class="w-12 h-12 bg-orange-100 -full flex items-center justify-center">
@@ -46,7 +50,9 @@
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-2xl font-bold text-green-600 mb-1">{{ receiptStats.confirmedReceipts }}</div>
+              <div class="text-2xl font-bold text-green-600 mb-1">
+                {{ receiptStats.confirmedReceipts }}
+              </div>
               <div class="text-sm text-green-700">已确认</div>
             </div>
             <div class="w-12 h-12 bg-green-100 -full flex items-center justify-center">
@@ -60,7 +66,9 @@
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-2xl font-bold text-purple-600 mb-1">¥{{ formatCurrency(receiptStats.totalAmount) }}</div>
+              <div class="text-2xl font-bold text-purple-600 mb-1">
+                ¥{{ formatCurrency(receiptStats.totalAmount) }}
+              </div>
               <div class="text-sm text-purple-700">总收入</div>
             </div>
             <div class="w-12 h-12 bg-purple-100 -full flex items-center justify-center">
@@ -81,7 +89,9 @@
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">搜索</Label>
             <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+              />
               <Input v-model="searchQuery" placeholder="单据号、客户名称..." class="pl-10" />
             </div>
           </div>
@@ -199,7 +209,9 @@
                 </TableCell>
                 <TableCell>
                   <div>
-                    <span class="font-semibold text-green-600 text-lg"> ¥{{ formatCurrency(receipt.amount) }} </span>
+                    <span class="font-semibold text-green-600 text-lg">
+                      ¥{{ formatCurrency(receipt.amount) }}
+                    </span>
                     <div class="text-sm text-gray-500">
                       {{ getPaymentMethodName(receipt.payment_method) }}
                     </div>
@@ -273,7 +285,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>收款单号 *</Label>
-                <Input v-model="receiptForm.receipt_no" placeholder="系统自动生成" :disabled="!!editingReceipt" />
+                <Input
+                  v-model="receiptForm.receipt_no"
+                  placeholder="系统自动生成"
+                  :disabled="!!editingReceipt"
+                />
               </div>
 
               <div class="space-y-2">
@@ -288,7 +304,11 @@
                     <SelectValue placeholder="选择客户" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem v-for="customer in customers" :key="customer.id" :value="customer.id">
+                    <SelectItem
+                      v-for="customer in customers"
+                      :key="customer.id"
+                      :value="customer.id"
+                    >
                       {{ customer.name }}
                     </SelectItem>
                   </SelectContent>
@@ -302,7 +322,11 @@
                     <SelectValue placeholder="请选择状态" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem v-for="option in statusOptions.slice(1)" :key="option.value" :value="option.value">
+                    <SelectItem
+                      v-for="option in statusOptions.slice(1)"
+                      :key="option.value"
+                      :value="option.value"
+                    >
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>
@@ -317,7 +341,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>收款金额 *</Label>
-                <Input v-model="receiptForm.amount" type="number" step="0.01" min="0" placeholder="0.00" />
+                <Input
+                  v-model="receiptForm.amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                />
               </div>
 
               <div class="space-y-2">
@@ -352,7 +382,7 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeCreateDialog"> 取消 </Button>
+          <Button variant="outline" @click="closeCreateDialog">取消</Button>
           <Button :disabled="saving" @click="saveReceipt">
             <Loader2 v-if="saving" class="w-4 h-4 mr-2 animate-spin" />
             保存
@@ -488,7 +518,9 @@ const filteredReceipts = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      receipt => receipt.receipt_no.toLowerCase().includes(query) || receipt.customer_name.toLowerCase().includes(query),
+      receipt =>
+        receipt.receipt_no.toLowerCase().includes(query)
+        || receipt.customer_name.toLowerCase().includes(query),
     )
   }
 
@@ -609,7 +641,11 @@ const saveReceipt = async () => {
       // 更新现有收款单
       const index = receipts.value.findIndex(r => r.id === editingReceipt.value.id)
       if (index !== -1) {
-        receipts.value[index] = { ...receiptForm.value, id: editingReceipt.value.id, updated_at: new Date() } as any
+        receipts.value[index] = {
+          ...receiptForm.value,
+          id: editingReceipt.value.id,
+          updated_at: new Date(),
+        } as any
       }
       console.log('收款单更新成功')
     }

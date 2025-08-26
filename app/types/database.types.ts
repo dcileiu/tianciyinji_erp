@@ -3,7 +3,13 @@
 // 手动添加的自定义类型
 
 // 订单状态类型
-export type OrderStatus = 'draft' | 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
+export type OrderStatus
+  = | 'draft'
+    | 'pending'
+    | 'confirmed'
+    | 'in_progress'
+    | 'completed'
+    | 'cancelled'
 
 // 支付状态类型
 export type PaymentStatus = 'pending' | 'paid' | 'partial' | 'overdue' | 'cancelled'

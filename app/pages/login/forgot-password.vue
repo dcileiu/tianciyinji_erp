@@ -64,22 +64,20 @@
 
           <!-- 其他操作 -->
           <div class="flex flex-column gap-3">
-            <Button
-              link
-              class="w-full justify-content-center"
-              @click="$router.push('/login')"
-            />
+            <Button link class="w-full justify-content-center" @click="$router.push('/login')" />
 
             <div class="text-center text-sm text-surface-600">
               还没有账户？
-              <Button link class="p-0 text-primary" @click="$router.push('/register')" />
+              <Button link class="p-0 text-primary" @click="$router.push('/login/register')" />
             </div>
           </div>
         </form>
       </Card>
 
       <!-- 版权信息 -->
-      <div class="text-center mt-4 text-sm text-surface-500">© 2025 ERP管理系统. 保留所有权利.</div>
+      <div class="text-center mt-4 text-sm text-surface-500">
+        © 2025 ERP管理系统. 保留所有权利.
+      </div>
     </div>
   </div>
 </template>

@@ -18,7 +18,9 @@
         <div class="flex flex-col md:flex-row gap-4">
           <div class="flex-1">
             <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"
+              />
               <Input v-model="searchQuery" placeholder="搜索菜单名称或路径..." class="pl-10" />
             </div>
           </div>
@@ -29,7 +31,11 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部状态</SelectItem>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -119,13 +125,23 @@
                   </TableCell>
                   <TableCell>
                     <div class="flex items-center space-x-1">
-                      <Button variant="ghost" size="sm" title="添加子菜单" @click="addChildMenu(menu)">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        title="添加子菜单"
+                        @click="addChildMenu(menu)"
+                      >
                         <Plus class="w-4 h-4" />
                       </Button>
                       <Button variant="ghost" size="sm" title="编辑" @click="editMenu(menu)">
                         <Edit class="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" title="删除" @click="confirmDeleteMenu(menu)">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        title="删除"
+                        @click="confirmDeleteMenu(menu)"
+                      >
                         <Trash2 class="w-4 h-4 text-red-500" />
                       </Button>
                     </div>
@@ -133,7 +149,11 @@
                 </TableRow>
                 <!-- 子菜单行 -->
                 <template v-if="menu.children && menu.children.length > 0">
-                  <TableRow v-for="child in menu.children" :key="child.id" class="bg-gray-50 dark:bg-gray-900/50">
+                  <TableRow
+                    v-for="child in menu.children"
+                    :key="child.id"
+                    class="bg-gray-50 dark:bg-gray-900/50"
+                  >
                     <TableCell>
                       <input type="checkbox" class="" />
                     </TableCell>
@@ -144,7 +164,10 @@
                       </div>
                     </TableCell>
                     <TableCell>
-                      <code v-if="child.path" class="bg-gray-100 dark:bg-gray-800 px-2 py-1 text-sm">
+                      <code
+                        v-if="child.path"
+                        class="bg-gray-100 dark:bg-gray-800 px-2 py-1 text-sm"
+                      >
                         {{ child.path }}
                       </code>
                       <span v-else class="text-gray-500">-</span>
@@ -170,13 +193,23 @@
                     </TableCell>
                     <TableCell>
                       <div class="flex items-center space-x-1">
-                        <Button variant="ghost" size="sm" title="添加子菜单" @click="addChildMenu(child)">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="添加子菜单"
+                          @click="addChildMenu(child)"
+                        >
                           <Plus class="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="sm" title="编辑" @click="editMenu(child)">
                           <Edit class="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" title="删除" @click="confirmDeleteMenu(child)">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="删除"
+                          @click="confirmDeleteMenu(child)"
+                        >
                           <Trash2 class="w-4 h-4 text-red-500" />
                         </Button>
                       </div>
@@ -229,8 +262,13 @@
             <div class="space-y-2">
               <Label for="menu-icon">菜单图标</Label>
               <div class="flex space-x-2">
-                <Input id="menu-icon" v-model="menuForm.icon" placeholder="例如: Home" class="flex-1" />
-                <div class="flex items-center justify-center w-10 h-10 border ">
+                <Input
+                  id="menu-icon"
+                  v-model="menuForm.icon"
+                  placeholder="例如: Home"
+                  class="flex-1"
+                />
+                <div class="flex items-center justify-center w-10 h-10 border">
                   <component :is="getMenuIcon(menuForm.icon)" class="w-5 h-5" />
                 </div>
               </div>
@@ -240,7 +278,13 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="sort-order">排序值</Label>
-              <Input id="sort-order" v-model.number="menuForm.sort_order" type="number" placeholder="排序值" min="0" />
+              <Input
+                id="sort-order"
+                v-model.number="menuForm.sort_order"
+                type="number"
+                placeholder="排序值"
+                min="0"
+              />
             </div>
 
             <div class="space-y-2">
@@ -250,7 +294,11 @@
                   <SelectValue placeholder="选择状态" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                  <SelectItem
+                    v-for="option in statusOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
                     {{ option.label }}
                   </SelectItem>
                 </SelectContent>
@@ -260,32 +308,50 @@
 
           <div class="space-y-2">
             <Label for="menu-description">菜单描述</Label>
-            <Textarea id="menu-description" v-model="menuForm.description" placeholder="请输入菜单描述" :rows="3" />
+            <Textarea
+              id="menu-description"
+              v-model="menuForm.description"
+              placeholder="请输入菜单描述"
+              :rows="3"
+            />
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="menu-permission">权限标识</Label>
-              <Input id="menu-permission" v-model="menuForm.permission" placeholder="例如: user:view" />
+              <Input
+                id="menu-permission"
+                v-model="menuForm.permission"
+                placeholder="例如: user:view"
+              />
             </div>
 
             <div class="space-y-2">
               <Label for="external-url">外部链接</Label>
-              <Input id="external-url" v-model="menuForm.externalUrl" placeholder="例如: https://example.com" />
+              <Input
+                id="external-url"
+                v-model="menuForm.externalUrl"
+                placeholder="例如: https://example.com"
+              />
             </div>
           </div>
 
           <div class="flex items-center space-x-4">
             <div class="flex items-center space-x-2">
-              <input id="is-hidden" v-model="menuForm.is_hidden" type="checkbox" class="border-gray-300" />
+              <input
+                id="is-hidden"
+                v-model="menuForm.is_hidden"
+                type="checkbox"
+                class="border-gray-300"
+              />
               <Label for="is-hidden">隐藏菜单</Label>
             </div>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeMenuDialog"> 取消 </Button>
-          <Button :disabled="saving" @click="saveMenu"> 保存 </Button>
+          <Button variant="outline" @click="closeMenuDialog">取消</Button>
+          <Button :disabled="saving" @click="saveMenu">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -395,7 +461,7 @@ const mockMenus = ref([
         id: '21',
         name: '用户管理',
         parent_id: '2',
-        path: '/users',
+        path: '/system/users',
         icon: 'Users',
         sort_order: 1,
         status: 'active',
@@ -518,7 +584,9 @@ const filteredMenus = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      menu => menu.name.toLowerCase().includes(query) || (menu.path && menu.path.toLowerCase().includes(query)),
+      menu =>
+        menu.name.toLowerCase().includes(query)
+        || (menu.path && menu.path.toLowerCase().includes(query)),
     )
   }
 

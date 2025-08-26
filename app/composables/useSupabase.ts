@@ -12,7 +12,10 @@ export { supabase }
 export const useProducts = () => {
   // 获取所有商品
   const getProducts = async (): Promise<Product[]> => {
-    const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false })
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false })
 
     if (error) {
       console.error('获取商品列表失败:', error)
@@ -36,7 +39,11 @@ export const useProducts = () => {
 
   // 创建商品
   const createProduct = async (product: ProductInsert): Promise<Product> => {
-    const { data, error } = await (supabase as any).from('products').insert([product]).select().single()
+    const { data, error } = await (supabase as any)
+      .from('products')
+      .insert([product])
+      .select()
+      .single()
 
     if (error) {
       console.error('创建商品失败:', error)
@@ -48,7 +55,12 @@ export const useProducts = () => {
 
   // 更新商品
   const updateProduct = async (id: string, updates: ProductUpdate): Promise<Product> => {
-    const { data, error } = await (supabase as any).from('products').update(updates).eq('id', id).select().single()
+    const { data, error } = await (supabase as any)
+      .from('products')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
 
     if (error) {
       console.error('更新商品失败:', error)
@@ -163,9 +175,14 @@ export const useProducts = () => {
     const products = (allProducts || []) as any[]
     const totalProducts = products.length
     const activeProducts = products.filter((p: any) => p.status === 'active').length
-    const lowStockProducts = products.filter((p: any) => p.current_stock <= p.min_stock && p.current_stock > 0).length
+    const lowStockProducts = products.filter(
+      (p: any) => p.current_stock <= p.min_stock && p.current_stock > 0,
+    ).length
     const outOfStockProducts = products.filter((p: any) => p.current_stock === 0).length
-    const totalStockValue = products.reduce((sum: number, p: any) => sum + p.current_stock * p.unit_price, 0)
+    const totalStockValue = products.reduce(
+      (sum: number, p: any) => sum + p.current_stock * p.unit_price,
+      0,
+    )
 
     return {
       totalProducts,

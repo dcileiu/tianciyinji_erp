@@ -78,7 +78,12 @@ provide(FieldContextKey, fieldContext)
                 </div>
               </template>
 
-              <Button type="button" variant="secondary" class="mt-4 flex items-center" @click="push(null)">
+              <Button
+                type="button"
+                variant="secondary"
+                class="mt-4 flex items-center"
+                @click="push(null)"
+              >
                 <PlusIcon class="mr-2" :size="16" />
                 Add
               </Button>

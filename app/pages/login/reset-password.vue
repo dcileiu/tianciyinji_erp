@@ -92,7 +92,7 @@
             <!-- 分割线 -->
             <div class="relative my-6">
               <div class="absolute inset-0 flex items-center">
-                <span class="w-full border-t" ></span>
+                <span class="w-full border-t"></span>
               </div>
               <div class="relative flex justify-center text-xs uppercase">
                 <span class="bg-background px-2 text-muted-foreground">或</span>
@@ -101,7 +101,9 @@
 
             <!-- 其他操作 -->
             <div class="space-y-3">
-              <Button variant="ghost" class="w-full" @click="$router.push('/login')"> 返回登录 </Button>
+              <Button variant="ghost" class="w-full" @click="$router.push('/login')">
+                返回登录
+              </Button>
             </div>
           </form>
         </CardContent>
@@ -153,7 +155,12 @@ const confirmPasswordError = computed(() => {
 })
 
 const isFormValid = computed(() => {
-  return form.value.password && form.value.confirmPassword && !passwordError.value && !confirmPasswordError.value
+  return (
+    form.value.password
+    && form.value.confirmPassword
+    && !passwordError.value
+    && !confirmPasswordError.value
+  )
 })
 
 // 处理密码重置

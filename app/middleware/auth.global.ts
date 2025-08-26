@@ -3,10 +3,10 @@ export default defineNuxtRouteMiddleware((to, _from) => {
   const publicRoutes = [
     '/',
     '/login',
-    '/register',
-    '/forgot-password',
+    '/login/register',
+    '/login/forgot-password',
     '/auth/callback',
-    '/auth/reset-password',
+    '/login/reset-password',
     '/getting-started',
   ]
 

@@ -84,12 +84,12 @@
       <template #content>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-color"> 产品名称 </label>
+            <label class="block text-sm font-medium text-color">产品名称</label>
             <Input v-model="searchQuery" placeholder="输入产品名称搜索" class="w-full" />
           </div>
 
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-color"> BOM状态 </label>
+            <label class="block text-sm font-medium text-color">BOM状态</label>
             <Select
               v-model="selectedStatus"
               :options="statusOptions"
@@ -101,7 +101,7 @@
           </div>
 
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-color"> 产品类别 </label>
+            <label class="block text-sm font-medium text-color">产品类别</label>
             <Select
               v-model="selectedCategory"
               :options="categoryOptions"
@@ -113,7 +113,7 @@
           </div>
 
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-color"> BOM版本 </label>
+            <label class="block text-sm font-medium text-color">BOM版本</label>
             <Input v-model="selectedVersion" placeholder="输入版本号" class="w-full" />
           </div>
         </div>
@@ -148,7 +148,9 @@
               <div>
                 <span class="font-medium text-color">{{ slotProps.data.product_name }}</span>
                 <div class="text-sm text-muted-color">编号: {{ slotProps.data.product_code }}</div>
-                <div class="text-sm text-muted-color">类别: {{ getCategoryText(slotProps.data.product_category) }}</div>
+                <div class="text-sm text-muted-color">
+                  类别: {{ getCategoryText(slotProps.data.product_category) }}
+                </div>
               </div>
             </template>
           </TableHead>
@@ -163,7 +165,10 @@
 
           <TableHead field="status" header="状态" :sortable="true">
             <template #body="slotProps">
-              <Tag :value="getStatusText(slotProps.data.status)" :severity="getStatusSeverity(slotProps.data.status)" />
+              <Tag
+                :value="getStatusText(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
             </template>
           </TableHead>
 
@@ -175,7 +180,9 @@
 
           <TableHead field="total_cost" header="总成本" :sortable="true">
             <template #body="slotProps">
-              <span class="font-semibold text-green-600"> ¥{{ slotProps.data.total_cost.toFixed(2) }} </span>
+              <span class="font-semibold text-green-600">
+                ¥{{ slotProps.data.total_cost.toFixed(2) }}
+              </span>
             </template>
           </TableHead>
 
@@ -190,23 +197,10 @@
           <TableHead header="操作" class="w-40">
             <template #body="slotProps">
               <div class="flex gap-2">
-                <Button
-                  size="sm"
-                  @click="viewBOM(slotProps.data)"
-                />
-                <Button
-                  size="sm"
-                  @click="editBOM(slotProps.data)"
-                />
-                <Button
-                  size="sm"
-                  @click="copyBOM(slotProps.data)"
-                />
-                <Button
-                  size="sm"
-                  severity="danger"
-                  @click="confirmDelete(slotProps.data)"
-                />
+                <Button size="sm" @click="viewBOM(slotProps.data)" />
+                <Button size="sm" @click="editBOM(slotProps.data)" />
+                <Button size="sm" @click="copyBOM(slotProps.data)" />
+                <Button size="sm" severity="danger" @click="confirmDelete(slotProps.data)" />
               </div>
             </template>
           </TableHead>
@@ -216,7 +210,9 @@
 
     <!-- 分页 -->
     <div class="flex justify-between items-center">
-      <span class="text-sm text-muted-color"> 共 {{ filteredBOMs.length }} 条记录，每页显示 {{ pageSize }} 条 </span>
+      <span class="text-sm text-muted-color">
+        共 {{ filteredBOMs.length }} 条记录，每页显示 {{ pageSize }} 条
+      </span>
       <!-- Paginator 组件已移除 -->
     </div>
   </div>
@@ -348,11 +344,14 @@ const boms = ref([
 // 筛选后的BOM
 const filteredBOMs = computed(() => {
   return boms.value.filter((bom) => {
-    const matchesSearch = !searchQuery.value || bom.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesSearch
+      = !searchQuery.value || bom.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesStatus = !selectedStatus.value || bom.status === selectedStatus.value
-    const matchesCategory = !selectedCategory.value || bom.product_category === selectedCategory.value
+    const matchesCategory
+      = !selectedCategory.value || bom.product_category === selectedCategory.value
     const matchesVersion
-      = !selectedVersion.value || bom.version.toLowerCase().includes(selectedVersion.value.toLowerCase())
+      = !selectedVersion.value
+        || bom.version.toLowerCase().includes(selectedVersion.value.toLowerCase())
 
     return matchesSearch && matchesStatus && matchesCategory && matchesVersion
   })

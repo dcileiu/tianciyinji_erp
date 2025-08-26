@@ -38,7 +38,8 @@ export const useWorkshops = () => {
       avgUtilization,
       totalEquipment,
       activeEquipment,
-      equipmentUtilization: totalEquipment > 0 ? Math.round((activeEquipment / totalEquipment) * 100) : 0,
+      equipmentUtilization:
+        totalEquipment > 0 ? Math.round((activeEquipment / totalEquipment) * 100) : 0,
     }
   })
 
@@ -104,7 +105,11 @@ export const useWorkshops = () => {
       loading.value = true
       error.value = null
 
-      const { data, error: fetchError } = await supabase.from('workshops').select('*').eq('id', id).single()
+      const { data, error: fetchError } = await supabase
+        .from('workshops')
+        .select('*')
+        .eq('id', id)
+        .single()
 
       if (fetchError) throw fetchError
 
@@ -229,7 +234,10 @@ export const useWorkshops = () => {
   }
 
   // 更新车间状态
-  const updateWorkshopStatus = async (id: string, status: 'active' | 'maintenance' | 'inactive') => {
+  const updateWorkshopStatus = async (
+    id: string,
+    status: 'active' | 'maintenance' | 'inactive',
+  ) => {
     try {
       const updates: WorkshopUpdate = { status }
       return await updateWorkshop(id, updates)

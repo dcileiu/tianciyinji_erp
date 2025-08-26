@@ -6,7 +6,9 @@ import { ChevronRight } from 'lucide-vue-next'
 import { DropdownMenuSubTrigger, useForwardProps } from 'reka-ui'
 import { cn } from '@/lib/utils'
 
-const props = defineProps<DropdownMenuSubTriggerProps & { class?: HTMLAttributes['class'], inset?: boolean }>()
+const props = defineProps<
+  DropdownMenuSubTriggerProps & { class?: HTMLAttributes['class'], inset?: boolean }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class', 'inset')
 const forwardedProps = useForwardProps(delegatedProps)
@@ -23,7 +25,7 @@ const forwardedProps = useForwardProps(delegatedProps)
       )
     "
   >
-    <slot ></slot>
+    <slot></slot>
     <ChevronRight class="ml-auto size-4" />
   </DropdownMenuSubTrigger>
 </template>

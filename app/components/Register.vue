@@ -11,7 +11,7 @@
       <form class="space-y-6" @submit.prevent="handleRegister">
         <!-- 邮箱输入 -->
         <div>
-          <label for="email" class="block text-sm font-medium text-foreground mb-2"> 邮箱地址 </label>
+          <label for="email" class="block text-sm font-medium text-foreground mb-2">邮箱地址</label>
           <Input
             id="email"
             v-model="form.email"
@@ -28,7 +28,7 @@
 
         <!-- 密码输入 -->
         <div>
-          <label for="password" class="block text-sm font-medium text-foreground mb-2"> 密码 </label>
+          <label for="password" class="block text-sm font-medium text-foreground mb-2">密码</label>
           <Input
             id="password"
             v-model="form.password"
@@ -45,7 +45,9 @@
 
         <!-- 确认密码输入 -->
         <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-foreground mb-2"> 确认密码 </label>
+          <label for="confirmPassword" class="block text-sm font-medium text-foreground mb-2">
+            确认密码
+          </label>
           <Input
             id="confirmPassword"
             v-model="form.confirmPassword"
@@ -80,7 +82,7 @@
         <div class="text-center">
           <p class="text-sm text-muted-foreground">
             已有账户？
-            <NuxtLink to="/login" class="text-primary hover:underline"> 立即登录 </NuxtLink>
+            <NuxtLink to="/login" class="text-primary hover:underline">立即登录</NuxtLink>
           </p>
         </div>
       </form>

@@ -124,7 +124,10 @@ function cleanupNonNestedPath(path: string) {
 /**
  * Gets a nested property value from an object
  */
-export function getFromPath<TValue = unknown>(object: NestedRecord | undefined, path: string): TValue | undefined
+export function getFromPath<TValue = unknown>(
+  object: NestedRecord | undefined,
+  path: string
+): TValue | undefined
 export function getFromPath<TValue = unknown, TFallback = TValue>(
   object: NestedRecord | undefined,
   path: string,

@@ -30,6 +30,6 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
         <Check class="size-4" />
       </ContextMenuItemIndicator>
     </span>
-    <slot ></slot>
+    <slot></slot>
   </ContextMenuCheckboxItem>
 </template>

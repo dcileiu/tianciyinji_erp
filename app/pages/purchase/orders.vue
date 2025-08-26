@@ -67,7 +67,9 @@
             </div>
             <div class="ml-4">
               <p class="text-sm font-medium text-muted-color">本月采购金额</p>
-              <p class="text-2xl font-semibold text-color">¥{{ orderStats.monthlyAmount.toLocaleString() }}</p>
+              <p class="text-2xl font-semibold text-color">
+                ¥{{ orderStats.monthlyAmount.toLocaleString() }}
+              </p>
             </div>
           </div>
         </template>
@@ -181,7 +183,9 @@
 
           <TableHead field="total_amount" header="订单金额" sortable>
             <template #body="slotProps">
-              <span class="font-medium text-green-600"> ¥{{ slotProps.data.total_amount.toLocaleString() }} </span>
+              <span class="font-medium text-green-600">
+                ¥{{ slotProps.data.total_amount.toLocaleString() }}
+              </span>
             </template>
           </TableHead>
 
@@ -219,11 +223,7 @@
           <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
-                <Button
-                  text
-                  size="sm"
-                  @click="viewOrder(slotProps.data)"
-                />
+                <Button text size="sm" @click="viewOrder(slotProps.data)" />
                 <Button
                   v-if="slotProps.data.status === 'draft'"
                   text
@@ -263,7 +263,11 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">订单号</label>
-              <Input v-model="orderForm.order_no" :disabled="dialogMode !== 'create'" placeholder="系统自动生成" />
+              <Input
+                v-model="orderForm.order_no"
+                :disabled="dialogMode !== 'create'"
+                placeholder="系统自动生成"
+              />
             </div>
 
             <div class="space-y-2">
@@ -305,12 +309,7 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <label class="block text-sm font-medium text-color">订单项</label>
-              <Button
-                v-if="dialogMode !== 'view'"
-                text
-                size="sm"
-                @click="addOrderItem"
-              />
+              <Button v-if="dialogMode !== 'view'" text size="sm" @click="addOrderItem" />
             </div>
 
             <Table :value="orderForm.items">
@@ -367,7 +366,9 @@
           <div class="border-t pt-4">
             <div class="flex justify-between items-center">
               <span class="text-lg font-medium text-color">总计：</span>
-              <span class="text-xl font-bold text-green-600"> ¥{{ totalAmount.toLocaleString() }} </span>
+              <span class="text-xl font-bold text-green-600">
+                ¥{{ totalAmount.toLocaleString() }}
+              </span>
             </div>
           </div>
         </div>
@@ -496,7 +497,9 @@ const filteredOrders = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      order => order.order_no.toLowerCase().includes(query) || order.supplier_name.toLowerCase().includes(query),
+      order =>
+        order.order_no.toLowerCase().includes(query)
+        || order.supplier_name.toLowerCase().includes(query),
     )
   }
 
@@ -615,7 +618,8 @@ const saveOrder = async () => {
           ...mockOrders.value[index],
           ...orderForm.value,
           id: mockOrders.value[index]!.id,
-          supplier_name: suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
+          supplier_name:
+            suppliers.value.find(s => s.id === orderForm.value.supplier_id)?.name || '',
           total_amount: totalAmount.value,
           expected_date: orderForm.value.expected_date || new Date(),
         }

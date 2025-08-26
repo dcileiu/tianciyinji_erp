@@ -15,7 +15,10 @@
         class="flex items-center justify-center w-5 h-5 mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
         @click="handleToggleExpand"
       >
-        <ChevronRight class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-90': isExpanded }" />
+        <ChevronRight
+          class="w-4 h-4 transition-transform duration-200"
+          :class="{ 'rotate-90': isExpanded }"
+        />
       </button>
 
       <!-- 占位符（无子项时） -->
@@ -71,7 +74,11 @@
         </div>
 
         <!-- 描述 -->
-        <div v-if="item.description" class="text-xs text-gray-500 mt-1 truncate" :title="item.description">
+        <div
+          v-if="item.description"
+          class="text-xs text-gray-500 mt-1 truncate"
+          :title="item.description"
+        >
           {{ item.description }}
         </div>
 
@@ -116,7 +123,18 @@
 </template>
 
 <script setup lang="ts">
-import { Ban, ChevronRight, Database, EyeOff, FileText, Globe, Menu, Settings, Shield, Zap } from 'lucide-vue-next'
+import {
+  Ban,
+  ChevronRight,
+  Database,
+  EyeOff,
+  FileText,
+  Globe,
+  Menu,
+  Settings,
+  Shield,
+  Zap,
+} from 'lucide-vue-next'
 import { computed } from 'vue'
 
 // Props

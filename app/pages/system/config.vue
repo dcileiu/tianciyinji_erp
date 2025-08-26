@@ -52,7 +52,11 @@
               </div>
               <div class="space-y-2">
                 <Label>管理员邮箱</Label>
-                <Input v-model="basicConfig.adminEmail" type="email" placeholder="admin@company.com" />
+                <Input
+                  v-model="basicConfig.adminEmail"
+                  type="email"
+                  placeholder="admin@company.com"
+                />
               </div>
             </div>
 
@@ -91,7 +95,11 @@
                     <SelectValue placeholder="选择默认货币" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem v-for="option in currencyOptions" :key="option.value" :value="option.value">
+                    <SelectItem
+                      v-for="option in currencyOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>
@@ -209,7 +217,10 @@
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox id="passwordComplexity" v-model="securityConfig.requirePasswordComplexity" />
+                <Checkbox
+                  id="passwordComplexity"
+                  v-model="securityConfig.requirePasswordComplexity"
+                />
                 <Label for="passwordComplexity">密码复杂度要求</Label>
               </div>
             </div>
@@ -250,14 +261,24 @@
               </div>
               <div class="space-y-2">
                 <Label>SMTP端口</Label>
-                <Input v-model.number="emailConfig.smtpPort" type="number" min="1" max="65535" placeholder="端口号" />
+                <Input
+                  v-model.number="emailConfig.smtpPort"
+                  type="number"
+                  min="1"
+                  max="65535"
+                  placeholder="端口号"
+                />
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>发件人邮箱</Label>
-                <Input v-model="emailConfig.fromEmail" type="email" placeholder="system@company.com" />
+                <Input
+                  v-model="emailConfig.fromEmail"
+                  type="email"
+                  placeholder="system@company.com"
+                />
               </div>
               <div class="space-y-2">
                 <Label>发件人名称</Label>
@@ -272,7 +293,11 @@
               </div>
               <div class="space-y-2">
                 <Label>SMTP密码</Label>
-                <Input v-model="emailConfig.smtpPassword" type="password" placeholder="SMTP登录密码" />
+                <Input
+                  v-model="emailConfig.smtpPassword"
+                  type="password"
+                  placeholder="SMTP登录密码"
+                />
               </div>
             </div>
 
@@ -324,7 +349,11 @@
                     <SelectValue placeholder="选择备份频率" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem v-for="option in backupFrequencyOptions" :key="option.value" :value="option.value">
+                    <SelectItem
+                      v-for="option in backupFrequencyOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>

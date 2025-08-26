@@ -21,7 +21,12 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <Label for="search">搜索供应商</Label>
-            <Input id="search" v-model="searchQuery" placeholder="输入供应商名称或编码" class="mt-1" />
+            <Input
+              id="search"
+              v-model="searchQuery"
+              placeholder="输入供应商名称或编码"
+              class="mt-1"
+            />
           </div>
           <div>
             <Label for="status">状态</Label>
@@ -63,7 +68,7 @@
     <Card>
       <CardHeader>
         <CardTitle>供应商列表</CardTitle>
-        <CardDescription> 共 {{ filteredSuppliers.length }} 个供应商 </CardDescription>
+        <CardDescription>共 {{ filteredSuppliers.length }} 个供应商</CardDescription>
       </CardHeader>
       <CardContent>
         <div v-if="loading" class="flex items-center justify-center py-8">
@@ -81,7 +86,9 @@
             class="flex items-center justify-between p-4 border -lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
           >
             <div class="flex items-center space-x-4">
-              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 -full flex items-center justify-center">
+              <div
+                class="w-12 h-12 bg-green-100 dark:bg-green-900/20 -full flex items-center justify-center"
+              >
                 <Truck class="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
@@ -124,7 +131,8 @@
                     删除
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu></div>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </CardContent>
@@ -139,12 +147,23 @@
 
         <div class="space-y-4 py-4">
           <div>
-            <Label for="supplier-name">供应商名称 <span class="text-destructive">*</span></Label>
-            <Input id="supplier-name" v-model="supplierForm.name" placeholder="请输入供应商名称" class="mt-1" />
+            <Label for="supplier-name">
+              供应商名称
+              <span class="text-destructive">*</span>
+            </Label>
+            <Input
+              id="supplier-name"
+              v-model="supplierForm.name"
+              placeholder="请输入供应商名称"
+              class="mt-1"
+            />
           </div>
 
           <div>
-            <Label for="contact-person">联系人 <span class="text-destructive">*</span></Label>
+            <Label for="contact-person">
+              联系人
+              <span class="text-destructive">*</span>
+            </Label>
             <Input
               id="contact-person"
               v-model="supplierForm.contact_person"
@@ -154,12 +173,23 @@
           </div>
 
           <div>
-            <Label for="phone">联系电话 <span class="text-destructive">*</span></Label>
-            <Input id="phone" v-model="supplierForm.phone" placeholder="请输入联系电话" class="mt-1" />
+            <Label for="phone">
+              联系电话
+              <span class="text-destructive">*</span>
+            </Label>
+            <Input
+              id="phone"
+              v-model="supplierForm.phone"
+              placeholder="请输入联系电话"
+              class="mt-1"
+            />
           </div>
 
           <div>
-            <Label for="type">供应商类型 <span class="text-destructive">*</span></Label>
+            <Label for="type">
+              供应商类型
+              <span class="text-destructive">*</span>
+            </Label>
             <select
               id="type"
               v-model="supplierForm.type"
@@ -175,7 +205,7 @@
         </div>
 
         <DialogFooter>
-          <Button type="button" variant="outline" @click="showSupplierDialog = false"> 取消 </Button>
+          <Button type="button" variant="outline" @click="showSupplierDialog = false">取消</Button>
           <Button :disabled="submitting" @click="handleSubmit">
             <Loader2 v-if="submitting" class="mr-2 h-4 w-4 animate-spin" />
             {{ editingSupplier ? '更新' : '创建' }}
@@ -232,7 +262,9 @@ const filteredSuppliers = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      supplier => supplier.name.toLowerCase().includes(query) || supplier.supplier_no.toLowerCase().includes(query),
+      supplier =>
+        supplier.name.toLowerCase().includes(query)
+        || supplier.supplier_no.toLowerCase().includes(query),
     )
   }
 

@@ -25,16 +25,22 @@
           </p>
         </div>
         <div class="space-y-2">
-          <Button class="w-full" @click="handleRetry"> 重新尝试 </Button>
-          <Button variant="outline" class="w-full" @click="$router.push('/login')"> 返回登录 </Button>
+          <Button class="w-full" @click="handleRetry">重新尝试</Button>
+          <Button variant="outline" class="w-full" @click="$router.push('/login')">返回登录</Button>
         </div>
 
         <!-- 调试信息（开发环境） -->
         <details v-if="$config.public.dev" class="mt-4">
           <summary class="text-xs text-gray-500 cursor-pointer">显示调试信息</summary>
           <div class="mt-2 p-2 bg-gray-100 text-xs">
-            <p><strong>URL:</strong> {{ $route.fullPath }}</p>
-            <p><strong>Query:</strong> {{ JSON.stringify($route.query) }}</p>
+            <p>
+              <strong>URL:</strong>
+              {{ $route.fullPath }}
+            </p>
+            <p>
+              <strong>Query:</strong>
+              {{ JSON.stringify($route.query) }}
+            </p>
           </div>
         </details>
       </div>

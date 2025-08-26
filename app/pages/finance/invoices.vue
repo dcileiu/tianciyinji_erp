@@ -24,7 +24,11 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部类型</SelectItem>
-                <SelectItem v-for="option in invoiceTypeOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in invoiceTypeOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -38,7 +42,11 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部状态</SelectItem>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -47,8 +55,14 @@
           <div>
             <Label class="text-sm font-medium mb-2 block">搜索</Label>
             <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input v-model="filters.search" placeholder="搜索发票号、客户/供应商..." class="pl-10" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+              />
+              <Input
+                v-model="filters.search"
+                placeholder="搜索发票号、客户/供应商..."
+                class="pl-10"
+              />
             </div>
           </div>
           <div class="flex items-end gap-2">
@@ -70,7 +84,9 @@
       <CardHeader>
         <div class="flex items-center justify-between">
           <CardTitle class="text-lg font-semibold">发票列表</CardTitle>
-          <div class="flex items-center gap-2 text-sm text-gray-600">共 {{ totalCount }} 条记录</div>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            共 {{ totalCount }} 条记录
+          </div>
         </div>
       </CardHeader>
 
@@ -126,13 +142,19 @@
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span class="font-medium text-green-600"> ¥{{ invoice.amount.toLocaleString() }} </span>
+                  <span class="font-medium text-green-600">
+                    ¥{{ invoice.amount.toLocaleString() }}
+                  </span>
                 </TableCell>
                 <TableCell>
-                  <span class="text-sm text-gray-600"> ¥{{ invoice.tax_amount.toLocaleString() }} </span>
+                  <span class="text-sm text-gray-600">
+                    ¥{{ invoice.tax_amount.toLocaleString() }}
+                  </span>
                 </TableCell>
                 <TableCell>
-                  <span class="font-bold text-blue-600"> ¥{{ invoice.total_amount.toLocaleString() }} </span>
+                  <span class="font-bold text-blue-600">
+                    ¥{{ invoice.total_amount.toLocaleString() }}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <Badge :variant="getStatusSeverity(invoice.status)">
@@ -154,10 +176,20 @@
                     <Button variant="ghost" size="sm" @click="viewInvoice(invoice)">
                       <Eye class="w-4 h-4" />
                     </Button>
-                    <Button v-if="invoice.status === 'draft'" variant="ghost" size="sm" @click="editInvoice(invoice)">
+                    <Button
+                      v-if="invoice.status === 'draft'"
+                      variant="ghost"
+                      size="sm"
+                      @click="editInvoice(invoice)"
+                    >
                       <Edit class="w-4 h-4" />
                     </Button>
-                    <Button v-if="invoice.status === 'draft'" variant="ghost" size="sm" @click="sendInvoice(invoice)">
+                    <Button
+                      v-if="invoice.status === 'draft'"
+                      variant="ghost"
+                      size="sm"
+                      @click="sendInvoice(invoice)"
+                    >
                       <Send class="w-4 h-4" />
                     </Button>
                     <Button variant="ghost" size="sm" @click="printInvoice(invoice)">
@@ -194,7 +226,12 @@
 
             <div class="space-y-2">
               <Label for="invoice_no">发票号</Label>
-              <Input id="invoice_no" v-model="invoiceForm.invoice_no" placeholder="请输入发票号" :disabled="saving" />
+              <Input
+                id="invoice_no"
+                v-model="invoiceForm.invoice_no"
+                placeholder="请输入发票号"
+                :disabled="saving"
+              />
             </div>
 
             <div class="space-y-2">
@@ -218,7 +255,11 @@
                   <SelectValue placeholder="请选择状态" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="status in invoiceStatuses" :key="status.value" :value="status.value">
+                  <SelectItem
+                    v-for="status in invoiceStatuses"
+                    :key="status.value"
+                    :value="status.value"
+                  >
                     {{ status.label }}
                   </SelectItem>
                 </SelectContent>
@@ -242,7 +283,12 @@
 
             <div class="space-y-2">
               <Label for="invoice_date">开票日期</Label>
-              <Input id="invoice_date" v-model="invoiceForm.invoice_date" type="date" :disabled="saving" />
+              <Input
+                id="invoice_date"
+                v-model="invoiceForm.invoice_date"
+                type="date"
+                :disabled="saving"
+              />
             </div>
 
             <div class="space-y-2">
@@ -315,10 +361,17 @@
                     />
                   </TableCell>
                   <TableCell>
-                    <span class="font-medium text-green-600"> ¥{{ (item.amount || 0).toLocaleString() }} </span>
+                    <span class="font-medium text-green-600">
+                      ¥{{ (item.amount || 0).toLocaleString() }}
+                    </span>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm" :disabled="saving" @click="removeInvoiceItem(index)">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      :disabled="saving"
+                      @click="removeInvoiceItem(index)"
+                    >
                       <Trash2 class="h-4 w-4" />
                     </Button>
                   </TableCell>
@@ -341,13 +394,15 @@
           <div class="border-t pt-2">
             <div class="flex justify-between items-center">
               <span class="text-lg font-bold">总计：</span>
-              <span class="text-xl font-bold text-blue-600"> ¥{{ totalAmount.toLocaleString() }} </span>
+              <span class="text-xl font-bold text-blue-600">
+                ¥{{ totalAmount.toLocaleString() }}
+              </span>
             </div>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" :disabled="saving" @click="closeInvoiceDialog"> 取消 </Button>
+          <Button variant="outline" :disabled="saving" @click="closeInvoiceDialog">取消</Button>
           <Button :disabled="saving" @click="saveInvoice">
             <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
             保存
@@ -361,7 +416,18 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { Download, Edit, Eye, Loader2, Plus, Printer, RefreshCw, Search, Send, Trash2 } from 'lucide-vue-next'
+import {
+  Download,
+  Edit,
+  Eye,
+  Loader2,
+  Plus,
+  Printer,
+  RefreshCw,
+  Search,
+  Send,
+  Trash2,
+} from 'lucide-vue-next'
 
 definePageMeta({
   title: '发票管理',
@@ -479,7 +545,9 @@ const filteredInvoices = computed(() => {
   if (filters.value.search) {
     const query = filters.value.search.toLowerCase()
     result = result.filter(
-      invoice => invoice.invoice_no.toLowerCase().includes(query) || invoice.customer_name.toLowerCase().includes(query),
+      invoice =>
+        invoice.invoice_no.toLowerCase().includes(query)
+        || invoice.customer_name.toLowerCase().includes(query),
     )
   }
 

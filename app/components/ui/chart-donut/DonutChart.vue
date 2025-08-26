@@ -10,7 +10,10 @@ import { cn } from '@/lib/utils'
 
 const props = withDefaults(
   defineProps<
-    Pick<BaseChartProps<T>, 'data' | 'colors' | 'index' | 'margin' | 'showLegend' | 'showTooltip' | 'filterOpacity'> & {
+    Pick<
+      BaseChartProps<T>,
+      'data' | 'colors' | 'index' | 'margin' | 'showLegend' | 'showTooltip' | 'filterOpacity'
+    > & {
       /**
        * Sets the name of the key containing the quantitative chart values.
        */
@@ -54,7 +57,9 @@ const index = computed(() => props.index as KeyOfT)
 const isMounted = useMounted()
 const activeSegmentKey = ref<string>()
 const colors = computed(() =>
-  props.colors?.length ? props.colors : (() => ['#8b5cf6'])(props.data.filter(d => d[props.category]).filter(Boolean).length),
+  props.colors?.length
+    ? props.colors
+    : (() => ['#8b5cf6'])(props.data.filter(d => d[props.category]).filter(Boolean).length),
 )
 const legendItems = computed(() =>
   props.data.map((item, i) => ({
@@ -73,7 +78,11 @@ const totalValue = computed(() =>
 
 <template>
   <div :class="cn('w-full h-48 flex flex-col items-end', $attrs.class ?? '')">
-    <VisSingleContainer :style="{ height: isMounted ? '100%' : 'auto' }" :margin="{ left: 20, right: 20 }" :data="data">
+    <VisSingleContainer
+      :style="{ height: isMounted ? '100%' : 'auto' }"
+      :margin="{ left: 20, right: 20 }"
+      :data="data"
+    >
       <ChartSingleTooltip
         :selector="Donut.selectors.segment"
         :index="category"
@@ -106,7 +115,7 @@ const totalValue = computed(() =>
         }"
       />
 
-      <slot ></slot>
+      <slot></slot>
     </VisSingleContainer>
   </div>
 </template>

@@ -12,7 +12,9 @@
           content: { class: 'p-4 sm:p-6' },
         }"
       >
-        <div class="text-center text-base sm:text-2xl font-bold text-surface-700 mb-6">创建您的账户</div>
+        <div class="text-center text-base sm:text-2xl font-bold text-surface-700 mb-6">
+          创建您的账户
+        </div>
 
         <form class="flex flex-column gap-4" @submit.prevent="handleRegister">
           <!-- 姓名输入 -->
@@ -102,7 +104,13 @@
             <!-- FloatLabel 组件已移除 -->
             <!-- IconField 已移除 -->
             <!-- InputIcon 已移除 -->
-            <Input id="department" v-model="form.department" type="text" class="w-full" :disabled="loading" />
+            <Input
+              id="department"
+              v-model="form.department"
+              type="text"
+              class="w-full"
+              :disabled="loading"
+            />
             <!-- /IconField -->
             <label for="department">部门（可选）</label>
             <!-- /FloatLabel -->
@@ -143,7 +151,9 @@
       </Card>
 
       <!-- 版权信息 -->
-      <div class="text-center mt-4 text-sm text-surface-500">© 2025 ERP管理系统. 保留所有权利.</div>
+      <div class="text-center mt-4 text-sm text-surface-500">
+        © 2025 ERP管理系统. 保留所有权利.
+      </div>
     </div>
   </div>
 </template>

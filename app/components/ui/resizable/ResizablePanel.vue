@@ -10,6 +10,6 @@ const forwarded = useForwardPropsEmits(props, emits)
 
 <template>
   <SplitterPanel data-slot="resizable-panel" v-bind="forwarded">
-    <slot ></slot>
+    <slot></slot>
   </SplitterPanel>
 </template>

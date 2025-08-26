@@ -19,6 +19,6 @@ const { error, formItemId } = useFormField()
     :class="cn('data-[error=true]:text-destructive-foreground', props.class)"
     :for="formItemId"
   >
-    <slot ></slot>
+    <slot></slot>
   </Label>
 </template>

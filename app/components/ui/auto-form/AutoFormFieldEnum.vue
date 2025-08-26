@@ -27,7 +27,11 @@ defineProps<
             :orientation="'vertical'"
             v-bind="{ ...slotProps.componentField }"
           >
-            <div v-for="(option, index) in options" :key="option" class="mb-2 flex items-center gap-3 space-y-0">
+            <div
+              v-for="(option, index) in options"
+              :key="option"
+              class="mb-2 flex items-center gap-3 space-y-0"
+            >
               <RadioGroupItem :id="`${option}-${index}`" :value="option" />
               <Label :for="`${option}-${index}`">{{ beautifyObjectName(option) }}</Label>
             </div>

@@ -1,364 +1,324 @@
 <template>
-  <div class="sales-orders-container p-6 flex flex-column gap-6 bg-surface-50 min-h-full">
-    <!-- 页面头部 -->
-    <div
-      class="page-header bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 -2xl p-8 text-white relative overflow-hidden"
-    >
-      <div class="absolute inset-0 bg-black opacity-10"></div>
-      <div class="absolute -top-4 -right-4 w-32 h-32 bg-white opacity-5 -full"></div>
-      <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-white opacity-5 -full"></div>
-      <div class="relative z-10">
-        <div class="flex flex-column lg:flex-row lg:align-items-center lg:justify-content-between">
-          <div>
-            <h1 class="text-3xl font-bold mb-2 flex align-items-center">
-              <i class="pi pi-shopping-cart mr-3 text-4xl"></i>
-              销售订单
-            </h1>
-            <p class="text-blue-100 text-lg">管理和跟踪销售订单信息，优化销售流程</p>
-          </div>
-          <div class="mt-4 lg:mt-0 flex flex-col sm:flex-row gap-3">
-            <Button
-              severity="secondary"
-              class="text-white border-white hover:bg-white hover:text-blue-600"
-              @click="importOrders"
-            />
-            <Button
-              class="bg-white text-blue-600 hover:bg-blue-50 border-0 shadow-lg"
-              @click="openOrderModal"
-            />
-          </div>
-        </div>
+  <div class="space-y-6">
+    <!-- 页面标题和操作 -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">销售订单</h1>
+        <p class="text-muted-foreground">管理和跟踪销售订单信息，优化销售流程</p>
+      </div>
+      <div class="flex gap-3">
+        <Button variant="outline" size="sm" @click="importOrders">
+          <Upload class="mr-2 h-4 w-4" />
+          导入订单
+        </Button>
+        <Button size="sm" @click="openOrderModal">
+          <Plus class="mr-2 h-4 w-4" />
+          新建订单
+        </Button>
       </div>
     </div>
 
     <!-- 搜索和筛选区域 -->
-    <Card class="shadow-lg border-0">
-      <template #header>
-        <div class="p-6 pb-0">
-          <h3 class="text-lg font-bold text-surface-900 mb-1 flex items-center">
-            <i class="pi pi-filter mr-2 text-primary-600"></i>
-            搜索与筛选
-          </h3>
-          <p class="text-surface-600">快速找到您需要的订单</p>
-        </div>
-      </template>
-      <template #content>
-        <div class="p-6 pt-0">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900">搜索订单</label>
-              <!-- IconField 已移除 -->
-              <!-- InputIcon 已移除 -->
-              <i class="pi pi-search"></i>
-              <!-- /InputIcon -->
-              <Input v-model="searchKeyword" placeholder="搜索订单号、客户名称..." class="w-full" />
-              <!-- /IconField -->
+    <Card>
+      <CardHeader>
+        <CardTitle class="flex items-center gap-2">
+          <Search class="h-5 w-5" />
+          搜索与筛选
+        </CardTitle>
+        <CardDescription>快速找到您需要的订单</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="space-y-2">
+            <Label>搜索订单</Label>
+            <div class="relative">
+              <Search class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input v-model="searchKeyword" placeholder="搜索订单号、客户名称..." class="pl-9" />
             </div>
+          </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900">订单状态</label>
-              <Select
-                v-model="selectedStatus"
-                :options="statusOptions"
-                option-option-value="value"
-                placeholder="全部状态"
-                class="w-full"
-                show-clear
-              />
+          <div class="space-y-2">
+            <Label>订单状态</Label>
+            <Select v-model="selectedStatus">
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem
+                  v-for="status in statusOptions"
+                  :key="status.value"
+                  :value="status.value"
+                >
+                  {{ status.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="space-y-2">
+            <Label>日期范围</Label>
+            <div class="flex gap-2">
+              <Input v-model="dateRange.start" type="date" class="flex-1" />
+              <Input v-model="dateRange.end" type="date" class="flex-1" />
             </div>
+          </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900">日期范围</label>
-              <!-- Calendar 组件需要手动替换为 DatePicker -->
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-surface-900 opacity-0">操作</label>
-              <div class="flex gap-2">
-                <Button class="flex-1" @click="resetFilters" />
-                <Button @click="exportData" />
-              </div>
+          <div class="space-y-2">
+            <Label class="opacity-0">操作</Label>
+            <div class="flex gap-2">
+              <Button variant="outline" class="flex-1" @click="resetFilters">
+                <RotateCcw class="mr-2 h-4 w-4" />
+                重置
+              </Button>
+              <Button variant="outline" @click="exportData">
+                <Download class="mr-2 h-4 w-4" />
+                导出
+              </Button>
             </div>
           </div>
         </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 统计信息卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <Card class="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg overflow-hidden">
-        <template #content>
-          <div class="relative p-6">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
-            <div class="relative z-10">
-              <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
-                  <i class="pi pi-shopping-cart text-2xl text-white"></i>
-                </div>
-                <div class="text-right">
-                  <div class="flex items-center text-sm font-medium text-blue-100">
-                    <i class="pi pi-arrow-up mr-1"></i>
-                    +12.5%
-                  </div>
-                </div>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-muted-foreground">总订单数</p>
+              <div class="flex items-baseline space-x-3">
+                <p class="text-2xl font-bold">{{ filteredOrders.length }}</p>
+                <Badge variant="secondary" class="text-xs">
+                  <TrendingUp class="mr-1 h-3 w-3" />
+                  +12.5%
+                </Badge>
               </div>
-              <div>
-                <div class="text-3xl font-bold mb-1">{{ filteredOrders.length }}</div>
-                <div class="text-blue-100">总订单数</div>
-                <div class="text-xs text-blue-200 mt-2">本月新增 {{ Math.floor(filteredOrders.length * 0.3) }} 个</div>
-              </div>
+              <p class="text-xs text-muted-foreground">
+                本月新增 {{ Math.floor(filteredOrders.length * 0.3) }} 个
+              </p>
+            </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900"
+            >
+              <ShoppingCart class="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
-      <Card class="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-lg overflow-hidden">
-        <template #content>
-          <div class="relative p-6">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
-            <div class="relative z-10">
-              <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
-                  <i class="pi pi-clock text-2xl text-white"></i>
-                </div>
-                <div class="text-right">
-                  <div class="flex items-center text-sm font-medium text-orange-100">
-                    <i class="pi pi-arrow-up mr-1"></i>
-                    +8.2%
-                  </div>
-                </div>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-muted-foreground">待处理订单</p>
+              <div class="flex items-baseline space-x-3">
+                <p class="text-2xl font-bold">{{ pendingOrdersCount }}</p>
+                <Badge variant="destructive" class="text-xs">紧急</Badge>
               </div>
-              <div>
-                <div class="text-3xl font-bold mb-1">{{ pendingOrdersCount }}</div>
-                <div class="text-orange-100">待处理订单</div>
-                <div class="text-xs text-orange-200 mt-2">需要及时处理</div>
-              </div>
+              <p class="text-xs text-muted-foreground">需要及时处理</p>
+            </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900"
+            >
+              <Clock class="h-6 w-6 text-orange-600 dark:text-orange-400" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
 
-      <Card class="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg overflow-hidden">
-        <template #content>
-          <div class="relative p-6">
-            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
-            <div class="relative z-10">
-              <div class="flex items-center justify-between mb-4">
-                <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
-                  <i class="pi pi-dollar text-2xl text-white"></i>
-                </div>
-                <div class="text-right">
-                  <div class="flex items-center text-sm font-medium text-green-100">
-                    <i class="pi pi-arrow-up mr-1"></i>
-                    +15.3%
-                  </div>
-                </div>
+      <Card>
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-muted-foreground">总销售额</p>
+              <div class="flex items-baseline space-x-3">
+                <p class="text-2xl font-bold">¥{{ totalAmount.toLocaleString() }}</p>
+                <Badge variant="secondary" class="text-xs">
+                  <TrendingUp class="mr-1 h-3 w-3" />
+                  +15.3%
+                </Badge>
               </div>
-              <div>
-                <div class="text-3xl font-bold mb-1">¥{{ totalAmount.toLocaleString() }}</div>
-                <div class="text-green-100">总销售额</div>
-                <div class="text-xs text-green-200 mt-2">本月累计收入</div>
-              </div>
+              <p class="text-xs text-muted-foreground">本月累计收入</p>
+            </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900"
+            >
+              <DollarSign class="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
           </div>
-        </template>
+        </CardContent>
       </Card>
     </div>
 
     <!-- 订单列表 -->
-    <Card class="shadow-lg border-0">
-      <template #header>
-        <div class="p-6 pb-0">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 class="text-xl font-bold text-surface-900 mb-1 flex items-center">
-                <i class="pi pi-list mr-2 text-primary-600"></i>
-                订单列表
-              </h3>
-              <p class="text-surface-600">
-                当前共有 {{ filteredOrders.length }} 个订单，总金额 ¥{{ totalAmount.toLocaleString() }}
-              </p>
+    <Card>
+      <CardHeader>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <CardTitle class="flex items-center gap-2">
+              <FileText class="h-5 w-5" />
+              订单列表
+            </CardTitle>
+            <CardDescription>
+              当前共有 {{ filteredOrders.length }} 个订单，总金额 ¥{{
+                totalAmount.toLocaleString()
+              }}
+            </CardDescription>
+          </div>
+          <div class="flex items-center gap-2">
+            <Select v-model="pageSize">
+              <SelectTrigger class="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="10">10条/页</SelectItem>
+                <SelectItem value="20">20条/页</SelectItem>
+                <SelectItem value="50">50条/页</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" @click="refreshData">
+              <RefreshCw class="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div v-if="loading" class="space-y-4">
+          <div v-for="i in 5" :key="i" class="flex items-center space-x-4">
+            <Skeleton class="h-12 w-12 rounded-full" />
+            <div class="space-y-2 flex-1">
+              <Skeleton class="h-4 w-full" />
+              <Skeleton class="h-4 w-3/4" />
             </div>
-            <div class="flex items-center gap-2">
-              <Select
-                v-model="pageSize"
-                :options="pageSizeOptions"
-                option-option-value="value"
-                class="w-32"
+            <Skeleton class="h-8 w-20" />
+            <Skeleton class="h-8 w-16" />
+          </div>
+        </div>
+
+        <div v-else-if="filteredOrders.length === 0" class="text-center py-16">
+          <ShoppingCart class="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+          <h3 class="text-xl font-semibold mb-4">暂无订单数据</h3>
+          <p class="text-muted-foreground mb-6 max-w-md mx-auto">
+            您还没有创建任何订单。点击下方按钮开始创建您的第一个订单。
+          </p>
+          <Button @click="openOrderModal">
+            <Plus class="mr-2 h-4 w-4" />
+            创建订单
+          </Button>
+        </div>
+
+        <div v-else class="space-y-4">
+          <div
+            v-for="order in paginatedOrders"
+            :key="order.id"
+            class="rounded-lg border p-4 hover:bg-muted/50 transition-colors"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <FileText class="h-6 w-6 text-primary" />
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <Badge variant="outline" class="font-mono">
+                      {{ order.orderNo }}
+                    </Badge>
+                    <Badge :variant="getStatusVariant(order.status)">
+                      {{ getStatusText(order.status) }}
+                    </Badge>
+                  </div>
+                  <p class="font-medium">{{ order.customerName }}</p>
+                  <p class="text-sm text-muted-foreground">
+                    {{ formatDate(order.orderDate) }} • {{ formatTimeAgo(order.orderDate) }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-4">
+                <div class="text-right">
+                  <p class="text-lg font-bold text-green-600">
+                    ¥{{ order.amount.toLocaleString() }}
+                  </p>
+                  <p class="text-xs text-muted-foreground">含税金额</p>
+                </div>
+                <div class="flex items-center space-x-1">
+                  <Button variant="ghost" size="sm" @click="viewOrder(order)">
+                    <Eye class="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" @click="editOrder(order)">
+                    <Edit class="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" @click="duplicateOrder(order)">
+                    <Copy class="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" @click="confirmDelete(order)">
+                    <Trash2 class="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="flex items-center justify-between pt-4">
+            <p class="text-sm text-muted-foreground">
+              显示第 {{ (currentPage - 1) * Number(pageSize) + 1 }} -
+              {{ Math.min(currentPage * Number(pageSize), filteredOrders.length) }} 条，共
+              {{ filteredOrders.length }} 条记录
+            </p>
+            <div class="flex items-center space-x-2">
+              <Button
+                variant="outline"
                 size="sm"
-              />
-              <Button size="sm" @click="refreshData" />
+                :disabled="currentPage === 1"
+                @click="currentPage--"
+              >
+                <ChevronLeft class="h-4 w-4" />
+                上一页
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="currentPage === totalPages"
+                @click="currentPage++"
+              >
+                下一页
+                <ChevronRight class="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
-      </template>
-      <template #content>
-        <div class="p-6 pt-0">
-          <Table
-            :value="filteredOrders"
-            :loading="loading"
-            :paginator="true"
-            :rows="pageSize"
-            :total-records="filteredOrders.length"
-            :rows-per-page-options="[10, 20, 50]"
-            striped-rows
-            show-gridlines
-            responsive-layout="scroll"
-            :sort-field="'orderDate'"
-            :sort-order="-1"
-          >
-            <template #loading>
-              <div class="p-6">
-                <div v-for="i in 5" :key="i" class="flex align-items-center gap-4 mb-4">
-                  <Skeleton shape="circle" size="3rem" />
-                  <div class="flex-1">
-                    <Skeleton width="100%" height="1.5rem" class="mb-2" />
-                    <Skeleton width="60%" height="1rem" />
-                  </div>
-                  <Skeleton width="8rem" height="2rem" />
-                  <Skeleton width="6rem" height="1.5rem" />
-                </div>
-              </div>
-            </template>
-
-            <template #empty>
-              <div class="text-center py-16 text-surface-500">
-                <div class="mb-6">
-                  <i class="pi pi-shopping-cart text-8xl text-surface-300"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-4">暂无订单数据</h3>
-                <p class="text-surface-600 mb-6 max-w-md mx-auto">
-                  您还没有创建任何订单。点击下方按钮开始创建您的第一个订单。
-                </p>
-                <Button class="px-6 py-3" @click="openOrderModal" />
-              </div>
-            </template>
-
-            <TableHead field="orderNo" header="订单号" :sortable="true" style="min-width: 160px">
-              <template #body="slotProps">
-                <div class="flex items-center">
-                  <span class="font-mono bg-primary-50 text-primary-700 px-3 py-1 -full text-sm font-semibold">
-                    {{ slotProps.data.orderNo }}
-                  </span>
-                </div>
-              </template>
-            </TableHead>
-
-            <TableHead field="customer" header="客户信息" :sortable="true" style="min-width: 200px">
-              <template #body="slotProps">
-                <div class="flex items-center gap-3">
-                  <Avatar
-                    :shape="'circle'"
-                    size="normal"
-                    class="bg-gradient-to-br from-primary-400 to-primary-600 text-white"
-                  />
-                  <div>
-                    <div class="font-semibold text-surface-900">{{ slotProps.data.customerName }}</div>
-                    <div class="text-sm text-surface-600">VIP客户</div>
-                  </div>
-                </div>
-              </template>
-            </TableHead>
-
-            <TableHead field="amount" header="订单金额" :sortable="true" style="min-width: 140px">
-              <template #body="slotProps">
-                <div class="text-right">
-                  <div class="font-bold text-xl text-green-600">¥{{ slotProps.data.amount.toLocaleString() }}</div>
-                  <div class="text-xs text-surface-500">含税金额</div>
-                </div>
-              </template>
-            </TableHead>
-
-            <TableHead field="status" header="订单状态" :sortable="true" style="min-width: 120px">
-              <template #body="slotProps">
-                <div class="flex flex-col items-center gap-1">
-                  <Tag
-                    :value="getStatusText(slotProps.data.status)"
-                    :severity="getStatusSeverity(slotProps.data.status)"
-                    class="font-semibold"
-                  />
-                  <div class="text-xs text-surface-500">{{ getStatusProgress(slotProps.data.status) }}</div>
-                </div>
-              </template>
-            </TableHead>
-
-            <TableHead field="orderDate" header="订单日期" :sortable="true" style="min-width: 140px">
-              <template #body="slotProps">
-                <div class="text-center">
-                  <div class="font-medium text-surface-900">{{ formatDate(slotProps.data.orderDate) }}</div>
-                  <div class="text-xs text-surface-500">{{ formatTimeAgo(slotProps.data.orderDate) }}</div>
-                </div>
-              </template>
-            </TableHead>
-
-            <TableHead header="操作" style="min-width: 160px" :exportable="false">
-              <template #body="slotProps">
-                <div class="flex gap-1 justify-center">
-                  <Button
-                    size="sm"
-                    class="p-button-info"
-                    @click="viewOrder(slotProps.data)"
-                  />
-                  <Button
-                    size="sm"
-                    class="p-button-warning"
-                    @click="editOrder(slotProps.data)"
-                  />
-                  <Button
-                    size="sm"
-                    class="p-button-secondary"
-                    @click="duplicateOrder(slotProps.data)"
-                  />
-                  <Button
-                    size="sm"
-                    severity="danger"
-                    @click="confirmDelete(slotProps.data)"
-                  />
-                </div>
-              </template>
-            </TableHead>
-          </Table>
-        </div>
-      </template>
+      </CardContent>
     </Card>
 
     <!-- 订单详情/编辑对话框 -->
-    <Dialog
-      v-model:visible="showOrderModal"
-      :header="modalTitle"
-      modal
-      :style="{ width: '900px' }"
-      class="p-fluid order-dialog"
-      :draggable="false"
-    >
-      <template #header>
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-primary-100 -lg flex items-center justify-center">
-            <i class="pi pi-shopping-cart text-primary-600 text-lg"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold text-surface-900">{{ modalTitle }}</h3>
-            <p class="text-surface-600 text-sm">{{ isEditing ? '编辑订单信息' : '创建新的销售订单' }}</p>
-          </div>
-        </div>
-      </template>
+    <Dialog v-model:open="showOrderModal">
+      <DialogContent class="sm:max-w-[900px]">
+        <DialogHeader>
+          <DialogTitle class="flex items-center gap-2">
+            <ShoppingCart class="h-5 w-5" />
+            {{ modalTitle }}
+          </DialogTitle>
+          <DialogDescription>
+            {{ isEditing ? '编辑订单信息' : '创建新的销售订单' }}
+          </DialogDescription>
+        </DialogHeader>
 
-      <div class="space-y-6 py-4">
-        <!-- 基本信息 -->
-        <Card class="shadow-sm">
-          <template #header>
-            <div class="p-4 pb-0">
-              <h4 class="font-semibold text-surface-900 flex items-center">
-                <i class="pi pi-info-circle mr-2 text-primary-600"></i>
+        <div class="space-y-6 py-4">
+          <!-- 基本信息 -->
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-base flex items-center gap-2">
+                <Info class="h-4 w-4" />
                 基本信息
-              </h4>
-            </div>
-          </template>
-          <template #content>
-            <div class="p-4 pt-0">
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">订单号</label>
+                <div class="space-y-2">
+                  <Label>订单号</Label>
                   <Input
                     v-model="currentOrder.orderNo"
                     placeholder="系统自动生成"
@@ -366,127 +326,144 @@
                     class="font-mono"
                   />
                 </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">客户名称 *</label>
-                  <Select
-                    v-model="currentOrder.customerName"
-                    :options="customerOptions"
-                    option-option-value="value"
-                    placeholder="选择客户"
-                    filter
-                    show-clear
-                  />
+                <div class="space-y-2">
+                  <Label>客户名称 *</Label>
+                  <Select v-model="currentOrder.customerName">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择客户" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="customer in customerOptions"
+                        :key="customer.value"
+                        :value="customer.value"
+                      >
+                        {{ customer.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-            </div>
-          </template>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <!-- 订单详情 -->
-        <Card class="shadow-sm">
-          <template #header>
-            <div class="p-4 pb-0">
-              <h4 class="font-semibold text-surface-900 flex items-center">
-                <i class="pi pi-shopping-bag mr-2 text-primary-600"></i>
+          <!-- 订单详情 -->
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-base flex items-center gap-2">
+                <Package class="h-4 w-4" />
                 订单详情
-              </h4>
-            </div>
-          </template>
-          <template #content>
-            <div class="p-4 pt-0">
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">订单金额 *</label>
-                  <Input
-                    v-model="currentOrder.amount"
-                    type="number"
-                    mode="currency"
-                    currency="CNY"
-                    locale="zh-CN"
-                    placeholder="输入订单金额"
-                  />
+                <div class="space-y-2">
+                  <Label>订单金额 *</Label>
+                  <Input v-model="currentOrder.amount" type="number" placeholder="输入订单金额" />
                 </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">订单状态</label>
-                  <Select
-                    v-model="currentOrder.status"
-                    :options="statusOptions"
-                    option-option-value="value"
-                    placeholder="选择状态"
-                  />
+                <div class="space-y-2">
+                  <Label>订单状态</Label>
+                  <Select v-model="currentOrder.status">
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择状态" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="status in statusOptions"
+                        :key="status.value"
+                        :value="status.value"
+                      >
+                        {{ status.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">订单日期</label>
-                  <!-- Calendar 组件需要手动替换为 DatePicker -->
+                <div class="space-y-2">
+                  <Label>订单日期</Label>
+                  <Input v-model="currentOrder.orderDate" type="date" />
                 </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm font-semibold text-surface-900">预计交付日期</label>
-                  <!-- Calendar 组件需要手动替换为 DatePicker -->
+                <div class="space-y-2">
+                  <Label>预计交付日期</Label>
+                  <Input v-model="currentOrder.deliveryDate" type="date" />
                 </div>
               </div>
-            </div>
-          </template>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <!-- 备注信息 -->
-        <Card class="shadow-sm">
-          <template #header>
-            <div class="p-4 pb-0">
-              <h4 class="font-semibold text-surface-900 flex items-center">
-                <i class="pi pi-comment mr-2 text-primary-600"></i>
+          <!-- 备注信息 -->
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-base flex items-center gap-2">
+                <MessageSquare class="h-4 w-4" />
                 备注信息
-              </h4>
-            </div>
-          </template>
-          <template #content>
-            <div class="p-4 pt-0">
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-surface-900">订单备注</label>
-                <Textarea v-model="currentOrder.remarks" placeholder="输入订单备注信息..." :rows="4" class="w-full" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="space-y-2">
+                <Label>订单备注</Label>
+                <Textarea
+                  v-model="currentOrder.remarks"
+                  placeholder="输入订单备注信息..."
+                  rows="4"
+                />
               </div>
-            </div>
-          </template>
-        </Card>
-      </div>
-
-      <template #footer>
-        <div class="flex justify-end gap-3 pt-4 border-t border-surface-200">
-          <Button @click="closeOrderModal" />
-          <Button
-            ::icon="isEditing ? 'pi pi-check' : 'pi pi-plus'"
-            :loading="saving"
-            @click="saveOrder"
-          />
+            </CardContent>
+          </Card>
         </div>
-      </template>
+
+        <DialogFooter>
+          <Button variant="outline" @click="closeOrderModal">取消</Button>
+          <Button :disabled="saving" @click="saveOrder">
+            <Loader2 v-if="saving" class="mr-2 h-4 w-4 animate-spin" />
+            {{ isEditing ? '更新订单' : '创建订单' }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
     <!-- 删除确认对话框 -->
-    <!-- ConfirmDialog 已移除，需要手动实现确认对话框 -->
+    <AlertDialog v-model:open="showDeleteDialog">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>确认删除</AlertDialogTitle>
+          <AlertDialogDescription>
+            您确定要删除订单 "{{ deleteTarget?.orderNo }}" 吗？此操作无法撤销。
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>取消</AlertDialogCancel>
+          <AlertDialogAction @click="deleteOrder">删除</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
 
 <script setup lang="ts">
-// import Card from 'primevue/card' // 已移除PrimeVue导入
-// import Button from 'primevue/button' // 已移除PrimeVue导入
-// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
-// import Dropdown from 'primevue/dropdown' // 已移除PrimeVue导入
-// import Calendar from 'primevue/calendar' // 已移除PrimeVue导入
-// import DataTable from 'primevue/datatable' // 已移除PrimeVue导入
-// import Column from 'primevue/column' // 已移除PrimeVue导入
-// import Tag from 'primevue/tag' // 已移除PrimeVue导入
-// import Avatar from 'primevue/avatar' // 已移除PrimeVue导入
-// import Dialog from 'primevue/dialog' // 已移除PrimeVue导入
-// import Textarea from 'primevue/textarea' // 已移除PrimeVue导入
-// import InputNumber from 'primevue/inputnumber' // 已移除PrimeVue导入
-// import ConfirmDialog from 'primevue/confirmdialog' // 已移除PrimeVue导入
-// import IconField from 'primevue/iconfield' // 已移除PrimeVue导入
-// import InputIcon from 'primevue/inputicon' // 已移除PrimeVue导入
-// import Skeleton from 'primevue/skeleton' // 已移除PrimeVue导入
-// import { useConfirm } from 'primevue/useconfirm' // 已移除PrimeVue导入
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Copy,
+  DollarSign,
+  Download,
+  Edit,
+  Eye,
+  FileText,
+  Info,
+  Loader2,
+  MessageSquare,
+  Package,
+  Plus,
+  RefreshCw,
+  RotateCcw,
+  Search,
+  ShoppingCart,
+  Trash2,
+  TrendingUp,
+  Upload,
+} from 'lucide-vue-next'
+
 // 页面配置
 definePageMeta({
   layout: 'default',
@@ -501,20 +478,33 @@ const loading = ref(false)
 const saving = ref(false)
 const searchKeyword = ref('')
 const selectedStatus = ref('')
-const dateRange = ref(null)
-const pageSize = ref(10)
-
-// 分页选项
-const pageSizeOptions = [
-  { label: '10条/页', value: 10 },
-  { label: '20条/页', value: 20 },
-  { label: '50条/页', value: 50 },
-]
+const dateRange = ref({
+  start: '',
+  end: '',
+})
+const pageSize = ref('20')
+const currentPage = ref(1)
 
 // 对话框状态
 const showOrderModal = ref(false)
+const showDeleteDialog = ref(false)
 const isEditing = ref(false)
-// const confirm = useConfirm() // 已移除
+
+interface Order {
+  id: string
+  orderNo: string
+  customerName: string
+  amount: number
+  status: string
+  orderDate: Date
+  deliveryDate: Date
+  remarks: string
+  created_at: Date
+  updated_at: Date
+}
+
+const deleteTarget = ref<Order | null>(null)
+
 // 当前编辑的订单
 const currentOrder = ref({
   id: '',
@@ -522,8 +512,8 @@ const currentOrder = ref({
   customerName: '',
   amount: 0,
   status: 'pending',
-  orderDate: new Date(),
-  deliveryDate: new Date(),
+  orderDate: new Date().toISOString().split('T')[0],
+  deliveryDate: new Date().toISOString().split('T')[0],
   remarks: '',
   created_at: new Date(),
   updated_at: new Date(),
@@ -595,7 +585,6 @@ const orders = ref([
 
 // 状态选项
 const statusOptions = [
-  { label: '全部状态', value: '' },
   { label: '待确认', value: 'pending' },
   { label: '已确认', value: 'confirmed' },
   { label: '生产中', value: 'production' },
@@ -629,7 +618,26 @@ const filteredOrders = computed(() => {
     result = result.filter(order => order.status === selectedStatus.value)
   }
 
+  if (dateRange.value.start && dateRange.value.end) {
+    const startDate = new Date(dateRange.value.start)
+    const endDate = new Date(dateRange.value.end)
+    result = result.filter((order) => {
+      const orderDate = new Date(order.orderDate)
+      return orderDate >= startDate && orderDate <= endDate
+    })
+  }
+
   return result
+})
+
+const paginatedOrders = computed(() => {
+  const start = (currentPage.value - 1) * Number(pageSize.value)
+  const end = start + Number(pageSize.value)
+  return filteredOrders.value.slice(start, end)
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredOrders.value.length / Number(pageSize.value))
 })
 
 const pendingOrdersCount = computed(() => {
@@ -657,8 +665,8 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
-const getStatusSeverity = (status: string) => {
-  const severityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+const getStatusVariant = (status: string) => {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
     pending: 'outline',
     confirmed: 'secondary',
     production: 'secondary',
@@ -666,19 +674,7 @@ const getStatusSeverity = (status: string) => {
     delivered: 'default',
     cancelled: 'destructive',
   }
-  return severityMap[status] || 'secondary'
-}
-
-const getStatusProgress = (status: string) => {
-  const progressMap: Record<string, string> = {
-    pending: '等待确认',
-    confirmed: '已确认',
-    production: '生产中',
-    shipped: '运输中',
-    delivered: '已完成',
-    cancelled: '已取消',
-  }
-  return progressMap[status] || ''
+  return variantMap[status] || 'secondary'
 }
 
 const formatDate = (date: Date) => {
@@ -704,13 +700,12 @@ const formatTimeAgo = (date: Date) => {
 const resetFilters = () => {
   searchKeyword.value = ''
   selectedStatus.value = ''
-  dateRange.value = null
+  dateRange.value = { start: '', end: '' }
 }
 
 const refreshData = async () => {
   loading.value = true
   try {
-    // 模拟刷新数据
     await new Promise(resolve => setTimeout(resolve, 1000))
   }
   finally {
@@ -720,12 +715,10 @@ const refreshData = async () => {
 
 const exportData = () => {
   console.log('导出数据')
-  // 这里可以实现数据导出功能
 }
 
 const importOrders = () => {
   console.log('导入订单')
-  // 这里可以实现订单导入功能
 }
 
 const openOrderModal = () => {
@@ -736,8 +729,8 @@ const openOrderModal = () => {
     customerName: '',
     amount: 0,
     status: 'pending',
-    orderDate: new Date(),
-    deliveryDate: new Date(),
+    orderDate: new Date().toISOString().split('T')[0],
+    deliveryDate: new Date().toISOString().split('T')[0],
     remarks: '',
     created_at: new Date(),
     updated_at: new Date(),
@@ -745,24 +738,27 @@ const openOrderModal = () => {
   showOrderModal.value = true
 }
 
-const editOrder = (order: any) => {
+const editOrder = (order: Order) => {
   isEditing.value = true
-  currentOrder.value = { ...order }
+  currentOrder.value = {
+    ...order,
+    orderDate: new Date(order.orderDate).toISOString().split('T')[0],
+    deliveryDate: new Date(order.deliveryDate).toISOString().split('T')[0],
+  }
   showOrderModal.value = true
 }
 
-const viewOrder = (order: any) => {
+const viewOrder = (order: Order) => {
   editOrder(order)
-  // 可以设置为只读模式
 }
 
-const duplicateOrder = (order: any) => {
+const duplicateOrder = (order: Order) => {
   isEditing.value = false
   currentOrder.value = {
     ...order,
     id: '',
     orderNo: `SO-${new Date().getFullYear()}-${String(orders.value.length + 1).padStart(3, '0')}`,
-    orderDate: new Date(),
+    orderDate: new Date().toISOString().split('T')[0],
     status: 'pending',
     created_at: new Date(),
     updated_at: new Date(),
@@ -770,8 +766,20 @@ const duplicateOrder = (order: any) => {
   showOrderModal.value = true
 }
 
-const confirmDelete = (_order: any) => {
-  // TODO: 需要重新实现确认对话框
+const confirmDelete = (order: Order) => {
+  deleteTarget.value = order
+  showDeleteDialog.value = true
+}
+
+const deleteOrder = () => {
+  if (deleteTarget.value) {
+    const index = orders.value.findIndex(o => o.id === deleteTarget.value.id)
+    if (index !== -1) {
+      orders.value.splice(index, 1)
+    }
+  }
+  showDeleteDialog.value = false
+  deleteTarget.value = null
 }
 
 const saveOrder = async () => {
@@ -779,20 +787,24 @@ const saveOrder = async () => {
     saving.value = true
 
     if (isEditing.value) {
-      // 更新订单
       const index = orders.value.findIndex(o => o.id === currentOrder.value.id)
       if (index !== -1) {
         orders.value[index] = {
           ...currentOrder.value,
+          amount: Number(currentOrder.value.amount),
+          orderDate: new Date(currentOrder.value.orderDate),
+          deliveryDate: new Date(currentOrder.value.deliveryDate),
           updated_at: new Date(),
         }
       }
     }
     else {
-      // 创建新订单
       const newOrder = {
         ...currentOrder.value,
         id: Date.now().toString(),
+        amount: Number(currentOrder.value.amount),
+        orderDate: new Date(currentOrder.value.orderDate),
+        deliveryDate: new Date(currentOrder.value.deliveryDate),
         created_at: new Date(),
         updated_at: new Date(),
       }
@@ -813,4 +825,9 @@ const closeOrderModal = () => {
   showOrderModal.value = false
   isEditing.value = false
 }
+
+// 监听分页变化
+watch([pageSize, filteredOrders], () => {
+  currentPage.value = 1
+})
 </script>

@@ -40,7 +40,7 @@ export default defineNuxtConfig({
 <template>
   <div class="space-y-4">
     <!-- 按钮组件 -->
-    <Button variant="default" size="md"> 点击我 </Button>
+    <Button variant="default" size="md">点击我</Button>
 
     <!-- 输入框组件 -->
     <Input v-model="inputValue" placeholder="请输入内容..." type="text" />
@@ -91,7 +91,7 @@ const accepted = ref(false)
           <Label for="marketing">接收营销邮件</Label>
         </div>
 
-        <Button type="submit" class="w-full"> 创建账户 </Button>
+        <Button type="submit" class="w-full">创建账户</Button>
       </form>
     </CardContent>
   </Card>
@@ -119,7 +119,7 @@ const onSubmit = (event: Event) => {
     <Alert>
       <AlertCircle class="h-4 w-4" />
       <AlertTitle>提示</AlertTitle>
-      <AlertDescription> 这是一个重要的系统通知。 </AlertDescription>
+      <AlertDescription>这是一个重要的系统通知。</AlertDescription>
     </Alert>
 
     <!-- 对话框触发器 -->
@@ -131,7 +131,7 @@ const onSubmit = (event: Event) => {
       <DialogContent class="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>编辑用户信息</DialogTitle>
-          <DialogDescription> 在这里修改用户的基本信息。 </DialogDescription>
+          <DialogDescription>在这里修改用户的基本信息。</DialogDescription>
         </DialogHeader>
 
         <div class="grid gap-4 py-4">

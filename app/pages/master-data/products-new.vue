@@ -87,7 +87,9 @@
       <CardContent class="p-6">
         <div class="flex flex-col md:flex-row gap-4">
           <div class="flex-1 relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+            />
             <Input v-model="searchQuery" placeholder="搜索产品名称、编码或规格..." class="pl-10" />
           </div>
           <div class="flex gap-2">
@@ -99,7 +101,11 @@
                 <SelectItem value="">
                   <span class="text-muted-foreground">全部分类</span>
                 </SelectItem>
-                <SelectItem v-for="option in categoryOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in categoryOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -113,7 +119,11 @@
                 <SelectItem value="">
                   <span class="text-muted-foreground">全部</span>
                 </SelectItem>
-                <SelectItem v-for="option in stockStatusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in stockStatusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -127,7 +137,11 @@
                 <SelectItem value="">
                   <span class="text-muted-foreground">全部</span>
                 </SelectItem>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -199,7 +213,11 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="product in filteredProducts" :key="product.id" class="hover:bg-muted/50">
+              <TableRow
+                v-for="product in filteredProducts"
+                :key="product.id"
+                class="hover:bg-muted/50"
+              >
                 <TableCell>
                   <input type="checkbox" class="" />
                 </TableCell>
@@ -226,7 +244,9 @@
                   <div class="font-medium">{{ product.current_stock }}</div>
                   <div class="text-sm text-muted-foreground">{{ product.unit }}</div>
                 </TableCell>
-                <TableCell class="text-right font-medium"> ¥{{ formatCurrency(product.unit_price) }} </TableCell>
+                <TableCell class="text-right font-medium">
+                  ¥{{ formatCurrency(product.unit_price) }}
+                </TableCell>
                 <TableCell class="text-right text-muted-foreground">
                   ¥{{ formatCurrency(product.cost_price) }}
                 </TableCell>
@@ -236,7 +256,9 @@
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <span class="text-sm text-muted-foreground">{{ formatDate(product.created_at) }}</span>
+                  <span class="text-sm text-muted-foreground">
+                    {{ formatDate(product.created_at) }}
+                  </span>
                 </TableCell>
                 <TableCell class="text-right">
                   <div class="flex items-center justify-end gap-1">
@@ -257,7 +279,9 @@
                     <Button
                       variant="ghost"
                       size="sm"
-                      @click="toggleStatus(product, product.status === 'active' ? 'inactive' : 'active')"
+                      @click="
+                        toggleStatus(product, product.status === 'active' ? 'inactive' : 'active')
+                      "
                     >
                       <component :is="product.status === 'active' ? Pause : Play" class="h-4 w-4" />
                     </Button>
@@ -308,20 +332,34 @@
                   </div>
 
                   <div class="space-y-2">
-                    <Label>产品名称 <span class="text-destructive">*</span></Label>
-                    <Input v-model="productForm.name" placeholder="请输入产品名称" :disabled="dialogMode === 'view'" />
+                    <Label>
+                      产品名称
+                      <span class="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      v-model="productForm.name"
+                      placeholder="请输入产品名称"
+                      :disabled="dialogMode === 'view'"
+                    />
                   </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                   <div class="space-y-2">
-                    <Label>产品分类 <span class="text-destructive">*</span></Label>
+                    <Label>
+                      产品分类
+                      <span class="text-destructive">*</span>
+                    </Label>
                     <Select v-model="productForm.category" :disabled="dialogMode === 'view'">
                       <SelectTrigger>
                         <SelectValue placeholder="选择产品分类" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem v-for="option in categoryOptions" :key="option.value" :value="option.value">
+                        <SelectItem
+                          v-for="option in categoryOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
                           {{ option.label }}
                         </SelectItem>
                       </SelectContent>
@@ -329,13 +367,20 @@
                   </div>
 
                   <div class="space-y-2">
-                    <Label>计量单位 <span class="text-destructive">*</span></Label>
+                    <Label>
+                      计量单位
+                      <span class="text-destructive">*</span>
+                    </Label>
                     <Select v-model="productForm.unit" :disabled="dialogMode === 'view'">
                       <SelectTrigger>
                         <SelectValue placeholder="选择计量单位" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem v-for="option in unitOptions" :key="option.value" :value="option.value">
+                        <SelectItem
+                          v-for="option in unitOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
                           {{ option.label }}
                         </SelectItem>
                       </SelectContent>
@@ -376,7 +421,10 @@
               <CardContent class="space-y-4">
                 <div class="grid grid-cols-3 gap-4">
                   <div class="space-y-2">
-                    <Label>销售单价 <span class="text-destructive">*</span></Label>
+                    <Label>
+                      销售单价
+                      <span class="text-destructive">*</span>
+                    </Label>
                     <Input
                       v-model="productForm.unit_price"
                       type="number"
@@ -388,7 +436,10 @@
                   </div>
 
                   <div class="space-y-2">
-                    <Label>成本价 <span class="text-destructive">*</span></Label>
+                    <Label>
+                      成本价
+                      <span class="text-destructive">*</span>
+                    </Label>
                     <Input
                       v-model="productForm.cost_price"
                       type="number"
@@ -455,7 +506,11 @@
                         <SelectValue placeholder="选择产品状态" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                        <SelectItem
+                          v-for="option in statusOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
                           {{ option.label }}
                         </SelectItem>
                       </SelectContent>
@@ -659,7 +714,9 @@ const filteredProducts = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      product => product.product_no.toLowerCase().includes(query) || product.name.toLowerCase().includes(query),
+      product =>
+        product.product_no.toLowerCase().includes(query)
+        || product.name.toLowerCase().includes(query),
     )
   }
 
@@ -796,7 +853,9 @@ const showStockDetails = (product: any) => {
 }
 
 const toggleStatus = async (product: any, newStatus: string) => {
-  if (window.confirm(`确定要${newStatus === 'active' ? '启用' : '停用'}产品 ${product.name} 吗？`)) {
+  if (
+    window.confirm(`确定要${newStatus === 'active' ? '启用' : '停用'}产品 ${product.name} 吗？`)
+  ) {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       const index = mockProducts.value.findIndex(p => p.id === product.id)

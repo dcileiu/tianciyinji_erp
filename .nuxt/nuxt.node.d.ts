@@ -1,6 +1,6 @@
+/// <reference types="@nuxt/telemetry" />
 /// <reference types="@nuxtjs/supabase" />
 /// <reference types="shadcn-nuxt" />
-/// <reference types="@nuxt/telemetry" />
 /// <reference types="@nuxt/eslint" />
 /// <reference types="@nuxt/devtools" />
 /// <reference path="types/modules.d.ts" />

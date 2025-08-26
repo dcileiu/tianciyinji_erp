@@ -71,7 +71,9 @@
         <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div class="flex flex-col md:flex-row gap-4 flex-1">
             <div class="flex-1 relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              />
               <Input v-model="searchQuery" placeholder="搜索角色名称或描述..." class="pl-10" />
             </div>
 
@@ -91,7 +93,11 @@
                 <SelectValue placeholder="选择状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -160,7 +166,9 @@
               <TableRow v-for="role in filteredRoles" :key="role.id">
                 <TableCell>
                   <div class="flex items-center">
-                    <div class="bg-primary/10 text-primary w-8 h-8 -full flex items-center justify-center mr-3">
+                    <div
+                      class="bg-primary/10 text-primary w-8 h-8 -full flex items-center justify-center mr-3"
+                    >
                       <Shield class="w-4 h-4" />
                     </div>
                     <div>
@@ -238,7 +246,10 @@
 
                 <div class="space-y-2">
                   <Label>角色类型</Label>
-                  <Select v-model="roleForm.type" :disabled="editingRole && editingRole.type === 'system'">
+                  <Select
+                    v-model="roleForm.type"
+                    :disabled="editingRole && editingRole.type === 'system'"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="选择类型" />
                     </SelectTrigger>
@@ -302,7 +313,11 @@
                       </Label>
                     </div>
                     <div class="ml-6 space-y-2">
-                      <div v-for="child in group.children" :key="child.key" class="flex items-center space-x-2">
+                      <div
+                        v-for="child in group.children"
+                        :key="child.key"
+                        class="flex items-center space-x-2"
+                      >
                         <input
                           :id="child.key"
                           v-model="selectedPermissions[child.key]"
@@ -681,7 +696,9 @@ const submitRole = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000))
 
     // 获取选中的权限
-    const permissions = Object.keys(selectedPermissions.value).filter(key => selectedPermissions.value[key]?.checked)
+    const permissions = Object.keys(selectedPermissions.value).filter(
+      key => selectedPermissions.value[key]?.checked,
+    )
 
     if (editingRole.value) {
       // 更新角色

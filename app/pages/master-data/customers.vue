@@ -26,7 +26,10 @@
                 <Upload class="mr-2 h-4 w-4" />
                 导入客户
               </Button>
-              <Button class="bg-white text-green-600 hover:bg-green-50 border-0 shadow-lg" @click="openCustomerModal">
+              <Button
+                class="bg-white text-green-600 hover:bg-green-50 border-0 shadow-lg"
+                @click="openCustomerModal"
+              >
                 <Plus class="mr-2 h-4 w-4" />
                 新建客户
               </Button>
@@ -49,7 +52,9 @@
             <div class="space-y-2">
               <Label class="text-sm font-semibold">搜索客户</Label>
               <div class="relative">
-                <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search
+                  class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                />
                 <Input v-model="searchKeyword" placeholder="搜索客户名称、编号..." class="pl-10" />
               </div>
             </div>
@@ -61,7 +66,11 @@
                   <SelectValue placeholder="全部状态" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                  <SelectItem
+                    v-for="option in statusOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
                     {{ option.label }}
                   </SelectItem>
                 </SelectContent>
@@ -75,7 +84,11 @@
                   <SelectValue placeholder="全部地区" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="option in regionOptions" :key="option.value" :value="option.value">
+                  <SelectItem
+                    v-for="option in regionOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
                     {{ option.label }}
                   </SelectItem>
                 </SelectContent>
@@ -100,13 +113,17 @@
 
       <!-- 统计信息卡片 -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card class="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg overflow-hidden">
+        <Card
+          class="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg overflow-hidden"
+        >
           <CardContent class="p-6">
             <div class="relative">
               <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
+                  <div
+                    class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center"
+                  >
                     <Users class="h-6 w-6 text-white" />
                   </div>
                   <div class="text-right">
@@ -128,13 +145,17 @@
           </CardContent>
         </Card>
 
-        <Card class="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg overflow-hidden">
+        <Card
+          class="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg overflow-hidden"
+        >
           <CardContent class="p-6">
             <div class="relative">
               <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
+                  <div
+                    class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center"
+                  >
                     <CheckCircle class="h-6 w-6 text-white" />
                   </div>
                   <div class="text-right">
@@ -154,13 +175,17 @@
           </CardContent>
         </Card>
 
-        <Card class="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg overflow-hidden">
+        <Card
+          class="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg overflow-hidden"
+        >
           <CardContent class="p-6">
             <div class="relative">
               <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 -full"></div>
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center">
+                  <div
+                    class="w-14 h-14 bg-white bg-opacity-20 -xl flex items-center justify-center"
+                  >
                     <UserPlus class="h-6 w-6 text-white" />
                   </div>
                   <div class="text-right">
@@ -200,7 +225,11 @@
                   <SelectValue placeholder="每页显示" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="option in pageSizeOptions" :key="option.value" :value="option.value">
+                  <SelectItem
+                    v-for="option in pageSizeOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
                     {{ option.label }}
                   </SelectItem>
                 </SelectContent>
@@ -218,7 +247,10 @@
               <p class="text-sm text-gray-500">加载中...</p>
             </div>
           </div>
-          <div v-else-if="filteredCustomers.length === 0" class="flex flex-col items-center justify-center py-12">
+          <div
+            v-else-if="filteredCustomers.length === 0"
+            class="flex flex-col items-center justify-center py-12"
+          >
             <Search class="h-12 w-12 text-gray-400 mb-4" />
             <h3 class="text-lg font-medium text-gray-900 mb-2">未找到客户</h3>
             <p class="text-gray-500">尝试调整搜索条件或添加新客户</p>
@@ -241,7 +273,9 @@
                   <TableCell>
                     <div class="flex items-center space-x-3">
                       <div class="w-8 h-8 bg-blue-100 -full flex items-center justify-center">
-                        <span class="text-sm font-medium text-blue-600">{{ customer.name.charAt(0) }}</span>
+                        <span class="text-sm font-medium text-blue-600">
+                          {{ customer.name.charAt(0) }}
+                        </span>
                       </div>
                       <div>
                         <div class="font-medium text-gray-900">{{ customer.code }}</div>
@@ -264,7 +298,9 @@
                   <TableCell>
                     <div class="flex items-center">
                       <Mail class="h-4 w-4 text-gray-400 mr-2" />
-                      <span class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ customer.email }}</span>
+                      <span class="text-blue-600 hover:text-blue-800 cursor-pointer">
+                        {{ customer.email }}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -274,7 +310,10 @@
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge :variant="getStatusVariant(customer.status)" class="px-3 py-1 text-xs font-medium">
+                    <Badge
+                      :variant="getStatusVariant(customer.status)"
+                      class="px-3 py-1 text-xs font-medium"
+                    >
                       {{ getStatusText(customer.status) }}
                     </Badge>
                   </TableCell>
@@ -358,14 +397,18 @@
                   size="lg"
                   class="bg-gradient-to-br from-primary-400 to-primary-600 text-white shadow-lg"
                 />
-                <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white -full"></div>
+                <div
+                  class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white -full"
+                ></div>
               </div>
               <div>
                 <div class="font-bold text-lg text-surface-900">{{ slotProps.data.name }}</div>
                 <div class="text-sm text-primary-600 font-mono bg-primary-50 px-2 py-1">
                   {{ slotProps.data.code }}
                 </div>
-                <div class="text-xs text-surface-500 mt-1">创建于 {{ formatDate(slotProps.data.created_at) }}</div>
+                <div class="text-xs text-surface-500 mt-1">
+                  创建于 {{ formatDate(slotProps.data.created_at) }}
+                </div>
               </div>
             </div>
           </template>
@@ -380,7 +423,10 @@
               </div>
               <div class="flex items-center gap-2">
                 <i class="pi pi-phone text-green-600"></i>
-                <a :href="`tel:${slotProps.data.contactPhone}`" class="text-green-600 hover:underline">
+                <a
+                  :href="`tel:${slotProps.data.contactPhone}`"
+                  class="text-green-600 hover:underline"
+                >
                   {{ slotProps.data.contactPhone }}
                 </a>
               </div>
@@ -420,7 +466,9 @@
                 :severity="getStatusSeverity(slotProps.data.status)"
                 class="font-semibold px-3 py-1"
               />
-              <div class="text-xs text-surface-500">{{ getStatusDescription(slotProps.data.status) }}</div>
+              <div class="text-xs text-surface-500">
+                {{ getStatusDescription(slotProps.data.status) }}
+              </div>
             </div>
           </template>
         </TableHead>
@@ -454,7 +502,9 @@
             </div>
             <div>
               <DialogTitle class="text-xl font-bold text-gray-900">{{ modalTitle }}</DialogTitle>
-              <p class="text-gray-600 text-sm">{{ isEditing ? '编辑客户信息' : '创建新的客户档案' }}</p>
+              <p class="text-gray-600 text-sm">
+                {{ isEditing ? '编辑客户信息' : '创建新的客户档案' }}
+              </p>
             </div>
           </div>
         </DialogHeader>

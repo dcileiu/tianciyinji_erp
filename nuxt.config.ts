@@ -66,7 +66,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-08-20',
 
   vite: {
-    plugins: [tailwindcss() as any],
+    plugins: [tailwindcss()],
     optimizeDeps: {
       include: ['vue', 'vue-router', '@vueuse/core'],
     },
@@ -90,9 +90,9 @@ export default defineNuxtConfig({
       login: '/login',
       callback: '/auth/callback',
       exclude: [
-        '/register',
-        '/forgot-password',
-        '/auth/reset-password',
+        '/login/register',
+        '/login/forgot-password',
+        '/login/reset-password',
         '/getting-started',
         '/components-demo',
         '/db-init',

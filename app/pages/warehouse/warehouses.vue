@@ -57,7 +57,9 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">仓库列表</h3>
-          <div class="flex items-center gap-2 text-sm text-muted-color">共 {{ totalCount }} 个仓库</div>
+          <div class="flex items-center gap-2 text-sm text-muted-color">
+            共 {{ totalCount }} 个仓库
+          </div>
         </div>
       </template>
 
@@ -102,7 +104,10 @@
 
           <TableHead field="type" header="类型" sortable>
             <template #body="slotProps">
-              <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
+              <Tag
+                :value="getTypeDisplayName(slotProps.data.type)"
+                :severity="getTypeSeverity(slotProps.data.type)"
+              />
             </template>
           </TableHead>
 
@@ -133,21 +138,9 @@
           <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
-                <Button
-                  text
-                  size="sm"
-                  @click="viewWarehouse(slotProps.data)"
-                />
-                <Button
-                  text
-                  size="sm"
-                  @click="editWarehouse(slotProps.data)"
-                />
-                <Button
-                  text
-                  size="sm"
-                  @click="manageLocations(slotProps.data)"
-                />
+                <Button text size="sm" @click="viewWarehouse(slotProps.data)" />
+                <Button text size="sm" @click="editWarehouse(slotProps.data)" />
+                <Button text size="sm" @click="manageLocations(slotProps.data)" />
                 <Button
                   text
                   size="sm"
@@ -338,7 +331,9 @@ const filteredWarehouses = computed(() => {
   if (filters.value.search) {
     const query = filters.value.search.toLowerCase()
     result = result.filter(
-      warehouse => warehouse.name.toLowerCase().includes(query) || warehouse.warehouse_no.toLowerCase().includes(query),
+      warehouse =>
+        warehouse.name.toLowerCase().includes(query)
+        || warehouse.warehouse_no.toLowerCase().includes(query),
     )
   }
 

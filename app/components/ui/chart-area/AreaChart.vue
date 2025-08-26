@@ -51,7 +51,9 @@ type Data = (typeof props.data)[number]
 const chartRef = useId()
 
 const index = computed(() => props.index as KeyOfT)
-const colors = computed(() => (props.colors?.length ? props.colors : (() => ['#8b5cf6'])(props.categories.length)))
+const colors = computed(() =>
+  props.colors?.length ? props.colors : (() => ['#8b5cf6'])(props.categories.length),
+)
 
 const legendItems = ref<BulletLegendItemInterface[]>(
   props.categories.map((category, i) => ({
@@ -70,9 +72,17 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
 
 <template>
   <div :class="cn('w-full h-[400px] flex flex-col items-end', $attrs.class ?? '')">
-    <ChartLegend v-if="showLegend" v-model:items="legendItems" @legend-item-click="handleLegendItemClick" />
+    <ChartLegend
+      v-if="showLegend"
+      v-model:items="legendItems"
+      @legend-item-click="handleLegendItemClick"
+    />
 
-    <VisXYContainer :style="{ height: isMounted ? '100%' : 'auto' }" :margin="{ left: 20, right: 20 }" :data="data">
+    <VisXYContainer
+      :style="{ height: isMounted ? '100%' : 'auto' }"
+      :margin="{ left: 20, right: 20 }"
+      :data="data"
+    >
       <svg width="0" height="0">
         <defs>
           <linearGradient
@@ -126,7 +136,9 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
           :curve-type="curveType"
           :attributes="{
             [Line.selectors.line]: {
-              opacity: legendItems.find(item => item.name === category)?.inactive ? filterOpacity : 1,
+              opacity: legendItems.find(item => item.name === category)?.inactive
+                ? filterOpacity
+                : 1,
             },
           }"
         />
@@ -155,7 +167,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
         tick-text-color="hsl(var(--vis-text-color))"
       />
 
-      <slot ></slot>
+      <slot></slot>
     </VisXYContainer>
   </div>
 </template>

@@ -34,7 +34,11 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部类型</SelectItem>
-                <SelectItem v-for="option in logTypeOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in logTypeOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -71,7 +75,9 @@
               <p class="text-sm text-muted-foreground">总日志数</p>
               <p class="text-2xl font-bold text-blue-600">{{ logStats.total }}</p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 -lg flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 -lg flex items-center justify-center"
+            >
               <FileText class="text-blue-600 w-6 h-6" />
             </div>
           </div>
@@ -85,7 +91,9 @@
               <p class="text-sm text-muted-foreground">今日操作</p>
               <p class="text-2xl font-bold text-green-600">{{ logStats.today }}</p>
             </div>
-            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 -lg flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-green-100 dark:bg-green-900/20 -lg flex items-center justify-center"
+            >
               <!-- Calendar 组件需要手动替换为 DatePicker -->
             </div>
           </div>
@@ -99,7 +107,9 @@
               <p class="text-sm text-muted-foreground">错误日志</p>
               <p class="text-2xl font-bold text-red-600">{{ logStats.errors }}</p>
             </div>
-            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 -lg flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-red-100 dark:bg-red-900/20 -lg flex items-center justify-center"
+            >
               <AlertTriangle class="text-red-600 w-6 h-6" />
             </div>
           </div>
@@ -113,7 +123,9 @@
               <p class="text-sm text-muted-foreground">活跃用户</p>
               <p class="text-2xl font-bold text-purple-600">{{ logStats.activeUsers }}</p>
             </div>
-            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 -lg flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 -lg flex items-center justify-center"
+            >
               <Users class="text-purple-600 w-6 h-6" />
             </div>
           </div>
@@ -156,7 +168,9 @@
                 </TableCell>
               </TableRow>
               <TableRow v-else-if="filteredLogs.length === 0">
-                <TableCell colspan="9" class="text-center py-8 text-muted-foreground"> 暂无数据 </TableCell>
+                <TableCell colspan="9" class="text-center py-8 text-muted-foreground">
+                  暂无数据
+                </TableCell>
               </TableRow>
               <TableRow v-for="log in filteredLogs" v-else :key="log.id">
                 <TableCell>
@@ -174,7 +188,9 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-primary/10 -full flex items-center justify-center text-sm font-medium">
+                    <div
+                      class="w-8 h-8 bg-primary/10 -full flex items-center justify-center text-sm font-medium"
+                    >
                       {{ log.user_name.charAt(0) }}
                     </div>
                     <span class="font-medium">{{ log.user_name }}</span>
@@ -301,12 +317,14 @@
           <div v-if="selectedLog.request_data">
             <Label class="text-sm font-medium">请求数据</Label>
             <div class="bg-muted p-3 mt-1">
-              <pre class="text-sm overflow-auto">{{ JSON.stringify(selectedLog.request_data, null, 2) }}</pre>
+              <pre class="text-sm overflow-auto">{{
+                JSON.stringify(selectedLog.request_data, null, 2)
+              }}</pre>
             </div>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="showLogDetail = false"> 关闭 </Button>
+          <Button variant="outline" @click="showLogDetail = false">关闭</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -316,7 +334,16 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { AlertTriangle, Download, Eye, FileText, RefreshCw, Search, Trash2, Users } from 'lucide-vue-next'
+import {
+  AlertTriangle,
+  Download,
+  Eye,
+  FileText,
+  RefreshCw,
+  Search,
+  Trash2,
+  Users,
+} from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 // 页面配置

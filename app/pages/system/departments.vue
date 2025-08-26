@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50">
     <!-- 页面标题 -->
     <div class="flex justify-between items-start mb-6">
       <div>
@@ -19,8 +19,14 @@
       <CardContent class="p-6">
         <div class="flex gap-4 items-center flex-wrap">
           <div class="flex-1 min-w-80 relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input v-model="searchQuery" placeholder="搜索部门名称、负责人..." class="pl-10 w-full" />
+            <Search
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"
+            />
+            <Input
+              v-model="searchQuery"
+              placeholder="搜索部门名称、负责人..."
+              class="pl-10 w-full"
+            />
           </div>
 
           <div class="flex gap-4 items-center">
@@ -29,7 +35,11 @@
                 <SelectValue placeholder="状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in statusFilterOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusFilterOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -147,7 +157,12 @@
 
           <div class="space-y-2">
             <Label for="description">部门描述</Label>
-            <Textarea id="description" v-model="departmentForm.description" placeholder="请输入部门描述" :rows="3" />
+            <Textarea
+              id="description"
+              v-model="departmentForm.description"
+              placeholder="请输入部门描述"
+              :rows="3"
+            />
           </div>
 
           <div class="space-y-2">
@@ -157,7 +172,11 @@
                 <SelectValue placeholder="请选择上级部门" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in parentDepartmentOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in parentDepartmentOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -195,8 +214,8 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeCreateDialog"> 取消 </Button>
-          <Button @click="saveDepartment"> 保存 </Button>
+          <Button variant="outline" @click="closeCreateDialog">取消</Button>
+          <Button @click="saveDepartment">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -390,7 +409,12 @@ const saveDepartment = () => {
     // 更新部门
     const index = departments.value.findIndex(d => d.id === editingDepartment.value.id)
     if (index !== -1) {
-      departments.value[index] = { ...departmentForm.value, id: editingDepartment.value.id, parentDepartment: '', employeeCount: 0 }
+      departments.value[index] = {
+        ...departmentForm.value,
+        id: editingDepartment.value.id,
+        parentDepartment: '',
+        employeeCount: 0,
+      }
     }
     toast.success('部门更新成功')
   }

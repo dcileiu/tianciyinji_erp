@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 min-h-screen bg-surface-50">
+  <div class="min-h-screen bg-surface-50">
     <!-- 页面标题 -->
     <div class="flex justify-between items-start mb-6">
       <div>
@@ -19,7 +19,9 @@
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
-              <div class="text-2xl font-semibold text-blue-600 mb-1">{{ stats.totalWorkshops }}</div>
+              <div class="text-2xl font-semibold text-blue-600 mb-1">
+                {{ stats.totalWorkshops }}
+              </div>
               <div class="text-sm text-muted-color mb-2">总车间数</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
                 <i class="pi pi-arrow-up"></i>
@@ -41,7 +43,9 @@
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
-              <div class="text-2xl font-semibold text-green-600 mb-1">{{ stats.activeWorkshops }}</div>
+              <div class="text-2xl font-semibold text-green-600 mb-1">
+                {{ stats.activeWorkshops }}
+              </div>
               <div class="text-sm text-muted-color mb-2">运行中</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
                 <i class="pi pi-check-circle"></i>
@@ -63,7 +67,9 @@
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
-              <div class="text-2xl font-semibold text-orange-600 mb-1">{{ stats.maintenanceWorkshops }}</div>
+              <div class="text-2xl font-semibold text-orange-600 mb-1">
+                {{ stats.maintenanceWorkshops }}
+              </div>
               <div class="text-sm text-muted-color mb-2">维护中</div>
               <div class="flex items-center gap-1 text-sm text-orange-600">
                 <i class="pi pi-exclamation-triangle"></i>
@@ -85,7 +91,9 @@
         <template #content>
           <div class="flex items-center justify-between p-4">
             <div class="flex-1">
-              <div class="text-2xl font-semibold text-purple-600 mb-1">{{ stats.totalEquipment }}</div>
+              <div class="text-2xl font-semibold text-purple-600 mb-1">
+                {{ stats.totalEquipment }}
+              </div>
               <div class="text-sm text-muted-color mb-2">设备总数</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
                 <i class="pi pi-arrow-up"></i>
@@ -212,18 +220,17 @@
 
           <TableHead field="type" header="车间类型" :sortable="true">
             <template #body="slotProps">
-              <Tag :value="getTypeText(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
+              <Tag
+                :value="getTypeText(slotProps.data.type)"
+                :severity="getTypeSeverity(slotProps.data.type)"
+              />
             </template>
           </TableHead>
 
           <TableHead field="manager" header="负责人" :sortable="true">
             <template #body="slotProps">
               <div class="flex items-center gap-2">
-                <Avatar
-                  :shape="'circle'"
-                  size="normal"
-                  class="bg-surface-200 text-surface-700"
-                />
+                <Avatar :shape="'circle'" size="normal" class="bg-surface-200 text-surface-700" />
                 <span class="font-medium">{{ slotProps.data.manager || '未指定' }}</span>
               </div>
             </template>
@@ -247,10 +254,9 @@
           <TableHead field="utilization" header="产能利用率" :sortable="true">
             <template #body="slotProps">
               <div class="flex items-center gap-2">
-                <!-- ProgressBar 组件已移除 -->= 80,
-                'bg-orange-100': slotProps.data.utilization >= 60 && slotProps.data.utilization < 80,
-                'bg-red-100': slotProps.data.utilization < 60,
-                }"
+                <!-- ProgressBar 组件已移除 -->
+                = 80, 'bg-orange-100': slotProps.data.utilization >= 60 &&
+                slotProps.data.utilization < 80, 'bg-red-100': slotProps.data.utilization < 60, }"
                 />
                 <span class="text-sm font-medium">{{ slotProps.data.utilization }}%</span>
               </div>
@@ -259,30 +265,20 @@
 
           <TableHead field="status" header="状态" :sortable="true">
             <template #body="slotProps">
-              <Tag :value="getStatusText(slotProps.data.status)" :severity="getStatusSeverity(slotProps.data.status)" />
+              <Tag
+                :value="getStatusText(slotProps.data.status)"
+                :severity="getStatusSeverity(slotProps.data.status)"
+              />
             </template>
           </TableHead>
 
           <TableHead header="操作" class="w-40">
             <template #body="slotProps">
               <div class="flex gap-2">
-                <Button
-                  size="sm"
-                  @click="viewWorkshop(slotProps.data)"
-                />
-                <Button
-                  size="sm"
-                  @click="editWorkshop(slotProps.data)"
-                />
-                <Button
-                  size="sm"
-                  @click="manageEquipment(slotProps.data)"
-                />
-                <Button
-                  size="sm"
-                  severity="danger"
-                  @click="confirmDelete(slotProps.data)"
-                />
+                <Button size="sm" @click="viewWorkshop(slotProps.data)" />
+                <Button size="sm" @click="editWorkshop(slotProps.data)" />
+                <Button size="sm" @click="manageEquipment(slotProps.data)" />
+                <Button size="sm" severity="danger" @click="confirmDelete(slotProps.data)" />
               </div>
             </template>
           </TableHead>
@@ -340,11 +336,23 @@
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
             <label for="workshopManager" class="text-sm font-medium text-color">负责人</label>
-            <Input id="workshopManager" v-model="workshopForm.manager" placeholder="输入负责人姓名" />
+            <Input
+              id="workshopManager"
+              v-model="workshopForm.manager"
+              placeholder="输入负责人姓名"
+            />
           </div>
           <div class="flex flex-col gap-2">
-            <label for="workshopCapacity" class="text-sm font-medium text-color">设计产能（件/日）</label>
-            <Input id="workshopCapacity" v-model="workshopForm.capacity" type="number" placeholder="输入设计产能" :min="0" />
+            <label for="workshopCapacity" class="text-sm font-medium text-color">
+              设计产能（件/日）
+            </label>
+            <Input
+              id="workshopCapacity"
+              v-model="workshopForm.capacity"
+              type="number"
+              placeholder="输入设计产能"
+              :min="0"
+            />
           </div>
         </div>
 
@@ -355,7 +363,12 @@
 
         <div class="flex flex-col gap-2">
           <label for="workshopDescription" class="text-sm font-medium text-color">描述</label>
-          <Textarea id="workshopDescription" v-model="workshopForm.description" placeholder="输入车间描述" rows="3" />
+          <Textarea
+            id="workshopDescription"
+            v-model="workshopForm.description"
+            placeholder="输入车间描述"
+            rows="3"
+          />
         </div>
       </div>
 

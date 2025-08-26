@@ -66,7 +66,12 @@
           <LogIn class="w-4 h-4 mr-2" />
           立即登录
         </Button>
-        <Button variant="outline" class="w-full sm:w-auto" size="lg" @click="navigateTo('/getting-started')">
+        <Button
+          variant="outline"
+          class="w-full sm:w-auto"
+          size="lg"
+          @click="navigateTo('/getting-started')"
+        >
           <Info class="w-4 h-4 mr-2" />
           了解更多
         </Button>
@@ -78,7 +83,15 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { Building2, Calculator, Factory, Info, LogIn, ShoppingCart, Warehouse } from 'lucide-vue-next'
+import {
+  Building2,
+  Calculator,
+  Factory,
+  Info,
+  LogIn,
+  ShoppingCart,
+  Warehouse,
+} from 'lucide-vue-next'
 import { useAuth } from '~/composables/useAuth'
 
 // 页面元数据

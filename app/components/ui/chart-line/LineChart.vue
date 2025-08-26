@@ -60,9 +60,17 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
 
 <template>
   <div :class="cn('w-full h-[400px] flex flex-col items-end', $attrs.class ?? '')">
-    <ChartLegend v-if="showLegend" v-model:items="legendItems" @legend-item-click="handleLegendItemClick" />
+    <ChartLegend
+      v-if="showLegend"
+      v-model:items="legendItems"
+      @legend-item-click="handleLegendItemClick"
+    />
 
-    <VisXYContainer :margin="{ left: 20, right: 20 }" :data="data" :style="{ height: isMounted ? '100%' : 'auto' }">
+    <VisXYContainer
+      :margin="{ left: 20, right: 20 }"
+      :data="data"
+      :style="{ height: isMounted ? '100%' : 'auto' }"
+    >
       <ChartCrosshair
         v-if="showTooltip"
         :colors="colors"
@@ -79,7 +87,9 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
           :color="colors[i]"
           :attributes="{
             [Line.selectors.line]: {
-              opacity: legendItems.find((item) => item.name === category)?.inactive ? filterOpacity : 1,
+              opacity: legendItems.find(item => item.name === category)?.inactive
+                ? filterOpacity
+                : 1,
             },
           }"
         />

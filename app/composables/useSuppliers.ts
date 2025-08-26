@@ -69,7 +69,11 @@ export const useSuppliers = () => {
       loading.value = true
       error.value = null
 
-      const { data, error: fetchError } = await supabase.from('suppliers').select('*').eq('id', id).single()
+      const { data, error: fetchError } = await supabase
+        .from('suppliers')
+        .select('*')
+        .eq('id', id)
+        .single()
 
       if (fetchError) throw fetchError
 

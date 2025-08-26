@@ -114,7 +114,9 @@
             <h2 class="text-xl font-semibold text-color mb-4">初始化步骤</h2>
             <div class="flex flex-column gap-4">
               <!-- 检查数据库连接 -->
-              <div class="flex align-items-center justify-content-between p-4 border-1 border-surface border-round-lg">
+              <div
+                class="flex align-items-center justify-content-between p-4 border-1 border-surface border-round-lg"
+              >
                 <div class="flex align-items-center gap-3">
                   <div
                     :class="[
@@ -126,22 +128,36 @@
                           : 'bg-gray-400',
                     ]"
                   >
-                    <i v-if="getStepById('check-connection')?.status === 'completed'" class="pi pi-check text-xs"></i>
+                    <i
+                      v-if="getStepById('check-connection')?.status === 'completed'"
+                      class="pi pi-check text-xs"
+                    ></i>
                     <span v-else>1</span>
                   </div>
                   <div>
                     <p class="font-medium text-color">检查数据库连接</p>
                     <p class="text-sm text-muted-color">验证数据库连接状态</p>
-                    <div v-if="getStepById('check-connection')?.progress && getStepById('check-connection')!.progress > 0" class="mt-1" />
+                    <div
+                      v-if="
+                        getStepById('check-connection')?.progress
+                          && getStepById('check-connection')!.progress > 0
+                      "
+                      class="mt-1"
+                    />
                   </div>
                 </div>
-                <Button :disabled="getStepById('check-connection')?.status === 'running'" @click="checkConnection">
+                <Button
+                  :disabled="getStepById('check-connection')?.status === 'running'"
+                  @click="checkConnection"
+                >
                   检查连接
                 </Button>
               </div>
 
               <!-- 检查表结构 -->
-              <div class="flex align-items-center justify-content-between p-4 border-1 border-surface border-round-lg">
+              <div
+                class="flex align-items-center justify-content-between p-4 border-1 border-surface border-round-lg"
+              >
                 <div class="flex align-items-center gap-3">
                   <div
                     :class="[
@@ -153,17 +169,28 @@
                           : 'bg-gray-400',
                     ]"
                   >
-                    <i v-if="getStepById('check-tables')?.status === 'completed'" class="pi pi-check text-xs"></i>
+                    <i
+                      v-if="getStepById('check-tables')?.status === 'completed'"
+                      class="pi pi-check text-xs"
+                    ></i>
                     <span v-else>2</span>
                   </div>
                   <div>
                     <p class="font-medium text-color">检查数据库表结构</p>
                     <p class="text-sm text-muted-color">验证所有必要的数据库表是否存在</p>
-                    <div v-if="getStepById('check-tables')?.progress && getStepById('check-tables')!.progress > 0" class="mt-1">
-                    </div>
+                    <div
+                      v-if="
+                        getStepById('check-tables')?.progress
+                          && getStepById('check-tables')!.progress > 0
+                      "
+                      class="mt-1"
+                    ></div>
                   </div>
                 </div>
-                <Button :disabled="getStepById('check-tables')?.status === 'running'" @click="checkTables">
+                <Button
+                  :disabled="getStepById('check-tables')?.status === 'running'"
+                  @click="checkTables"
+                >
                   检查表结构
                 </Button>
               </div>
@@ -181,17 +208,28 @@
                           : 'bg-gray-400',
                     ]"
                   >
-                    <i v-if="getStepById('check-admin-role')?.status === 'completed'" class="pi pi-check text-xs"></i>
+                    <i
+                      v-if="getStepById('check-admin-role')?.status === 'completed'"
+                      class="pi pi-check text-xs"
+                    ></i>
                     <span v-else>3</span>
                   </div>
                   <div>
                     <p class="font-medium text-color">检查管理员角色</p>
                     <p class="text-sm text-muted-color">验证管理员角色和权限配置</p>
-                    <div v-if="getStepById('check-admin-role')?.progress && getStepById('check-admin-role')!.progress > 0" class="mt-1">
-                    </div>
+                    <div
+                      v-if="
+                        getStepById('check-admin-role')?.progress
+                          && getStepById('check-admin-role')!.progress > 0
+                      "
+                      class="mt-1"
+                    ></div>
                   </div>
                 </div>
-                <Button :disabled="getStepById('check-admin-role')?.status === 'running'" @click="checkAdminRole">
+                <Button
+                  :disabled="getStepById('check-admin-role')?.status === 'running'"
+                  @click="checkAdminRole"
+                >
                   检查角色
                 </Button>
               </div>
@@ -209,17 +247,28 @@
                           : 'bg-gray-400',
                     ]"
                   >
-                    <i v-if="getStepById('create-admin')?.status === 'completed'" class="pi pi-check text-xs"></i>
+                    <i
+                      v-if="getStepById('create-admin')?.status === 'completed'"
+                      class="pi pi-check text-xs"
+                    ></i>
                     <span v-else>4</span>
                   </div>
                   <div>
                     <p class="font-medium text-color">创建管理员账户</p>
                     <p class="text-sm text-muted-color">设置系统管理员用户</p>
-                    <div v-if="getStepById('create-admin')?.progress && getStepById('create-admin')!.progress > 0" class="mt-1">
-                    </div>
+                    <div
+                      v-if="
+                        getStepById('create-admin')?.progress
+                          && getStepById('create-admin')!.progress > 0
+                      "
+                      class="mt-1"
+                    ></div>
                   </div>
                 </div>
-                <Button :disabled="getStepById('create-admin')?.status === 'running'" @click="createAdmin">
+                <Button
+                  :disabled="getStepById('create-admin')?.status === 'running'"
+                  @click="createAdmin"
+                >
                   创建管理员
                 </Button>
               </div>
@@ -237,17 +286,28 @@
                           : 'bg-gray-400',
                     ]"
                   >
-                    <i v-if="getStepById('assign-role')?.status === 'completed'" class="pi pi-check text-xs"></i>
+                    <i
+                      v-if="getStepById('assign-role')?.status === 'completed'"
+                      class="pi pi-check text-xs"
+                    ></i>
                     <span v-else>5</span>
                   </div>
                   <div>
                     <p class="font-medium text-color">分配管理员角色</p>
                     <p class="text-sm text-muted-color">为管理员用户分配相应角色和权限</p>
-                    <div v-if="getStepById('assign-role')?.progress && getStepById('assign-role')!.progress > 0" class="mt-1">
-                    </div>
+                    <div
+                      v-if="
+                        getStepById('assign-role')?.progress
+                          && getStepById('assign-role')!.progress > 0
+                      "
+                      class="mt-1"
+                    ></div>
                   </div>
                 </div>
-                <Button :disabled="getStepById('assign-role')?.status === 'running'" @click="assignAdminRole">
+                <Button
+                  :disabled="getStepById('assign-role')?.status === 'running'"
+                  @click="assignAdminRole"
+                >
                   分配角色
                 </Button>
               </div>
@@ -258,22 +318,42 @@
           <div class="mb-8">
             <h2 class="text-xl font-semibold text-color mb-4">快速操作</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <Button :disabled="isInitializing" severity="info" class="w-full" @click="checkConnection">
+              <Button
+                :disabled="isInitializing"
+                severity="info"
+                class="w-full"
+                @click="checkConnection"
+              >
                 <i class="pi pi-wifi mr-2"></i>
                 检查数据库连接
               </Button>
 
-              <Button :disabled="isInitializing" severity="info" class="w-full" @click="checkTables">
+              <Button
+                :disabled="isInitializing"
+                severity="info"
+                class="w-full"
+                @click="checkTables"
+              >
                 <i class="pi pi-table mr-2"></i>
                 检查表结构
               </Button>
 
-              <Button :disabled="isInitializing" severity="info" class="w-full" @click="checkAdminRole">
+              <Button
+                :disabled="isInitializing"
+                severity="info"
+                class="w-full"
+                @click="checkAdminRole"
+              >
                 <i class="pi pi-shield mr-2"></i>
                 检查管理员角色
               </Button>
 
-              <Button :disabled="isInitializing" severity="warning" class="w-full" @click="validateAdminPermissions">
+              <Button
+                :disabled="isInitializing"
+                severity="warning"
+                class="w-full"
+                @click="validateAdminPermissions"
+              >
                 <i class="pi pi-verified mr-2"></i>
                 验证管理员权限
               </Button>
@@ -315,7 +395,9 @@
           <!-- 日志输出 -->
           <div class="mb-8">
             <h2 class="text-xl font-semibold text-color mb-4">初始化日志</h2>
-            <div class="bg-surface-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto">
+            <div
+              class="bg-surface-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto"
+            >
               <div v-for="(log, index) in logs" :key="index" class="mb-2">
                 <div class="flex items-start space-x-2">
                   <span class="text-gray-500 flex-shrink-0">[{{ formatTime(log.timestamp) }}]</span>
@@ -325,7 +407,10 @@
                 </div>
               </div>
               <div v-if="logs.length === 0" class="text-gray-500">等待初始化操作...</div>
-              <div v-if="currentUser" class="text-blue-400 text-xs mt-2 pt-2 border-t border-gray-700">
+              <div
+                v-if="currentUser"
+                class="text-blue-400 text-xs mt-2 pt-2 border-t border-gray-700"
+              >
                 当前用户: {{ currentUser.email || '未登录' }}
               </div>
             </div>
@@ -339,14 +424,12 @@
               </div>
               <div class="ml-3">
                 <h3 class="text-lg font-medium text-green-800">初始化完成！</h3>
-                <p class="text-green-700 mt-1">数据库已成功初始化，您现在可以使用管理员账户登录系统。</p>
+                <p class="text-green-700 mt-1">
+                  数据库已成功初始化，您现在可以使用管理员账户登录系统。
+                </p>
                 <div class="mt-4">
-                  <Button class="mr-2" @click="goToLogin">
-                    前往登录
-                  </Button>
-                  <Button @click="goToDashboard">
-                    进入系统
-                  </Button>
+                  <Button class="mr-2" @click="goToLogin">前往登录</Button>
+                  <Button @click="goToDashboard">进入系统</Button>
                 </div>
               </div>
             </div>
@@ -383,9 +466,13 @@ const allStepsCompleted = computed(() => {
 })
 
 const totalSteps = computed(() => steps.value.length)
-const completedSteps = computed(() => steps.value.filter(step => step.status === 'completed').length)
+const completedSteps = computed(
+  () => steps.value.filter(step => step.status === 'completed').length,
+)
 const initProgress = computed(() =>
-  isInitializing.value ? initializationProgress.value : Math.round((completedSteps.value / totalSteps.value) * 100),
+  isInitializing.value
+    ? initializationProgress.value
+    : Math.round((completedSteps.value / totalSteps.value) * 100),
 )
 
 // 获取特定步骤的辅助函数

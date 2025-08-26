@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto">
-    <div class="p-6 space-y-6">
+    <div class="space-y-6">
       <!-- 页面标题 -->
       <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">角色权限配置</h1>
@@ -16,10 +16,7 @@
                 <Users class="w-4 h-4" />
                 <span>角色列表</span>
               </div>
-              <Button
-                size="sm"
-                @click="openCreateRoleDialog"
-              >
+              <Button size="sm" @click="openCreateRoleDialog">
                 <Plus class="w-4 h-4 mr-2" />
                 新增角色
               </Button>
@@ -30,7 +27,9 @@
             <!-- 搜索框 -->
             <div class="search-section">
               <div class="relative">
-                <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search
+                  class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                />
                 <Input
                   v-model="roleSearchQuery"
                   placeholder="搜索角色名称、编码或描述"
@@ -54,10 +53,7 @@
                 <div
                   v-for="role in filteredRoles"
                   :key="role.id"
-                  :class="[
-                    'role-item',
-                    selectedRole?.id === role.id ? 'active' : '',
-                  ]"
+                  :class="['role-item', selectedRole?.id === role.id ? 'active' : '']"
                   @click="selectRole(role)"
                 >
                   <div class="flex items-center justify-between">
@@ -73,12 +69,7 @@
                     </div>
 
                     <div class="role-actions">
-                      <Button
-                        v-if="canEdit"
-                        size="sm"
-                        variant="ghost"
-                        @click.stop="editRole(role)"
-                      >
+                      <Button v-if="canEdit" size="sm" variant="ghost" @click.stop="editRole(role)">
                         <Edit class="w-4 h-4" />
                       </Button>
                       <Button
@@ -157,17 +148,10 @@
 
             <!-- 菜单权限 -->
             <TabsContent value="menus" class="mt-6">
-
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                  <p class="text-sm text-muted-foreground">
-                    配置该角色可以访问的系统菜单
-                  </p>
-                  <Button
-                    size="sm"
-                    :disabled="savingPermissions"
-                    @click="saveMenuPermissions"
-                  >
+                  <p class="text-sm text-muted-foreground">配置该角色可以访问的系统菜单</p>
+                  <Button size="sm" :disabled="savingPermissions" @click="saveMenuPermissions">
                     <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
                     <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
                     保存菜单权限
@@ -179,21 +163,23 @@
                     <div class="menu-tree">
                       <div class="space-y-2">
                         <div v-for="menu in menuTree" :key="menu.key" class="menu-item">
-                          <div class="flex items-center space-x-2 p-2 hover:bg-muted ">
+                          <div class="flex items-center space-x-2 p-2 hover:bg-muted">
                             <Checkbox
                               :id="menu.key"
                               :checked="selectedMenus.includes(menu.key)"
-                              @update:checked="(checked: boolean) => {
-                                if (checked) {
-                                  selectedMenus.push(menu.key)
-                                }
-                                else {
-                                  const index = selectedMenus.indexOf(menu.key)
-                                  if (index > -1) {
-                                    selectedMenus.splice(index, 1)
+                              @update:checked="
+                                (checked: boolean) => {
+                                  if (checked) {
+                                    selectedMenus.push(menu.key)
+                                  }
+                                  else {
+                                    const index = selectedMenus.indexOf(menu.key)
+                                    if (index > -1) {
+                                      selectedMenus.splice(index, 1)
+                                    }
                                   }
                                 }
-                              }"
+                              "
                             />
                             <component :is="getMenuIcon(menu.icon)" class="w-4 h-4" />
                             <Label :for="menu.key" class="cursor-pointer flex-1">
@@ -206,19 +192,25 @@
 
                           <!-- 子菜单 -->
                           <div v-if="menu.children" class="ml-6 space-y-1">
-                            <div v-for="child in menu.children" :key="child.key" class="flex items-center space-x-2 p-2 hover:bg-muted ">
+                            <div
+                              v-for="child in menu.children"
+                              :key="child.key"
+                              class="flex items-center space-x-2 p-2 hover:bg-muted"
+                            >
                               <Checkbox
                                 :id="child.key"
                                 :checked="selectedMenus.includes(child.key)"
-                                @update:checked="(checked: boolean) => {
-                                  if (checked) {
-                                    selectedMenus.push(child.key)
+                                @update:checked="
+                                  (checked: boolean) => {
+                                    if (checked) {
+                                      selectedMenus.push(child.key)
+                                    }
+                                    else {
+                                      const index = selectedMenus.indexOf(child.key)
+                                      if (index > -1) selectedMenus.splice(index, 1)
+                                    }
                                   }
-                                  else {
-                                    const index = selectedMenus.indexOf(child.key)
-                                    if (index > -1) selectedMenus.splice(index, 1)
-                                  }
-                                }"
+                                "
                               />
                               <component :is="getMenuIcon(child.icon)" class="w-4 h-4" />
                               <Label :for="child.key" class="cursor-pointer flex-1">
@@ -241,14 +233,8 @@
             <TabsContent value="resources" class="mt-6">
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                  <p class="text-sm text-muted-foreground">
-                    配置该角色可以访问的系统资源和操作
-                  </p>
-                  <Button
-                    size="sm"
-                    :disabled="savingPermissions"
-                    @click="saveResourcePermissions"
-                  >
+                  <p class="text-sm text-muted-foreground">配置该角色可以访问的系统资源和操作</p>
+                  <Button size="sm" :disabled="savingPermissions" @click="saveResourcePermissions">
                     <Save v-if="!savingPermissions" class="w-4 h-4 mr-2" />
                     <RefreshCw v-else class="w-4 h-4 mr-2 animate-spin" />
                     保存资源权限
@@ -261,18 +247,10 @@
                       <div class="flex items-center justify-between mb-3">
                         <h4 class="font-medium">{{ category.name }}</h4>
                         <div class="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            @click="selectAllInCategory(category)"
-                          >
+                          <Button variant="ghost" size="sm" @click="selectAllInCategory(category)">
                             全选
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            @click="clearAllInCategory(category)"
-                          >
+                          <Button variant="ghost" size="sm" @click="clearAllInCategory(category)">
                             清空
                           </Button>
                         </div>
@@ -287,15 +265,17 @@
                           <Checkbox
                             :id="resource.id"
                             :checked="selectedResources.includes(resource.id)"
-                            @update:checked="(checked: boolean) => {
-                              if (checked) {
-                                selectedResources.push(resource.id)
+                            @update:checked="
+                              (checked: boolean) => {
+                                if (checked) {
+                                  selectedResources.push(resource.id)
+                                }
+                                else {
+                                  const index = selectedResources.indexOf(resource.id)
+                                  if (index > -1) selectedResources.splice(index, 1)
+                                }
                               }
-                              else {
-                                const index = selectedResources.indexOf(resource.id)
-                                if (index > -1) selectedResources.splice(index, 1)
-                              }
-                            }"
+                            "
                           />
                           <Label :for="resource.id" class="text-sm cursor-pointer">
                             {{ resource.name }}
@@ -322,11 +302,7 @@
         <div class="role-form space-y-4">
           <div class="form-group">
             <Label for="roleName">角色名称 *</Label>
-            <Input
-              id="roleName"
-              v-model="roleForm.name"
-              placeholder="请输入角色名称"
-            />
+            <Input id="roleName" v-model="roleForm.name" placeholder="请输入角色名称" />
           </div>
 
           <div class="form-group">
@@ -369,16 +345,8 @@
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            @click="closeRoleDialog"
-          >
-            取消
-          </Button>
-          <Button
-            :disabled="savingPermissions"
-            @click="saveRole"
-          >
+          <Button variant="outline" @click="closeRoleDialog">取消</Button>
+          <Button :disabled="savingPermissions" @click="saveRole">
             <RefreshCw v-if="savingPermissions" class="w-4 h-4 mr-2 animate-spin" />
             保存
           </Button>
@@ -398,7 +366,8 @@ import {
   FileText,
   Home,
   Key,
-  Loader2, Menu,
+  Loader2,
+  Menu,
   Plus,
   RefreshCw,
   Save,
@@ -508,7 +477,12 @@ const menuTree = ref([
     children: [
       { key: 'products', label: '产品管理', icon: 'pi pi-box', path: '/master-data/products' },
       { key: 'customers', label: '客户管理', icon: 'pi pi-users', path: '/master-data/customers' },
-      { key: 'suppliers', label: '供应商管理', icon: 'pi pi-truck', path: '/master-data/suppliers' },
+      {
+        key: 'suppliers',
+        label: '供应商管理',
+        icon: 'pi pi-truck',
+        path: '/master-data/suppliers',
+      },
     ],
   },
   {
@@ -525,9 +499,14 @@ const menuTree = ref([
     label: '系统管理',
     icon: 'pi pi-cog',
     children: [
-      { key: 'users', label: '用户管理', icon: 'pi pi-users', path: '/users' },
+      { key: 'users', label: '用户管理', icon: 'pi pi-users', path: '/system/users' },
       { key: 'roles', label: '角色管理', icon: 'pi pi-shield', path: '/system/roles' },
-      { key: 'permissions', label: '权限配置', icon: 'pi pi-key', path: '/system/role-permissions' },
+      {
+        key: 'permissions',
+        label: '权限配置',
+        icon: 'pi pi-key',
+        path: '/system/role-permissions',
+      },
     ],
   },
 ])
@@ -595,10 +574,11 @@ const filteredRoles = computed(() => {
   }
 
   const query = roleSearchQuery.value.toLowerCase()
-  return mockRoles.value.filter(role =>
-    role.name.toLowerCase().includes(query)
-    || role.code.toLowerCase().includes(query)
-    || role.description.toLowerCase().includes(query),
+  return mockRoles.value.filter(
+    role =>
+      role.name.toLowerCase().includes(query)
+      || role.code.toLowerCase().includes(query)
+      || role.description.toLowerCase().includes(query),
   )
 })
 

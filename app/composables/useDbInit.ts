@@ -196,7 +196,10 @@ export const useDbInit = () => {
       const permissionResults = await Promise.all(
         criticalPermissions.map(async (permission) => {
           const hasPermission = await checkUserPermission(userId, permission)
-          addLog(hasPermission ? 'success' : 'warning', `权限 ${permission}: ${hasPermission ? '✓' : '✗'}`)
+          addLog(
+            hasPermission ? 'success' : 'warning',
+            `权限 ${permission}: ${hasPermission ? '✓' : '✗'}`,
+          )
           return { permission, hasPermission }
         }),
       )
@@ -389,7 +392,11 @@ export const useDbInit = () => {
 
       // 使用重试机制检查admin角色
       const adminRole = await withRetry(async () => {
-        const { data, error } = await supabase.from('roles').select('*').eq('code', 'admin').single()
+        const { data, error } = await supabase
+          .from('roles')
+          .select('*')
+          .eq('code', 'admin')
+          .single()
 
         if (error) {
           if (error.code === 'PGRST116') {
@@ -432,7 +439,10 @@ export const useDbInit = () => {
               .map(r => (r as any).resources?.name)
               .filter(Boolean)
             if (sampleResources && sampleResources.length > 0) {
-              addLog('info', `权限示例: ${sampleResources.join(', ')}${resourceCount > 3 ? '...' : ''}`)
+              addLog(
+                'info',
+                `权限示例: ${sampleResources.join(', ')}${resourceCount > 3 ? '...' : ''}`,
+              )
             }
           }
         }
@@ -548,7 +558,11 @@ export const useDbInit = () => {
         // 检查自定义 users 表中是否存在
         const customUserCheck = await withRetry(
           async () => {
-            const { data, error } = await (supabase as any).from('users').select('*').eq('id', userId).single()
+            const { data, error } = await (supabase as any)
+              .from('users')
+              .select('*')
+              .eq('id', userId)
+              .single()
 
             if (error && error.code !== 'PGRST116') {
               throw new Error(`查询用户信息失败: ${error.message}`)
@@ -743,7 +757,11 @@ export const useDbInit = () => {
 
       // 使用重试机制获取 admin 角色
       const adminRole = await withRetry(async () => {
-        const { data, error } = await supabase.from('roles').select('*').eq('code', 'admin').single()
+        const { data, error } = await supabase
+          .from('roles')
+          .select('*')
+          .eq('code', 'admin')
+          .single()
 
         if (error) {
           throw new Error(`获取 admin 角色失败: ${error.message}`)

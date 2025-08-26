@@ -29,7 +29,11 @@ const errorMessages: Record<string, string> = {
 }
 
 // 创建应用错误
-export function createAppError(code: ErrorCode, customMessage?: string, originalError?: Error): AppError {
+export function createAppError(
+  code: ErrorCode,
+  customMessage?: string,
+  originalError?: Error,
+): AppError {
   return {
     code,
     message: customMessage || errorMessages[code] || '未知错误',

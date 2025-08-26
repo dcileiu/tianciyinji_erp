@@ -67,7 +67,9 @@
             </div>
             <div class="ml-4">
               <p class="text-sm font-medium text-muted-color">产能利用率</p>
-              <p class="text-2xl font-semibold text-color">{{ planStats?.capacityUtilization || 0 }}%</p>
+              <p class="text-2xl font-semibold text-color">
+                {{ planStats?.capacityUtilization || 0 }}%
+              </p>
             </div>
           </div>
         </template>
@@ -79,11 +81,11 @@
       <template #content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label class="text-sm font-medium text-color mb-2 block"> 计划名称 </label>
+            <label class="text-sm font-medium text-color mb-2 block">计划名称</label>
             <Input v-model="searchQuery" placeholder="输入计划名称搜索" class="w-full" />
           </div>
           <div>
-            <label class="text-sm font-medium text-color mb-2 block"> 计划状态 </label>
+            <label class="text-sm font-medium text-color mb-2 block">计划状态</label>
             <Select
               v-model="statusFilter"
               :options="statusOptions"
@@ -94,7 +96,7 @@
             />
           </div>
           <div>
-            <label class="text-sm font-medium text-color mb-2 block"> 车间 </label>
+            <label class="text-sm font-medium text-color mb-2 block">车间</label>
             <Select
               v-model="workshopFilter"
               :options="workshopOptions"
@@ -148,7 +150,7 @@
               </div>
             </div>
           </template>
-          <TableHead selection-mode="multiple" :exportable="false"/>
+          <TableHead selection-mode="multiple" :exportable="false" />
 
           <TableHead field="plan_name" header="计划名称" sortable>
             <template #body="slotProps">
@@ -217,11 +219,7 @@
           <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
-                <Button
-                  text
-                  size="sm"
-                  @click="viewPlan(slotProps.data)"
-                />
+                <Button text size="sm" @click="viewPlan(slotProps.data)" />
                 <Button
                   v-if="slotProps.data.status === 'draft' || slotProps.data.status === 'pending'"
                   text
@@ -247,7 +245,9 @@
                   @click="startPlan(slotProps.data)"
                 />
                 <Button
-                  v-if="slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'"
+                  v-if="
+                    slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'
+                  "
                   text
                   size="sm"
                   severity="danger"
@@ -261,7 +261,13 @@
     </Card>
 
     <!-- 生产计划对话框 -->
-    <Dialog v-model:visible="showCreateDialog" header="新建生产计划" :style="{ width: '900px' }" modal class="p-fluid">
+    <Dialog
+      v-model:visible="showCreateDialog"
+      header="新建生产计划"
+      :style="{ width: '900px' }"
+      modal
+      class="p-fluid"
+    >
       <template #default>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
@@ -583,7 +589,8 @@ const savePlan = async () => {
     const newPlan = {
       id: Date.now().toString(),
       ...planForm.value,
-      workshop_name: workshopOptions.value.find(w => w.value === planForm.value.workshop_id)?.label || '',
+      workshop_name:
+        workshopOptions.value.find(w => w.value === planForm.value.workshop_id)?.label || '',
       total_orders: planForm.value.orders.length,
       completed_orders: 0,
       capacity_utilization: 0,

@@ -7,6 +7,6 @@ const props = defineProps<ContextMenuGroupProps>()
 
 <template>
   <ContextMenuGroup data-slot="context-menu-group" v-bind="props">
-    <slot ></slot>
+    <slot></slot>
   </ContextMenuGroup>
 </template>

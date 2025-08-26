@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { LucideIcon } from 'lucide-vue-next'
-import { ChevronRight } from 'lucide-vue-next'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   SidebarGroup,
@@ -12,6 +10,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
+import type { LucideIcon } from 'lucide-vue-next'
+import { ChevronRight } from 'lucide-vue-next'
 
 defineProps<{
   items: {
@@ -29,7 +29,7 @@ defineProps<{
 
 <template>
   <SidebarGroup>
-    <SidebarGroupLabel>业务模块</SidebarGroupLabel>
+    <SidebarGroupLabel class="text-xs">业务模块</SidebarGroupLabel>
     <SidebarMenu>
       <Collapsible
         v-for="item in items"

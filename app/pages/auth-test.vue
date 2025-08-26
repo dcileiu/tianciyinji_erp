@@ -17,13 +17,19 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-surface-0 p-4 border-round border-1 border-surface">
                   <p class="text-sm text-surface-600">加载状态</p>
-                  <p class="text-lg font-semibold" :class="isLoading ? 'text-yellow-600' : 'text-green-600'">
+                  <p
+                    class="text-lg font-semibold"
+                    :class="isLoading ? 'text-yellow-600' : 'text-green-600'"
+                  >
                     {{ isLoading ? '加载中' : '已加载' }}
                   </p>
                 </div>
                 <div class="bg-surface-0 p-4 border-round border-1 border-surface">
                   <p class="text-sm text-surface-600">认证状态</p>
-                  <p class="text-lg font-semibold" :class="isAuthenticated ? 'text-green-600' : 'text-red-600'">
+                  <p
+                    class="text-lg font-semibold"
+                    :class="isAuthenticated ? 'text-green-600' : 'text-red-600'"
+                  >
                     {{ isAuthenticated ? '已登录' : '未登录' }}
                   </p>
                 </div>
@@ -48,7 +54,13 @@
                   <!-- /FloatLabel -->
 
                   <!-- FloatLabel 组件已移除 -->
-                  <Input v-model="loginForm.password" type="password" class="w-full" input-class="w-full" toggle-mask />
+                  <Input
+                    v-model="loginForm.password"
+                    type="password"
+                    class="w-full"
+                    input-class="w-full"
+                    toggle-mask
+                  />
                   <label>密码</label>
                   <!-- /FloatLabel -->
 
@@ -66,12 +78,23 @@
                   <!-- /FloatLabel -->
 
                   <!-- FloatLabel 组件已移除 -->
-                  <Input id="registerEmail" v-model="registerForm.email" type="email" class="w-full" />
+                  <Input
+                    id="registerEmail"
+                    v-model="registerForm.email"
+                    type="email"
+                    class="w-full"
+                  />
                   <label for="registerEmail">邮箱</label>
                   <!-- /FloatLabel -->
 
                   <!-- FloatLabel 组件已移除 -->
-                  <Input v-model="registerForm.password" type="password" class="w-full" input-class="w-full" toggle-mask />
+                  <Input
+                    v-model="registerForm.password"
+                    type="password"
+                    class="w-full"
+                    input-class="w-full"
+                    toggle-mask
+                  />
                   <label>密码</label>
                   <!-- /FloatLabel -->
 
@@ -96,17 +119,9 @@
               <div class="flex flex-column gap-4">
                 <h3 class="text-lg font-semibold text-surface-900">🔧 会话管理测试</h3>
                 <div class="flex flex-column gap-3">
-                  <Button
-                    :loading="testing.session"
-                    class="w-full"
-                    @click="testGetSession"
-                  />
+                  <Button :loading="testing.session" class="w-full" @click="testGetSession" />
 
-                  <Button
-                    :loading="testing.refresh"
-                    class="w-full"
-                    @click="testRefreshSession"
-                  />
+                  <Button :loading="testing.refresh" class="w-full" @click="testRefreshSession" />
 
                   <Button
                     :loading="testing.logout"
@@ -123,30 +138,32 @@
             <div class="mt-8">
               <h3 class="text-lg font-semibold text-surface-900 mb-4">📋 测试结果</h3>
               <div class="bg-surface-100 border-round-lg p-4 max-h-96 overflow-y-auto">
-                <div v-if="testResults.length === 0" class="text-surface-500 text-center py-8">暂无测试结果</div>
+                <div v-if="testResults.length === 0" class="text-surface-500 text-center py-8">
+                  暂无测试结果
+                </div>
                 <div v-else class="flex flex-column gap-2">
                   <div
                     v-for="(result, index) in testResults"
                     :key="index"
                     class="p-3 border-round border-1 border-surface"
-                    :class="result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'"
+                    :class="
+                      result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+                    "
                   >
                     <div class="flex items-center justify-between">
                       <span class="font-medium">{{ result.action }}</span>
                       <span class="text-sm text-surface-500">{{ result.timestamp }}</span>
                     </div>
-                    <p class="text-sm mt-1" :class="result.success ? 'text-green-700' : 'text-red-700'">
+                    <p
+                      class="text-sm mt-1"
+                      :class="result.success ? 'text-green-700' : 'text-red-700'"
+                    >
                       {{ result.message }}
                     </p>
                   </div>
                 </div>
               </div>
-              <Button
-                v-if="testResults.length > 0"
-                size="sm"
-                class="mt-2"
-                @click="clearResults"
-              />
+              <Button v-if="testResults.length > 0" size="sm" class="mt-2" @click="clearResults" />
             </div>
           </div>
         </template>
@@ -173,8 +190,17 @@ useHead({
 })
 
 // 认证状态
-const { user, isAuthenticated, isLoading, login, register, resetPassword, logout, getSession, refreshSession }
-  = useAuth()
+const {
+  user,
+  isAuthenticated,
+  isLoading,
+  login,
+  register,
+  resetPassword,
+  logout,
+  getSession,
+  refreshSession,
+} = useAuth()
 
 // 表单数据
 const loginForm = ref({

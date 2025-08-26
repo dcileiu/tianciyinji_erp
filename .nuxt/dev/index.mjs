@@ -651,9 +651,9 @@ const _inlineRuntimeConfig = {
         "login": "/login",
         "callback": "/auth/callback",
         "exclude": [
-          "/register",
-          "/forgot-password",
-          "/auth/reset-password",
+          "/login/register",
+          "/login/forgot-password",
+          "/login/reset-password",
           "/getting-started",
           "/components-demo",
           "/db-init"

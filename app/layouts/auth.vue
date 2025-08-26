@@ -14,13 +14,17 @@
     </div>
 
     <!-- 头部 -->
-    <header class="relative z-10 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+    <header
+      class="relative z-10 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4">
           <div class="flex items-center">
             <!-- Logo -->
             <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg">
+              <div
+                class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg"
+              >
                 <Building2 class="h-6 w-6 text-primary-foreground" />
               </div>
               <div>

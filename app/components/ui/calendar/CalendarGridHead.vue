@@ -8,6 +8,6 @@ const props = defineProps<CalendarGridHeadProps & { class?: HTMLAttributes['clas
 
 <template>
   <CalendarGridHead data-slot="calendar-grid-head" v-bind="props">
-    <slot ></slot>
+    <slot></slot>
   </CalendarGridHead>
 </template>

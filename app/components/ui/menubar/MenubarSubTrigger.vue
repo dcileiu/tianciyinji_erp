@@ -6,7 +6,9 @@ import { ChevronRight } from 'lucide-vue-next'
 import { MenubarSubTrigger, useForwardProps } from 'reka-ui'
 import { cn } from '@/lib/utils'
 
-const props = defineProps<MenubarSubTriggerProps & { class?: HTMLAttributes['class'], inset?: boolean }>()
+const props = defineProps<
+  MenubarSubTriggerProps & { class?: HTMLAttributes['class'], inset?: boolean }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class', 'inset')
 const forwardedProps = useForwardProps(delegatedProps)
@@ -24,7 +26,7 @@ const forwardedProps = useForwardProps(delegatedProps)
       )
     "
   >
-    <slot ></slot>
+    <slot></slot>
     <ChevronRight class="ml-auto size-4" />
   </MenubarSubTrigger>
 </template>

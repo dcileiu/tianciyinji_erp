@@ -41,7 +41,9 @@ export default function useDependencies(fieldName: string) {
     return getFromPath(form.value, source)
   }
 
-  const sourceFieldValues = computed(() => currentFieldDependencies.value?.map(dep => getSourceValue(dep)))
+  const sourceFieldValues = computed(() =>
+    currentFieldDependencies.value?.map(dep => getSourceValue(dep)),
+  )
 
   const resetConditionState = () => {
     isDisabled.value = false

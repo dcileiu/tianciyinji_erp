@@ -81,7 +81,7 @@
             <!-- 分割线 -->
             <div class="relative my-4">
               <div class="absolute inset-0 flex items-center">
-                <span class="w-full border-t" ></span>
+                <span class="w-full border-t"></span>
               </div>
               <div class="relative flex justify-center text-xs uppercase">
                 <span class="bg-background px-2 text-muted-foreground">或</span>
@@ -90,14 +90,22 @@
 
             <!-- 其他操作 -->
             <div class="flex flex-col gap-3">
-              <Button variant="ghost" class="w-full" @click="$router.push('/forgot-password')">
+              <Button
+                variant="ghost"
+                class="w-full"
+                @click="$router.push('/login/forgot-password')"
+              >
                 <HelpCircle class="mr-2 h-4 w-4" />
                 忘记密码？
               </Button>
 
               <div class="text-center text-sm text-muted-foreground">
                 还没有账户？
-                <Button variant="link" class="p-0 h-auto font-normal" @click="$router.push('/register')">
+                <Button
+                  variant="link"
+                  class="p-0 h-auto font-normal"
+                  @click="$router.push('/login/register')"
+                >
                   立即注册
                 </Button>
               </div>
@@ -107,7 +115,9 @@
       </Card>
 
       <!-- 版权信息 -->
-      <div class="text-center mt-4 text-sm text-muted-foreground">© 2025 ERP管理系统. 保留所有权利.</div>
+      <div class="text-center mt-4 text-sm text-muted-foreground">
+        © 2025 ERP管理系统. 保留所有权利.
+      </div>
     </div>
   </div>
 </template>
@@ -115,7 +125,17 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { AlertCircle, Building2, Eye, EyeOff, HelpCircle, Loader2, Lock, LogIn, Mail } from 'lucide-vue-next'
+import {
+  AlertCircle,
+  Building2,
+  Eye,
+  EyeOff,
+  HelpCircle,
+  Loader2,
+  Lock,
+  LogIn,
+  Mail,
+} from 'lucide-vue-next'
 import { useAuth } from '~/composables/useAuth'
 import type { LoginForm } from '~/types/auth'
 

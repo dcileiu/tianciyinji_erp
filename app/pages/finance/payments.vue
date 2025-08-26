@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 min-h-screen bg-background">
+  <div class="min-h-screen bg-background">
     <!-- 页面标题 -->
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 gap-4">
       <div>
@@ -19,7 +19,9 @@
           <div class="flex flex-col gap-2">
             <Label class="text-sm font-medium">搜索</Label>
             <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              />
               <Input v-model="searchKeyword" placeholder="搜索单号、供应商..." class="pl-10" />
             </div>
           </div>
@@ -31,7 +33,11 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -45,7 +51,11 @@
                 <SelectValue placeholder="全部方式" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in methodOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in methodOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -102,7 +112,9 @@
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-2xl font-bold text-green-600 mb-1">¥{{ totalAmount.toLocaleString() }}</div>
+              <div class="text-2xl font-bold text-green-600 mb-1">
+                ¥{{ totalAmount.toLocaleString() }}
+              </div>
               <div class="text-sm text-green-700">总金额</div>
             </div>
             <div class="w-12 h-12 bg-green-100 -full flex items-center justify-center">
@@ -118,7 +130,9 @@
       <CardHeader>
         <div class="flex justify-between items-center">
           <CardTitle class="text-lg font-semibold">支付列表</CardTitle>
-          <span class="text-sm text-muted-foreground">总金额: ¥{{ totalAmount.toLocaleString() }}</span>
+          <span class="text-sm text-muted-foreground">
+            总金额: ¥{{ totalAmount.toLocaleString() }}
+          </span>
         </div>
       </CardHeader>
       <CardContent>
@@ -150,18 +164,24 @@
             <TableBody>
               <TableRow v-for="payment in filteredPayments" :key="payment.id">
                 <TableCell>
-                  <span class="font-mono bg-muted px-2 py-1 text-primary text-sm">{{ payment.paymentNo }}</span>
+                  <span class="font-mono bg-muted px-2 py-1 text-primary text-sm">
+                    {{ payment.paymentNo }}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-primary/10 -full flex items-center justify-center">
-                      <span class="text-sm font-medium text-primary">{{ payment.supplier.charAt(0) }}</span>
+                      <span class="text-sm font-medium text-primary">
+                        {{ payment.supplier.charAt(0) }}
+                      </span>
                     </div>
                     <span class="font-medium">{{ payment.supplier }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span class="font-semibold text-green-600 text-lg">¥{{ payment.amount.toLocaleString() }}</span>
+                  <span class="font-semibold text-green-600 text-lg">
+                    ¥{{ payment.amount.toLocaleString() }}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <Badge :variant="getMethodVariant(payment.paymentMethod)">
@@ -174,7 +194,9 @@
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <span class="text-sm text-muted-foreground">{{ formatDate(payment.paymentDate) }}</span>
+                  <span class="text-sm text-muted-foreground">
+                    {{ formatDate(payment.paymentDate) }}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <div class="flex gap-2">
@@ -207,7 +229,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">支付单号</Label>
-              <Input v-model="currentPayment.paymentNo" placeholder="自动生成" :disabled="isEditing" />
+              <Input
+                v-model="currentPayment.paymentNo"
+                placeholder="自动生成"
+                :disabled="isEditing"
+              />
             </div>
             <div class="flex flex-col gap-2">
               <Label class="text-sm font-medium">供应商</Label>
@@ -216,7 +242,11 @@
                   <SelectValue placeholder="选择供应商" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="supplier in supplierOptions" :key="supplier.value" :value="supplier.value">
+                  <SelectItem
+                    v-for="supplier in supplierOptions"
+                    :key="supplier.value"
+                    :value="supplier.value"
+                  >
                     {{ supplier.label }}
                   </SelectItem>
                 </SelectContent>
@@ -236,7 +266,11 @@
                   <SelectValue placeholder="选择支付方式" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="method in methodOptions" :key="method.value" :value="method.value">
+                  <SelectItem
+                    v-for="method in methodOptions"
+                    :key="method.value"
+                    :value="method.value"
+                  >
                     {{ method.label }}
                   </SelectItem>
                 </SelectContent>
@@ -256,7 +290,11 @@
                   <SelectValue placeholder="选择状态" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="status in statusOptions" :key="status.value" :value="status.value">
+                  <SelectItem
+                    v-for="status in statusOptions"
+                    :key="status.value"
+                    :value="status.value"
+                  >
                     {{ status.label }}
                   </SelectItem>
                 </SelectContent>
@@ -271,7 +309,7 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closePaymentModal"> 取消 </Button>
+          <Button variant="outline" @click="closePaymentModal">取消</Button>
           <Button :disabled="saving" @click="savePayment">
             <Loader2 v-if="saving" class="w-4 h-4 mr-2 animate-spin" />
             {{ isEditing ? '更新' : '创建' }}
@@ -288,7 +326,18 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { Clock, CreditCard, DollarSign, Edit, Eye, Loader2, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
+import {
+  Clock,
+  CreditCard,
+  DollarSign,
+  Edit,
+  Eye,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+} from 'lucide-vue-next'
 
 // 页面状态
 const loading = ref(false)

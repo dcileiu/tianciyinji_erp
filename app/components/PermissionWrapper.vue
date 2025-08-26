@@ -12,7 +12,9 @@
         <p class="text-sm text-muted-foreground">
           {{ fallbackMessage || '您没有权限执行此操作' }}
         </p>
-        <Button v-if="showBackButton" variant="outline" class="mt-4" @click="$router.back()"> 返回 </Button>
+        <Button v-if="showBackButton" variant="outline" class="mt-4" @click="$router.back()">
+          返回
+        </Button>
       </div>
     </slot>
   </div>

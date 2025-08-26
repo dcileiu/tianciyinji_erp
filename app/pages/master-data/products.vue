@@ -1,100 +1,185 @@
 <template>
-  <div class="p-6 min-h-screen bg-gray-50">
-    <!-- 页面标题 -->
-    <div class="flex justify-between items-start mb-6">
-      <div class="flex items-center gap-3">
-        <Package class="h-8 w-8 text-blue-600" />
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900 mb-1">产品管理</h1>
-          <p class="text-gray-600">管理产品信息、库存和定价</p>
-        </div>
+  <div class="space-y-6">
+    <!-- 页面标题和操作 -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">产品管理</h1>
+        <p class="text-muted-foreground">管理产品基础信息，维护产品分类和规格数据</p>
       </div>
-      <Button class="bg-blue-600 hover:bg-blue-700" @click="openProductModal">
-        <Plus class="h-4 w-4 mr-2" />
-        新增产品
-      </Button>
+      <div class="flex gap-3">
+        <Button variant="outline" size="sm" @click="importProducts">
+          <Upload class="mr-2 h-4 w-4" />
+          导入产品
+        </Button>
+        <Button variant="outline" size="sm" @click="exportProducts">
+          <Download class="mr-2 h-4 w-4" />
+          导出数据
+        </Button>
+        <Button size="sm" @click="openProductModal">
+          <Plus class="mr-2 h-4 w-4" />
+          新增产品
+        </Button>
+      </div>
     </div>
 
     <!-- 搜索和筛选区域 -->
-    <Card class="mb-6">
-      <CardContent class="p-6">
-        <div class="flex gap-4 items-center flex-wrap">
-          <div class="flex-1 min-w-80 relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input v-model="searchKeyword" placeholder="搜索产品名称、编码..." class="pl-10" />
+    <Card>
+      <CardHeader>
+        <CardTitle class="flex items-center gap-2">
+          <Search class="h-5 w-5" />
+          搜索与筛选
+        </CardTitle>
+        <CardDescription>快速找到您需要的产品信息</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="space-y-2">
+            <Label>搜索产品</Label>
+            <div class="relative">
+              <Search class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input v-model="searchKeyword" placeholder="产品名称、编码、规格..." class="pl-9" />
+            </div>
           </div>
 
-          <div class="flex gap-4 items-center">
+          <div class="space-y-2">
+            <Label>产品分类</Label>
             <Select v-model="selectedCategory">
-              <SelectTrigger class="w-40">
-                <SelectValue placeholder="产品分类" />
+              <SelectTrigger>
+                <SelectValue placeholder="全部分类" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in categoryOptions" :key="option.value" :value="option.value">
-                  {{ option.label }}
+                <SelectItem value="">全部分类</SelectItem>
+                <SelectItem
+                  v-for="category in categories"
+                  :key="category.value"
+                  :value="category.value"
+                >
+                  {{ category.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
+          </div>
 
+          <div class="space-y-2">
+            <Label>产品状态</Label>
             <Select v-model="selectedStatus">
-              <SelectTrigger class="w-40">
-                <SelectValue placeholder="产品状态" />
+              <SelectTrigger>
+                <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
-                  {{ option.label }}
+                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem
+                  v-for="status in statusOptions"
+                  :key="status.value"
+                  :value="status.value"
+                >
+                  {{ status.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
+          </div>
 
-            <Button variant="outline" @click="resetFilters">
-              <RefreshCw class="h-4 w-4 mr-2" />
-              重置
-            </Button>
+          <div class="space-y-2">
+            <Label class="opacity-0">操作</Label>
+            <div class="flex gap-2">
+              <Button variant="outline" class="flex-1" @click="resetFilters">
+                <RotateCcw class="mr-2 h-4 w-4" />
+                重置
+              </Button>
+              <Button variant="outline" @click="refreshData">
+                <RefreshCw class="mr-2 h-4 w-4" />
+                刷新
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>
     </Card>
 
-    <!-- 统计信息 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+    <!-- 统计信息卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card>
-        <CardContent class="p-6 text-center">
-          <div class="flex items-center justify-center mb-3">
-            <Package class="h-6 w-6 text-blue-600" />
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-muted-foreground">总产品数</p>
+              <div class="flex items-baseline space-x-3">
+                <p class="text-2xl font-bold text-blue-600">{{ productStats.total }}</p>
+                <Badge variant="secondary" class="text-xs">
+                  <TrendingUp class="mr-1 h-3 w-3" />
+                  +{{ productStats.newThisMonth }}
+                </Badge>
+              </div>
+              <p class="text-xs text-muted-foreground">本月新增</p>
+            </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900"
+            >
+              <Package class="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            </div>
           </div>
-          <div class="text-2xl font-bold text-gray-900 mb-1">{{ filteredProducts.length }}</div>
-          <div class="text-sm text-gray-600">总产品数</div>
         </CardContent>
       </Card>
 
       <Card>
-        <CardContent class="p-6 text-center">
-          <div class="flex items-center justify-center mb-3">
-            <CheckCircle class="h-6 w-6 text-green-600" />
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-muted-foreground">在售产品</p>
+              <div class="flex items-baseline space-x-3">
+                <p class="text-2xl font-bold text-green-600">{{ productStats.active }}</p>
+                <Badge variant="secondary" class="text-xs">
+                  {{ Math.round((productStats.active / productStats.total) * 100) }}%
+                </Badge>
+              </div>
+              <p class="text-xs text-muted-foreground">占比</p>
+            </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900"
+            >
+              <CheckCircle class="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
           </div>
-          <div class="text-2xl font-bold text-green-600 mb-1">{{ activeProductsCount }}</div>
-          <div class="text-sm text-gray-600">在售产品</div>
         </CardContent>
       </Card>
 
       <Card>
-        <CardContent class="p-6 text-center">
-          <div class="flex items-center justify-center mb-3">
-            <AlertTriangle class="h-6 w-6 text-orange-600" />
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-muted-foreground">低库存</p>
+              <div class="flex items-baseline space-x-3">
+                <p class="text-2xl font-bold text-orange-600">{{ productStats.lowStock }}</p>
+                <Badge variant="destructive" class="text-xs">需补货</Badge>
+              </div>
+              <p class="text-xs text-muted-foreground">产品数量</p>
+            </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900"
+            >
+              <AlertTriangle class="h-6 w-6 text-orange-600 dark:text-orange-400" />
+            </div>
           </div>
-          <div class="text-2xl font-bold text-orange-600 mb-1">{{ lowStockCount }}</div>
-          <div class="text-sm text-gray-600">库存预警</div>
         </CardContent>
       </Card>
 
       <Card>
-        <CardContent class="p-6 text-center">
-          <div class="flex items-center justify-center mb-3">
-            <XCircle class="h-6 w-6 text-red-600" />
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-muted-foreground">产品分类</p>
+              <div class="flex items-baseline space-x-3">
+                <p class="text-2xl font-bold text-purple-600">{{ productStats.categories }}</p>
+                <Badge variant="outline" class="text-xs">分类</Badge>
+              </div>
+              <p class="text-xs text-muted-foreground">管理中</p>
+            </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900"
+            >
+              <Layers class="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            </div>
           </div>
-          <div class="text-2xl font-bold text-red-600 mb-1">{{ outOfStockCount }}</div>
-          <div class="text-sm text-gray-600">缺货产品</div>
         </CardContent>
       </Card>
     </div>
@@ -102,82 +187,107 @@
     <!-- 产品列表 -->
     <Card>
       <CardHeader>
-        <CardTitle class="flex items-center gap-2">
-          <List class="h-5 w-5" />
-          产品列表
-        </CardTitle>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <CardTitle class="flex items-center gap-2">
+              <Package class="h-5 w-5" />
+              产品列表
+            </CardTitle>
+            <CardDescription>当前共有 {{ filteredProducts.length }} 个产品</CardDescription>
+          </div>
+          <div class="flex items-center gap-2">
+            <Select v-model="pageSize">
+              <SelectTrigger class="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="12">12条/页</SelectItem>
+                <SelectItem value="24">24条/页</SelectItem>
+                <SelectItem value="48">48条/页</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
-        <div v-if="loading" class="flex items-center justify-center py-12">
-          <RefreshCw class="h-6 w-6 animate-spin text-gray-400" />
-          <span class="ml-2 text-gray-600">加载中...</span>
+        <div
+          v-if="loading"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+        >
+          <div v-for="i in 8" :key="i" class="space-y-3">
+            <Skeleton class="h-48 w-full rounded-lg" />
+            <div class="space-y-2">
+              <Skeleton class="h-4 w-full" />
+              <Skeleton class="h-4 w-3/4" />
+              <Skeleton class="h-4 w-1/2" />
+            </div>
+          </div>
         </div>
 
-        <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
-          <Package class="h-16 w-16 mx-auto text-gray-300 mb-4" />
-          <h3 class="text-lg font-medium text-gray-900 mb-2">暂无产品</h3>
-          <p class="text-gray-600 mb-4">开始创建您的第一个产品</p>
-          <Button class="bg-blue-600 hover:bg-blue-700" @click="openProductModal">
-            <Plus class="h-4 w-4 mr-2" />
-            新增产品
+        <div v-else-if="filteredProducts.length === 0" class="text-center py-16">
+          <Package class="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+          <h3 class="text-xl font-semibold mb-4">暂无产品数据</h3>
+          <p class="text-muted-foreground mb-6 max-w-md mx-auto">
+            您还没有添加任何产品。点击下方按钮开始添加您的第一个产品。
+          </p>
+          <Button @click="openProductModal">
+            <Plus class="mr-2 h-4 w-4" />
+            添加产品
           </Button>
         </div>
 
-        <div v-else class="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>产品信息</TableHead>
-                <TableHead>产品编码</TableHead>
-                <TableHead>价格</TableHead>
-                <TableHead>库存</TableHead>
-                <TableHead>状态</TableHead>
-                <TableHead>更新时间</TableHead>
-                <TableHead class="w-32">操作</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="product in filteredProducts" :key="product.id" class="hover:bg-gray-50">
-                <TableCell>
-                  <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 -full bg-blue-100 flex items-center justify-center">
-                      <span class="text-blue-600 font-medium">{{ product.name.charAt(0) }}</span>
-                    </div>
-                    <div>
-                      <div class="font-medium text-gray-900">{{ product.name }}</div>
-                      <div class="text-sm text-gray-600">{{ product.description }}</div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="secondary" class="font-mono">
-                    {{ product.code }}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <span class="font-semibold text-green-600"> ¥{{ product.price.toLocaleString() }} </span>
-                </TableCell>
-                <TableCell>
-                  <div class="flex items-center gap-2">
-                    <span class="font-medium">{{ product.stock }}</span>
-                    <Badge v-if="product.stock <= 10 && product.stock > 0" variant="destructive" class="text-xs">
-                      库存不足
+        <div v-else>
+          <!-- 产品网格 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div
+              v-for="product in paginatedProducts"
+              :key="product.id"
+              class="group relative rounded-lg border bg-card hover:shadow-lg transition-all duration-200"
+            >
+              <!-- 产品图片 -->
+              <div class="aspect-square rounded-t-lg bg-muted/50 flex items-center justify-center">
+                <Package class="h-16 w-16 text-muted-foreground" />
+              </div>
+
+              <!-- 产品信息 -->
+              <div class="p-4 space-y-3">
+                <div class="space-y-2">
+                  <div class="flex items-start justify-between">
+                    <h3 class="font-semibold text-sm leading-tight line-clamp-2">
+                      {{ product.name }}
+                    </h3>
+                    <Badge :variant="getStatusVariant(product.status)" class="ml-2 text-xs">
+                      {{ getStatusText(product.status) }}
                     </Badge>
-                    <Badge v-if="product.stock === 0" variant="destructive" class="text-xs"> 缺货 </Badge>
                   </div>
-                </TableCell>
-                <TableCell>
-                  <Badge :variant="product.status === 'active' ? 'default' : 'secondary'">
-                    {{ product.status === 'active' ? '在售' : '停售' }}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <span class="text-sm text-gray-600">
-                    {{ formatDate(product.updated_at) }}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <div class="flex gap-1">
+                  <p class="text-xs text-muted-foreground font-mono">{{ product.code }}</p>
+                  <p class="text-xs text-muted-foreground">{{ product.category }}</p>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-muted-foreground">售价:</span>
+                    <span class="font-semibold text-green-600">
+                      ¥{{ product.price.toLocaleString() }}
+                    </span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-muted-foreground">库存:</span>
+                    <span
+                      :class="
+                        product.stock < product.min_stock
+                          ? 'text-red-600 font-semibold'
+                          : 'text-foreground'
+                      "
+                    >
+                      {{ product.stock }} {{ product.unit }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="flex items-center justify-between pt-2 border-t">
+                  <div class="flex items-center space-x-1">
                     <Button variant="ghost" size="sm" @click="viewProduct(product)">
                       <Eye class="h-4 w-4" />
                     </Button>
@@ -187,34 +297,78 @@
                     <Button variant="ghost" size="sm" @click="copyProduct(product)">
                       <Copy class="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      class="text-red-600 hover:text-red-700"
-                      @click="confirmDeleteProduct(product)"
-                    >
-                      <Trash2 class="h-4 w-4" />
-                    </Button>
                   </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    :class="
+                      product.status === 'active'
+                        ? 'text-red-600 hover:text-red-700'
+                        : 'text-green-600 hover:text-green-700'
+                    "
+                    @click="toggleStatus(product)"
+                  >
+                    <Power class="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <!-- 库存预警标识 -->
+              <div v-if="product.stock < product.min_stock" class="absolute top-2 left-2">
+                <Badge variant="destructive" class="text-xs">
+                  <AlertTriangle class="mr-1 h-3 w-3" />
+                  低库存
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="flex items-center justify-between pt-6">
+            <p class="text-sm text-muted-foreground">
+              显示第 {{ (currentPage - 1) * Number(pageSize) + 1 }} -
+              {{ Math.min(currentPage * Number(pageSize), filteredProducts.length) }} 条，共
+              {{ filteredProducts.length }} 条记录
+            </p>
+            <div class="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="currentPage === 1"
+                @click="currentPage--"
+              >
+                <ChevronLeft class="h-4 w-4" />
+                上一页
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="currentPage === totalPages"
+                @click="currentPage++"
+              >
+                下一页
+                <ChevronRight class="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
 
     <!-- 产品详情/编辑对话框 -->
-    <Dialog :open="showProductModal" @update:open="closeProductModal">
-      <DialogContent class="max-w-2xl">
+    <Dialog v-model:open="showProductModal">
+      <DialogContent class="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle class="flex items-center gap-2">
             <Package class="h-5 w-5" />
             {{ modalTitle }}
           </DialogTitle>
+          <DialogDescription>
+            {{ isEditing ? '编辑产品信息' : '创建新的产品' }}
+          </DialogDescription>
         </DialogHeader>
 
-        <div class="space-y-6">
+        <div class="space-y-6 py-4">
           <!-- 基本信息 -->
           <Card>
             <CardHeader>
@@ -223,68 +377,54 @@
                 基本信息
               </CardTitle>
             </CardHeader>
-            <CardContent class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
+            <CardContent>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
-                  <Label for="productCode">产品编码</Label>
+                  <Label>产品编码</Label>
                   <Input
-                    id="productCode"
                     v-model="currentProduct.code"
-                    placeholder="输入产品编码"
+                    placeholder="系统自动生成"
                     :disabled="isEditing"
+                    class="font-mono"
                   />
                 </div>
                 <div class="space-y-2">
-                  <Label for="productName">产品名称</Label>
-                  <Input id="productName" v-model="currentProduct.name" placeholder="输入产品名称" />
+                  <Label>产品名称 *</Label>
+                  <Input v-model="currentProduct.name" placeholder="请输入产品名称" required />
                 </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
-                  <Label for="productCategory">产品分类</Label>
+                  <Label>产品分类 *</Label>
                   <Select v-model="currentProduct.category">
                     <SelectTrigger>
-                      <SelectValue placeholder="选择产品分类" />
+                      <SelectValue placeholder="选择分类" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
-                        v-for="option in categoryOptions.filter(o => o.value)"
-                        :key="option.value"
-                        :value="option.value"
+                        v-for="category in categories"
+                        :key="category.value"
+                        :value="category.value"
                       >
-                        {{ option.label }}
+                        {{ category.label }}
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div class="space-y-2">
-                  <Label for="productStatus">状态</Label>
-                  <Select v-model="currentProduct.status">
+                  <Label>计量单位</Label>
+                  <Select v-model="currentProduct.unit">
                     <SelectTrigger>
-                      <SelectValue placeholder="选择状态" />
+                      <SelectValue placeholder="选择单位" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem
-                        v-for="option in statusOptions.filter(o => o.value)"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </SelectItem>
+                      <SelectItem value="个">个</SelectItem>
+                      <SelectItem value="件">件</SelectItem>
+                      <SelectItem value="套">套</SelectItem>
+                      <SelectItem value="台">台</SelectItem>
+                      <SelectItem value="公斤">公斤</SelectItem>
+                      <SelectItem value="米">米</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-
-              <div class="space-y-2">
-                <Label for="productDescription">产品描述</Label>
-                <Textarea
-                  id="productDescription"
-                  v-model="currentProduct.description"
-                  placeholder="输入产品描述"
-                  rows="3"
-                />
               </div>
             </CardContent>
           </Card>
@@ -294,30 +434,61 @@
             <CardHeader>
               <CardTitle class="text-base flex items-center gap-2">
                 <DollarSign class="h-4 w-4" />
-                价格和库存
+                价格与库存
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
-                  <Label for="productPrice">价格 (¥)</Label>
+                  <Label>销售价格 *</Label>
                   <Input
-                    id="productPrice"
-                    v-model.number="currentProduct.price"
+                    v-model="currentProduct.price"
                     type="number"
-                    placeholder="输入价格"
-                    min="0"
                     step="0.01"
+                    placeholder="0.00"
                   />
                 </div>
                 <div class="space-y-2">
-                  <Label for="productStock">库存数量</Label>
+                  <Label>成本价格</Label>
                   <Input
-                    id="productStock"
-                    v-model.number="currentProduct.stock"
+                    v-model="currentProduct.cost"
                     type="number"
-                    placeholder="输入库存数量"
-                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <Label>当前库存</Label>
+                  <Input v-model="currentProduct.stock" type="number" placeholder="0" />
+                </div>
+                <div class="space-y-2">
+                  <Label>最低库存</Label>
+                  <Input v-model="currentProduct.min_stock" type="number" placeholder="0" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <!-- 产品描述 -->
+          <Card>
+            <CardHeader>
+              <CardTitle class="text-base flex items-center gap-2">
+                <FileText class="h-4 w-4" />
+                产品描述
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="space-y-4">
+                <div class="space-y-2">
+                  <Label>产品规格</Label>
+                  <Input v-model="currentProduct.specifications" placeholder="请输入产品规格" />
+                </div>
+                <div class="space-y-2">
+                  <Label>产品描述</Label>
+                  <Textarea
+                    v-model="currentProduct.description"
+                    placeholder="请输入产品详细描述..."
+                    rows="4"
                   />
                 </div>
               </div>
@@ -326,14 +497,10 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeProductModal">
-            <X class="h-4 w-4 mr-2" />
-            取消
-          </Button>
-          <Button :disabled="saving" class="bg-blue-600 hover:bg-blue-700" @click="saveProduct">
-            <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
-            <Check v-else class="h-4 w-4 mr-2" />
-            {{ isEditing ? '更新' : '创建' }}
+          <Button variant="outline" @click="closeProductModal">取消</Button>
+          <Button :disabled="saving" @click="saveProduct">
+            <Loader2 v-if="saving" class="mr-2 h-4 w-4 animate-spin" />
+            {{ isEditing ? '更新产品' : '创建产品' }}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -342,27 +509,55 @@
 </template>
 
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
-
 import {
   AlertTriangle,
-  Check,
   CheckCircle,
+  ChevronLeft,
+  ChevronRight,
   Copy,
   DollarSign,
+  Download,
   Edit,
   Eye,
+  FileText,
   Info,
-  List,
+  Layers,
   Loader2,
   Package,
   Plus,
+  Power,
   RefreshCw,
+  RotateCcw,
   Search,
-  Trash2,
-  X,
-  XCircle,
+  TrendingUp,
+  Upload,
 } from 'lucide-vue-next'
+
+// 页面配置
+definePageMeta({
+  layout: 'default',
+})
+
+useHead({
+  title: '产品管理 - 智能ERP管理系统',
+})
+
+interface Product {
+  id: string
+  code: string
+  name: string
+  category: string
+  price: number
+  cost: number
+  stock: number
+  min_stock: number
+  unit: string
+  status: string
+  specifications: string
+  description: string
+  created_at: Date
+  updated_at: Date
+}
 
 // 页面状态
 const loading = ref(false)
@@ -370,6 +565,8 @@ const saving = ref(false)
 const searchKeyword = ref('')
 const selectedCategory = ref('')
 const selectedStatus = ref('')
+const pageSize = ref('12')
+const currentPage = ref(1)
 
 // 对话框状态
 const showProductModal = ref(false)
@@ -380,80 +577,158 @@ const currentProduct = ref({
   id: '',
   code: '',
   name: '',
-  description: '',
   category: '',
   price: 0,
+  cost: 0,
   stock: 0,
+  min_stock: 0,
+  unit: '个',
   status: 'active',
+  specifications: '',
+  description: '',
   created_at: new Date(),
   updated_at: new Date(),
 })
 
+// 统计数据
+const productStats = ref({
+  total: 156,
+  active: 132,
+  lowStock: 12,
+  categories: 8,
+  newThisMonth: 15,
+})
+
+// 选项数据
+const categories = [
+  { label: '电子产品', value: 'electronics' },
+  { label: '服装鞋帽', value: 'clothing' },
+  { label: '食品饮料', value: 'food' },
+  { label: '办公用品', value: 'office' },
+  { label: '工业原料', value: 'industrial' },
+  { label: '家居用品', value: 'home' },
+  { label: '汽车配件', value: 'auto' },
+  { label: '医疗器械', value: 'medical' },
+]
+
+const statusOptions = [
+  { label: '在售', value: 'active' },
+  { label: '停售', value: 'inactive' },
+  { label: '缺货', value: 'out_of_stock' },
+  { label: '预售', value: 'pre_sale' },
+]
+
 // 模拟产品数据
-const products = ref([
+const products = ref<Product[]>([
   {
     id: '1',
-    code: 'PRD-001',
-    name: '高端智能手机',
-    description: '最新款智能手机，配备先进的处理器和摄像头',
+    code: 'P001',
+    name: 'iPhone 15 Pro Max 256GB',
     category: 'electronics',
-    price: 4999,
-    stock: 50,
+    price: 9999,
+    cost: 7500,
+    stock: 25,
+    min_stock: 10,
+    unit: '台',
     status: 'active',
-    created_at: new Date('2025-01-01'),
-    updated_at: new Date('2025-01-15'),
+    specifications: '6.7英寸，钛合金边框，A17 Pro芯片',
+    description: '苹果最新旗舰手机，配备先进的摄像系统和强劲的A17 Pro芯片',
+    created_at: new Date('2024-01-15'),
+    updated_at: new Date('2024-01-15'),
   },
   {
     id: '2',
-    code: 'PRD-002',
-    name: '办公椅',
-    description: '人体工学办公椅，舒适透气',
-    category: 'furniture',
-    price: 1299,
+    code: 'P002',
+    name: '华为 Mate 60 Pro 512GB',
+    category: 'electronics',
+    price: 6999,
+    cost: 5200,
     stock: 8,
+    min_stock: 15,
+    unit: '台',
     status: 'active',
-    created_at: new Date('2025-01-02'),
-    updated_at: new Date('2025-01-16'),
+    specifications: '6.82英寸，麒麟9000s，卫星通话',
+    description: '华为回归力作，支持卫星通话功能的高端智能手机',
+    created_at: new Date('2024-01-10'),
+    updated_at: new Date('2024-01-10'),
   },
   {
     id: '3',
-    code: 'PRD-003',
-    name: '运动鞋',
-    description: '专业跑步鞋，轻便透气',
+    code: 'P003',
+    name: '小米14 Ultra 16GB+1TB',
+    category: 'electronics',
+    price: 6499,
+    cost: 4800,
+    stock: 32,
+    min_stock: 20,
+    unit: '台',
+    status: 'active',
+    specifications: '6.73英寸，骁龙8 Gen3，徕卡影像',
+    description: '小米影像旗舰，与徕卡合作打造专业摄影体验',
+    created_at: new Date('2024-01-08'),
+    updated_at: new Date('2024-01-08'),
+  },
+  {
+    id: '4',
+    code: 'P004',
+    name: '商务西装套装',
     category: 'clothing',
-    price: 699,
-    stock: 0,
-    status: 'inactive',
-    created_at: new Date('2025-01-03'),
-    updated_at: new Date('2025-01-17'),
+    price: 1299,
+    cost: 650,
+    stock: 45,
+    min_stock: 30,
+    unit: '套',
+    status: 'active',
+    specifications: '100%羊毛，意大利进口面料',
+    description: '高端商务西装，适合正式场合穿着',
+    created_at: new Date('2024-01-05'),
+    updated_at: new Date('2024-01-05'),
+  },
+  {
+    id: '5',
+    code: 'P005',
+    name: '办公椅人体工学座椅',
+    category: 'office',
+    price: 899,
+    cost: 450,
+    stock: 18,
+    min_stock: 25,
+    unit: '把',
+    status: 'active',
+    specifications: '网布材质，多维度调节，承重150kg',
+    description: '人体工学设计的办公椅，提供舒适的办公体验',
+    created_at: new Date('2024-01-03'),
+    updated_at: new Date('2024-01-03'),
+  },
+  {
+    id: '6',
+    code: 'P006',
+    name: '有机绿茶叶500g',
+    category: 'food',
+    price: 168,
+    cost: 85,
+    stock: 120,
+    min_stock: 50,
+    unit: '盒',
+    status: 'active',
+    specifications: '有机认证，春茶头采，真空包装',
+    description: '优质有机绿茶，来自高山茶园的春茶头采',
+    created_at: new Date('2024-01-01'),
+    updated_at: new Date('2024-01-01'),
   },
 ])
-
-// 分类选项
-const categoryOptions = [
-  { label: '全部分类', value: '' },
-  { label: '电子产品', value: 'electronics' },
-  { label: '家具', value: 'furniture' },
-  { label: '服装', value: 'clothing' },
-  { label: '食品', value: 'food' },
-]
-
-// 状态选项
-const statusOptions = [
-  { label: '全部状态', value: '' },
-  { label: '在售', value: 'active' },
-  { label: '停售', value: 'inactive' },
-]
 
 // 计算属性
 const filteredProducts = computed(() => {
   let result = products.value
 
   if (searchKeyword.value) {
+    const keyword = searchKeyword.value.toLowerCase()
     result = result.filter(
       product =>
-        product.name.toLowerCase().includes(searchKeyword.value.toLowerCase())
-        || product.code.toLowerCase().includes(searchKeyword.value.toLowerCase()),
+        product.name.toLowerCase().includes(keyword) ||
+        product.code.toLowerCase().includes(keyword) ||
+        product.specifications.toLowerCase().includes(keyword)
     )
   }
 
@@ -468,16 +743,14 @@ const filteredProducts = computed(() => {
   return result
 })
 
-const activeProductsCount = computed(() => {
-  return products.value.filter(p => p.status === 'active').length
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * Number(pageSize.value)
+  const end = start + Number(pageSize.value)
+  return filteredProducts.value.slice(start, end)
 })
 
-const lowStockCount = computed(() => {
-  return products.value.filter(p => p.stock > 0 && p.stock <= 10).length
-})
-
-const outOfStockCount = computed(() => {
-  return products.value.filter(p => p.stock === 0).length
+const totalPages = computed(() => {
+  return Math.ceil(filteredProducts.value.length / Number(pageSize.value))
 })
 
 const modalTitle = computed(() => {
@@ -485,12 +758,24 @@ const modalTitle = computed(() => {
 })
 
 // 方法
-const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date(date))
+const getStatusText = (status: string) => {
+  const statusMap: Record<string, string> = {
+    active: '在售',
+    inactive: '停售',
+    out_of_stock: '缺货',
+    pre_sale: '预售',
+  }
+  return statusMap[status] || status
+}
+
+const getStatusVariant = (status: string) => {
+  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+    active: 'default',
+    inactive: 'secondary',
+    out_of_stock: 'destructive',
+    pre_sale: 'outline',
+  }
+  return variantMap[status] || 'secondary'
 }
 
 const resetFilters = () => {
@@ -499,66 +784,77 @@ const resetFilters = () => {
   selectedStatus.value = ''
 }
 
+const refreshData = async () => {
+  loading.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  } finally {
+    loading.value = false
+  }
+}
+
+const importProducts = () => {
+  console.log('导入产品')
+}
+
+const exportProducts = () => {
+  console.log('导出产品数据')
+}
+
 const openProductModal = () => {
   isEditing.value = false
   currentProduct.value = {
     id: '',
-    code: '',
+    code: `P${String(products.value.length + 1).padStart(3, '0')}`,
     name: '',
-    description: '',
     category: '',
     price: 0,
+    cost: 0,
     stock: 0,
+    min_stock: 0,
+    unit: '个',
     status: 'active',
+    specifications: '',
+    description: '',
     created_at: new Date(),
     updated_at: new Date(),
   }
   showProductModal.value = true
 }
 
-const editProduct = (product: any) => {
+const viewProduct = (product: Product) => {
+  editProduct(product)
+}
+
+const editProduct = (product: Product) => {
   isEditing.value = true
   currentProduct.value = { ...product }
   showProductModal.value = true
 }
 
-const viewProduct = (product: any) => {
-  editProduct(product)
-  // 可以设置为只读模式
-}
-
-const copyProduct = (product: any) => {
+const copyProduct = (product: Product) => {
   isEditing.value = false
   currentProduct.value = {
     ...product,
     id: '',
-    code: '',
+    code: `P${String(products.value.length + 1).padStart(3, '0')}`,
+    name: `${product.name} (副本)`,
     created_at: new Date(),
     updated_at: new Date(),
   }
   showProductModal.value = true
 }
 
-const confirmDeleteProduct = (product: any) => {
-  if (window.confirm(`确定要删除产品 "${product.name}" 吗？此操作不可撤销。`)) {
-    deleteProduct(product.id)
-  }
-}
-
-const deleteProduct = async (productId: string) => {
+const toggleStatus = async (product: Product) => {
   try {
-    loading.value = true
-    // 模拟删除操作
-    const index = products.value.findIndex(p => p.id === productId)
+    const newStatus = product.status === 'active' ? 'inactive' : 'active'
+    const index = products.value.findIndex(p => p.id === product.id)
     if (index !== -1) {
-      products.value.splice(index, 1)
+      products.value[index]!.status = newStatus
+      products.value[index]!.updated_at = new Date()
     }
-  }
-  catch (error) {
-    console.error('删除产品失败:', error)
-  }
-  finally {
-    loading.value = false
+  } catch (error) {
+    console.error('状态切换失败:', error)
   }
 }
 
@@ -567,20 +863,25 @@ const saveProduct = async () => {
     saving.value = true
 
     if (isEditing.value) {
-      // 更新产品
       const index = products.value.findIndex(p => p.id === currentProduct.value.id)
       if (index !== -1) {
         products.value[index] = {
           ...currentProduct.value,
+          price: Number(currentProduct.value.price),
+          cost: Number(currentProduct.value.cost),
+          stock: Number(currentProduct.value.stock),
+          min_stock: Number(currentProduct.value.min_stock),
           updated_at: new Date(),
         }
       }
-    }
-    else {
-      // 创建新产品
-      const newProduct = {
+    } else {
+      const newProduct: Product = {
         ...currentProduct.value,
         id: Date.now().toString(),
+        price: Number(currentProduct.value.price),
+        cost: Number(currentProduct.value.cost),
+        stock: Number(currentProduct.value.stock),
+        min_stock: Number(currentProduct.value.min_stock),
         created_at: new Date(),
         updated_at: new Date(),
       }
@@ -588,11 +889,9 @@ const saveProduct = async () => {
     }
 
     closeProductModal()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存产品失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -601,4 +900,9 @@ const closeProductModal = () => {
   showProductModal.value = false
   isEditing.value = false
 }
+
+// 监听分页变化
+watch([pageSize, filteredProducts], () => {
+  currentPage.value = 1
+})
 </script>

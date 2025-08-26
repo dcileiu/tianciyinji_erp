@@ -21,7 +21,9 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- 搜索框 -->
           <div class="md:col-span-2 relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+            />
             <Input v-model="searchQuery" placeholder="搜索资源名称、键值或描述..." class="pl-10" />
           </div>
 
@@ -46,7 +48,11 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -104,7 +110,9 @@
           <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
 
-        <div v-else-if="filteredResources.length === 0" class="text-center py-8 text-gray-500">暂无资源数据</div>
+        <div v-else-if="filteredResources.length === 0" class="text-center py-8 text-gray-500">
+          暂无资源数据
+        </div>
 
         <Table v-else>
           <TableHeader>
@@ -172,7 +180,12 @@
                   <Button v-if="canEdit" variant="ghost" size="sm" @click="editResource(resource)">
                     <Edit class="h-4 w-4" />
                   </Button>
-                  <Button v-if="canDelete" variant="ghost" size="sm" @click="confirmDeleteResource(resource)">
+                  <Button
+                    v-if="canDelete"
+                    variant="ghost"
+                    size="sm"
+                    @click="confirmDeleteResource(resource)"
+                  >
                     <Trash2 class="h-4 w-4 text-red-500" />
                   </Button>
                 </div>
@@ -227,7 +240,11 @@
                   <SelectValue placeholder="选择状态" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="status in statusOptions" :key="status.value" :value="status.value">
+                  <SelectItem
+                    v-for="status in statusOptions"
+                    :key="status.value"
+                    :value="status.value"
+                  >
                     {{ status.label }}
                   </SelectItem>
                 </SelectContent>
@@ -252,7 +269,11 @@
                 <SelectValue placeholder="选择HTTP方法" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="method in methodOptions" :key="method.value" :value="method.value">
+                <SelectItem
+                  v-for="method in methodOptions"
+                  :key="method.value"
+                  :value="method.value"
+                >
                   {{ method.label }}
                 </SelectItem>
               </SelectContent>
@@ -261,8 +282,8 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeDialog"> 取消 </Button>
-          <Button :disabled="saving" @click="saveResource"> 保存 </Button>
+          <Button variant="outline" @click="closeDialog">取消</Button>
+          <Button :disabled="saving" @click="saveResource">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

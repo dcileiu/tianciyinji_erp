@@ -26,7 +26,10 @@ const df = new DateFormatter('en-US', {
         <slot v-bind="slotProps">
           <div>
             <Popover>
-              <PopoverTrigger as-child :disabled="maybeBooleanishToBoolean(config?.inputProps?.disabled) ?? disabled">
+              <PopoverTrigger
+                as-child
+                :disabled="maybeBooleanishToBoolean(config?.inputProps?.disabled) ?? disabled"
+              >
                 <Button
                   variant="outline"
                   :class="

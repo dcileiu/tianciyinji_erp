@@ -130,7 +130,9 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">生产订单列表</h3>
-          <div class="flex items-center gap-2 text-sm text-muted-color">共 {{ totalCount }} 条记录</div>
+          <div class="flex items-center gap-2 text-sm text-muted-color">
+            共 {{ totalCount }} 条记录
+          </div>
         </div>
       </template>
 
@@ -183,7 +185,9 @@
           <TableHead field="produced_quantity" header="已生产" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <span class="font-medium">{{ slotProps.data.produced_quantity.toLocaleString() }}</span>
+                <span class="font-medium">
+                  {{ slotProps.data.produced_quantity.toLocaleString() }}
+                </span>
                 <!-- ProgressBar 组件已移除 -->
               </div>
             </template>
@@ -232,13 +236,11 @@
           <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
+                <Button text size="sm" @click="viewOrder(slotProps.data)" />
                 <Button
-                  text
-                  size="sm"
-                  @click="viewOrder(slotProps.data)"
-                />
-                <Button
-                  v-if="slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'"
+                  v-if="
+                    slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'
+                  "
                   text
                   size="sm"
                   @click="editOrder(slotProps.data)"
@@ -262,7 +264,9 @@
                   @click="completeProduction(slotProps.data)"
                 />
                 <Button
-                  v-if="slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'"
+                  v-if="
+                    slotProps.data.status !== 'completed' && slotProps.data.status !== 'cancelled'
+                  "
                   text
                   size="sm"
                   severity="danger"
@@ -505,7 +509,9 @@ const filteredOrders = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      order => order.order_no.toLowerCase().includes(query) || order.product_name.toLowerCase().includes(query),
+      order =>
+        order.order_no.toLowerCase().includes(query)
+        || order.product_name.toLowerCase().includes(query),
     )
   }
 
@@ -644,8 +650,10 @@ const saveOrder = async () => {
       const newOrder = {
         id: Date.now().toString(),
         ...orderForm.value,
-        product_name: productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || '',
-        workshop_name: workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || '',
+        product_name:
+          productOptions.value.find(p => p.value === orderForm.value.product_id)?.label || '',
+        workshop_name:
+          workshopOptions.value.find(w => w.value === orderForm.value.workshop_id)?.label || '',
         status: 'pending',
         produced_quantity: 0,
         due_date: orderForm.value.due_date || new Date(),

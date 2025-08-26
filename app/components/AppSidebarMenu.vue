@@ -4,7 +4,9 @@
     <div class="px-4 py-6 border-b border-gray-100">
       <div class="flex items-center justify-between">
         <div v-if="!sidebarCollapsed" class="flex items-center gap-3">
-          <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-sm">
+          <div
+            class="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-sm"
+          >
             <svg
               width="16"
               height="16"
@@ -67,7 +69,9 @@
                   :class="[
                     'flex-shrink-0 transition-colors',
                     sidebarCollapsed ? 'h-5 w-5' : 'h-4 w-4 mr-3',
-                    $route.path === subItem.route ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600',
+                    $route.path === subItem.route
+                      ? 'text-blue-600'
+                      : 'text-gray-400 group-hover:text-gray-600',
                   ]"
                 />
                 <span v-if="!sidebarCollapsed" class="truncate">{{ subItem.label }}</span>
@@ -100,7 +104,9 @@
               :class="[
                 'flex-shrink-0 transition-colors',
                 sidebarCollapsed ? 'h-5 w-5' : 'h-4 w-4 mr-3',
-                $route.path === item.route ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600',
+                $route.path === item.route
+                  ? 'text-blue-600'
+                  : 'text-gray-400 group-hover:text-gray-600',
               ]"
             />
             <span v-if="!sidebarCollapsed" class="truncate">{{ item.label }}</span>
@@ -431,7 +437,7 @@ const items = ref<MenuGroup[]>([
       {
         label: '用户管理',
         icon: 'pi pi-user',
-        route: '/users',
+        route: '/system/users',
       },
       {
         label: '角色权限',

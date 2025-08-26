@@ -1,89 +1,98 @@
 <template>
-  <div class="min-h-screen bg-background flex">
-    <!-- 侧边栏 -->
-    <aside
-      class="transition-all duration-300 ease-in-out z-40 fixed top-0 left-0 h-screen overflow-hidden border-r bg-card"
-      :class="sidebarCollapsed ? 'w-16' : 'w-64'"
-    >
-      <AppSidebarMenu :sidebar-collapsed="sidebarCollapsed" @toggle-sidebar="toggleSidebar" />
-    </aside>
+  <SidebarProvider>
+    <AppSideBar />
+    <SidebarInset>
+      <header
+        class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+      >
+        <div class="flex items-center gap-2 px-4">
+          <SidebarTrigger class="-ml-1" />
+          <Separator orientation="vertical" class="mr-2 h-4" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <template v-for="(item, index) in breadcrumbItems" :key="index">
+                <BreadcrumbItem v-if="item.route" class="hidden md:block">
+                  <BreadcrumbLink :href="item.route">
+                    {{ item.label }}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbItem v-else>
+                  <BreadcrumbPage>{{ item.label }}</BreadcrumbPage>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator
+                  v-if="index < breadcrumbItems.length - 1"
+                  class="hidden md:block"
+                />
+              </template>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
 
-    <!-- 主要内容区域 -->
-    <div
-      class="flex-1 flex flex-col transition-all duration-300 ease-in-out"
-      :class="sidebarCollapsed ? 'ml-16' : 'ml-64'"
-    >
-      <!-- 顶部导航栏 -->
-      <header class="border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 sticky top-0 z-30 h-16">
-        <div class="flex h-16 items-center justify-between px-6">
-          <!-- 面包屑导航 -->
-          <nav class="flex items-center space-x-1 text-sm text-muted-foreground">
-            <template v-for="(item, index) in breadcrumbItems" :key="index">
-              <NuxtLink v-if="item.route" :to="item.route" class="hover:text-foreground transition-colors">
-                {{ item.label }}
-              </NuxtLink>
-              <span v-else class="text-foreground font-medium">{{ item.label }}</span>
-              <ChevronRight v-if="index < breadcrumbItems.length - 1" class="h-4 w-4" />
-            </template>
-          </nav>
-
-          <!-- 右侧操作区 -->
-          <div class="flex items-center space-x-2">
-            <!-- 搜索 -->
-            <div class="relative">
-              <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input v-model="globalSearch" placeholder="全局搜索..." class="w-64 pl-8" type="search" />
-            </div>
-
-            <!-- 通知 -->
-            <Button variant="ghost" size="icon" class="relative" @click="toggleNotifications">
-              <Bell class="h-4 w-4" />
-              <Badge
-                class="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
-                variant="destructive"
-              >
-                3
-              </Badge>
-            </Button>
-
-            <!-- 主题切换 -->
-            <Button variant="ghost" size="icon" @click="toggleTheme">
-              <Sun v-if="isDark" class="h-4 w-4" />
-              <Moon v-else class="h-4 w-4" />
-            </Button>
-
-            <!-- 全屏 -->
-            <Button variant="ghost" size="icon" @click="toggleFullscreen">
-              <Minimize v-if="isFullscreen" class="h-4 w-4" />
-              <Maximize v-else class="h-4 w-4" />
-            </Button>
+        <!-- 右侧操作区 -->
+        <div class="flex items-center space-x-2 ml-auto pr-4">
+          <!-- 搜索 -->
+          <div class="relative">
+            <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              v-model="globalSearch"
+              placeholder="全局搜索..."
+              class="w-64 pl-8"
+              type="search"
+            />
           </div>
+
+          <!-- 通知 -->
+          <Button variant="ghost" size="icon" class="relative" @click="toggleNotifications">
+            <Bell class="h-4 w-4" />
+            <Badge
+              class="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
+              variant="destructive"
+            >
+              3
+            </Badge>
+          </Button>
+
+          <!-- 主题切换 -->
+          <Button variant="ghost" size="icon" @click="toggleTheme">
+            <Sun v-if="isDark" class="h-4 w-4" />
+            <Moon v-else class="h-4 w-4" />
+          </Button>
+
+          <!-- 全屏 -->
+          <Button variant="ghost" size="icon" @click="toggleFullscreen">
+            <Minimize v-if="isFullscreen" class="h-4 w-4" />
+            <Maximize v-else class="h-4 w-4" />
+          </Button>
         </div>
       </header>
 
-      <!-- 页面内容 -->
-      <main class="flex-1 overflow-hidden">
-        <div class="h-full overflow-y-auto p-6">
-          <slot ></slot>
-        </div>
-      </main>
-    </div>
+      <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <slot />
+      </div>
+    </SidebarInset>
 
     <!-- 全局加载器 -->
     <GlobalLoader />
-  </div>
+  </SidebarProvider>
 </template>
 
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
-
-import { Bell, ChevronRight, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { Bell, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next'
 
 // 获取路由信息
 const route = useRoute()
 
 // 状态管理
-const sidebarCollapsed = ref(false)
 const isDark = ref(false)
 const isFullscreen = ref(false)
 const globalSearch = ref('')
@@ -121,6 +130,7 @@ const breadcrumbItems = computed(() => {
       'bom': '物料清单',
       'config': '系统配置',
       'users': '用户管理',
+      'login': '登录',
       'roles': '角色权限',
     }
 
@@ -134,10 +144,6 @@ const breadcrumbItems = computed(() => {
 })
 
 // 方法
-const toggleSidebar = () => {
-  sidebarCollapsed.value = !sidebarCollapsed.value
-}
-
 const toggleTheme = () => {
   isDark.value = !isDark.value
   // 这里可以实现主题切换逻辑

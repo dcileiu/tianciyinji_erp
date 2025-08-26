@@ -149,13 +149,13 @@ pnpm check-all
 <template>
   <div>
     <!-- 直接使用，无需导入 -->
-    <Button variant="default" @click="handleClick"> 点击我 </Button>
+    <Button variant="default" @click="handleClick">点击我</Button>
 
     <Card>
       <CardHeader>
         <CardTitle>标题</CardTitle>
       </CardHeader>
-      <CardContent> 内容 </CardContent>
+      <CardContent>内容</CardContent>
     </Card>
 
     <Input v-model="value" placeholder="输入..." />

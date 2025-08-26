@@ -19,8 +19,15 @@
           <div>
             <Label for="search-input">搜索</Label>
             <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input id="search-input" v-model="searchQuery" placeholder="岗位名称、编码..." class="pl-10" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+              />
+              <Input
+                id="search-input"
+                v-model="searchQuery"
+                placeholder="岗位名称、编码..."
+                class="pl-10"
+              />
             </div>
           </div>
           <div>
@@ -45,7 +52,11 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部状态</SelectItem>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -78,7 +89,9 @@
           <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
 
-        <div v-else-if="filteredPositions.length === 0" class="text-center py-8 text-gray-500">暂无岗位数据</div>
+        <div v-else-if="filteredPositions.length === 0" class="text-center py-8 text-gray-500">
+          暂无岗位数据
+        </div>
 
         <div v-else>
           <Table>
@@ -198,7 +211,11 @@
                   <SelectValue placeholder="请选择职级" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="option in levelOptions" :key="option.value" :value="option.value">
+                  <SelectItem
+                    v-for="option in levelOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
                     {{ option.label }}
                   </SelectItem>
                 </SelectContent>
@@ -234,12 +251,22 @@
 
           <div>
             <Label for="description">岗位描述</Label>
-            <Textarea id="description" v-model="positionForm.description" placeholder="请输入岗位描述" :rows="3" />
+            <Textarea
+              id="description"
+              v-model="positionForm.description"
+              placeholder="请输入岗位描述"
+              :rows="3"
+            />
           </div>
 
           <div>
             <Label for="requirements">任职要求</Label>
-            <Textarea id="requirements" v-model="positionForm.requirements" placeholder="请输入任职要求" :rows="3" />
+            <Textarea
+              id="requirements"
+              v-model="positionForm.requirements"
+              placeholder="请输入任职要求"
+              :rows="3"
+            />
           </div>
 
           <div>
@@ -249,7 +276,11 @@
                 <SelectValue placeholder="选择状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -258,8 +289,8 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeDialog"> 取消 </Button>
-          <Button :disabled="saving" @click="savePosition"> 保存 </Button>
+          <Button variant="outline" @click="closeDialog">取消</Button>
+          <Button :disabled="saving" @click="savePosition">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -400,7 +431,8 @@ const filteredPositions = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      position => position.name.toLowerCase().includes(query) || position.code.toLowerCase().includes(query),
+      position =>
+        position.name.toLowerCase().includes(query) || position.code.toLowerCase().includes(query),
     )
   }
 

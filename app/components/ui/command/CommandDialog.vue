@@ -31,7 +31,7 @@ const forwarded = useForwardPropsEmits(props, emits)
         <DialogDescription>{{ description }}</DialogDescription>
       </DialogHeader>
       <Command>
-        <slot ></slot>
+        <slot></slot>
       </Command>
     </DialogContent>
   </Dialog>

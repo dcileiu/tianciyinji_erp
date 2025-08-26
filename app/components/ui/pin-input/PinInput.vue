@@ -19,8 +19,10 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
   <PinInputRoot
     data-slot="pin-input"
     v-bind="forwarded"
-    :class="cn('flex items-center gap-2 has-disabled:opacity-50 disabled:cursor-not-allowed', props.class)"
+    :class="
+      cn('flex items-center gap-2 has-disabled:opacity-50 disabled:cursor-not-allowed', props.class)
+    "
   >
-    <slot ></slot>
+    <slot></slot>
   </PinInputRoot>
 </template>

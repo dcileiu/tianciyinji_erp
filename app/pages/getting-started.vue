@@ -54,7 +54,9 @@
           <!-- 基础数据 -->
           <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 -lg flex items-center justify-center mr-3">
+              <div
+                class="w-10 h-10 bg-blue-100 dark:bg-blue-900 -lg flex items-center justify-center mr-3"
+              >
                 <i class="pi pi-database text-blue-600"></i>
               </div>
               <h3 class="font-semibold">基础数据</h3>
@@ -70,7 +72,9 @@
           <!-- 销售管理 -->
           <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-green-100 dark:bg-green-900 -lg flex items-center justify-center mr-3">
+              <div
+                class="w-10 h-10 bg-green-100 dark:bg-green-900 -lg flex items-center justify-center mr-3"
+              >
                 <i class="pi pi-shopping-cart text-green-600"></i>
               </div>
               <h3 class="font-semibold">销售管理</h3>
@@ -86,7 +90,9 @@
           <!-- 采购管理 -->
           <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 -lg flex items-center justify-center mr-3">
+              <div
+                class="w-10 h-10 bg-purple-100 dark:bg-purple-900 -lg flex items-center justify-center mr-3"
+              >
                 <i class="pi pi-shopping-bag text-purple-600"></i>
               </div>
               <h3 class="font-semibold">采购管理</h3>
@@ -102,7 +108,9 @@
           <!-- 库存管理 -->
           <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 -lg flex items-center justify-center mr-3">
+              <div
+                class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 -lg flex items-center justify-center mr-3"
+              >
                 <i class="pi pi-box text-yellow-600"></i>
               </div>
               <h3 class="font-semibold">库存管理</h3>
@@ -118,7 +126,9 @@
           <!-- 生产管理 -->
           <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-red-100 dark:bg-red-900 -lg flex items-center justify-center mr-3">
+              <div
+                class="w-10 h-10 bg-red-100 dark:bg-red-900 -lg flex items-center justify-center mr-3"
+              >
                 <i class="pi pi-cog text-red-600"></i>
               </div>
               <h3 class="font-semibold">生产管理</h3>
@@ -134,7 +144,9 @@
           <!-- 财务管理 -->
           <div class="border border-border -lg p-4">
             <div class="flex items-center mb-3">
-              <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 -lg flex items-center justify-center mr-3">
+              <div
+                class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 -lg flex items-center justify-center mr-3"
+              >
                 <i class="pi pi-chart-line text-indigo-600"></i>
               </div>
               <h3 class="font-semibold">财务管理</h3>
@@ -263,7 +275,9 @@
                 <span class="font-mono">开发模式</span>
               </div>
             </div>
-            <p class="text-xs text-muted-color mt-3">开发环境下可以在浏览器控制台查看认证状态和调试信息</p>
+            <p class="text-xs text-muted-color mt-3">
+              开发环境下可以在浏览器控制台查看认证状态和调试信息
+            </p>
           </div>
         </div>
       </template>

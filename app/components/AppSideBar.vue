@@ -1,39 +1,100 @@
+<template>
+  <Sidebar v-bind="$props" variant="inset">
+    <SidebarHeader>
+      <TeamSwitcher :teams="data.teams" />
+    </SidebarHeader>
+    <SidebarContent>
+      <NavMain :items="data.navMain" />
+      <NavProjects :projects="data.projects" />
+    </SidebarContent>
+    <SidebarFooter>
+      <NavUser :user="data.user" />
+    </SidebarFooter>
+    <SidebarRail />
+  </Sidebar>
+</template>
+
 <script setup lang="ts">
 import type { SidebarProps } from '@/components/ui/sidebar'
-
-import NavMain from '@/components/NavMain.vue'
-import NavUser from '@/components/NavUser.vue'
 import {
+  AudioWaveform,
+  Command,
+  GalleryVerticalEnd,
+  Map,
+  PieChart,
+  Settings2,
   BarChart3,
-  Building2,
-  Calculator,
+  CreditCard,
   Database,
-  Factory,
+  Home,
   Package,
-  Settings,
+  ShoppingBag,
   ShoppingCart,
-  Warehouse,
 } from 'lucide-vue-next'
+import NavMain from '@/components/NavMain.vue'
+import NavProjects from '@/components/NavProjects.vue'
+import NavUser from '@/components/NavUser.vue'
+import TeamSwitcher from '@/components/TeamSwitcher.vue'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from '@/components/ui/sidebar'
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
-
-const props = withDefaults(defineProps<SidebarProps>(), {
+withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
-// ERP系统菜单数据
+// 获取用户信息
+const user = useSupabaseUser()
+
+// 数据配置
 const data = {
   user: {
-    name: '管理员',
-    email: 'admin@erp.com',
-    avatar: '/avatars/admin.jpg',
+    name: user.value?.email?.split('@')[0] || 'User',
+    email: user.value?.email || 'user@example.com',
+    avatar: '',
   },
+  teams: [
+    {
+      name: '智能ERP',
+      logo: GalleryVerticalEnd,
+      plan: 'Enterprise',
+    },
+    {
+      name: '财务系统',
+      logo: AudioWaveform,
+      plan: 'Professional',
+    },
+    {
+      name: '生产管理',
+      logo: Command,
+      plan: 'Standard',
+    },
+  ],
   navMain: [
     {
+      title: '仪表盘',
+      url: '/dashboard',
+      icon: Home,
+      isActive: true,
+      items: [
+        {
+          title: '概览',
+          url: '/dashboard',
+        },
+        {
+          title: '统计',
+          url: '/dashboard/stats',
+        },
+      ],
+    },
+    {
       title: '销售管理',
-      url: '/sales',
+      url: '#',
       icon: ShoppingCart,
-      isActive: false,
       items: [
         {
           title: '销售订单',
@@ -43,20 +104,12 @@ const data = {
           title: '客户管理',
           url: '/sales/customers',
         },
-        {
-          title: '报价管理',
-          url: '/sales/quotes',
-        },
-        {
-          title: '销售统计',
-          url: '/sales/statistics',
-        },
       ],
     },
     {
       title: '采购管理',
-      url: '/purchase',
-      icon: Package,
+      url: '#',
+      icon: ShoppingBag,
       items: [
         {
           title: '采购订单',
@@ -66,172 +119,132 @@ const data = {
           title: '供应商管理',
           url: '/purchase/suppliers',
         },
-        {
-          title: '采购申请',
-          url: '/purchase/requests',
-        },
-        {
-          title: '采购统计',
-          url: '/purchase/statistics',
-        },
       ],
     },
     {
       title: '库存管理',
-      url: '/inventory',
-      icon: Warehouse,
+      url: '#',
+      icon: Package,
       items: [
         {
-          title: '库存查询',
-          url: '/inventory/query',
+          title: '库存管理',
+          url: '/warehouse/inventory',
         },
         {
-          title: '入库管理',
-          url: '/inventory/inbound',
+          title: '仓库管理',
+          url: '/warehouse/warehouses',
         },
         {
-          title: '出库管理',
-          url: '/inventory/outbound',
-        },
-        {
-          title: '库存盘点',
-          url: '/inventory/stocktaking',
+          title: '库存调拨',
+          url: '/warehouse/transfers',
         },
       ],
     },
     {
       title: '生产管理',
-      url: '/production',
-      icon: Factory,
+      url: '#',
+      icon: Settings2,
       items: [
         {
+          title: '生产订单',
+          url: '/production/orders',
+        },
+        {
           title: '生产计划',
-          url: '/production/planning',
+          url: '/production/plans',
         },
         {
-          title: '工单管理',
-          url: '/production/workorders',
+          title: '物料清单',
+          url: '/production/bom',
         },
         {
-          title: '质量检验',
-          url: '/production/quality',
-        },
-        {
-          title: '设备管理',
-          url: '/production/equipment',
+          title: '车间管理',
+          url: '/production/workshops',
         },
       ],
     },
     {
       title: '财务管理',
-      url: '/finance',
-      icon: Calculator,
+      url: '#',
+      icon: CreditCard,
       items: [
         {
-          title: '应收账款',
-          url: '/finance/receivables',
+          title: '发票管理',
+          url: '/finance/invoices',
         },
         {
-          title: '应付账款',
-          url: '/finance/payables',
+          title: '付款管理',
+          url: '/finance/payments',
         },
         {
-          title: '费用管理',
-          url: '/finance/expenses',
-        },
-        {
-          title: '财务报表',
-          url: '/finance/reports',
+          title: '收款管理',
+          url: '/finance/receipts',
         },
       ],
     },
     {
       title: '基础数据',
-      url: '/master',
+      url: '#',
       icon: Database,
       items: [
         {
           title: '产品管理',
-          url: '/master/products',
+          url: '/master-data/products',
         },
         {
-          title: '仓库管理',
-          url: '/master/warehouses',
+          title: '客户管理',
+          url: '/master-data/customers',
         },
         {
-          title: '部门管理',
-          url: '/master/departments',
-        },
-        {
-          title: '员工管理',
-          url: '/master/employees',
-        },
-      ],
-    },
-    {
-      title: '报表分析',
-      url: '/reports',
-      icon: BarChart3,
-      items: [
-        {
-          title: '销售报表',
-          url: '/reports/sales',
-        },
-        {
-          title: '采购报表',
-          url: '/reports/purchase',
-        },
-        {
-          title: '库存报表',
-          url: '/reports/inventory',
-        },
-        {
-          title: '财务报表',
-          url: '/reports/finance',
+          title: '供应商管理',
+          url: '/master-data/suppliers',
         },
       ],
     },
     {
       title: '系统设置',
-      url: '/settings',
-      icon: Settings,
+      url: '#',
+      icon: Settings2,
       items: [
         {
+          title: '系统配置',
+          url: '/system/config',
+        },
+        {
           title: '用户管理',
-          url: '/settings/users',
+          url: '/system/users',
         },
         {
           title: '角色权限',
-          url: '/settings/roles',
+          url: '/system/roles',
         },
         {
-          title: '系统参数',
-          url: '/settings/parameters',
+          title: '部门管理',
+          url: '/system/departments',
         },
         {
-          title: '数据备份',
-          url: '/settings/backup',
+          title: '菜单管理',
+          url: '/system/menus',
         },
       ],
     },
   ],
+  projects: [
+    {
+      name: '报表分析',
+      url: '/reports',
+      icon: BarChart3,
+    },
+    {
+      name: '数据统计',
+      url: '/analytics',
+      icon: PieChart,
+    },
+    {
+      name: '系统监控',
+      url: '/monitoring',
+      icon: Map,
+    },
+  ],
 }
 </script>
-
-<template>
-  <Sidebar v-bind="props">
-    <SidebarHeader>
-      <div class="flex items-center gap-2 px-4 py-2">
-        <Building2 class="h-6 w-6" />
-        <span class="font-semibold text-lg">ERP 管理系统</span>
-      </div>
-    </SidebarHeader>
-    <SidebarContent>
-      <NavMain :items="data.navMain" />
-    </SidebarContent>
-    <SidebarFooter>
-      <NavUser :user="data.user" />
-    </SidebarFooter>
-    <SidebarRail />
-  </Sidebar>
-</template>

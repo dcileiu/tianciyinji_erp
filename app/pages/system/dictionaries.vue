@@ -1,15 +1,12 @@
 <template>
-  <div class="p-6">
+  <div>
     <!-- 页面头部 -->
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center space-x-3">
         <BookOpen class="h-8 w-8 text-blue-600" />
         <h1 class="text-2xl font-bold text-gray-900">数据字典管理</h1>
       </div>
-      <Button
-        class="bg-blue-600 hover:bg-blue-700"
-        @click="createNewDictionary"
-      >
+      <Button class="bg-blue-600 hover:bg-blue-700" @click="createNewDictionary">
         <Plus class="h-4 w-4 mr-2" />
         新建字典
       </Button>
@@ -20,7 +17,9 @@
       <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+            />
             <Input v-model="searchQuery" placeholder="搜索字典名称、编码..." class="pl-10" />
           </div>
           <Select v-model="typeFilter">
@@ -39,7 +38,11 @@
               <SelectValue placeholder="选择状态" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="option in statusFilterOptions" :key="option.value" :value="option.value">
+              <SelectItem
+                v-for="option in statusFilterOptions"
+                :key="option.value"
+                :value="option.value"
+              >
                 {{ option.label }}
               </SelectItem>
             </SelectContent>
@@ -104,7 +107,9 @@
                 <span class="text-sm text-gray-500">{{ dictionary.items?.length || 0 }} 项</span>
               </TableCell>
               <TableCell>
-                <span class="text-sm text-gray-500">{{ formatDateTime(dictionary.updatedAt) }}</span>
+                <span class="text-sm text-gray-500">
+                  {{ formatDateTime(dictionary.updatedAt) }}
+                </span>
               </TableCell>
               <TableCell>
                 <div class="flex items-center space-x-2">
@@ -134,7 +139,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <Label>字典编码 *</Label>
-            <Input v-model="currentDictionary.code" placeholder="请输入字典编码" :disabled="editingDictionary" />
+            <Input
+              v-model="currentDictionary.code"
+              placeholder="请输入字典编码"
+              :disabled="editingDictionary"
+            />
           </div>
 
           <div class="space-y-2">
@@ -163,7 +172,11 @@
                 <SelectValue placeholder="选择状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -172,12 +185,16 @@
 
           <div class="space-y-2 md:col-span-2">
             <Label>描述</Label>
-            <Textarea v-model="currentDictionary.description" placeholder="请输入字典描述" rows="3" />
+            <Textarea
+              v-model="currentDictionary.description"
+              placeholder="请输入字典描述"
+              rows="3"
+            />
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="showCreateDialog = false"> 取消 </Button>
+          <Button variant="outline" @click="showCreateDialog = false">取消</Button>
           <Button :disabled="saving" @click="saveDictionary">
             {{ editingDictionary ? '更新' : '创建' }}
           </Button>
@@ -228,7 +245,11 @@
                     <SelectValue placeholder="选择状态" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem v-for="option in itemStatusOptions" :key="option.value" :value="option.value">
+                    <SelectItem
+                      v-for="option in itemStatusOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>
@@ -251,8 +272,8 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="showItemsDialog = false"> 取消 </Button>
-          <Button :disabled="saving" @click="saveDictionaryItems"> 保存 </Button>
+          <Button variant="outline" @click="showItemsDialog = false">取消</Button>
+          <Button :disabled="saving" @click="saveDictionaryItems">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

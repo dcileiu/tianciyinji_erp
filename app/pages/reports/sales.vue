@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 min-h-screen bg-surface-50">
+  <div class="min-h-screen bg-surface-50">
     <!-- 页面标题 -->
     <div class="flex justify-between items-start mb-6">
       <div>
@@ -37,7 +37,11 @@
                 <SelectValue placeholder="选择客户" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in customerOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in customerOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -47,7 +51,9 @@
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-foreground">搜索</label>
             <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              />
               <Input v-model="searchQuery" placeholder="搜索订单号、产品..." class="pl-10" />
             </div>
           </div>
@@ -57,7 +63,9 @@
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+      <Card
+        class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg"
+      >
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div class="flex-1">
@@ -79,11 +87,15 @@
         </CardContent>
       </Card>
 
-      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+      <Card
+        class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg"
+      >
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div class="flex-1">
-              <div class="text-2xl font-semibold text-blue-600 mb-1">{{ salesStats.totalOrders }}</div>
+              <div class="text-2xl font-semibold text-blue-600 mb-1">
+                {{ salesStats.totalOrders }}
+              </div>
               <div class="text-sm text-muted-foreground mb-2">订单数量</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
                 <ArrowUp class="w-4 h-4" />
@@ -99,7 +111,9 @@
         </CardContent>
       </Card>
 
-      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+      <Card
+        class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg"
+      >
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div class="flex-1">
@@ -121,11 +135,15 @@
         </CardContent>
       </Card>
 
-      <Card class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+      <Card
+        class="border transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg"
+      >
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div class="flex-1">
-              <div class="text-2xl font-semibold text-orange-600 mb-1">{{ salesStats.activeCustomers }}</div>
+              <div class="text-2xl font-semibold text-orange-600 mb-1">
+                {{ salesStats.activeCustomers }}
+              </div>
               <div class="text-sm text-muted-foreground mb-2">活跃客户</div>
               <div class="flex items-center gap-1 text-sm text-green-600">
                 <ArrowUp class="w-4 h-4" />
@@ -202,7 +220,9 @@
               <TableCell>{{ item.quantity }}</TableCell>
               <TableCell>¥{{ formatCurrency(item.unit_price) }}</TableCell>
               <TableCell>
-                <span class="font-semibold text-green-600"> ¥{{ formatCurrency(item.total_amount) }} </span>
+                <span class="font-semibold text-green-600">
+                  ¥{{ formatCurrency(item.total_amount) }}
+                </span>
               </TableCell>
               <TableCell>
                 <span class="text-sm text-muted-foreground">
@@ -231,7 +251,9 @@
         <CardTitle class="text-lg font-semibold">销售趋势</CardTitle>
       </CardHeader>
       <CardContent>
-        <div class="flex flex-col items-center justify-center h-80 text-center text-muted-foreground p-4">
+        <div
+          class="flex flex-col items-center justify-center h-80 text-center text-muted-foreground p-4"
+        >
           <BarChart3 class="w-16 h-16 mb-4 opacity-50" />
           <p class="text-lg mb-2">销售趋势图表</p>
           <p class="text-sm opacity-75">（图表组件待集成）</p>

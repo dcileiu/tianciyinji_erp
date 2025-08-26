@@ -39,7 +39,8 @@ const shapes = computed(() => {
   Object.keys(shape).forEach((name) => {
     const item = shape[name] as ZodAny
     const baseItem = getBaseSchema(item) as ZodAny
-    let options = baseItem && 'values' in baseItem._def ? (baseItem._def.values as string[]) : undefined
+    let options
+      = baseItem && 'values' in baseItem._def ? (baseItem._def.values as string[]) : undefined
     if (!Array.isArray(options) && typeof options === 'object') options = Object.values(options)
 
     val[name as keyof T] = {
@@ -55,7 +56,9 @@ const shapes = computed(() => {
 
 const fields = computed(() => {
   // @ts-expect-error ignore {} not assignable to object
-  const val: { [key in keyof z.infer<T>]: { shape: Shape, fieldName: string, config: ConfigItem } } = {}
+  const val: {
+    [key in keyof z.infer<T>]: { shape: Shape, fieldName: string, config: ConfigItem }
+  } = {}
   for (const key in shapes.value) {
     const shape = shapes.value[key]
     val[key as keyof z.infer<T>] = {

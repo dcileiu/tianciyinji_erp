@@ -1,10 +1,10 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import type { BulletLegendItemInterface } from '@unovis/ts';
-import { BulletLegend } from '@unovis/ts';
-import { VisBulletLegend } from '@unovis/vue';
-import { nextTick, onMounted, ref } from 'vue';
+import type { BulletLegendItemInterface } from '@unovis/ts'
+import { BulletLegend } from '@unovis/ts'
+import { VisBulletLegend } from '@unovis/vue'
+import { nextTick, onMounted, ref } from 'vue'
 
 const props = withDefaults(defineProps<{ items: BulletLegendItemInterface[] }>(), {
   items: () => [],
@@ -46,7 +46,9 @@ function onLegendItemClick(d: BulletLegendItemInterface, i: number) {
     // apply selection, set other item as inactive
     emits(
       'update:items',
-      props.items.map(item => (item.name === d.name ? { ...d, inactive: false } : { ...item, inactive: true })),
+      props.items.map(item =>
+        item.name === d.name ? { ...d, inactive: false } : { ...item, inactive: true },
+      ),
     )
   }
   keepStyling()

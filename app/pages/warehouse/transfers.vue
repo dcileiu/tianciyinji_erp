@@ -57,7 +57,9 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-color">调拨单列表</h3>
-          <div class="flex items-center gap-2 text-sm text-muted-color">共 {{ totalCount }} 条记录</div>
+          <div class="flex items-center gap-2 text-sm text-muted-color">
+            共 {{ totalCount }} 条记录
+          </div>
         </div>
       </template>
 
@@ -138,11 +140,7 @@
           <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex items-center space-x-1">
-                <Button
-                  text
-                  size="sm"
-                  @click="viewTransfer(slotProps.data)"
-                />
+                <Button text size="sm" @click="viewTransfer(slotProps.data)" />
                 <Button
                   v-if="slotProps.data.status === 'draft'"
                   text
@@ -182,7 +180,11 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">调拨单号</label>
-              <Input v-model="transferForm.transfer_no" :disabled="true" placeholder="系统自动生成" />
+              <Input
+                v-model="transferForm.transfer_no"
+                :disabled="true"
+                placeholder="系统自动生成"
+              />
             </div>
 
             <div class="space-y-2">
@@ -237,12 +239,7 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <label class="block text-sm font-medium text-color">调拨商品</label>
-              <Button
-                v-if="dialogMode !== 'view'"
-                text
-                size="sm"
-                @click="addTransferItem"
-              />
+              <Button v-if="dialogMode !== 'view'" text size="sm" @click="addTransferItem" />
             </div>
 
             <Table :value="transferForm.items" class="p-datatable-sm">
@@ -254,7 +251,9 @@
 
               <TableHead field="current_stock" header="当前库存">
                 <template #body="slotProps">
-                  <span class="text-sm">{{ slotProps.data.current_stock }} {{ slotProps.data.unit }}</span>
+                  <span class="text-sm">
+                    {{ slotProps.data.current_stock }} {{ slotProps.data.unit }}
+                  </span>
                 </template>
               </TableHead>
 
@@ -297,7 +296,7 @@
           <div class="border-t pt-4">
             <div class="flex justify-between items-center">
               <span class="text-lg font-medium text-color">总数量：</span>
-              <span class="text-xl font-bold text-primary"> {{ totalQuantity }} 件 </span>
+              <span class="text-xl font-bold text-primary">{{ totalQuantity }} 件</span>
             </div>
           </div>
         </div>
@@ -306,11 +305,7 @@
       <template #footer>
         <div class="flex justify-end gap-2">
           <Button @click="closeTransferDialog" />
-          <Button
-            v-if="dialogMode !== 'view'"
-            :loading="saving"
-            @click="saveTransfer"
-          />
+          <Button v-if="dialogMode !== 'view'" :loading="saving" @click="saveTransfer" />
         </div>
       </template>
     </Dialog>

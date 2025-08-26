@@ -4,7 +4,11 @@ export const useProductionReports = () => {
   const error = ref<string | null>(null)
 
   // 获取生产报表统计
-  const getProductionReport = async (_params: { startDate: string, endDate: string, workshopId?: string }) => {
+  const getProductionReport = async (_params: {
+    startDate: string
+    endDate: string
+    workshopId?: string
+  }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -93,7 +97,11 @@ export const useProductionReports = () => {
   }
 
   // 获取车间生产排行
-  const getTopWorkshops = async (_params: { startDate: string, endDate: string, limit?: number }) => {
+  const getTopWorkshops = async (_params: {
+    startDate: string
+    endDate: string
+    limit?: number
+  }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -120,7 +128,11 @@ export const useProductionReports = () => {
   }
 
   // 获取产品生产排行
-  const getTopProducts = async (_params: { startDate: string, endDate: string, limit?: number }) => {
+  const getTopProducts = async (_params: {
+    startDate: string
+    endDate: string
+    limit?: number
+  }) => {
     try {
       isLoading.value = true
       error.value = null
@@ -128,7 +140,13 @@ export const useProductionReports = () => {
       // TODO: 从数据库获取真实数据
       const mockData = [
         { id: '1', name: '智能手机A型', orders: 25, total_quantity: 25000, completion_rate: 96.5 },
-        { id: '2', name: '笔记本电脑B型', orders: 18, total_quantity: 18000, completion_rate: 89.2 },
+        {
+          id: '2',
+          name: '笔记本电脑B型',
+          orders: 18,
+          total_quantity: 18000,
+          completion_rate: 89.2,
+        },
         { id: '3', name: '平板电脑C型', orders: 15, total_quantity: 15000, completion_rate: 91.8 },
         { id: '4', name: '智能手表D型', orders: 12, total_quantity: 12000, completion_rate: 87.3 },
         { id: '5', name: '耳机E型', orders: 10, total_quantity: 10000, completion_rate: 94.1 },

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 min-h-screen bg-surface-50">
+  <div class="min-h-screen bg-surface-50">
     <!-- 页面标题 -->
     <div class="flex justify-between items-start mb-6">
       <div>
@@ -32,7 +32,11 @@
                 <SelectValue placeholder="选择仓库" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in warehouseOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in warehouseOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -46,7 +50,11 @@
                 <SelectValue placeholder="选择类别" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in categoryOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in categoryOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -60,7 +68,11 @@
                 <SelectValue placeholder="库存状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="option in stockStatusOptions" :key="option.value" :value="option.value">
+                <SelectItem
+                  v-for="option in stockStatusOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </SelectItem>
               </SelectContent>
@@ -70,7 +82,9 @@
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium">搜索</label>
             <div class="relative">
-              <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              />
               <Input v-model="searchQuery" placeholder="搜索商品名称、编码..." class="pl-10" />
             </div>
           </div>
@@ -182,7 +196,9 @@
       <CardHeader>
         <div class="flex justify-between items-center">
           <CardTitle class="text-lg font-semibold">库存明细</CardTitle>
-          <span class="text-sm text-muted-foreground">共 {{ filteredInventoryItems.length }} 条记录</span>
+          <span class="text-sm text-muted-foreground">
+            共 {{ filteredInventoryItems.length }} 条记录
+          </span>
         </div>
       </CardHeader>
       <CardContent>
@@ -262,7 +278,11 @@
                     <div class="flex items-center gap-2">
                       <span>{{ item.min_stock }}</span>
                       <span class="text-sm text-muted-foreground">{{ item.unit }}</span>
-                      <Badge v-if="item.current_stock <= item.min_stock" variant="destructive" class="ml-2">
+                      <Badge
+                        v-if="item.current_stock <= item.min_stock"
+                        variant="destructive"
+                        class="ml-2"
+                      >
                         低库存
                       </Badge>
                     </div>
@@ -305,8 +325,6 @@
 </template>
 
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
-
 import {
   AlertTriangle,
   ArrowDown,
@@ -431,8 +449,8 @@ const filteredInventoryItems = computed(() => {
   if (searchQuery.value) {
     result = result.filter(
       item =>
-        item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-        || item.product_code.toLowerCase().includes(searchQuery.value.toLowerCase()),
+        item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.product_code.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
 
@@ -445,14 +463,12 @@ const filteredInventoryItems = computed(() => {
   }
 
   if (stockStatusFilter.value) {
-    result = result.filter((item) => {
+    result = result.filter(item => {
       if (stockStatusFilter.value === 'normal') {
         return item.current_stock > item.min_stock
-      }
-      else if (stockStatusFilter.value === 'low') {
+      } else if (stockStatusFilter.value === 'low') {
         return item.current_stock <= item.min_stock && item.current_stock > 0
-      }
-      else if (stockStatusFilter.value === 'out') {
+      } else if (stockStatusFilter.value === 'out') {
         return item.current_stock === 0
       }
       return true

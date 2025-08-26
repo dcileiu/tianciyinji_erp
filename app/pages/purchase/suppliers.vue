@@ -15,7 +15,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- 搜索框 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2"> 搜索供应商 </label>
+            <label class="block text-sm font-medium text-color mb-2">搜索供应商</label>
             <!-- IconField 已移除 -->
             <!-- InputIcon 已移除 -->
             <i class="pi pi-search"></i>
@@ -26,7 +26,7 @@
 
           <!-- 供应商类型筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2"> 供应商类型 </label>
+            <label class="block text-sm font-medium text-color mb-2">供应商类型</label>
             <Select
               v-model="typeFilter"
               :options="typeOptions"
@@ -39,7 +39,7 @@
 
           <!-- 合作状态筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2"> 合作状态 </label>
+            <label class="block text-sm font-medium text-color mb-2">合作状态</label>
             <Select
               v-model="statusFilter"
               :options="statusOptions"
@@ -52,7 +52,7 @@
 
           <!-- 评级筛选 -->
           <div>
-            <label class="block text-sm font-medium text-color mb-2"> 供应商评级 </label>
+            <label class="block text-sm font-medium text-color mb-2">供应商评级</label>
             <Select
               v-model="ratingFilter"
               :options="ratingOptions"
@@ -161,7 +161,7 @@
               </div>
             </div>
           </template>
-          <TableHead selection-mode="multiple" :exportable="false"/>
+          <TableHead selection-mode="multiple" :exportable="false" />
 
           <TableHead field="supplier_no" header="供应商编号" sortable>
             <template #body="slotProps">
@@ -185,7 +185,10 @@
 
           <TableHead field="type" header="供应商类型" sortable>
             <template #body="slotProps">
-              <Tag :value="getTypeDisplayName(slotProps.data.type)" :severity="getTypeSeverity(slotProps.data.type)" />
+              <Tag
+                :value="getTypeDisplayName(slotProps.data.type)"
+                :severity="getTypeSeverity(slotProps.data.type)"
+              />
             </template>
           </TableHead>
 
@@ -204,7 +207,10 @@
           <TableHead field="rating" header="评级" sortable>
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
-                <Tag :value="slotProps.data.rating + '级'" :severity="getRatingSeverity(slotProps.data.rating)" />
+                <Tag
+                  :value="slotProps.data.rating + '级'"
+                  :severity="getRatingSeverity(slotProps.data.rating)"
+                />
                 <!-- Rating 组件已移除 -->
               </div>
             </template>
@@ -218,7 +224,9 @@
 
           <TableHead field="total_amount" header="累计金额" sortable>
             <template #body="slotProps">
-              <span class="font-medium text-green-600"> ¥{{ slotProps.data.total_amount.toLocaleString() }} </span>
+              <span class="font-medium text-green-600">
+                ¥{{ slotProps.data.total_amount.toLocaleString() }}
+              </span>
             </template>
           </TableHead>
 
@@ -234,26 +242,10 @@
           <TableHead header="操作" :exportable="false">
             <template #body="slotProps">
               <div class="flex align-items-center gap-1">
-                <Button
-                  text
-                  size="sm"
-                  @click="viewSupplier(slotProps.data)"
-                />
-                <Button
-                  text
-                  size="sm"
-                  @click="editSupplier(slotProps.data)"
-                />
-                <Button
-                  text
-                  size="sm"
-                  @click="viewOrders(slotProps.data)"
-                />
-                <Button
-                  text
-                  size="sm"
-                  @click="rateSupplier(slotProps.data)"
-                />
+                <Button text size="sm" @click="viewSupplier(slotProps.data)" />
+                <Button text size="sm" @click="editSupplier(slotProps.data)" />
+                <Button text size="sm" @click="viewOrders(slotProps.data)" />
+                <Button text size="sm" @click="rateSupplier(slotProps.data)" />
                 <Button
                   v-if="slotProps.data.status === 'active'"
                   text
@@ -288,7 +280,11 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">供应商编号</label>
-              <Input v-model="supplierForm.supplier_no" :disabled="true" placeholder="系统自动生成" />
+              <Input
+                v-model="supplierForm.supplier_no"
+                :disabled="true"
+                placeholder="系统自动生成"
+              />
             </div>
 
             <div class="space-y-2">
@@ -339,14 +335,22 @@
 
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">联系电话</label>
-              <Input v-model="supplierForm.phone" placeholder="请输入联系电话" :disabled="dialogMode === 'view'" />
+              <Input
+                v-model="supplierForm.phone"
+                placeholder="请输入联系电话"
+                :disabled="dialogMode === 'view'"
+              />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-color">邮箱地址</label>
-              <Input v-model="supplierForm.email" placeholder="请输入邮箱地址" :disabled="dialogMode === 'view'" />
+              <Input
+                v-model="supplierForm.email"
+                placeholder="请输入邮箱地址"
+                :disabled="dialogMode === 'view'"
+              />
             </div>
 
             <div class="space-y-2">
@@ -386,11 +390,7 @@
       <template #footer>
         <div class="flex justify-end gap-2">
           <Button @click="closeSupplierDialog" />
-          <Button
-            v-if="dialogMode !== 'view'"
-            :loading="saving"
-            @click="saveSupplier"
-          />
+          <Button v-if="dialogMode !== 'view'" :loading="saving" @click="saveSupplier" />
         </div>
       </template>
     </Dialog>

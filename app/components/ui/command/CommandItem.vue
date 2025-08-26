@@ -77,6 +77,6 @@ onUnmounted(() => {
       }
     "
   >
-    <slot ></slot>
+    <slot></slot>
   </ListboxItem>
 </template>

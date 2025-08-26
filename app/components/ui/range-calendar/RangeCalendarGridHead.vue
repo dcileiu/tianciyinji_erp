@@ -7,6 +7,6 @@ const props = defineProps<RangeCalendarGridHeadProps>()
 
 <template>
   <RangeCalendarGridHead data-slot="range-calendar-grid-head" v-bind="props">
-    <slot ></slot>
+    <slot></slot>
   </RangeCalendarGridHead>
 </template>

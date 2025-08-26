@@ -162,7 +162,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="order in productionDetails" :key="order.id" class="border-b hover:bg-muted/50">
+            <tr
+              v-for="order in productionDetails"
+              :key="order.id"
+              class="border-b hover:bg-muted/50"
+            >
               <td class="p-4 font-mono text-sm">{{ order.order_no }}</td>
               <td class="p-4">{{ order.product_name }}</td>
               <td class="p-4">{{ order.planned_quantity }}</td>
@@ -211,7 +215,11 @@
         </div>
         <div class="p-4">
           <div class="space-y-4">
-            <div v-for="(workshop, index) in topWorkshops" :key="workshop.id" class="flex items-center justify-between">
+            <div
+              v-for="(workshop, index) in topWorkshops"
+              :key="workshop.id"
+              class="flex items-center justify-between"
+            >
               <div class="flex items-center gap-3">
                 <div
                   class="w-8 h-8 -full flex items-center justify-center text-white text-sm font-medium"
@@ -244,7 +252,11 @@
         </div>
         <div class="p-4">
           <div class="space-y-4">
-            <div v-for="(product, index) in topProducts" :key="product.id" class="flex items-center justify-between">
+            <div
+              v-for="(product, index) in topProducts"
+              :key="product.id"
+              class="flex items-center justify-between"
+            >
               <div class="flex items-center gap-3">
                 <div
                   class="w-8 h-8 -full flex items-center justify-center text-white text-sm font-medium"

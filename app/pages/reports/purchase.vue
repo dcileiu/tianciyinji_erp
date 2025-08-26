@@ -38,7 +38,11 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部供应商</SelectItem>
-                <SelectItem v-for="supplier in supplierOptions" :key="supplier.value" :value="supplier.value">
+                <SelectItem
+                  v-for="supplier in supplierOptions"
+                  :key="supplier.value"
+                  :value="supplier.value"
+                >
                   {{ supplier.label }}
                 </SelectItem>
               </SelectContent>
@@ -79,7 +83,9 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-muted-foreground">总采购金额</p>
-              <p class="text-2xl font-bold text-foreground">¥{{ purchaseStats.totalAmount.toLocaleString() }}</p>
+              <p class="text-2xl font-bold text-foreground">
+                ¥{{ purchaseStats.totalAmount.toLocaleString() }}
+              </p>
               <p class="text-xs text-green-600 flex items-center mt-1">
                 <TrendingDown class="w-3 h-3 mr-1" />
                 较上月增长 {{ purchaseStats.amountGrowth }}%
@@ -115,7 +121,9 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-muted-foreground">平均订单金额</p>
-              <p class="text-2xl font-bold text-foreground">¥{{ avgOrderAmount.toLocaleString() }}</p>
+              <p class="text-2xl font-bold text-foreground">
+                ¥{{ avgOrderAmount.toLocaleString() }}
+              </p>
               <p class="text-xs text-orange-600 flex items-center mt-1">
                 <TrendingDown class="w-3 h-3 mr-1" />
                 较上月变化 {{ purchaseStats.avgGrowth }}%
@@ -234,10 +242,14 @@
                   <span class="font-medium">{{ item.quantity.toLocaleString() }}</span>
                 </TableCell>
                 <TableCell>
-                  <span class="text-sm text-muted-foreground"> ¥{{ item.unit_price.toLocaleString() }} </span>
+                  <span class="text-sm text-muted-foreground">
+                    ¥{{ item.unit_price.toLocaleString() }}
+                  </span>
                 </TableCell>
                 <TableCell>
-                  <span class="font-bold text-red-600"> ¥{{ item.total_amount.toLocaleString() }} </span>
+                  <span class="font-bold text-red-600">
+                    ¥{{ item.total_amount.toLocaleString() }}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <Badge :variant="getStatusVariant(item.status)">
@@ -287,7 +299,9 @@
             <div class="text-sm text-muted-foreground mt-1">总采购金额</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-orange-600">¥{{ avgOrderAmount.toLocaleString() }}</div>
+            <div class="text-2xl font-bold text-orange-600">
+              ¥{{ avgOrderAmount.toLocaleString() }}
+            </div>
             <div class="text-sm text-muted-foreground mt-1">平均订单金额</div>
           </div>
         </div>
@@ -386,7 +400,9 @@ const totalAmount = computed(() => {
 })
 
 const avgOrderAmount = computed(() => {
-  return purchaseDetails.value.length > 0 ? Math.round(totalAmount.value / purchaseDetails.value.length) : 0
+  return purchaseDetails.value.length > 0
+    ? Math.round(totalAmount.value / purchaseDetails.value.length)
+    : 0
 })
 
 // 映射对象
