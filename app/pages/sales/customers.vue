@@ -44,7 +44,7 @@
                 <SelectValue placeholder="全部类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部类型</SelectItem>
+                <SelectItem value="all">全部类型</SelectItem>
                 <SelectItem v-for="type in typeOptions" :key="type.value" :value="type.value">
                   {{ type.label }}
                 </SelectItem>
@@ -59,7 +59,7 @@
                 <SelectValue placeholder="全部地区" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部地区</SelectItem>
+                <SelectItem value="all">全部地区</SelectItem>
                 <SelectItem
                   v-for="region in regionOptions"
                   :key="region.value"
@@ -78,7 +78,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem
                   v-for="status in statusOptions"
                   :key="status.value"
@@ -520,9 +520,9 @@ const editingCustomer = ref<Customer | null>(null)
 
 // 筛选条件
 const searchQuery = ref('')
-const typeFilter = ref('')
-const regionFilter = ref('')
-const statusFilter = ref('')
+const typeFilter = ref('all')
+const regionFilter = ref('all')
+const statusFilter = ref('all')
 
 // 表单数据
 const customerForm = ref({
@@ -648,15 +648,15 @@ const filteredCustomers = computed(() => {
     )
   }
 
-  if (typeFilter.value) {
+  if (typeFilter.value && typeFilter.value !== 'all') {
     result = result.filter(customer => customer.type === typeFilter.value)
   }
 
-  if (regionFilter.value) {
+  if (regionFilter.value && regionFilter.value !== 'all') {
     result = result.filter(customer => customer.region === regionFilter.value)
   }
 
-  if (statusFilter.value) {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(customer => customer.status === statusFilter.value)
   }
 
@@ -708,9 +708,9 @@ const formatDate = (date: Date) => {
 
 const resetFilters = () => {
   searchQuery.value = ''
-  typeFilter.value = ''
-  regionFilter.value = ''
-  statusFilter.value = ''
+  typeFilter.value = 'all'
+  regionFilter.value = 'all'
+  statusFilter.value = 'all'
 }
 
 const refreshData = async () => {

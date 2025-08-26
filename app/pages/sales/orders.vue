@@ -44,7 +44,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem
                   v-for="status in statusOptions"
                   :key="status.value"
@@ -609,8 +609,8 @@ const filteredOrders = computed(() => {
   if (searchKeyword.value) {
     result = result.filter(
       order =>
-        order.orderNo.toLowerCase().includes(searchKeyword.value.toLowerCase())
-        || order.customerName.toLowerCase().includes(searchKeyword.value.toLowerCase()),
+        order.orderNo.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
+        order.customerName.toLowerCase().includes(searchKeyword.value.toLowerCase())
     )
   }
 
@@ -621,7 +621,7 @@ const filteredOrders = computed(() => {
   if (dateRange.value.start && dateRange.value.end) {
     const startDate = new Date(dateRange.value.start)
     const endDate = new Date(dateRange.value.end)
-    result = result.filter((order) => {
+    result = result.filter(order => {
       const orderDate = new Date(order.orderDate)
       return orderDate >= startDate && orderDate <= endDate
     })
@@ -707,8 +707,7 @@ const refreshData = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -744,6 +743,8 @@ const editOrder = (order: Order) => {
     ...order,
     orderDate: new Date(order.orderDate).toISOString().split('T')[0],
     deliveryDate: new Date(order.deliveryDate).toISOString().split('T')[0],
+    created_at: new Date(),
+    updated_at: new Date(),
   }
   showOrderModal.value = true
 }
@@ -759,6 +760,7 @@ const duplicateOrder = (order: Order) => {
     id: '',
     orderNo: `SO-${new Date().getFullYear()}-${String(orders.value.length + 1).padStart(3, '0')}`,
     orderDate: new Date().toISOString().split('T')[0],
+    deliveryDate: new Date().toISOString().split('T')[0],
     status: 'pending',
     created_at: new Date(),
     updated_at: new Date(),
@@ -773,7 +775,7 @@ const confirmDelete = (order: Order) => {
 
 const deleteOrder = () => {
   if (deleteTarget.value) {
-    const index = orders.value.findIndex(o => o.id === deleteTarget.value.id)
+    const index = orders.value.findIndex(o => o.id === deleteTarget.value!.id)
     if (index !== -1) {
       orders.value.splice(index, 1)
     }
@@ -792,19 +794,18 @@ const saveOrder = async () => {
         orders.value[index] = {
           ...currentOrder.value,
           amount: Number(currentOrder.value.amount),
-          orderDate: new Date(currentOrder.value.orderDate),
-          deliveryDate: new Date(currentOrder.value.deliveryDate),
+          orderDate: new Date(currentOrder.value.orderDate!),
+          deliveryDate: new Date(currentOrder.value.deliveryDate!),
           updated_at: new Date(),
         }
       }
-    }
-    else {
+    } else {
       const newOrder = {
         ...currentOrder.value,
         id: Date.now().toString(),
         amount: Number(currentOrder.value.amount),
-        orderDate: new Date(currentOrder.value.orderDate),
-        deliveryDate: new Date(currentOrder.value.deliveryDate),
+        orderDate: new Date(currentOrder.value.orderDate!),
+        deliveryDate: new Date(currentOrder.value.deliveryDate!),
         created_at: new Date(),
         updated_at: new Date(),
       }
@@ -812,11 +813,9 @@ const saveOrder = async () => {
     }
 
     closeOrderModal()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存订单失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

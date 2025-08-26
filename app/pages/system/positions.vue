@@ -37,7 +37,7 @@
                 <SelectValue placeholder="全部部门" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部部门</SelectItem>
+                <SelectItem value="all">全部部门</SelectItem>
                 <SelectItem v-for="dept in departments" :key="dept.id" :value="dept.id">
                   {{ dept.name }}
                 </SelectItem>
@@ -51,7 +51,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem
                   v-for="option in statusOptions"
                   :key="option.value"
@@ -432,7 +432,7 @@ const filteredPositions = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       position =>
-        position.name.toLowerCase().includes(query) || position.code.toLowerCase().includes(query),
+        position.name.toLowerCase().includes(query) || position.code.toLowerCase().includes(query)
     )
   }
 
@@ -528,8 +528,7 @@ const savePosition = () => {
       }
     }
     toast.success('岗位更新成功')
-  }
-  else {
+  } else {
     // 添加新岗位
     const department = departments.value.find(d => d.id === positionForm.value.department_id)
     const newPosition = {

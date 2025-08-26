@@ -33,7 +33,7 @@
                 <SelectValue placeholder="全部类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部类型</SelectItem>
+                <SelectItem value="all">全部类型</SelectItem>
                 <SelectItem
                   v-for="option in logTypeOptions"
                   :key="option.value"
@@ -364,8 +364,8 @@ const selectedLog = ref(null as any)
 const searchQuery = ref('')
 const logTypeFilter = ref('')
 const dateRange = ref({
-  start: null as string | null,
-  end: null as string | null,
+  start: undefined as string | undefined,
+  end: undefined as string | undefined,
 })
 
 // 统计数据
@@ -452,9 +452,9 @@ const filteredLogs = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       log =>
-        log.user_name.toLowerCase().includes(query)
-        || log.action.toLowerCase().includes(query)
-        || log.resource.toLowerCase().includes(query),
+        log.user_name.toLowerCase().includes(query) ||
+        log.action.toLowerCase().includes(query) ||
+        log.resource.toLowerCase().includes(query)
     )
   }
 
@@ -463,9 +463,11 @@ const filteredLogs = computed(() => {
   }
 
   if (dateRange.value.start && dateRange.value.end) {
-    result = result.filter((log) => {
+    result = result.filter(log => {
       const logDate = new Date(log.created_at)
-      return logDate >= dateRange.value.start! && logDate <= dateRange.value.end!
+      return (
+        logDate >= new Date(dateRange.value.start!) && logDate <= new Date(dateRange.value.end!)
+      )
     })
   }
 
@@ -509,8 +511,8 @@ const resetFilters = () => {
   searchQuery.value = ''
   logTypeFilter.value = ''
   dateRange.value = {
-    start: null,
-    end: null,
+    start: undefined,
+    end: undefined,
   }
 }
 

@@ -98,7 +98,7 @@
                 <SelectValue placeholder="选择分类" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">
+                <SelectItem value="all">
                   <span class="text-muted-foreground">全部分类</span>
                 </SelectItem>
                 <SelectItem
@@ -116,7 +116,7 @@
                 <SelectValue placeholder="库存状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">
+                <SelectItem value="all">
                   <span class="text-muted-foreground">全部</span>
                 </SelectItem>
                 <SelectItem
@@ -134,7 +134,7 @@
                 <SelectValue placeholder="产品状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">
+                <SelectItem value="all">
                   <span class="text-muted-foreground">全部</span>
                 </SelectItem>
                 <SelectItem
@@ -715,8 +715,8 @@ const filteredProducts = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       product =>
-        product.product_no.toLowerCase().includes(query)
-        || product.name.toLowerCase().includes(query),
+        product.product_no.toLowerCase().includes(query) ||
+        product.name.toLowerCase().includes(query)
     )
   }
 
@@ -725,7 +725,7 @@ const filteredProducts = computed(() => {
   }
 
   if (stockStatusFilter.value) {
-    result = result.filter((product) => {
+    result = result.filter(product => {
       if (stockStatusFilter.value === 'low') {
         return product.current_stock <= product.min_stock
       }
@@ -864,8 +864,7 @@ const toggleStatus = async (product: any, newStatus: string) => {
           mockProducts.value[index]!.status = newStatus
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('操作失败:', error)
     }
   }
@@ -899,8 +898,7 @@ const saveProduct = async () => {
         image: null,
       }
       mockProducts.value.push(newProduct as any)
-    }
-    else if (dialogMode.value === 'edit') {
+    } else if (dialogMode.value === 'edit') {
       const index = mockProducts.value.findIndex(p => p.id === editingProduct.value?.id)
       if (index !== -1 && mockProducts.value[index]) {
         mockProducts.value[index] = {
@@ -912,11 +910,9 @@ const saveProduct = async () => {
     }
 
     closeProductDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存产品失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

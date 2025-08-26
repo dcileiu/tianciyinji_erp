@@ -4,9 +4,7 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 class="text-3xl font-bold tracking-tight">库存管理</h1>
-        <p class="text-muted-foreground">
-          实时监控库存状态，管理库存调整和预警
-        </p>
+        <p class="text-muted-foreground">实时监控库存状态，管理库存调整和预警</p>
       </div>
       <div class="flex gap-3">
         <Button variant="outline" size="sm" @click="importInventory">
@@ -39,11 +37,7 @@
             <Label>搜索产品</Label>
             <div class="relative">
               <Search class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                v-model="searchQuery"
-                placeholder="产品名称、编码..."
-                class="pl-9"
-              />
+              <Input v-model="searchQuery" placeholder="产品名称、编码..." class="pl-9" />
             </div>
           </div>
 
@@ -54,8 +48,12 @@
                 <SelectValue placeholder="全部仓库" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部仓库</SelectItem>
-                <SelectItem v-for="warehouse in warehouses" :key="warehouse.id" :value="warehouse.id">
+                <SelectItem value="all">全部仓库</SelectItem>
+                <SelectItem
+                  v-for="warehouse in warehouses"
+                  :key="warehouse.id"
+                  :value="warehouse.id"
+                >
                   {{ warehouse.name }}
                 </SelectItem>
               </SelectContent>
@@ -69,7 +67,7 @@
                 <SelectValue placeholder="全部分类" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部分类</SelectItem>
+                <SelectItem value="all">全部分类</SelectItem>
                 <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
                   {{ category.name }}
                 </SelectItem>
@@ -84,8 +82,12 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
-                <SelectItem v-for="status in statusOptions" :key="status.value" :value="status.value">
+                <SelectItem value="all">全部状态</SelectItem>
+                <SelectItem
+                  v-for="status in statusOptions"
+                  :key="status.value"
+                  :value="status.value"
+                >
                   {{ status.label }}
                 </SelectItem>
               </SelectContent>
@@ -114,7 +116,9 @@
             <div class="space-y-2">
               <p class="text-sm font-medium text-muted-foreground">库存总值</p>
               <div class="flex items-baseline space-x-3">
-                <p class="text-2xl font-bold text-blue-600">¥{{ inventoryStats.totalValue.toLocaleString() }}</p>
+                <p class="text-2xl font-bold text-blue-600">
+                  ¥{{ inventoryStats.totalValue.toLocaleString() }}
+                </p>
                 <Badge variant="secondary" class="text-xs">
                   <TrendingUp class="mr-1 h-3 w-3" />
                   +5.2%
@@ -122,7 +126,9 @@
               </div>
               <p class="text-xs text-muted-foreground">较上月</p>
             </div>
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900"
+            >
               <Warehouse class="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
@@ -142,7 +148,9 @@
               </div>
               <p class="text-xs text-muted-foreground">产品数量</p>
             </div>
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900"
+            >
               <Package class="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
           </div>
@@ -156,13 +164,13 @@
               <p class="text-sm font-medium text-muted-foreground">低库存预警</p>
               <div class="flex items-baseline space-x-3">
                 <p class="text-2xl font-bold text-orange-600">{{ inventoryStats.lowStock }}</p>
-                <Badge variant="destructive" class="text-xs">
-                  需补货
-                </Badge>
+                <Badge variant="destructive" class="text-xs">需补货</Badge>
               </div>
               <p class="text-xs text-muted-foreground">产品数量</p>
             </div>
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900">
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900"
+            >
               <AlertTriangle class="h-6 w-6 text-orange-600 dark:text-orange-400" />
             </div>
           </div>
@@ -176,13 +184,13 @@
               <p class="text-sm font-medium text-muted-foreground">缺货产品</p>
               <div class="flex items-baseline space-x-3">
                 <p class="text-2xl font-bold text-red-600">{{ inventoryStats.outOfStock }}</p>
-                <Badge variant="destructive" class="text-xs">
-                  紧急
-                </Badge>
+                <Badge variant="destructive" class="text-xs">紧急</Badge>
               </div>
               <p class="text-xs text-muted-foreground">产品数量</p>
             </div>
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900">
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900"
+            >
               <Info class="h-6 w-6 text-red-600 dark:text-red-400" />
             </div>
           </div>
@@ -261,7 +269,8 @@
                 </div>
                 <p class="text-sm text-muted-foreground font-mono">{{ item.product_code }}</p>
                 <p class="text-sm text-muted-foreground">
-                  {{ getWarehouseName(item.warehouse_id) }} • {{ getCategoryName(item.category_id) }}
+                  {{ getWarehouseName(item.warehouse_id) }} •
+                  {{ getCategoryName(item.category_id) }}
                 </p>
               </div>
             </div>
@@ -269,7 +278,10 @@
             <div class="flex items-center space-x-6">
               <div class="text-center">
                 <p class="text-sm text-muted-foreground">当前库存</p>
-                <p class="text-lg font-bold" :class="getStockColorClass(item.current_stock, item.min_stock)">
+                <p
+                  class="text-lg font-bold"
+                  :class="getStockColorClass(item.current_stock, item.min_stock)"
+                >
                   {{ item.current_stock }} {{ item.unit }}
                 </p>
               </div>
@@ -281,7 +293,9 @@
 
               <div class="text-center">
                 <p class="text-sm text-muted-foreground">库存价值</p>
-                <p class="text-sm font-semibold text-green-600">¥{{ (item.current_stock * item.unit_cost).toLocaleString() }}</p>
+                <p class="text-sm font-semibold text-green-600">
+                  ¥{{ (item.current_stock * item.unit_cost).toLocaleString() }}
+                </p>
               </div>
 
               <div class="flex items-center space-x-1">
@@ -301,7 +315,9 @@
           <!-- 分页 -->
           <div class="flex items-center justify-between pt-4">
             <p class="text-sm text-muted-foreground">
-              显示第 {{ (currentPage - 1) * Number(pageSize) + 1 }} - {{ Math.min(currentPage * Number(pageSize), filteredInventory.length) }} 条，共 {{ filteredInventory.length }} 条记录
+              显示第 {{ (currentPage - 1) * Number(pageSize) + 1 }} -
+              {{ Math.min(currentPage * Number(pageSize), filteredInventory.length) }} 条，共
+              {{ filteredInventory.length }} 条记录
             </p>
             <div class="flex items-center space-x-2">
               <Button
@@ -336,9 +352,7 @@
             <ArrowRightLeft class="h-5 w-5" />
             库存调整
           </DialogTitle>
-          <DialogDescription>
-            调整产品库存数量，记录调整原因
-          </DialogDescription>
+          <DialogDescription>调整产品库存数量，记录调整原因</DialogDescription>
         </DialogHeader>
 
         <div class="space-y-4 py-4">
@@ -363,7 +377,11 @@
                 <SelectValue placeholder="选择仓库" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="warehouse in warehouses" :key="warehouse.id" :value="warehouse.id">
+                <SelectItem
+                  v-for="warehouse in warehouses"
+                  :key="warehouse.id"
+                  :value="warehouse.id"
+                >
                   {{ warehouse.name }}
                 </SelectItem>
               </SelectContent>
@@ -386,28 +404,17 @@
 
           <div class="space-y-2">
             <Label>调整数量</Label>
-            <Input
-              v-model="adjustForm.quantity"
-              type="number"
-              placeholder="输入调整数量"
-              min="1"
-            />
+            <Input v-model="adjustForm.quantity" type="number" placeholder="输入调整数量" min="1" />
           </div>
 
           <div class="space-y-2">
             <Label>调整原因</Label>
-            <Textarea
-              v-model="adjustForm.reason"
-              placeholder="请输入调整原因..."
-              rows="3"
-            />
+            <Textarea v-model="adjustForm.reason" placeholder="请输入调整原因..." rows="3" />
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="closeAdjustDialog">
-            取消
-          </Button>
+          <Button variant="outline" @click="closeAdjustDialog">取消</Button>
           <Button :disabled="adjusting" @click="saveAdjustment">
             <Loader2 v-if="adjusting" class="mr-2 h-4 w-4 animate-spin" />
             确认调整
@@ -613,9 +620,10 @@ const filteredInventory = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(item =>
-      item.product_name.toLowerCase().includes(query)
-      || item.product_code.toLowerCase().includes(query),
+    result = result.filter(
+      item =>
+        item.product_name.toLowerCase().includes(query) ||
+        item.product_code.toLowerCase().includes(query)
     )
   }
 
@@ -692,8 +700,7 @@ const refreshData = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -747,30 +754,27 @@ const saveAdjustment = async () => {
 
     // 模拟库存调整
     const item = mockInventory.value.find(
-      i => i.product_id === adjustForm.value.product_id
-        && i.warehouse_id === adjustForm.value.warehouse_id,
+      i =>
+        i.product_id === adjustForm.value.product_id &&
+        i.warehouse_id === adjustForm.value.warehouse_id
     )
 
     if (item) {
       const quantity = Number(adjustForm.value.quantity)
       if (adjustForm.value.adjust_type === 'in' || adjustForm.value.adjust_type === 'return') {
         item.current_stock += quantity
-      }
-      else {
+      } else {
         item.current_stock = Math.max(0, item.current_stock - quantity)
       }
 
       // 更新状态
       if (item.current_stock === 0) {
         item.status = 'out_of_stock'
-      }
-      else if (item.current_stock < item.min_stock) {
+      } else if (item.current_stock < item.min_stock) {
         item.status = 'low'
-      }
-      else if (item.current_stock > item.max_stock) {
+      } else if (item.current_stock > item.max_stock) {
         item.status = 'overstock'
-      }
-      else {
+      } else {
         item.status = 'normal'
       }
 
@@ -778,11 +782,9 @@ const saveAdjustment = async () => {
     }
 
     closeAdjustDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('库存调整失败:', error)
-  }
-  finally {
+  } finally {
     adjusting.value = false
   }
 }

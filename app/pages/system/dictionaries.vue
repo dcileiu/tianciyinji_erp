@@ -27,7 +27,7 @@
               <SelectValue placeholder="选择类型" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">全部类型</SelectItem>
+              <SelectItem value="all">全部类型</SelectItem>
               <SelectItem v-for="option in typeOptions" :key="option.value" :value="option.value">
                 {{ option.label }}
               </SelectItem>
@@ -395,9 +395,9 @@ const filteredDictionaries = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       dict =>
-        dict.name.toLowerCase().includes(query)
-        || dict.code.toLowerCase().includes(query)
-        || dict.description?.toLowerCase().includes(query),
+        dict.name.toLowerCase().includes(query) ||
+        dict.code.toLowerCase().includes(query) ||
+        dict.description?.toLowerCase().includes(query)
     )
   }
 
@@ -487,11 +487,9 @@ const deleteDictionary = async (dictionaryId: string) => {
       dictionaries.value.splice(index, 1)
     }
     toast.success('字典删除成功')
-  }
-  catch (error) {
+  } catch (error) {
     console.error('删除字典失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -511,8 +509,7 @@ const saveDictionary = async () => {
           updatedAt: new Date(),
         }
       }
-    }
-    else {
+    } else {
       // 创建新字典
       const newDictionary = {
         ...currentDictionary.value,
@@ -526,11 +523,9 @@ const saveDictionary = async () => {
     showCreateDialog.value = false
     editingDictionary.value = false
     toast.success('字典保存成功')
-  }
-  catch (error: any) {
+  } catch (error: any) {
     console.error('保存字典失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -560,11 +555,9 @@ const saveDictionaryItems = async () => {
     }
     showItemsDialog.value = false
     toast.success('字典项目保存成功')
-  }
-  catch (error: any) {
+  } catch (error: any) {
     console.error('保存字典项目失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

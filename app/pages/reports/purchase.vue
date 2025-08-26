@@ -37,7 +37,7 @@
                 <SelectValue placeholder="全部供应商" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部供应商</SelectItem>
+                <SelectItem value="all">全部供应商</SelectItem>
                 <SelectItem
                   v-for="supplier in supplierOptions"
                   :key="supplier.value"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from 'lucide-vue-next'
+import { BadgeCheck, Bell, ChevronsUpDown, LogOut, Moon, Sun } from 'lucide-vue-next'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -27,6 +27,37 @@ defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
+
+// 主题切换功能
+const isDark = ref(false)
+
+// 切换主题
+const toggleTheme = () => {
+  isDark.value = !isDark.value
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+    localStorage.setItem('theme', 'dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+    localStorage.setItem('theme', 'light')
+  }
+}
+
+// 页面加载时恢复主题
+onMounted(() => {
+  const savedTheme = localStorage.getItem('theme')
+  if (savedTheme === 'dark') {
+    isDark.value = true
+    document.documentElement.classList.add('dark')
+  } else {
+    // 默认为明亮主题
+    isDark.value = false
+    document.documentElement.classList.remove('dark')
+    if (!savedTheme) {
+      localStorage.setItem('theme', 'light')
+    }
+  }
+})
 </script>
 
 <template>
@@ -76,6 +107,11 @@ const { isMobile } = useSidebar()
             <DropdownMenuItem>
               <Bell />
               消息通知
+            </DropdownMenuItem>
+            <DropdownMenuItem @click="toggleTheme">
+              <Sun v-if="isDark" />
+              <Moon v-else />
+              {{ isDark ? '浅色模式' : '深色模式' }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

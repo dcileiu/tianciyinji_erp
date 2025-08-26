@@ -48,7 +48,7 @@
                 <SelectValue placeholder="全部分类" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部分类</SelectItem>
+                <SelectItem value="all">全部分类</SelectItem>
                 <SelectItem
                   v-for="category in categories"
                   :key="category.value"
@@ -67,7 +67,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem
                   v-for="status in statusOptions"
                   :key="status.value"

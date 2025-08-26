@@ -103,7 +103,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem value="draft">草稿</SelectItem>
                 <SelectItem value="confirmed">已确认</SelectItem>
                 <SelectItem value="cancelled">已取消</SelectItem>
@@ -118,7 +118,7 @@
                 <SelectValue placeholder="全部方式" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部方式</SelectItem>
+                <SelectItem value="all">全部方式</SelectItem>
                 <SelectItem value="bank_transfer">银行转账</SelectItem>
                 <SelectItem value="cash">现金</SelectItem>
                 <SelectItem value="check">支票</SelectItem>
@@ -519,8 +519,8 @@ const filteredReceipts = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       receipt =>
-        receipt.receipt_no.toLowerCase().includes(query)
-        || receipt.customer_name.toLowerCase().includes(query),
+        receipt.receipt_no.toLowerCase().includes(query) ||
+        receipt.customer_name.toLowerCase().includes(query)
     )
   }
 
@@ -601,8 +601,7 @@ const confirmReceipt = async (id: string) => {
     if (receipt) {
       receipt.status = 'confirmed'
     }
-  }
-  catch (err) {
+  } catch (err) {
     console.error('确认收款单失败:', err)
   }
 }
@@ -611,8 +610,7 @@ const deleteReceipt = async (id: string) => {
   try {
     console.log('删除收款单:', id)
     receipts.value = receipts.value.filter(receipt => receipt.id !== id)
-  }
-  catch (err) {
+  } catch (err) {
     console.error('删除收款单失败:', err)
   }
 }
@@ -648,8 +646,7 @@ const saveReceipt = async () => {
         } as any
       }
       console.log('收款单更新成功')
-    }
-    else {
+    } else {
       // 创建新收款单
       const newReceipt = {
         ...receiptForm.value,
@@ -663,11 +660,9 @@ const saveReceipt = async () => {
     }
 
     closeCreateDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存收款单失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

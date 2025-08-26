@@ -23,7 +23,7 @@
                 <SelectValue placeholder="全部类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部类型</SelectItem>
+                <SelectItem value="all">全部类型</SelectItem>
                 <SelectItem
                   v-for="option in invoiceTypeOptions"
                   :key="option.value"
@@ -41,7 +41,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem
                   v-for="option in statusOptions"
                   :key="option.value"
@@ -546,8 +546,8 @@ const filteredInvoices = computed(() => {
     const query = filters.value.search.toLowerCase()
     result = result.filter(
       invoice =>
-        invoice.invoice_no.toLowerCase().includes(query)
-        || invoice.customer_name.toLowerCase().includes(query),
+        invoice.invoice_no.toLowerCase().includes(query) ||
+        invoice.customer_name.toLowerCase().includes(query)
     )
   }
 
@@ -627,11 +627,9 @@ const loadInvoices = async () => {
   loading.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('加载发票失败:', error)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -643,8 +641,7 @@ const openInvoiceDialog = (invoice: any = null) => {
       ...invoice,
       items: [...invoice.items],
     })
-  }
-  else {
+  } else {
     editingInvoice.value = null
     invoiceForm.value = {
       invoice_no: '',
@@ -685,8 +682,7 @@ const sendInvoice = async (invoice: any) => {
       if (index !== -1 && mockInvoices.value[index]) {
         mockInvoices.value[index]!.status = 'sent'
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('发送失败:', error)
     }
   }
@@ -728,28 +724,27 @@ const saveInvoice = async () => {
       const newInvoice = {
         id: Date.now().toString(),
         ...calculatedInvoice,
-        due_date: calculatedInvoice.due_date || new Date(),
+        invoice_date: new Date(calculatedInvoice.invoice_date),
+        due_date: new Date(calculatedInvoice.due_date),
       }
       mockInvoices.value.push(newInvoice)
-    }
-    else {
-      const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value?.id)
+    } else {
+      const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value)
       if (index !== -1) {
         mockInvoices.value[index] = {
           ...mockInvoices.value[index],
           ...calculatedInvoice,
+          invoice_date: new Date(calculatedInvoice.invoice_date),
           id: mockInvoices.value[index]?.id || '',
-          due_date: calculatedInvoice.due_date || new Date(),
+          due_date: new Date(calculatedInvoice.due_date),
         }
       }
     }
 
     closeInvoiceDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存发票失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }

@@ -48,7 +48,7 @@
                 <SelectValue placeholder="全部角色" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部角色</SelectItem>
+                <SelectItem value="all">全部角色</SelectItem>
                 <SelectItem v-for="role in roles" :key="role.id" :value="role.id">
                   {{ role.name }}
                 </SelectItem>
@@ -63,7 +63,7 @@
                 <SelectValue placeholder="全部部门" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部部门</SelectItem>
+                <SelectItem value="all">全部部门</SelectItem>
                 <SelectItem v-for="dept in departments" :key="dept.id" :value="dept.id">
                   {{ dept.name }}
                 </SelectItem>
@@ -78,7 +78,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem value="active">活跃</SelectItem>
                 <SelectItem value="inactive">停用</SelectItem>
                 <SelectItem value="pending">待激活</SelectItem>
@@ -540,9 +540,9 @@ const currentPage = ref(1)
 
 // 筛选条件
 const searchQuery = ref('')
-const roleFilter = ref('')
-const departmentFilter = ref('')
-const statusFilter = ref('')
+const roleFilter = ref('all')
+const departmentFilter = ref('all')
+const statusFilter = ref('all')
 
 // 表单数据
 const currentUser = ref({
@@ -691,15 +691,15 @@ const filteredUsers = computed(() => {
     )
   }
 
-  if (roleFilter.value) {
+  if (roleFilter.value && roleFilter.value !== 'all') {
     result = result.filter(user => user.role_id === roleFilter.value)
   }
 
-  if (departmentFilter.value) {
+  if (departmentFilter.value && departmentFilter.value !== 'all') {
     result = result.filter(user => user.department_id === departmentFilter.value)
   }
 
-  if (statusFilter.value) {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(user => user.status === statusFilter.value)
   }
 
@@ -761,9 +761,9 @@ const formatDate = (date: Date) => {
 
 const resetFilters = () => {
   searchQuery.value = ''
-  roleFilter.value = ''
-  departmentFilter.value = ''
-  statusFilter.value = ''
+  roleFilter.value = 'all'
+  departmentFilter.value = 'all'
+  statusFilter.value = 'all'
 }
 
 const refreshData = async () => {

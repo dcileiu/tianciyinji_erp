@@ -30,7 +30,7 @@
                 <SelectValue placeholder="全部状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部状态</SelectItem>
+                <SelectItem value="all">全部状态</SelectItem>
                 <SelectItem
                   v-for="option in statusOptions"
                   :key="option.value"
@@ -244,7 +244,7 @@
                   <SelectValue placeholder="选择父级菜单" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">根菜单</SelectItem>
+                  <SelectItem value="all">根菜单</SelectItem>
                   <template v-for="menu in mockMenus" :key="menu.id">
                     <SelectItem :value="menu.id">{{ menu.name }}</SelectItem>
                   </template>
@@ -585,8 +585,8 @@ const filteredMenus = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(
       menu =>
-        menu.name.toLowerCase().includes(query)
-        || (menu.path && menu.path.toLowerCase().includes(query)),
+        menu.name.toLowerCase().includes(query) ||
+        (menu.path && menu.path.toLowerCase().includes(query))
     )
   }
 
@@ -607,12 +607,10 @@ const loadMenus = async () => {
   error.value = ''
   try {
     await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-  catch (err) {
+  } catch (err) {
     error.value = '加载菜单失败'
     console.error('加载菜单失败:', err)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -687,7 +685,7 @@ const saveMenu = async () => {
     if (editingMenu.value) {
       // 更新菜单
       const updateMenuInTree = (menus: any[]): any[] => {
-        return menus.map((menu) => {
+        return menus.map(menu => {
           if (menu.id === editingMenu.value.id) {
             return { ...menu, ...menuForm.value }
           }
@@ -698,8 +696,7 @@ const saveMenu = async () => {
         })
       }
       mockMenus.value = updateMenuInTree(mockMenus.value)
-    }
-    else {
+    } else {
       // 新增菜单
       const newMenu = {
         id: Date.now().toString(),
@@ -711,7 +708,7 @@ const saveMenu = async () => {
       if (menuForm.value.parent_id) {
         // 添加为子菜单
         const addToParent = (menus: any[]): any[] => {
-          return menus.map((menu) => {
+          return menus.map(menu => {
             if (menu.id === menuForm.value.parent_id) {
               return { ...menu, children: [...(menu.children || []), newMenu] }
             }
@@ -722,19 +719,16 @@ const saveMenu = async () => {
           })
         }
         mockMenus.value = addToParent(mockMenus.value)
-      }
-      else {
+      } else {
         // 添加为根菜单
         mockMenus.value.push(newMenu)
       }
     }
 
     closeMenuDialog()
-  }
-  catch (error) {
+  } catch (error) {
     console.error('保存菜单失败:', error)
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -747,7 +741,7 @@ const confirmDeleteMenu = (menu: any) => {
 
 const deleteMenu = (menuId: string) => {
   const deleteFromTree = (menus: any[]): any[] => {
-    return menus.filter((menu) => {
+    return menus.filter(menu => {
       if (menu.id === menuId) {
         return false
       }
