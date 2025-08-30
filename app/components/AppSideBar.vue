@@ -29,25 +29,22 @@ import {
   Settings2,
   ShoppingBag,
   ShoppingCart,
-} from 'lucide-vue-next';
+} from 'lucide-vue-next'
 
 // shadcn-nuxt 会自动导入 Sidebar 相关组件
 interface SidebarProps {
-  collapsible?: 'icon' | 'offcanvas' | 'none';
+  collapsible?: 'icon' | 'offcanvas' | 'none'
 }
 
 withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
-});
+})
 
-// 获取用户信息
-const user = useSupabaseUser();
-
-// 数据配置
+// 数据配置 - 使用固定数据避免SSR不匹配
 const data = {
   user: {
-    name: user.value?.email?.split('@')[0] || 'User',
-    email: user.value?.email || 'user@example.com',
+    name: 'User',
+    email: 'user@example.com',
     avatar: '',
   },
   teams: [
@@ -239,5 +236,5 @@ const data = {
       icon: Map,
     },
   ],
-};
+}
 </script>

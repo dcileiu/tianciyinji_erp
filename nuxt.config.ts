@@ -52,6 +52,9 @@ export default defineNuxtConfig({
     },
   },
 
+  // SSR渲染配置
+  ssr: true,
+
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
@@ -72,7 +75,10 @@ export default defineNuxtConfig({
 
   experimental: {
     appManifest: false,
+    payloadExtraction: false,
   },
+
+
 
   compatibilityDate: '2025-08-20',
 
@@ -80,6 +86,12 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ['vue', 'vue-router', '@vueuse/core', 'lucide-vue-next'],
     },
+  },
+
+  // Nitro 配置用于生产优化
+  nitro: {
+    compressPublicAssets: true,
+    minify: true,
   },
 
   supabase: {

@@ -1,6 +1,11 @@
 <template>
   <SidebarProvider>
-    <AppSideBar />
+    <ClientOnly>
+      <AppSideBar />
+      <template #fallback>
+        <div class="w-64 h-screen bg-sidebar border-r border-sidebar-border"></div>
+      </template>
+    </ClientOnly>
     <SidebarInset>
       <header
         class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
@@ -84,25 +89,25 @@
 </template>
 
 <script setup lang="ts">
-import { Bell, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next';
+import { Bell, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next'
 
 // 获取路由信息
-const route = useRoute();
+const route = useRoute()
 
 // 状态管理
-const isDark = ref(false);
-const isFullscreen = ref(false);
-const globalSearch = ref('');
+const isDark = ref(false)
+const isFullscreen = ref(false)
+const globalSearch = ref('')
 
 // 面包屑导航
 const breadcrumbItems = computed(() => {
-  const pathSegments = route.path.split('/').filter(Boolean);
-  const items = [{ label: '首页', route: '/dashboard' }];
+  const pathSegments = route.path.split('/').filter(Boolean)
+  const items = [{ label: '首页', route: '/dashboard' }]
 
-  let currentPath = '';
+  let currentPath = ''
   pathSegments.forEach((segment, index) => {
-    currentPath += `/${segment}`;
-    const isLast = index === pathSegments.length - 1;
+    currentPath += `/${segment}`
+    const isLast = index === pathSegments.length - 1
 
     // 路径映射
     const pathLabels: Record<string, string> = {
@@ -129,38 +134,38 @@ const breadcrumbItems = computed(() => {
       users: '用户管理',
       login: '登录',
       roles: '角色权限',
-    };
+    }
 
     items.push({
       label: pathLabels[segment] ?? segment,
       route: isLast ? '' : currentPath,
-    });
-  });
+    })
+  })
 
-  return items;
-});
+  return items
+})
 
 // 方法
 const toggleTheme = () => {
-  isDark.value = !isDark.value;
-};
+  isDark.value = !isDark.value
+}
 
 const toggleFullscreen = () => {
   if (document.fullscreenElement) {
-    document.exitFullscreen();
-    isFullscreen.value = false;
+    document.exitFullscreen()
+    isFullscreen.value = false
   } else {
-    document.documentElement.requestFullscreen();
-    isFullscreen.value = true;
+    document.documentElement.requestFullscreen()
+    isFullscreen.value = true
   }
-};
+}
 
-const toggleNotifications = () => {};
+const toggleNotifications = () => { }
 
 // 监听全屏状态变化
 onMounted(() => {
   document.addEventListener('fullscreenchange', () => {
-    isFullscreen.value = !!document.fullscreenElement;
-  });
-});
+    isFullscreen.value = !!document.fullscreenElement
+  })
+})
 </script>

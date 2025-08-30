@@ -10,6 +10,7 @@
 
 <script setup lang="ts">
 // shadcn-nuxt 会自动导入 Toaster 组件
+
 // 设置页面标题和meta信息
 useHead({
   title: 'ERP 管理系统',
@@ -23,17 +24,17 @@ useHead({
   htmlAttrs: {
     lang: 'zh-CN',
   },
-});
+})
 
 // 确保默认为明亮主题
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme');
+  const savedTheme = localStorage.getItem('theme')
   if (!savedTheme || savedTheme === 'light') {
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('dark')
   } else if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add('dark')
   }
-});
+})
 </script>
 
 <style>

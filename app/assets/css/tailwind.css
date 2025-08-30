@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 @layer base {
+
+  /* CSS变量定义 */
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -73,18 +75,54 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
 
-@layer base {
-  * {
+  /* 防止FOUC - 基础样式重置和设置 */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
     @apply border-border;
   }
+
+  html {
+    /* 设置基础字体和背景，避免白屏 */
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    background-color: #ffffff;
+    color: #1f2937;
+  }
+
   body {
+    margin: 0;
+    min-height: 100vh;
+    /* 使用CSS变量，但提供回退 */
+    background-color: hsl(var(--background, 0 0% 100%));
+    color: hsl(var(--foreground, 222.2 84% 4.9%));
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 应用Tailwind的背景和文字颜色类 */
     @apply bg-background text-foreground;
+  }
+
+  /* 侧边栏关键样式 - 确保初始渲染正确 */
+  [data-sidebar="sidebar"] {
+    background-color: hsl(var(--sidebar-background, 0 0% 98%));
+    color: hsl(var(--sidebar-foreground, 240 5.3% 26.1%));
+    width: var(--sidebar-width, 16rem);
+    height: 100vh;
+    position: relative;
+  }
+
+  .sidebar-provider {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
   }
 }
 
 @layer components {
+
   /* 确保所有弹窗都有不透明的背景，支持主题切换 */
   [data-slot="dropdown-menu-content"],
   [data-slot="context-menu-content"],
