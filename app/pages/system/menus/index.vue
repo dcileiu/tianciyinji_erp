@@ -1,7 +1,14 @@
 <template>
   <div class="space-y-6">
     <!-- 页面标题 -->
-    <div class="flex items-center justify-between">
+    <div v-if="loading && menus.length === 0" class="flex items-center justify-between">
+      <div>
+        <Skeleton class="h-8 w-24 mb-2" />
+        <Skeleton class="h-4 w-40" />
+      </div>
+      <Skeleton class="h-10 w-24 rounded" />
+    </div>
+    <div v-else class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
           菜单管理
@@ -19,7 +26,20 @@
     <!-- 搜索和筛选 -->
     <Card>
       <CardContent>
-        <div class="flex flex-col md:flex-row gap-4">
+        <div v-if="loading && menus.length === 0" class="flex flex-col md:flex-row gap-4">
+          <!-- 搜索框骨架屏 -->
+          <div class="flex-1">
+            <div class="relative">
+              <Skeleton class="h-10 w-full rounded" />
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <Skeleton class="h-10 w-32 rounded" />
+            <Skeleton class="h-10 w-32 rounded" />
+            <Skeleton class="h-10 w-10 rounded" />
+          </div>
+        </div>
+        <div v-else class="flex flex-col md:flex-row gap-4">
           <div class="flex-1">
             <div class="relative">
               <Search
@@ -75,18 +95,17 @@
     <!-- 菜单列表 -->
     <Card>
       <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+        <CardTitle v-if="loading && menus.length === 0" class="flex items-center gap-2">
+          <Skeleton class="w-5 h-5 rounded" />
+          <Skeleton class="h-6 w-16" />
+        </CardTitle>
+        <CardTitle v-else class="flex items-center gap-2">
           <Menu class="w-5 h-5" />
           菜单列表
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div v-if="loading" class="flex items-center justify-center py-8">
-          <div
-            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-          ></div>
-          <span class="ml-2 text-gray-600 dark:text-gray-400">加载中...</span>
-        </div>
+        <MenuTableSkeleton v-if="loading && menus.length === 0" />
 
         <div v-else-if="error" class="text-center py-8">
           <p class="text-red-600 dark:text-red-400">{{ error }}</p>
@@ -97,7 +116,7 @@
         </div>
 
         <MenuTable
-          v-else
+          v-else-if="!loading && !error"
           :menus="menus as any"
           :selected-ids="selectedIds"
           :select-all="selectAll"
@@ -131,6 +150,7 @@ import { toast } from 'vue-sonner'
 import type { MenuForm, Menu as MenuType } from '~/composables/useMenus'
 import MenuDialog from './components/MenuDialog.vue'
 import MenuTable from './components/MenuTable.vue'
+import MenuTableSkeleton from './components/MenuTableSkeleton.vue'
 
 // 页面配置
 definePageMeta({
