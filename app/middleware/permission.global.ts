@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const user = useSupabaseUser()
+  const user = useSupabaseUser();
 
   // 公开路由，无需权限检查
   const publicRoutes = [
@@ -10,22 +10,22 @@ export default defineNuxtRouteMiddleware(async (to) => {
     '/auth/reset-password',
     '/',
     '/components-demo',
-  ]
+  ];
 
   // 如果是公开路由，直接通过
   if (publicRoutes.includes(to.path)) {
-    return
+    return;
   }
 
   // 检查用户是否已登录
   if (!user.value) {
-    return navigateTo('/login')
+    return navigateTo('/login');
   }
 
   // TODO: 在这里可以添加更详细的权限检查
   // 当前先确保用户已登录即可访问
   // 具体的页面权限检查可以在页面组件中实现
-})
+});
 
 // 路由权限映射 - 供页面组件使用
 export const ROUTE_PERMISSIONS = {
@@ -46,4 +46,4 @@ export const ROUTE_PERMISSIONS = {
   '/reports/purchase': ['report:purchase'],
   '/reports/production': ['report:production'],
   '/reports/inventory': ['report:inventory'],
-} as const
+} as const;

@@ -13,11 +13,18 @@
         }"
       >
         <div class="text-center mb-6">
-          <h1 class="text-base sm:text-2xl font-bold text-surface-700 mb-2">忘记密码？</h1>
-          <p class="text-sm text-surface-600">输入您的邮箱地址，我们将发送重置密码的链接</p>
+          <h1 class="text-base sm:text-2xl font-bold text-surface-700 mb-2">
+            忘记密码？
+          </h1>
+          <p class="text-sm text-surface-600">
+            输入您的邮箱地址，我们将发送重置密码的链接
+          </p>
         </div>
 
-        <form class="flex flex-column gap-4" @submit.prevent="handleForgotPassword">
+        <form
+          class="flex flex-column gap-4"
+          @submit.prevent="handleForgotPassword"
+        >
           <!-- 邮箱输入 -->
           <div class="field">
             <!-- FloatLabel 组件已移除 -->
@@ -64,11 +71,19 @@
 
           <!-- 其他操作 -->
           <div class="flex flex-column gap-3">
-            <Button link class="w-full justify-content-center" @click="$router.push('/login')" />
+            <Button
+              link
+              class="w-full justify-content-center"
+              @click="$router.push('/login')"
+            />
 
             <div class="text-center text-sm text-surface-600">
               还没有账户？
-              <Button link class="p-0 text-primary" @click="$router.push('/login/register')" />
+              <Button
+                link
+                class="p-0 text-primary"
+                @click="$router.push('/login/register')"
+              />
             </div>
           </div>
         </form>
@@ -83,78 +98,69 @@
 </template>
 
 <script setup lang="ts">
-// import Panel from 'primevue/panel' // 已移除PrimeVue导入
-// import InputText from 'primevue/inputtext' // 已移除PrimeVue导入
-// import Button from 'primevue/button' // 已移除PrimeVue导入
-// import IconField from 'primevue/iconfield' // 已移除PrimeVue导入
-// import InputIcon from 'primevue/inputicon' // 已移除PrimeVue导入
-// import Divider from 'primevue/divider' // 已移除PrimeVue导入
-// import FloatLabel from 'primevue/floatlabel' // 已移除PrimeVue导入
-// import Message from 'primevue/message' // 已移除PrimeVue导入
-// import Chip from 'primevue/chip' // 已移除PrimeVue导入
-import { useAuth } from '~/composables/useAuth'
+import { useAuth } from "~/composables/useAuth";
 
 // 页面配置 - 禁用布局，让忘记密码页面全屏显示
 definePageMeta({
   layout: false,
-})
+});
 
 // 组合式函数
-const { resetPassword } = useAuth()
-const router = useRouter()
+const { resetPassword } = useAuth();
+const router = useRouter();
 
 // 响应式数据
-const loading = ref(false)
-const error = ref('')
-const success = ref('')
+const loading = ref(false);
+const error = ref("");
+const success = ref("");
 const form = ref({
-  email: '',
-})
+  email: "",
+});
 
 // 表单验证
 const emailError = computed(() => {
-  if (!form.value.email) return ''
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return !emailRegex.test(form.value.email) ? '请输入有效的邮箱地址' : ''
-})
+  if (!form.value.email) {
+    return "";
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(form.value.email) ? "" : "请输入有效的邮箱地址";
+});
 
 const isFormValid = computed(() => {
-  return form.value.email && !emailError.value
-})
+  return form.value.email && !emailError.value;
+});
 
 // 处理忘记密码
 const handleForgotPassword = async () => {
-  if (!isFormValid.value) return
+  if (!isFormValid.value) {
+    return;
+  }
 
   try {
-    loading.value = true
-    error.value = ''
-    success.value = ''
+    loading.value = true;
+    error.value = "";
+    success.value = "";
 
-    const result = await resetPassword(form.value.email)
+    const result = await resetPassword(form.value.email);
 
     if (result.success) {
-      success.value = '重置密码邮件已发送！请检查您的邮箱并按照说明重置密码。'
+      success.value = "重置密码邮件已发送！请检查您的邮箱并按照说明重置密码。";
       // 可以选择在一段时间后跳转回登录页面
       setTimeout(() => {
-        router.push('/login')
-      }, 5000)
+        router.push("/login");
+      }, 5000);
+    } else {
+      error.value = result.error?.message || "发送重置邮件失败，请重试";
     }
-    else {
-      error.value = result.error?.message || '发送重置邮件失败，请重试'
-    }
+  } catch (_err) {
+    error.value = "发送重置邮件过程中发生错误，请重试";
+  } finally {
+    loading.value = false;
   }
-  catch (err) {
-    console.error('Reset password error:', err)
-    error.value = '发送重置邮件过程中发生错误，请重试'
-  }
-  finally {
-    loading.value = false
-  }
-}
+};
 
 // 页面标题
 useHead({
-  title: '忘记密码 - ERP管理系统',
-})
+  title: "忘记密码 - ERP管理系统",
+});
 </script>

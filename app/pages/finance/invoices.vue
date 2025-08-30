@@ -173,7 +173,11 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" @click="viewInvoice(invoice)">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      @click="viewInvoice(invoice)"
+                    >
                       <Eye class="w-4 h-4" />
                     </Button>
                     <Button
@@ -192,7 +196,11 @@
                     >
                       <Send class="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" @click="printInvoice(invoice)">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      @click="printInvoice(invoice)"
+                    >
                       <Printer class="w-4 h-4" />
                     </Button>
                     <Button
@@ -216,7 +224,9 @@
     <Dialog v-model:open="invoiceDialogVisible">
       <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{{ editingInvoice ? '编辑发票' : '新建发票' }}</DialogTitle>
+          <DialogTitle>{{
+            editingInvoice ? "编辑发票" : "新建发票"
+          }}</DialogTitle>
         </DialogHeader>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
@@ -241,7 +251,11 @@
                   <SelectValue placeholder="请选择发票类型" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="type in invoiceTypes" :key="type.value" :value="type.value">
+                  <SelectItem
+                    v-for="type in invoiceTypes"
+                    :key="type.value"
+                    :value="type.value"
+                  >
                     {{ type.label }}
                   </SelectItem>
                 </SelectContent>
@@ -293,7 +307,12 @@
 
             <div class="space-y-2">
               <Label for="due_date">到期日期</Label>
-              <Input id="due_date" v-model="invoiceForm.due_date" type="date" :disabled="saving" />
+              <Input
+                id="due_date"
+                v-model="invoiceForm.due_date"
+                type="date"
+                :disabled="saving"
+              />
             </div>
 
             <div class="space-y-2">
@@ -331,7 +350,10 @@
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow v-for="(item, index) in invoiceForm.items" :key="index">
+                <TableRow
+                  v-for="(item, index) in invoiceForm.items"
+                  :key="index"
+                >
                   <TableCell>
                     <Input
                       v-model="item.description"
@@ -402,7 +424,12 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" :disabled="saving" @click="closeInvoiceDialog">取消</Button>
+          <Button
+            variant="outline"
+            :disabled="saving"
+            @click="closeInvoiceDialog"
+            >取消</Button
+          >
           <Button :disabled="saving" @click="saveInvoice">
             <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
             保存
@@ -414,303 +441,311 @@
 </template>
 
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
-
+// 手动导入 Lucide 图标
 import {
   Download,
   Edit,
   Eye,
-  Loader2,
   Plus,
   Printer,
-  RefreshCw,
   Search,
   Send,
   Trash2,
-} from 'lucide-vue-next'
+} from "lucide-vue-next";
 
 definePageMeta({
-  title: '发票管理',
-  layout: 'default',
-})
+  title: "发票管理",
+  layout: "default",
+});
 
 useHead({
-  title: '发票管理 - ERP系统',
-})
+  title: "发票管理 - ERP系统",
+});
 
 // 响应式状态
-const loading = ref(false)
-const saving = ref(false)
-const invoiceDialogVisible = ref(false)
-const editingInvoice = ref(null)
+const loading = ref(false);
+const saving = ref(false);
+const invoiceDialogVisible = ref(false);
+const editingInvoice = ref(null);
 
 // 筛选条件
 const filters = ref({
-  type: '',
-  status: '',
-  search: '',
-})
+  type: "",
+  status: "",
+  search: "",
+});
 
 // 下拉选项数据
 const invoiceTypes = ref([
-  { value: 'sales', label: '销售发票' },
-  { value: 'purchase', label: '采购发票' },
-])
+  { value: "sales", label: "销售发票" },
+  { value: "purchase", label: "采购发票" },
+]);
 
 const invoiceStatuses = ref([
-  { value: 'draft', label: '草稿' },
-  { value: 'sent', label: '已发送' },
-  { value: 'paid', label: '已付款' },
-  { value: 'overdue', label: '逾期' },
-])
+  { value: "draft", label: "草稿" },
+  { value: "sent", label: "已发送" },
+  { value: "paid", label: "已付款" },
+  { value: "overdue", label: "逾期" },
+]);
 
 // 类型定义
 interface InvoiceItem {
-  description: string
-  quantity: number
-  unit_price: number
-  amount: number
+  description: string;
+  quantity: number;
+  unit_price: number;
+  amount: number;
 }
 
 // 发票表单数据
 const invoiceForm = ref({
-  invoice_no: '',
-  type: '',
-  status: 'draft',
-  customer_name: '',
-  contact_person: '',
+  invoice_no: "",
+  type: "",
+  status: "draft",
+  customer_name: "",
+  contact_person: "",
   amount: 0,
   tax_amount: 0,
   total_amount: 0,
-  invoice_date: '',
-  due_date: '',
-  notes: '',
+  invoice_date: "",
+  due_date: "",
+  notes: "",
   items: [] as InvoiceItem[],
-})
+});
 
 // 选项数据
 const invoiceTypeOptions = ref([
-  { label: '销售发票', value: 'sales' },
-  { label: '采购发票', value: 'purchase' },
-])
+  { label: "销售发票", value: "sales" },
+  { label: "采购发票", value: "purchase" },
+]);
 
 const statusOptions = ref([
-  { label: '草稿', value: 'draft' },
-  { label: '已发送', value: 'sent' },
-  { label: '已付款', value: 'paid' },
-  { label: '逾期', value: 'overdue' },
-])
+  { label: "草稿", value: "draft" },
+  { label: "已发送", value: "sent" },
+  { label: "已付款", value: "paid" },
+  { label: "逾期", value: "overdue" },
+]);
 
 // 模拟数据
 const mockInvoices = ref([
   {
-    id: '1',
-    invoice_no: 'INV-2024-001',
-    type: 'sales',
-    customer_name: 'ABC公司',
-    contact_person: '张经理',
-    amount: 85000,
-    tax_amount: 11050,
-    total_amount: 96050,
-    status: 'sent',
-    invoice_date: new Date('2024-01-15'),
-    due_date: new Date('2024-02-15'),
-    notes: '销售发票备注',
+    id: "1",
+    invoice_no: "INV-2024-001",
+    type: "sales",
+    customer_name: "ABC公司",
+    contact_person: "张经理",
+    amount: 85_000,
+    tax_amount: 11_050,
+    total_amount: 96_050,
+    status: "sent",
+    invoice_date: new Date("2024-01-15"),
+    due_date: new Date("2024-02-15"),
+    notes: "销售发票备注",
     items: [
-      { description: '产品A', quantity: 10, unit_price: 5000, amount: 50000 },
-      { description: '产品B', quantity: 7, unit_price: 5000, amount: 35000 },
+      { description: "产品A", quantity: 10, unit_price: 5000, amount: 50_000 },
+      { description: "产品B", quantity: 7, unit_price: 5000, amount: 35_000 },
     ],
   },
   {
-    id: '2',
-    invoice_no: 'INV-2024-002',
-    type: 'purchase',
-    customer_name: 'XYZ供应商',
-    contact_person: '李总',
-    amount: 45000,
+    id: "2",
+    invoice_no: "INV-2024-002",
+    type: "purchase",
+    customer_name: "XYZ供应商",
+    contact_person: "李总",
+    amount: 45_000,
     tax_amount: 5850,
-    total_amount: 50850,
-    status: 'paid',
-    invoice_date: new Date('2024-01-10'),
-    due_date: new Date('2024-02-10'),
-    notes: '采购发票备注',
-    items: [{ description: '原料C', quantity: 15, unit_price: 3000, amount: 45000 }],
+    total_amount: 50_850,
+    status: "paid",
+    invoice_date: new Date("2024-01-10"),
+    due_date: new Date("2024-02-10"),
+    notes: "采购发票备注",
+    items: [
+      { description: "原料C", quantity: 15, unit_price: 3000, amount: 45_000 },
+    ],
   },
-])
+]);
 
 // 计算属性
 const filteredInvoices = computed(() => {
-  let result = mockInvoices.value
+  let result = mockInvoices.value;
 
   if (filters.value.search) {
-    const query = filters.value.search.toLowerCase()
+    const query = filters.value.search.toLowerCase();
     result = result.filter(
-      invoice =>
+      (invoice) =>
         invoice.invoice_no.toLowerCase().includes(query) ||
         invoice.customer_name.toLowerCase().includes(query)
-    )
+    );
   }
 
   if (filters.value.type) {
-    result = result.filter(invoice => invoice.type === filters.value.type)
+    result = result.filter((invoice) => invoice.type === filters.value.type);
   }
 
   if (filters.value.status) {
-    result = result.filter(invoice => invoice.status === filters.value.status)
+    result = result.filter(
+      (invoice) => invoice.status === filters.value.status
+    );
   }
 
-  return result
-})
+  return result;
+});
 
-const totalCount = computed(() => mockInvoices.value.length)
+const totalCount = computed(() => mockInvoices.value.length);
 
 const subtotal = computed(() => {
   return invoiceForm.value.items.reduce((sum: number, item: any) => {
-    return sum + (item.amount || 0)
-  }, 0)
-})
+    return sum + (item.amount || 0);
+  }, 0);
+});
 
 const subtotalAmount = computed(() => {
   return invoiceForm.value.items.reduce((sum: number, item: any) => {
-    return sum + (item.amount || 0)
-  }, 0)
-})
+    return sum + (item.amount || 0);
+  }, 0);
+});
 
-const taxRate = ref(13) // 13% 税率
+const taxRate = ref(13); // 13% 税率
 
 const taxAmount = computed(() => {
-  return Math.round((subtotalAmount.value * taxRate.value) / 100)
-})
+  return Math.round((subtotalAmount.value * taxRate.value) / 100);
+});
 
 const totalAmount = computed(() => {
-  return subtotalAmount.value + taxAmount.value
-})
+  return subtotalAmount.value + taxAmount.value;
+});
 
 // 类型映射
 const typeMap: Record<string, string> = {
-  sales: '销售发票',
-  purchase: '采购发票',
-}
+  sales: "销售发票",
+  purchase: "采购发票",
+};
 
-const typeSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
-  sales: 'default',
-  purchase: 'secondary',
-}
+const typeSeverityMap: Record<
+  string,
+  "default" | "destructive" | "outline" | "secondary"
+> = {
+  sales: "default",
+  purchase: "secondary",
+};
 
 const statusMap: Record<string, string> = {
-  draft: '草稿',
-  sent: '已发送',
-  paid: '已付款',
-  overdue: '逾期',
-}
+  draft: "草稿",
+  sent: "已发送",
+  paid: "已付款",
+  overdue: "逾期",
+};
 
-const statusSeverityMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
-  draft: 'secondary',
-  sent: 'outline',
-  paid: 'default',
-  overdue: 'destructive',
-}
+const statusSeverityMap: Record<
+  string,
+  "default" | "destructive" | "outline" | "secondary"
+> = {
+  draft: "secondary",
+  sent: "outline",
+  paid: "default",
+  overdue: "destructive",
+};
 
 // 方法
-const getTypeDisplayName = (type: string) => typeMap[type] || type
-const getTypeSeverity = (type: string): 'default' | 'destructive' | 'outline' | 'secondary' =>
-  typeSeverityMap[type] || 'secondary'
-const getStatusDisplayName = (status: string) => statusMap[status] || status
-const getStatusSeverity = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' =>
-  statusSeverityMap[status] || 'secondary'
+const getTypeDisplayName = (type: string) => typeMap[type] || type;
+const getTypeSeverity = (
+  type: string
+): "default" | "destructive" | "outline" | "secondary" =>
+  typeSeverityMap[type] || "secondary";
+const getStatusDisplayName = (status: string) => statusMap[status] || status;
+const getStatusSeverity = (
+  status: string
+): "default" | "destructive" | "outline" | "secondary" =>
+  statusSeverityMap[status] || "secondary";
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString('zh-CN')
-}
+  return new Date(date).toLocaleDateString("zh-CN");
+};
 
 const loadInvoices = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-  } catch (error) {
-    console.error('加载发票失败:', error)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  } catch (_error) {
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const openInvoiceDialog = (invoice: any = null) => {
   if (invoice) {
-    editingInvoice.value = invoice
+    editingInvoice.value = invoice;
     Object.assign(invoiceForm.value, {
       ...invoice,
       items: [...invoice.items],
-    })
+    });
   } else {
-    editingInvoice.value = null
+    editingInvoice.value = null;
     invoiceForm.value = {
-      invoice_no: '',
-      type: '',
-      status: 'draft',
-      customer_name: '',
-      contact_person: '',
+      invoice_no: "",
+      type: "",
+      status: "draft",
+      customer_name: "",
+      contact_person: "",
       amount: 0,
       tax_amount: 0,
       total_amount: 0,
-      invoice_date: '',
-      due_date: '',
-      notes: '',
+      invoice_date: "",
+      due_date: "",
+      notes: "",
       items: [],
-    }
+    };
   }
-  invoiceDialogVisible.value = true
-}
+  invoiceDialogVisible.value = true;
+};
 
 const viewInvoice = (invoice: any) => {
-  editingInvoice.value = invoice
+  editingInvoice.value = invoice;
   Object.assign(invoiceForm.value, {
     ...invoice,
     items: [...invoice.items],
-  })
-  invoiceDialogVisible.value = true
-}
+  });
+  invoiceDialogVisible.value = true;
+};
 
 const editInvoice = (invoice: any) => {
-  openInvoiceDialog(invoice)
-}
+  openInvoiceDialog(invoice);
+};
 
 const sendInvoice = async (invoice: any) => {
   if (confirm(`确定要发送发票 ${invoice.invoice_no} 吗？`)) {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const index = mockInvoices.value.findIndex(i => i.id === invoice.id)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const index = mockInvoices.value.findIndex((i) => i.id === invoice.id);
       if (index !== -1 && mockInvoices.value[index]) {
-        mockInvoices.value[index]!.status = 'sent'
+        mockInvoices.value[index]!.status = "sent";
       }
-    } catch (error) {
-      console.error('发送失败:', error)
-    }
+    } catch (_error) {}
   }
-}
+};
 
-const printInvoice = (invoice: any) => {
-  console.log('打印发票:', invoice.invoice_no)
-}
+const printInvoice = (_invoice: any) => {};
 
 const confirmDeleteInvoice = (invoice: any) => {
   if (confirm(`确定要删除发票 ${invoice.invoice_no} 吗？`)) {
-    deleteInvoice(invoice.id)
+    deleteInvoice(invoice.id);
   }
-}
+};
 
 const deleteInvoice = (invoiceId: string) => {
-  mockInvoices.value = mockInvoices.value.filter(invoice => invoice.id !== invoiceId)
-}
+  mockInvoices.value = mockInvoices.value.filter(
+    (invoice) => invoice.id !== invoiceId
+  );
+};
 
 const closeInvoiceDialog = () => {
-  invoiceDialogVisible.value = false
-  editingInvoice.value = null
-}
+  invoiceDialogVisible.value = false;
+  editingInvoice.value = null;
+};
 
 const saveInvoice = async () => {
-  saving.value = true
+  saving.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // 计算金额
     const calculatedInvoice = {
@@ -718,63 +753,62 @@ const saveInvoice = async () => {
       amount: subtotalAmount.value,
       tax_amount: taxAmount.value,
       total_amount: totalAmount.value,
-    }
+    };
 
-    if (!editingInvoice.value) {
-      const newInvoice = {
-        id: Date.now().toString(),
-        ...calculatedInvoice,
-        invoice_date: new Date(calculatedInvoice.invoice_date),
-        due_date: new Date(calculatedInvoice.due_date),
-      }
-      mockInvoices.value.push(newInvoice)
-    } else {
-      const index = mockInvoices.value.findIndex(i => i.id === editingInvoice.value)
+    if (editingInvoice.value) {
+      const index = mockInvoices.value.findIndex(
+        (i) => i.id === editingInvoice.value
+      );
       if (index !== -1) {
         mockInvoices.value[index] = {
           ...mockInvoices.value[index],
           ...calculatedInvoice,
           invoice_date: new Date(calculatedInvoice.invoice_date),
-          id: mockInvoices.value[index]?.id || '',
+          id: mockInvoices.value[index]?.id || "",
           due_date: new Date(calculatedInvoice.due_date),
-        }
+        };
       }
+    } else {
+      const newInvoice = {
+        id: Date.now().toString(),
+        ...calculatedInvoice,
+        invoice_date: new Date(calculatedInvoice.invoice_date),
+        due_date: new Date(calculatedInvoice.due_date),
+      };
+      mockInvoices.value.push(newInvoice);
     }
 
-    closeInvoiceDialog()
-  } catch (error) {
-    console.error('保存发票失败:', error)
+    closeInvoiceDialog();
+  } catch (_error) {
   } finally {
-    saving.value = false
+    saving.value = false;
   }
-}
+};
 
 const addInvoiceItem = () => {
   invoiceForm.value.items.push({
-    description: '',
+    description: "",
     quantity: 1,
     unit_price: 0,
     amount: 0,
-  })
-}
+  });
+};
 
 const removeInvoiceItem = (index: number) => {
-  invoiceForm.value.items.splice(index, 1)
-}
+  invoiceForm.value.items.splice(index, 1);
+};
 
 const calculateItemAmount = (index: number) => {
-  const item = invoiceForm.value.items[index]
+  const item = invoiceForm.value.items[index];
   if (item) {
-    item.amount = (item.quantity || 0) * (item.unit_price || 0)
+    item.amount = (item.quantity || 0) * (item.unit_price || 0);
   }
-}
+};
 
-const exportInvoices = () => {
-  console.log('导出发票')
-}
+const exportInvoices = () => {};
 
 // 初始化
 onMounted(() => {
-  loadInvoices()
-})
+  loadInvoices();
+});
 </script>

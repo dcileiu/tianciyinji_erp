@@ -47,7 +47,9 @@
         <!-- Menu Group -->
         <div v-else-if="item.items" class="mb-6">
           <div v-if="!sidebarCollapsed" class="px-4 mb-2">
-            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <span
+              class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               {{ item.label }}
             </span>
           </div>
@@ -74,7 +76,9 @@
                       : 'text-gray-400 group-hover:text-gray-600',
                   ]"
                 />
-                <span v-if="!sidebarCollapsed" class="truncate">{{ subItem.label }}</span>
+                <span v-if="!sidebarCollapsed" class="truncate">{{
+                  subItem.label
+                }}</span>
                 <Badge
                   v-if="subItem.badge && !sidebarCollapsed"
                   class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-0.5"
@@ -109,7 +113,9 @@
                   : 'text-gray-400 group-hover:text-gray-600',
               ]"
             />
-            <span v-if="!sidebarCollapsed" class="truncate">{{ item.label }}</span>
+            <span v-if="!sidebarCollapsed" class="truncate">{{
+              item.label
+            }}</span>
             <Badge
               v-if="item.badge && !sidebarCollapsed"
               class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-0.5"
@@ -126,13 +132,15 @@
       <div class="flex items-center justify-between">
         <div v-if="!sidebarCollapsed" class="flex items-center gap-3 min-w-0">
           <Avatar class="h-8 w-8 flex-shrink-0">
-            <AvatarFallback class="bg-gray-100 text-gray-600 text-sm font-medium">
-              {{ user?.email?.charAt(0)?.toUpperCase() || 'U' }}
+            <AvatarFallback
+              class="bg-gray-100 text-gray-600 text-sm font-medium"
+            >
+              {{ user?.email?.charAt(0)?.toUpperCase() || "U" }}
             </AvatarFallback>
           </Avatar>
           <div class="flex flex-col min-w-0">
             <span class="text-sm font-medium text-gray-900 truncate">
-              {{ user?.email || '未登录' }}
+              {{ user?.email || "未登录" }}
             </span>
             <small class="text-xs text-gray-500">管理员</small>
           </div>
@@ -195,71 +203,73 @@ import {
   TrendingUp,
   Truck,
   Users,
-} from 'lucide-vue-next'
+} from "lucide-vue-next";
 
 interface MenuItem {
-  label: string
-  icon: string
-  route: string
-  badge?: string
-  shortcut?: string
+  label: string;
+  icon: string;
+  route: string;
+  badge?: string;
+  shortcut?: string;
 }
 
 interface MenuGroup {
-  label?: string
-  separator?: boolean
-  items?: MenuItem[]
-  icon?: string
-  route?: string
-  badge?: string
+  label?: string;
+  separator?: boolean;
+  items?: MenuItem[];
+  icon?: string;
+  route?: string;
+  badge?: string;
 }
 
 // Props
 defineProps<{
-  sidebarCollapsed: boolean
-}>()
+  sidebarCollapsed: boolean;
+}>();
 
 // Emits
 const emit = defineEmits<{
-  toggleSidebar: []
-}>()
+  toggleSidebar: [];
+}>();
 
 // 获取用户信息
-const user = useSupabaseUser()
+const user = useSupabaseUser();
 
 // 图标映射函数
 const getIcon = (iconClass?: string) => {
-  if (!iconClass) return Home
-  const iconMap: Record<string, typeof Home> = {
-    'pi pi-home': Home,
-    'pi pi-shopping-cart': ShoppingCart,
-    'pi pi-users': Users,
-    'pi pi-shopping-bag': ShoppingBag,
-    'pi pi-truck': Truck,
-    'pi pi-box': Package,
-    'pi pi-building': Building,
-    'pi pi-refresh': RotateCcw,
-    'pi pi-cog': SettingsIcon,
-    'pi pi-calendar': Calendar,
-    'pi pi-list': List,
-    'pi pi-file-edit': FileText,
-    'pi pi-credit-card': CreditCard,
-    'pi pi-receipt': Receipt,
-    'pi pi-tag': TagIcon,
-    'pi pi-chart-line': TrendingUp,
-    'pi pi-chart-bar': BarChart3,
-    'pi pi-chart-pie': PieChart,
-    'pi pi-user': Users,
-    'pi pi-shield': Shield,
-    'pi pi-sitemap': Network,
-    'pi pi-bars': MenuIcon,
-    'pi pi-briefcase': Briefcase,
-    'pi pi-database': Database,
-    'pi pi-book': Book,
-    'pi pi-file': FileCheck,
+  if (!iconClass) {
+    return Home;
   }
-  return iconMap[iconClass] || Home
-}
+  const iconMap: Record<string, typeof Home> = {
+    "pi pi-home": Home,
+    "pi pi-shopping-cart": ShoppingCart,
+    "pi pi-users": Users,
+    "pi pi-shopping-bag": ShoppingBag,
+    "pi pi-truck": Truck,
+    "pi pi-box": Package,
+    "pi pi-building": Building,
+    "pi pi-refresh": RotateCcw,
+    "pi pi-cog": SettingsIcon,
+    "pi pi-calendar": Calendar,
+    "pi pi-list": List,
+    "pi pi-file-edit": FileText,
+    "pi pi-credit-card": CreditCard,
+    "pi pi-receipt": Receipt,
+    "pi pi-tag": TagIcon,
+    "pi pi-chart-line": TrendingUp,
+    "pi pi-chart-bar": BarChart3,
+    "pi pi-chart-pie": PieChart,
+    "pi pi-user": Users,
+    "pi pi-shield": Shield,
+    "pi pi-sitemap": Network,
+    "pi pi-bars": MenuIcon,
+    "pi pi-briefcase": Briefcase,
+    "pi pi-database": Database,
+    "pi pi-book": Book,
+    "pi pi-file": FileCheck,
+  };
+  return iconMap[iconClass] || Home;
+};
 
 // 菜单项配置
 const items = ref<MenuGroup[]>([
@@ -268,233 +278,233 @@ const items = ref<MenuGroup[]>([
   },
   // 仪表盘
   {
-    label: '仪表盘',
-    icon: 'pi pi-home',
-    route: '/dashboard',
+    label: "仪表盘",
+    icon: "pi pi-home",
+    route: "/dashboard",
   },
   {
     separator: true,
   },
   // 销售管理
   {
-    label: '销售管理',
+    label: "销售管理",
     items: [
       {
-        label: '销售订单',
-        icon: 'pi pi-shopping-cart',
-        route: '/sales/orders',
-        badge: '5',
-        shortcut: '⌘+S',
+        label: "销售订单",
+        icon: "pi pi-shopping-cart",
+        route: "/sales/orders",
+        badge: "5",
+        shortcut: "⌘+S",
       },
       {
-        label: '客户管理',
-        icon: 'pi pi-users',
-        route: '/sales/customers',
+        label: "客户管理",
+        icon: "pi pi-users",
+        route: "/sales/customers",
       },
     ],
   },
   // 采购管理
   {
-    label: '采购管理',
+    label: "采购管理",
     items: [
       {
-        label: '采购订单',
-        icon: 'pi pi-shopping-bag',
-        route: '/purchase/orders',
+        label: "采购订单",
+        icon: "pi pi-shopping-bag",
+        route: "/purchase/orders",
       },
       {
-        label: '供应商管理',
-        icon: 'pi pi-truck',
-        route: '/purchase/suppliers',
+        label: "供应商管理",
+        icon: "pi pi-truck",
+        route: "/purchase/suppliers",
       },
     ],
   },
   // 库存管理
   {
-    label: '库存管理',
+    label: "库存管理",
     items: [
       {
-        label: '库存管理',
-        icon: 'pi pi-box',
-        route: '/warehouse/inventory',
+        label: "库存管理",
+        icon: "pi pi-box",
+        route: "/warehouse/inventory",
       },
       {
-        label: '仓库管理',
-        icon: 'pi pi-building',
-        route: '/warehouse/warehouses',
+        label: "仓库管理",
+        icon: "pi pi-building",
+        route: "/warehouse/warehouses",
       },
       {
-        label: '库存调拨',
-        icon: 'pi pi-refresh',
-        route: '/warehouse/transfers',
+        label: "库存调拨",
+        icon: "pi pi-refresh",
+        route: "/warehouse/transfers",
       },
     ],
   },
   // 生产管理
   {
-    label: '生产管理',
+    label: "生产管理",
     items: [
       {
-        label: '生产订单',
-        icon: 'pi pi-cog',
-        route: '/production/orders',
+        label: "生产订单",
+        icon: "pi pi-cog",
+        route: "/production/orders",
       },
       {
-        label: '生产计划',
-        icon: 'pi pi-calendar',
-        route: '/production/plans',
+        label: "生产计划",
+        icon: "pi pi-calendar",
+        route: "/production/plans",
       },
       {
-        label: '物料清单',
-        icon: 'pi pi-list',
-        route: '/production/bom',
+        label: "物料清单",
+        icon: "pi pi-list",
+        route: "/production/bom",
       },
       {
-        label: '车间管理',
-        icon: 'pi pi-building',
-        route: '/production/workshops',
+        label: "车间管理",
+        icon: "pi pi-building",
+        route: "/production/workshops",
       },
     ],
   },
   // 财务管理
   {
-    label: '财务管理',
+    label: "财务管理",
     items: [
       {
-        label: '发票管理',
-        icon: 'pi pi-file-edit',
-        route: '/finance/invoices',
-        badge: '3',
+        label: "发票管理",
+        icon: "pi pi-file-edit",
+        route: "/finance/invoices",
+        badge: "3",
       },
       {
-        label: '付款管理',
-        icon: 'pi pi-credit-card',
-        route: '/finance/payments',
+        label: "付款管理",
+        icon: "pi pi-credit-card",
+        route: "/finance/payments",
       },
       {
-        label: '收款管理',
-        icon: 'pi pi-receipt',
-        route: '/finance/receipts',
+        label: "收款管理",
+        icon: "pi pi-receipt",
+        route: "/finance/receipts",
       },
     ],
   },
   // 基础数据
   {
-    label: '基础数据',
+    label: "基础数据",
     items: [
       {
-        label: '产品管理',
-        icon: 'pi pi-tag',
-        route: '/master-data/products',
+        label: "产品管理",
+        icon: "pi pi-tag",
+        route: "/master-data/products",
       },
       {
-        label: '客户管理',
-        icon: 'pi pi-users',
-        route: '/master-data/customers',
+        label: "客户管理",
+        icon: "pi pi-users",
+        route: "/master-data/customers",
       },
       {
-        label: '供应商管理',
-        icon: 'pi pi-truck',
-        route: '/master-data/suppliers',
+        label: "供应商管理",
+        icon: "pi pi-truck",
+        route: "/master-data/suppliers",
       },
     ],
   },
   // 报表分析
   {
-    label: '报表分析',
+    label: "报表分析",
     items: [
       {
-        label: '销售报表',
-        icon: 'pi pi-chart-line',
-        route: '/reports/sales',
+        label: "销售报表",
+        icon: "pi pi-chart-line",
+        route: "/reports/sales",
       },
       {
-        label: '库存报表',
-        icon: 'pi pi-chart-bar',
-        route: '/reports/inventory',
+        label: "库存报表",
+        icon: "pi pi-chart-bar",
+        route: "/reports/inventory",
       },
       {
-        label: '生产报表',
-        icon: 'pi pi-chart-pie',
-        route: '/reports/production',
+        label: "生产报表",
+        icon: "pi pi-chart-pie",
+        route: "/reports/production",
       },
       {
-        label: '采购报表',
-        icon: 'pi pi-chart-bar',
-        route: '/reports/purchase',
+        label: "采购报表",
+        icon: "pi pi-chart-bar",
+        route: "/reports/purchase",
       },
     ],
   },
   // 系统设置
   {
-    label: '系统设置',
+    label: "系统设置",
     items: [
       {
-        label: '系统配置',
-        icon: 'pi pi-cog',
-        route: '/system/config',
+        label: "系统配置",
+        icon: "pi pi-cog",
+        route: "/system/config",
       },
       {
-        label: '用户管理',
-        icon: 'pi pi-user',
-        route: '/system/users',
+        label: "用户管理",
+        icon: "pi pi-user",
+        route: "/system/users",
       },
       {
-        label: '角色权限',
-        icon: 'pi pi-shield',
-        route: '/system/roles',
+        label: "角色权限",
+        icon: "pi pi-shield",
+        route: "/system/roles",
       },
       {
-        label: '部门管理',
-        icon: 'pi pi-sitemap',
-        route: '/system/departments',
+        label: "部门管理",
+        icon: "pi pi-sitemap",
+        route: "/system/departments",
       },
       {
-        label: '菜单管理',
-        icon: 'pi pi-bars',
-        route: '/system/menus',
+        label: "菜单管理",
+        icon: "pi pi-bars",
+        route: "/system/menus",
       },
       {
-        label: '岗位管理',
-        icon: 'pi pi-briefcase',
-        route: '/system/positions',
+        label: "岗位管理",
+        icon: "pi pi-briefcase",
+        route: "/system/positions",
       },
       {
-        label: '资源管理',
-        icon: 'pi pi-database',
-        route: '/system/resources',
+        label: "资源管理",
+        icon: "pi pi-database",
+        route: "/system/resources",
       },
       {
-        label: '数据字典',
-        icon: 'pi pi-book',
-        route: '/system/dictionaries',
+        label: "数据字典",
+        icon: "pi pi-book",
+        route: "/system/dictionaries",
       },
       {
-        label: '系统日志',
-        icon: 'pi pi-file',
-        route: '/system/logs',
+        label: "系统日志",
+        icon: "pi pi-file",
+        route: "/system/logs",
       },
     ],
   },
   {
     separator: true,
   },
-])
+]);
 
 // 方法
 const toggleSidebar = () => {
-  emit('toggleSidebar')
-}
+  emit("toggleSidebar");
+};
 
 const goToSettings = () => {
-  navigateTo('/system/config')
-}
+  navigateTo("/system/config");
+};
 
 const logout = async () => {
-  const { auth } = useSupabaseClient()
-  await auth.signOut()
-  await navigateTo('/login')
-}
+  const { auth } = useSupabaseClient();
+  await auth.signOut();
+  await navigateTo("/login");
+};
 </script>
 
 <style scoped>
@@ -527,7 +537,7 @@ const logout = async () => {
 }
 
 .border-r-2::after {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   top: 0;

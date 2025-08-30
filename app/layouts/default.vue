@@ -32,7 +32,9 @@
         <div class="flex items-center space-x-2 ml-auto pr-4">
           <!-- 搜索 -->
           <div class="relative">
-            <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search
+              class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
+            />
             <Input
               v-model="globalSearch"
               placeholder="全局搜索..."
@@ -42,7 +44,12 @@
           </div>
 
           <!-- 通知 -->
-          <Button variant="ghost" size="icon" class="relative" @click="toggleNotifications">
+          <Button
+            variant="ghost"
+            size="icon"
+            class="relative"
+            @click="toggleNotifications"
+          >
             <Bell class="h-4 w-4" />
             <Badge
               class="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
@@ -77,98 +84,83 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { Bell, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next'
+import { Bell, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next';
 
 // 获取路由信息
-const route = useRoute()
+const route = useRoute();
 
 // 状态管理
-const isDark = ref(false)
-const isFullscreen = ref(false)
-const globalSearch = ref('')
+const isDark = ref(false);
+const isFullscreen = ref(false);
+const globalSearch = ref('');
 
 // 面包屑导航
 const breadcrumbItems = computed(() => {
-  const pathSegments = route.path.split('/').filter(Boolean)
-  const items = [{ label: '首页', route: '/dashboard' }]
+  const pathSegments = route.path.split('/').filter(Boolean);
+  const items = [{ label: '首页', route: '/dashboard' }];
 
-  let currentPath = ''
+  let currentPath = '';
   pathSegments.forEach((segment, index) => {
-    currentPath += `/${segment}`
-    const isLast = index === pathSegments.length - 1
+    currentPath += `/${segment}`;
+    const isLast = index === pathSegments.length - 1;
 
     // 路径映射
     const pathLabels: Record<string, string> = {
-      'dashboard': '仪表盘',
-      'sales': '销售管理',
-      'purchase': '采购管理',
-      'warehouse': '库存管理',
-      'production': '生产管理',
-      'finance': '财务管理',
+      dashboard: '仪表盘',
+      sales: '销售管理',
+      purchase: '采购管理',
+      warehouse: '库存管理',
+      production: '生产管理',
+      finance: '财务管理',
       'master-data': '基础数据',
-      'reports': '报表分析',
-      'system': '系统设置',
-      'orders': '订单管理',
-      'customers': '客户管理',
-      'suppliers': '供应商管理',
-      'inventory': '库存管理',
-      'products': '产品管理',
-      'invoices': '发票管理',
-      'payments': '付款管理',
-      'receipts': '收款管理',
-      'plans': '计划管理',
-      'bom': '物料清单',
-      'config': '系统配置',
-      'users': '用户管理',
-      'login': '登录',
-      'roles': '角色权限',
-    }
+      reports: '报表分析',
+      system: '系统设置',
+      orders: '订单管理',
+      customers: '客户管理',
+      suppliers: '供应商管理',
+      inventory: '库存管理',
+      products: '产品管理',
+      invoices: '发票管理',
+      payments: '付款管理',
+      receipts: '收款管理',
+      plans: '计划管理',
+      bom: '物料清单',
+      config: '系统配置',
+      users: '用户管理',
+      login: '登录',
+      roles: '角色权限',
+    };
 
     items.push({
       label: pathLabels[segment] ?? segment,
       route: isLast ? '' : currentPath,
-    })
-  })
+    });
+  });
 
-  return items
-})
+  return items;
+});
 
 // 方法
 const toggleTheme = () => {
-  isDark.value = !isDark.value
-  // 这里可以实现主题切换逻辑
-  console.log('切换主题:', isDark.value ? '深色' : '浅色')
-}
+  isDark.value = !isDark.value;
+};
 
 const toggleFullscreen = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()
-    isFullscreen.value = true
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+    isFullscreen.value = false;
+  } else {
+    document.documentElement.requestFullscreen();
+    isFullscreen.value = true;
   }
-  else {
-    document.exitFullscreen()
-    isFullscreen.value = false
-  }
-}
+};
 
-const toggleNotifications = () => {
-  console.log('显示通知')
-}
+const toggleNotifications = () => {};
 
 // 监听全屏状态变化
 onMounted(() => {
   document.addEventListener('fullscreenchange', () => {
-    isFullscreen.value = !!document.fullscreenElement
-  })
-})
+    isFullscreen.value = !!document.fullscreenElement;
+  });
+});
 </script>

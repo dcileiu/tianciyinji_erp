@@ -4,7 +4,9 @@
     <div class="flex justify-between items-start mb-6">
       <div>
         <h1 class="text-3xl font-semibold text-foreground mb-2">销售报表</h1>
-        <p class="text-muted-foreground">分析销售数据，了解业务趋势和客户表现</p>
+        <p class="text-muted-foreground">
+          分析销售数据，了解业务趋势和客户表现
+        </p>
       </div>
       <div class="flex gap-3">
         <Button variant="outline" @click="exportReport">
@@ -54,7 +56,11 @@
               <Search
                 class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"
               />
-              <Input v-model="searchQuery" placeholder="搜索订单号、产品..." class="pl-10" />
+              <Input
+                v-model="searchQuery"
+                placeholder="搜索订单号、产品..."
+                class="pl-10"
+              />
             </div>
           </div>
         </div>
@@ -79,7 +85,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 -lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center text-white"
             >
               <DollarSign class="w-6 h-6" />
             </div>
@@ -103,7 +109,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 -lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white"
             >
               <ShoppingCart class="w-6 h-6" />
             </div>
@@ -127,7 +133,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 -lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white"
             >
               <Calculator class="w-6 h-6" />
             </div>
@@ -151,7 +157,7 @@
               </div>
             </div>
             <div
-              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 -lg flex items-center justify-center text-white"
+              class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center text-white"
             >
               <Users class="w-6 h-6" />
             </div>
@@ -180,7 +186,10 @@
           </div>
         </div>
 
-        <div v-else-if="filteredSalesData.length === 0" class="text-center py-8">
+        <div
+          v-else-if="filteredSalesData.length === 0"
+          class="text-center py-8"
+        >
           <div class="text-muted-foreground mb-2">暂无销售数据</div>
           <Button variant="ghost" size="sm" @click="refreshData">
             <RefreshCw class="w-4 h-4 mr-2" />
@@ -206,7 +215,9 @@
               <TableCell>
                 <div class="flex items-center gap-3">
                   <Avatar>
-                    <AvatarFallback>{{ item.customer_name.charAt(0) }}</AvatarFallback>
+                    <AvatarFallback>{{
+                      item.customer_name.charAt(0)
+                    }}</AvatarFallback>
                   </Avatar>
                   <span class="font-medium">{{ item.customer_name }}</span>
                 </div>
@@ -214,7 +225,9 @@
               <TableCell>
                 <div>
                   <div class="font-medium mb-1">{{ item.product_name }}</div>
-                  <div class="text-sm text-muted-foreground">数量: {{ item.quantity }}</div>
+                  <div class="text-sm text-muted-foreground">
+                    数量: {{ item.quantity }}
+                  </div>
                 </div>
               </TableCell>
               <TableCell>{{ item.quantity }}</TableCell>
@@ -264,9 +277,7 @@
 </template>
 
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
-// Vue 钩子也自动导入，无需手动导入
-
+// 手动导入 Lucide 图标
 import {
   ArrowUp,
   BarChart3,
@@ -278,163 +289,171 @@ import {
   Search,
   ShoppingCart,
   Users,
-} from 'lucide-vue-next'
+} from "lucide-vue-next";
 
 // 页面配置
 definePageMeta({
-  layout: 'default',
-})
+  layout: "default",
+});
 
 useHead({
-  title: '销售报表 - ERP 管理系统',
-})
+  title: "销售报表 - ERP 管理系统",
+});
 
 // 页面状态
-const loading = ref(false)
-const dateRange = ref()
-const customerFilter = ref('')
-const searchQuery = ref('')
+const loading = ref(false);
+const dateRange = ref();
+const customerFilter = ref("all");
+const searchQuery = ref("");
 
 // 统计数据
 const salesStats = ref({
-  totalAmount: 1250000,
+  totalAmount: 1_250_000,
   totalOrders: 156,
   avgOrderAmount: 8013,
   activeCustomers: 45,
-})
+});
 
 // 客户选项
 const customerOptions = ref([
-  { label: '全部客户', value: '' },
-  { label: '苏州华智科技有限公司', value: 'C001' },
-  { label: '上海浦东制造有限公司', value: 'C002' },
-  { label: '北京智能设备有限公司', value: 'C003' },
-  { label: '深圳创新科技有限公司', value: 'C004' },
-])
+  { label: "全部客户", value: "all" },
+  { label: "苏州华智科技有限公司", value: "C001" },
+  { label: "上海浦东制造有限公司", value: "C002" },
+  { label: "北京智能设备有限公司", value: "C003" },
+  { label: "深圳创新科技有限公司", value: "C004" },
+]);
 
 // 销售明细数据
 const salesDetails = ref([
   {
-    id: '1',
-    order_no: 'SO202501001',
-    customer_name: '苏州华智科技有限公司',
-    product_name: '智能控制器',
+    id: "1",
+    order_no: "SO202501001",
+    customer_name: "苏州华智科技有限公司",
+    product_name: "智能控制器",
     quantity: 10,
     unit_price: 2500,
-    total_amount: 25000,
-    order_date: '2025-01-15',
-    status: 'completed',
+    total_amount: 25_000,
+    order_date: "2025-01-15",
+    status: "completed",
   },
   {
-    id: '2',
-    order_no: 'SO202501002',
-    customer_name: '上海浦东制造有限公司',
-    product_name: '传感器模块',
+    id: "2",
+    order_no: "SO202501002",
+    customer_name: "上海浦东制造有限公司",
+    product_name: "传感器模块",
     quantity: 50,
     unit_price: 150,
     total_amount: 7500,
-    order_date: '2025-01-16',
-    status: 'processing',
+    order_date: "2025-01-16",
+    status: "processing",
   },
   {
-    id: '3',
-    order_no: 'SO202501003',
-    customer_name: '北京智能设备有限公司',
-    product_name: '工业显示屏',
+    id: "3",
+    order_no: "SO202501003",
+    customer_name: "北京智能设备有限公司",
+    product_name: "工业显示屏",
     quantity: 5,
     unit_price: 8000,
-    total_amount: 40000,
-    order_date: '2025-01-17',
-    status: 'pending',
+    total_amount: 40_000,
+    order_date: "2025-01-17",
+    status: "pending",
   },
   {
-    id: '4',
-    order_no: 'SO202501004',
-    customer_name: '深圳创新科技有限公司',
-    product_name: '自动化设备',
+    id: "4",
+    order_no: "SO202501004",
+    customer_name: "深圳创新科技有限公司",
+    product_name: "自动化设备",
     quantity: 2,
-    unit_price: 50000,
-    total_amount: 100000,
-    order_date: '2025-01-18',
-    status: 'completed',
+    unit_price: 50_000,
+    total_amount: 100_000,
+    order_date: "2025-01-18",
+    status: "completed",
   },
-])
+]);
 
 // 计算属性
 const filteredSalesData = computed(() => {
-  let result = salesDetails.value
+  let result = salesDetails.value;
 
   if (searchQuery.value) {
     result = result.filter(
-      item =>
-        item.order_no.toLowerCase().includes(searchQuery.value.toLowerCase())
-        || item.product_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-        || item.customer_name.toLowerCase().includes(searchQuery.value.toLowerCase()),
-    )
+      (item) =>
+        item.order_no.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.product_name
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase()) ||
+        item.customer_name
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase())
+    );
   }
 
-  if (customerFilter.value) {
+  if (customerFilter.value && customerFilter.value !== "all") {
     // 根据客户名称筛选（这里简化处理）
-    const customerName = customerOptions.value.find(c => c.value === customerFilter.value)?.label
-    if (customerName && customerName !== '全部客户') {
-      result = result.filter(item => item.customer_name === customerName)
+    const customerName = customerOptions.value.find(
+      (c) => c.value === customerFilter.value
+    )?.label;
+    if (customerName && customerName !== "全部客户") {
+      result = result.filter((item) => item.customer_name === customerName);
     }
   }
 
-  return result
-})
+  return result;
+});
 
 // 方法
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('zh-CN', {
+  return new Intl.NumberFormat("zh-CN", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount)
-}
+  }).format(amount);
+};
 
 const formatDate = (dateStr: string) => {
-  return new Date(dateStr).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
+  return new Date(dateStr).toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
 
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    pending: '待处理',
-    processing: '处理中',
-    completed: '已完成',
-    cancelled: '已取消',
-  }
-  return statusMap[status] || status
-}
+    pending: "待处理",
+    processing: "处理中",
+    completed: "已完成",
+    cancelled: "已取消",
+  };
+  return statusMap[status] || status;
+};
 
-const getStatusVariant = (status: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
-  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
-    pending: 'secondary',
-    processing: 'default',
-    completed: 'default',
-    cancelled: 'destructive',
-  }
-  return variantMap[status] || 'secondary'
-}
+const getStatusVariant = (
+  status: string
+): "default" | "destructive" | "outline" | "secondary" => {
+  const variantMap: Record<
+    string,
+    "default" | "destructive" | "outline" | "secondary"
+  > = {
+    pending: "secondary",
+    processing: "default",
+    completed: "default",
+    cancelled: "destructive",
+  };
+  return variantMap[status] || "secondary";
+};
 
 const exportReport = () => {
-  console.log('导出报表')
   // 这里可以实现导出功能
-}
+};
 
 const exportData = () => {
-  console.log('导出数据')
   // 这里可以实现导出功能
-}
+};
 
 const refreshData = () => {
-  loading.value = true
+  loading.value = true;
   setTimeout(() => {
-    loading.value = false
-    console.log('数据已刷新')
-  }, 1000)
-}
+    loading.value = false;
+  }, 1000);
+};
 </script>

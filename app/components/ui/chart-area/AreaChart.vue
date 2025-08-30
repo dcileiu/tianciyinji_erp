@@ -1,14 +1,18 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
-// UI组件现在自动导入，无需手动导入
-
-import type { BaseChartProps } from '.'
-import { type BulletLegendItemInterface, CurveType } from '@unovis/ts'
-import { Area, Axis, Line } from '@unovis/ts'
-import { VisArea, VisAxis, VisLine, VisXYContainer } from '@unovis/vue'
-import { useMounted } from '@vueuse/core'
-import { useId } from 'reka-ui'
-import { type Component, computed, ref } from 'vue'
-import { cn } from '@/lib/utils'
+import type { BulletLegendItemInterface } from '@unovis/ts';
+import { Area, Axis, CurveType, Line } from '@unovis/ts';
+import { VisArea, VisAxis, VisLine, VisXYContainer } from '@unovis/vue';
+import { useMounted } from '@vueuse/core';
+import { useId } from 'reka-ui';
+import type { Component } from 'vue';
+import { computed, ref } from 'vue';
+import {
+  ChartCrosshair,
+  ChartLegend,
+  defaultColors,
+} from '@/components/ui/chart';
+import { cn } from '@/lib/utils';
+import type { BaseChartProps } from '.';
 
 const props = withDefaults(
   defineProps<
@@ -16,16 +20,16 @@ const props = withDefaults(
       /**
        * Render custom tooltip component.
        */
-      customTooltip?: Component
+      customTooltip?: Component;
       /**
        * Type of curve
        */
-      curveType?: CurveType
+      curveType?: CurveType;
       /**
        * Controls the visibility of gradient.
        * @default true
        */
-      showGradiant?: boolean
+      showGradiant?: boolean;
     }
   >(),
   {
@@ -38,62 +42,46 @@ const props = withDefaults(
     showLegend: true,
     showGridLine: true,
     showGradiant: true,
-  },
-)
+  }
+);
 
 const emits = defineEmits<{
-  legendItemClick: [d: BulletLegendItemInterface, i: number]
-}>()
+  legendItemClick: [d: BulletLegendItemInterface, i: number];
+}>();
 
-type KeyOfT = Extract<keyof T, string>
-type Data = (typeof props.data)[number]
+type KeyOfT = Extract<keyof T, string>;
+type Data = (typeof props.data)[number];
 
-const chartRef = useId()
+const chartRef = useId();
 
-const index = computed(() => props.index as KeyOfT)
+const index = computed(() => props.index as KeyOfT);
 const colors = computed(() =>
-  props.colors?.length ? props.colors : (() => ['#8b5cf6'])(props.categories.length),
-)
+  props.colors?.length ? props.colors : defaultColors(props.categories.length)
+);
 
 const legendItems = ref<BulletLegendItemInterface[]>(
   props.categories.map((category, i) => ({
     name: category,
     color: colors.value[i],
     inactive: false,
-  })),
-)
+  }))
+);
 
-const isMounted = useMounted()
+const isMounted = useMounted();
 
 function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
-  emits('legendItemClick', d, i)
+  emits('legendItemClick', d, i);
 }
 </script>
 
 <template>
   <div :class="cn('w-full h-[400px] flex flex-col items-end', $attrs.class ?? '')">
-    <ChartLegend
-      v-if="showLegend"
-      v-model:items="legendItems"
-      @legend-item-click="handleLegendItemClick"
-    />
+    <ChartLegend v-if="showLegend" v-model:items="legendItems" @legend-item-click="handleLegendItemClick" />
 
-    <VisXYContainer
-      :style="{ height: isMounted ? '100%' : 'auto' }"
-      :margin="{ left: 20, right: 20 }"
-      :data="data"
-    >
+    <VisXYContainer :style="{ height: isMounted ? '100%' : 'auto' }" :margin="{ left: 20, right: 20 }" :data="data">
       <svg width="0" height="0">
         <defs>
-          <linearGradient
-            v-for="(color, i) in colors"
-            :id="`${chartRef}-color-${i}`"
-            :key="i"
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="1"
-          >
+          <linearGradient v-for="(color, i) in colors" :id="`${chartRef}-color-${i}`" :key="i" x1="0" y1="0" x2="0" y2="1">
             <template v-if="showGradiant">
               <stop offset="5%" :stop-color="color" stop-opacity="0.4" />
               <stop offset="95%" :stop-color="color" stop-opacity="0" />
@@ -105,13 +93,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
         </defs>
       </svg>
 
-      <ChartCrosshair
-        v-if="showTooltip"
-        :colors="colors"
-        :items="legendItems"
-        :index="index"
-        :custom-tooltip="customTooltip"
-      />
+      <ChartCrosshair v-if="showTooltip" :colors="colors" :items="legendItems" :index="index" :custom-tooltip="customTooltip" />
 
       <template v-for="(category, i) in categories" :key="category">
         <VisArea
@@ -136,9 +118,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
           :curve-type="curveType"
           :attributes="{
             [Line.selectors.line]: {
-              opacity: legendItems.find(item => item.name === category)?.inactive
-                ? filterOpacity
-                : 1,
+              opacity: legendItems.find(item => item.name === category)?.inactive ? filterOpacity : 1,
             },
           }"
         />
@@ -167,7 +147,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
         tick-text-color="hsl(var(--vis-text-color))"
       />
 
-      <slot></slot>
+      <slot />
     </VisXYContainer>
   </div>
 </template>

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  "extends": ["ultracite"],
+  "javascript": {
+    "globals": [
+      "useHead",
+      "onMounted",
+      "ref",
+      "computed",
+      "watch",
+      "nextTick",
+      "defineProps",
+      "defineEmits",
+      "withDefaults",
+      "useRoute",
+      "useRouter",
+      "navigateTo",
+      "useNuxtApp",
+      "useRuntimeConfig",
+      "useState",
+      "useCookie",
+      "useGlobalLoading",
+      "useAuth",
+      "useSupabase",
+      "useToast",
+      "toast"
+    ]
+  },
+  "linter": {
+    "rules": {
+      "correctness": {
+        "useHookAtTopLevel": "off",
+        "noUndeclaredVariables": "off",
+        "noUnusedVariables": "off"
+      },
+      "suspicious": {
+        "noUnknownAtRules": "off",
+        "noShadowRestrictedNames": "off",
+        "noExplicitAny": "off",
+        "noDocumentCookie": "off",
+        "useAwait": "off",
+        "noEmptyBlockStatements": "off",
+        "noEvolvingTypes": "off"
+      },
+      "style": {
+        "useFilenamingConvention": "off",
+        "noEnum": "off",
+        "noMagicNumbers": "off",
+        "noNonNullAssertion": "off",
+        "useSymbolDescription": "off",
+        "useDefaultSwitchClause": "off",
+        "noNestedTernary": "off"
+      },
+      "nursery": {
+        "useConsistentTypeDefinitions": "off",
+        "noShadow": "off"
+      },
+      "performance": {
+        "noBarrelFile": "off",
+        "useTopLevelRegex": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off",
+        "noForEach": "off"
+      }
+    }
+  }
+}

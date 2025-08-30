@@ -54,7 +54,9 @@
     <footer class="relative z-10 border-t bg-card/50 backdrop-blur">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="text-center">
-          <p class="text-sm text-muted-foreground">© 2025 ERP 管理系统. 保留所有权利.</p>
+          <p class="text-sm text-muted-foreground">
+            © 2025 ERP 管理系统. 保留所有权利.
+          </p>
         </div>
       </div>
     </footer>
@@ -62,33 +64,29 @@
 </template>
 
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
-
-import { Building2, Moon, Sun } from 'lucide-vue-next'
+import { Building2, Moon, Sun } from 'lucide-vue-next';
 
 // 主题管理
-const isDark = ref(false)
+const isDark = ref(false);
 
 // 切换主题
 const toggleTheme = () => {
-  isDark.value = !isDark.value
+  isDark.value = !isDark.value;
   // 这里可以实现主题切换逻辑
   if (isDark.value) {
-    document.documentElement.classList.add('dark')
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
   }
-  else {
-    document.documentElement.classList.remove('dark')
-  }
-  console.log('切换主题:', isDark.value ? '深色' : '浅色')
-}
+};
 
 // 初始化主题
 onMounted(() => {
   // 检查系统主题偏好
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-  isDark.value = prefersDark
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  isDark.value = prefersDark;
   if (prefersDark) {
-    document.documentElement.classList.add('dark')
+    document.documentElement.classList.add('dark');
   }
-})
+});
 </script>

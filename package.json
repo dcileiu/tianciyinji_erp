@@ -8,19 +8,17 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview --port 3000",
     "postinstall": "nuxt prepare",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "format:lint": "prettier --write . && eslint . --fix",
+    "lint": "npx ultracite lint",
+    "lint:fix": "npx ultracite format",
+    "format": "npx ultracite format",
+    "format:check": "npx ultracite lint",
     "type-check": "nuxt typecheck",
     "clean": "nuxt cleanup",
-    "check-all": "pnpm type-check && pnpm lint && pnpm format:check"
+    "check-all": "pnpm type-check && pnpm lint && pnpm format:check",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@nuxtjs/supabase": "^1.6.0",
-    "@tailwindcss/postcss": "^4.1.12",
-    "@tailwindcss/vite": "^4.1.12",
     "@tanstack/vue-table": "^8.21.3",
     "@types/bcryptjs": "^3.0.0",
     "@unovis/ts": "^1.6.0",
@@ -35,9 +33,9 @@
     "lucide-vue-next": "^0.541.0",
     "nuxt": "^4.0.3",
     "reka-ui": "^2.4.1",
-    "shadcn-nuxt": "^2.2.0",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.12",
+    "tailwindcss": "^3.4.16",
+    "tailwindcss-animate": "^1.0.7",
     "tw-animate-css": "^1.3.7",
     "vaul-vue": "^0.4.1",
     "vee-validate": "^4.15.1",
@@ -47,12 +45,22 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.0",
     "@internationalized/date": "^3.8.2",
-    "@nuxt/eslint": "^1.9.0",
-    "@typescript-eslint/eslint-plugin": "^8.40.0",
-    "@typescript-eslint/parser": "^8.40.0",
-    "eslint": "9.33.0",
-    "prettier": "^3.4.2",
-    "typescript": "^5.9.2"
+    "@nuxtjs/tailwindcss": "^6.12.3",
+    "@tailwindcss/typography": "^0.5.15",
+    "autoprefixer": "^10.4.20",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "postcss": "^8.5.1",
+    "shadcn-nuxt": "^2.2.0",
+    "shadcn-vue": "^2.2.0",
+    "typescript": "^5.9.2",
+    "ultracite": "5.2.4"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "npx ultracite format && npx ultracite lint:fix"
+    ]
   }
 }

@@ -1,16 +1,22 @@
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
+import { computed } from 'vue';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import AutoFormLabel from './AutoFormLabel.vue';
+import type { FieldProps } from './interface';
+import { beautifyObjectName } from './utils';
 
-import type { FieldProps } from './interface'
-
-import { computed } from 'vue'
-import AutoFormLabel from './AutoFormLabel.vue'
-import { beautifyObjectName } from './utils'
-
-const props = defineProps<FieldProps>()
+const props = defineProps<FieldProps>();
 const inputComponent = computed(() =>
-  props.config?.component === 'textarea' ? 'Textarea' : 'Input',
-)
+  props.config?.component === 'textarea' ? Textarea : Input
+);
 </script>
 
 <template>

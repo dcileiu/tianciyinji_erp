@@ -1,24 +1,23 @@
 <script lang="ts" setup>
-// UI组件现在自动导入，无需手动导入
+import type { LabelProps } from 'reka-ui';
+import type { HTMLAttributes } from 'vue';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { useFormField } from './useFormField';
 
-import type { LabelProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import { cn } from '@/lib/utils'
+const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>();
 
-import { useFormField } from './useFormField'
-
-const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>()
-
-const { error, formItemId } = useFormField()
+const { error, formItemId } = useFormField();
 </script>
 
 <template>
   <Label
-    data-slot="form-label"
-    :data-error="!!error"
-    :class="cn('data-[error=true]:text-destructive-foreground', props.class)"
+    :class="cn(
+      error && 'text-destructive',
+      props.class,
+    )"
     :for="formItemId"
   >
-    <slot></slot>
+    <slot />
   </Label>
 </template>

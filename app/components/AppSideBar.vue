@@ -15,40 +15,33 @@
 </template>
 
 <script setup lang="ts">
-import type { SidebarProps } from '@/components/ui/sidebar'
 import {
   AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
   BarChart3,
+  Command,
   CreditCard,
   Database,
+  GalleryVerticalEnd,
   Home,
+  Map,
   Package,
+  PieChart,
+  Settings2,
   ShoppingBag,
   ShoppingCart,
-} from 'lucide-vue-next'
-import NavMain from '@/components/NavMain.vue'
-import NavProjects from '@/components/NavProjects.vue'
-import NavUser from '@/components/NavUser.vue'
-import TeamSwitcher from '@/components/TeamSwitcher.vue'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from '@/components/ui/sidebar'
+} from 'lucide-vue-next';
+
+// shadcn-nuxt 会自动导入 Sidebar 相关组件
+interface SidebarProps {
+  collapsible?: 'icon' | 'offcanvas' | 'none';
+}
 
 withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
-})
+});
 
 // 获取用户信息
-const user = useSupabaseUser()
+const user = useSupabaseUser();
 
 // 数据配置
 const data = {
@@ -246,5 +239,5 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 </script>

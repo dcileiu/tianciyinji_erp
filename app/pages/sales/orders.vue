@@ -1,10 +1,14 @@
 <template>
   <div class="space-y-6">
     <!-- 页面标题和操作 -->
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div
+      class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+    >
       <div>
         <h1 class="text-3xl font-bold tracking-tight">销售订单</h1>
-        <p class="text-muted-foreground">管理和跟踪销售订单信息，优化销售流程</p>
+        <p class="text-muted-foreground">
+          管理和跟踪销售订单信息，优化销售流程
+        </p>
       </div>
       <div class="flex gap-3">
         <Button variant="outline" size="sm" @click="importOrders">
@@ -25,15 +29,20 @@
           <Search class="h-5 w-5" />
           搜索与筛选
         </CardTitle>
-        <CardDescription>快速找到您需要的订单</CardDescription>
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="space-y-2">
             <Label>搜索订单</Label>
             <div class="relative">
-              <Search class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input v-model="searchKeyword" placeholder="搜索订单号、客户名称..." class="pl-9" />
+              <Search
+                class="absolute left-3 top-3 h-4 w-4 text-muted-foreground"
+              />
+              <Input
+                v-model="searchKeyword"
+                placeholder="搜索订单号、客户名称..."
+                class="pl-9"
+              />
             </div>
           </div>
 
@@ -58,16 +67,56 @@
 
           <div class="space-y-2">
             <Label>日期范围</Label>
-            <div class="flex gap-2">
-              <Input v-model="dateRange.start" type="date" class="flex-1" />
-              <Input v-model="dateRange.end" type="date" class="flex-1" />
-            </div>
+            <Popover>
+              <PopoverTrigger as-child>
+                <Button
+                  variant="outline"
+                  :class="[
+                    'w-full justify-start text-left font-normal',
+                    !dateRange.start && !dateRange.end && 'text-muted-foreground',
+                  ]"
+                >
+                  <CalendarIcon class="mr-2 h-4 w-4" />
+                  <span v-if="dateRange.start && dateRange.end">
+                    {{ formatDate(new Date(dateRange.start)) }} - {{ formatDate(new Date(dateRange.end)) }}
+                  </span>
+                  <span v-else>选择日期范围</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent class="w-auto p-0" align="start">
+                <div class="p-3 border-b">
+                  <p class="text-sm font-medium">选择日期范围</p>
+                  <p class="text-xs text-muted-foreground">点击开始日期，然后点击结束日期</p>
+                </div>
+                <RangeCalendar
+                  v-model="dateRangeValue"
+                  initial-focus
+                  :number-of-months="2"
+                  @update:model-value="updateDateRange"
+                />
+                <div class="p-3 border-t flex justify-between items-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    @click="clearDateRange"
+                  >
+                    清除
+                  </Button>
+                  <div class="text-xs text-muted-foreground">
+                    <span v-if="dateRange.start && dateRange.end">
+                      已选择: {{ formatDate(new Date(dateRange.start)) }} 至 {{ formatDate(new Date(dateRange.end)) }}
+                    </span>
+                    <span v-else>请选择日期范围</span>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div class="space-y-2">
             <Label class="opacity-0">操作</Label>
             <div class="flex gap-2">
-              <Button variant="outline" class="flex-1" @click="resetFilters">
+              <Button variant="outline" @click="resetFilters">
                 <RotateCcw class="mr-2 h-4 w-4" />
                 重置
               </Button>
@@ -112,7 +161,9 @@
         <CardContent class="p-6">
           <div class="flex items-center justify-between">
             <div class="space-y-2">
-              <p class="text-sm font-medium text-muted-foreground">待处理订单</p>
+              <p class="text-sm font-medium text-muted-foreground">
+                待处理订单
+              </p>
               <div class="flex items-baseline space-x-3">
                 <p class="text-2xl font-bold">{{ pendingOrdersCount }}</p>
                 <Badge variant="destructive" class="text-xs">紧急</Badge>
@@ -134,7 +185,9 @@
             <div class="space-y-2">
               <p class="text-sm font-medium text-muted-foreground">总销售额</p>
               <div class="flex items-baseline space-x-3">
-                <p class="text-2xl font-bold">¥{{ totalAmount.toLocaleString() }}</p>
+                <p class="text-2xl font-bold">
+                  ¥{{ totalAmount.toLocaleString() }}
+                </p>
                 <Badge variant="secondary" class="text-xs">
                   <TrendingUp class="mr-1 h-3 w-3" />
                   +15.3%
@@ -155,7 +208,9 @@
     <!-- 订单列表 -->
     <Card>
       <CardHeader>
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
           <div>
             <CardTitle class="flex items-center gap-2">
               <FileText class="h-5 w-5" />
@@ -217,7 +272,9 @@
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-4">
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <div
+                  class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10"
+                >
                   <FileText class="h-6 w-6 text-primary" />
                 </div>
                 <div class="space-y-1">
@@ -231,7 +288,8 @@
                   </div>
                   <p class="font-medium">{{ order.customerName }}</p>
                   <p class="text-sm text-muted-foreground">
-                    {{ formatDate(order.orderDate) }} • {{ formatTimeAgo(order.orderDate) }}
+                    {{ formatDate(order.orderDate) }} •
+                    {{ formatTimeAgo(order.orderDate) }}
                   </p>
                 </div>
               </div>
@@ -250,10 +308,18 @@
                   <Button variant="ghost" size="sm" @click="editOrder(order)">
                     <Edit class="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" @click="duplicateOrder(order)">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    @click="duplicateOrder(order)"
+                  >
                     <Copy class="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" @click="confirmDelete(order)">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    @click="confirmDelete(order)"
+                  >
                     <Trash2 class="h-4 w-4" />
                   </Button>
                 </div>
@@ -265,8 +331,10 @@
           <div class="flex items-center justify-between pt-4">
             <p class="text-sm text-muted-foreground">
               显示第 {{ (currentPage - 1) * Number(pageSize) + 1 }} -
-              {{ Math.min(currentPage * Number(pageSize), filteredOrders.length) }} 条，共
-              {{ filteredOrders.length }} 条记录
+              {{
+                Math.min(currentPage * Number(pageSize), filteredOrders.length)
+              }}
+              条，共 {{ filteredOrders.length }} 条记录
             </p>
             <div class="flex items-center space-x-2">
               <Button
@@ -302,7 +370,7 @@
             {{ modalTitle }}
           </DialogTitle>
           <DialogDescription>
-            {{ isEditing ? '编辑订单信息' : '创建新的销售订单' }}
+            {{ isEditing ? "编辑订单信息" : "创建新的销售订单" }}
           </DialogDescription>
         </DialogHeader>
 
@@ -359,7 +427,11 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <Label>订单金额 *</Label>
-                  <Input v-model="currentOrder.amount" type="number" placeholder="输入订单金额" />
+                  <Input
+                    v-model="currentOrder.amount"
+                    type="number"
+                    placeholder="输入订单金额"
+                  />
                 </div>
                 <div class="space-y-2">
                   <Label>订单状态</Label>
@@ -415,7 +487,7 @@
           <Button variant="outline" @click="closeOrderModal">取消</Button>
           <Button :disabled="saving" @click="saveOrder">
             <Loader2 v-if="saving" class="mr-2 h-4 w-4 animate-spin" />
-            {{ isEditing ? '更新订单' : '创建订单' }}
+            {{ isEditing ? "更新订单" : "创建订单" }}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -440,7 +512,9 @@
 </template>
 
 <script setup lang="ts">
+// 手动导入 Lucide 图标
 import {
+  CalendarIcon,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -462,27 +536,32 @@ import {
   Trash2,
   TrendingUp,
   Upload,
-} from 'lucide-vue-next'
+} from "lucide-vue-next"
+
+// 导入日期范围组件
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { RangeCalendar } from "@/components/ui/range-calendar"
 
 // 页面配置
 definePageMeta({
-  layout: 'default',
+  layout: "default",
 })
 
 useHead({
-  title: '销售订单 - 智能ERP管理系统',
+  title: "销售订单 - 智能ERP管理系统",
 })
 
 // 页面状态
 const loading = ref(false)
 const saving = ref(false)
-const searchKeyword = ref('')
-const selectedStatus = ref('')
+const searchKeyword = ref("")
+const selectedStatus = ref("all")
 const dateRange = ref({
-  start: '',
-  end: '',
+  start: "",
+  end: "",
 })
-const pageSize = ref('20')
+const dateRangeValue = ref()
+const pageSize = ref("20")
 const currentPage = ref(1)
 
 // 对话框状态
@@ -507,14 +586,14 @@ const deleteTarget = ref<Order | null>(null)
 
 // 当前编辑的订单
 const currentOrder = ref({
-  id: '',
-  orderNo: '',
-  customerName: '',
+  id: "",
+  orderNo: "",
+  customerName: "",
   amount: 0,
-  status: 'pending',
-  orderDate: new Date().toISOString().split('T')[0],
-  deliveryDate: new Date().toISOString().split('T')[0],
-  remarks: '',
+  status: "pending",
+  orderDate: new Date().toISOString().split("T")[0],
+  deliveryDate: new Date().toISOString().split("T")[0],
+  remarks: "",
   created_at: new Date(),
   updated_at: new Date(),
 })
@@ -522,84 +601,84 @@ const currentOrder = ref({
 // 模拟订单数据
 const orders = ref([
   {
-    id: '1',
-    orderNo: 'SO-2025-001',
-    customerName: '苏州华智科技有限公司',
-    amount: 125420,
-    status: 'confirmed',
-    orderDate: new Date('2025-01-15'),
-    deliveryDate: new Date('2025-01-25'),
-    remarks: '加急订单，请尽快处理',
-    created_at: new Date('2025-01-15'),
-    updated_at: new Date('2025-01-15'),
+    id: "1",
+    orderNo: "SO-2025-001",
+    customerName: "苏州华智科技有限公司",
+    amount: 125_420,
+    status: "confirmed",
+    orderDate: new Date("2025-01-15"),
+    deliveryDate: new Date("2025-01-25"),
+    remarks: "加急订单，请尽快处理",
+    created_at: new Date("2025-01-15"),
+    updated_at: new Date("2025-01-15"),
   },
   {
-    id: '2',
-    orderNo: 'SO-2025-002',
-    customerName: '上海浦东制造有限公司',
-    amount: 89500,
-    status: 'pending',
-    orderDate: new Date('2025-01-16'),
-    deliveryDate: new Date('2025-01-30'),
-    remarks: '常规订单',
-    created_at: new Date('2025-01-16'),
-    updated_at: new Date('2025-01-16'),
+    id: "2",
+    orderNo: "SO-2025-002",
+    customerName: "上海浦东制造有限公司",
+    amount: 89_500,
+    status: "pending",
+    orderDate: new Date("2025-01-16"),
+    deliveryDate: new Date("2025-01-30"),
+    remarks: "常规订单",
+    created_at: new Date("2025-01-16"),
+    updated_at: new Date("2025-01-16"),
   },
   {
-    id: '3',
-    orderNo: 'SO-2025-003',
-    customerName: '北京智能设备有限公司',
-    amount: 67800,
-    status: 'shipped',
-    orderDate: new Date('2025-01-17'),
-    deliveryDate: new Date('2025-01-27'),
-    remarks: '',
-    created_at: new Date('2025-01-17'),
-    updated_at: new Date('2025-01-17'),
+    id: "3",
+    orderNo: "SO-2025-003",
+    customerName: "北京智能设备有限公司",
+    amount: 67_800,
+    status: "shipped",
+    orderDate: new Date("2025-01-17"),
+    deliveryDate: new Date("2025-01-27"),
+    remarks: "",
+    created_at: new Date("2025-01-17"),
+    updated_at: new Date("2025-01-17"),
   },
   {
-    id: '4',
-    orderNo: 'SO-2025-004',
-    customerName: '深圳创新科技有限公司',
-    amount: 234500,
-    status: 'production',
-    orderDate: new Date('2025-01-18'),
-    deliveryDate: new Date('2025-02-05'),
-    remarks: '大批量订单，分批交付',
-    created_at: new Date('2025-01-18'),
-    updated_at: new Date('2025-01-18'),
+    id: "4",
+    orderNo: "SO-2025-004",
+    customerName: "深圳创新科技有限公司",
+    amount: 234_500,
+    status: "production",
+    orderDate: new Date("2025-01-18"),
+    deliveryDate: new Date("2025-02-05"),
+    remarks: "大批量订单，分批交付",
+    created_at: new Date("2025-01-18"),
+    updated_at: new Date("2025-01-18"),
   },
   {
-    id: '5',
-    orderNo: 'SO-2025-005',
-    customerName: '广州精密制造有限公司',
-    amount: 156780,
-    status: 'delivered',
-    orderDate: new Date('2025-01-19'),
-    deliveryDate: new Date('2025-01-28'),
-    remarks: '已完成交付，客户满意',
-    created_at: new Date('2025-01-19'),
-    updated_at: new Date('2025-01-19'),
+    id: "5",
+    orderNo: "SO-2025-005",
+    customerName: "广州精密制造有限公司",
+    amount: 156_780,
+    status: "delivered",
+    orderDate: new Date("2025-01-19"),
+    deliveryDate: new Date("2025-01-28"),
+    remarks: "已完成交付，客户满意",
+    created_at: new Date("2025-01-19"),
+    updated_at: new Date("2025-01-19"),
   },
 ])
 
 // 状态选项
 const statusOptions = [
-  { label: '待确认', value: 'pending' },
-  { label: '已确认', value: 'confirmed' },
-  { label: '生产中', value: 'production' },
-  { label: '已发货', value: 'shipped' },
-  { label: '已完成', value: 'delivered' },
-  { label: '已取消', value: 'cancelled' },
+  { label: "待确认", value: "pending" },
+  { label: "已确认", value: "confirmed" },
+  { label: "生产中", value: "production" },
+  { label: "已发货", value: "shipped" },
+  { label: "已完成", value: "delivered" },
+  { label: "已取消", value: "cancelled" },
 ]
 
 // 客户选项
 const customerOptions = [
-  { label: '苏州华智科技有限公司', value: '苏州华智科技有限公司' },
-  { label: '上海浦东制造有限公司', value: '上海浦东制造有限公司' },
-  { label: '北京智能设备有限公司', value: '北京智能设备有限公司' },
-  { label: '深圳创新科技有限公司', value: '深圳创新科技有限公司' },
-  { label: '广州精密制造有限公司', value: '广州精密制造有限公司' },
+  { label: "苏州华智科技有限公司", value: "苏州华智科技有限公司" },
+  { label: "上海浦东制造有限公司", value: "上海浦东制造有限公司" },
+  { label: "北京智能设备有限公司", value: "北京智能设备有限公司" },
+  { label: "深圳创新科技有限公司", value: "深圳创新科技有限公司" },
+  { label: "广州精密制造有限公司", value: "广州精密制造有限公司" },
 ]
 
 // 计算属性
@@ -608,20 +687,24 @@ const filteredOrders = computed(() => {
 
   if (searchKeyword.value) {
     result = result.filter(
-      order =>
-        order.orderNo.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
-        order.customerName.toLowerCase().includes(searchKeyword.value.toLowerCase())
+      (order) =>
+        order.orderNo
+          .toLowerCase()
+          .includes(searchKeyword.value.toLowerCase()) ||
+        order.customerName
+          .toLowerCase()
+          .includes(searchKeyword.value.toLowerCase())
     )
   }
 
-  if (selectedStatus.value) {
-    result = result.filter(order => order.status === selectedStatus.value)
+  if (selectedStatus.value && selectedStatus.value !== "all") {
+    result = result.filter((order) => order.status === selectedStatus.value)
   }
 
   if (dateRange.value.start && dateRange.value.end) {
     const startDate = new Date(dateRange.value.start)
     const endDate = new Date(dateRange.value.end)
-    result = result.filter(order => {
+    result = result.filter((order) => {
       const orderDate = new Date(order.orderDate)
       return orderDate >= startDate && orderDate <= endDate
     })
@@ -641,7 +724,7 @@ const totalPages = computed(() => {
 })
 
 const pendingOrdersCount = computed(() => {
-  return orders.value.filter(o => o.status === 'pending').length
+  return orders.value.filter((o) => o.status === "pending").length
 })
 
 const totalAmount = computed(() => {
@@ -649,39 +732,42 @@ const totalAmount = computed(() => {
 })
 
 const modalTitle = computed(() => {
-  return isEditing.value ? '编辑订单' : '新建订单'
+  return isEditing.value ? "编辑订单" : "新建订单"
 })
 
 // 方法
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    pending: '待确认',
-    confirmed: '已确认',
-    production: '生产中',
-    shipped: '已发货',
-    delivered: '已完成',
-    cancelled: '已取消',
+    pending: "待确认",
+    confirmed: "已确认",
+    production: "生产中",
+    shipped: "已发货",
+    delivered: "已完成",
+    cancelled: "已取消",
   }
   return statusMap[status] || status
 }
 
 const getStatusVariant = (status: string) => {
-  const variantMap: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
-    pending: 'outline',
-    confirmed: 'secondary',
-    production: 'secondary',
-    shipped: 'default',
-    delivered: 'default',
-    cancelled: 'destructive',
+  const variantMap: Record<
+    string,
+    "default" | "destructive" | "outline" | "secondary"
+  > = {
+    pending: "outline",
+    confirmed: "secondary",
+    production: "secondary",
+    shipped: "default",
+    delivered: "default",
+    cancelled: "destructive",
   }
-  return variantMap[status] || 'secondary'
+  return variantMap[status] || "secondary"
 }
 
 const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   }).format(new Date(date))
 }
 
@@ -690,47 +776,67 @@ const formatTimeAgo = (date: Date) => {
   const diffTime = now.getTime() - new Date(date).getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-  if (diffDays === 0) return '今天'
-  if (diffDays === 1) return '昨天'
-  if (diffDays < 7) return `${diffDays}天前`
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}周前`
+  if (diffDays === 0) {
+    return "今天"
+  }
+  if (diffDays === 1) {
+    return "昨天"
+  }
+  if (diffDays < 7) {
+    return `${diffDays}天前`
+  }
+  if (diffDays < 30) {
+    return `${Math.floor(diffDays / 7)}周前`
+  }
   return `${Math.floor(diffDays / 30)}月前`
 }
 
+const updateDateRange = (range: any) => {
+  if (range?.start && range?.end) {
+    dateRange.value = {
+      start: range.start.toString().split('T')[0],
+      end: range.end.toString().split('T')[0]
+    }
+  }
+}
+
+const clearDateRange = () => {
+  dateRange.value = { start: "", end: "" }
+  dateRangeValue.value = undefined
+}
+
 const resetFilters = () => {
-  searchKeyword.value = ''
-  selectedStatus.value = ''
-  dateRange.value = { start: '', end: '' }
+  searchKeyword.value = ""
+  selectedStatus.value = "all"
+  clearDateRange()
 }
 
 const refreshData = async () => {
   loading.value = true
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   } finally {
     loading.value = false
   }
 }
 
-const exportData = () => {
-  console.log('导出数据')
-}
+const exportData = () => { }
 
-const importOrders = () => {
-  console.log('导入订单')
-}
+const importOrders = () => { }
 
 const openOrderModal = () => {
   isEditing.value = false
   currentOrder.value = {
-    id: '',
-    orderNo: `SO-${new Date().getFullYear()}-${String(orders.value.length + 1).padStart(3, '0')}`,
-    customerName: '',
+    id: "",
+    orderNo: `SO-${new Date().getFullYear()}-${String(
+      orders.value.length + 1
+    ).padStart(3, "0")}`,
+    customerName: "",
     amount: 0,
-    status: 'pending',
-    orderDate: new Date().toISOString().split('T')[0],
-    deliveryDate: new Date().toISOString().split('T')[0],
-    remarks: '',
+    status: "pending",
+    orderDate: new Date().toISOString().split("T")[0],
+    deliveryDate: new Date().toISOString().split("T")[0],
+    remarks: "",
     created_at: new Date(),
     updated_at: new Date(),
   }
@@ -741,8 +847,8 @@ const editOrder = (order: Order) => {
   isEditing.value = true
   currentOrder.value = {
     ...order,
-    orderDate: new Date(order.orderDate).toISOString().split('T')[0],
-    deliveryDate: new Date(order.deliveryDate).toISOString().split('T')[0],
+    orderDate: new Date(order.orderDate).toISOString().split("T")[0],
+    deliveryDate: new Date(order.deliveryDate).toISOString().split("T")[0],
     created_at: new Date(),
     updated_at: new Date(),
   }
@@ -757,11 +863,13 @@ const duplicateOrder = (order: Order) => {
   isEditing.value = false
   currentOrder.value = {
     ...order,
-    id: '',
-    orderNo: `SO-${new Date().getFullYear()}-${String(orders.value.length + 1).padStart(3, '0')}`,
-    orderDate: new Date().toISOString().split('T')[0],
-    deliveryDate: new Date().toISOString().split('T')[0],
-    status: 'pending',
+    id: "",
+    orderNo: `SO-${new Date().getFullYear()}-${String(
+      orders.value.length + 1
+    ).padStart(3, "0")}`,
+    orderDate: new Date().toISOString().split("T")[0],
+    deliveryDate: new Date().toISOString().split("T")[0],
+    status: "pending",
     created_at: new Date(),
     updated_at: new Date(),
   }
@@ -775,7 +883,9 @@ const confirmDelete = (order: Order) => {
 
 const deleteOrder = () => {
   if (deleteTarget.value) {
-    const index = orders.value.findIndex(o => o.id === deleteTarget.value!.id)
+    const index = orders.value.findIndex(
+      (o) => o.id === deleteTarget.value?.id
+    )
     if (index !== -1) {
       orders.value.splice(index, 1)
     }
@@ -789,7 +899,9 @@ const saveOrder = async () => {
     saving.value = true
 
     if (isEditing.value) {
-      const index = orders.value.findIndex(o => o.id === currentOrder.value.id)
+      const index = orders.value.findIndex(
+        (o) => o.id === currentOrder.value.id
+      )
       if (index !== -1) {
         orders.value[index] = {
           ...currentOrder.value,
@@ -813,8 +925,7 @@ const saveOrder = async () => {
     }
 
     closeOrderModal()
-  } catch (error) {
-    console.error('保存订单失败:', error)
+  } catch (_error) {
   } finally {
     saving.value = false
   }

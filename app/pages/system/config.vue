@@ -37,11 +37,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>公司名称</Label>
-                <Input v-model="basicConfig.companyName" placeholder="请输入公司名称" />
+                <Input
+                  v-model="basicConfig.companyName"
+                  placeholder="请输入公司名称"
+                />
               </div>
               <div class="space-y-2">
                 <Label>系统名称</Label>
-                <Input v-model="basicConfig.systemName" placeholder="请输入系统名称" />
+                <Input
+                  v-model="basicConfig.systemName"
+                  placeholder="请输入系统名称"
+                />
               </div>
             </div>
 
@@ -62,7 +68,10 @@
 
             <div class="space-y-2">
               <Label>公司地址</Label>
-              <Input v-model="basicConfig.address" placeholder="请输入公司地址" />
+              <Input
+                v-model="basicConfig.address"
+                placeholder="请输入公司地址"
+              />
             </div>
 
             <div class="flex justify-end">
@@ -142,7 +151,10 @@
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox id="autoApproval" v-model="businessConfig.autoApproval" />
+                <Checkbox
+                  id="autoApproval"
+                  v-model="businessConfig.autoApproval"
+                />
                 <Label for="autoApproval">启用自动审批</Label>
               </div>
             </div>
@@ -227,7 +239,10 @@
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox id="twoFactor" v-model="securityConfig.enableTwoFactor" />
+                <Checkbox
+                  id="twoFactor"
+                  v-model="securityConfig.enableTwoFactor"
+                />
                 <Label for="twoFactor">启用双因子认证</Label>
               </div>
             </div>
@@ -257,7 +272,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>SMTP服务器</Label>
-                <Input v-model="emailConfig.smtpHost" placeholder="如: smtp.qq.com" />
+                <Input
+                  v-model="emailConfig.smtpHost"
+                  placeholder="如: smtp.qq.com"
+                />
               </div>
               <div class="space-y-2">
                 <Label>SMTP端口</Label>
@@ -289,7 +307,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>SMTP用户名</Label>
-                <Input v-model="emailConfig.smtpUsername" placeholder="SMTP登录用户名" />
+                <Input
+                  v-model="emailConfig.smtpUsername"
+                  placeholder="SMTP登录用户名"
+                />
               </div>
               <div class="space-y-2">
                 <Label>SMTP密码</Label>
@@ -314,7 +335,11 @@
             </div>
 
             <div class="flex justify-between">
-              <Button variant="outline" :disabled="testing" @click="testEmailConnection">
+              <Button
+                variant="outline"
+                :disabled="testing"
+                @click="testEmailConnection"
+              >
                 <Send class="w-4 h-4 mr-2" />
                 <span v-if="testing">测试中...</span>
                 <span v-else>测试邮件连接</span>
@@ -373,25 +398,38 @@
 
             <div class="space-y-2">
               <Label>备份路径</Label>
-              <Input v-model="backupConfig.backupPath" placeholder="/backup/erp" />
+              <Input
+                v-model="backupConfig.backupPath"
+                placeholder="/backup/erp"
+              />
             </div>
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox id="enableAutoBackup" v-model="backupConfig.enableAutoBackup" />
+                <Checkbox
+                  id="enableAutoBackup"
+                  v-model="backupConfig.enableAutoBackup"
+                />
                 <Label for="enableAutoBackup">启用自动备份</Label>
               </div>
             </div>
 
             <div class="space-y-2">
               <div class="flex items-center space-x-2">
-                <Checkbox id="compressBackup" v-model="backupConfig.compressBackup" />
+                <Checkbox
+                  id="compressBackup"
+                  v-model="backupConfig.compressBackup"
+                />
                 <Label for="compressBackup">压缩备份文件</Label>
               </div>
             </div>
 
             <div class="flex justify-end space-x-2">
-              <Button variant="outline" :disabled="backing" @click="performBackup">
+              <Button
+                variant="outline"
+                :disabled="backing"
+                @click="performBackup"
+              >
                 <Download class="w-4 h-4 mr-2" />
                 <span v-if="backing">备份中...</span>
                 <span v-else>立即备份</span>
@@ -409,43 +447,52 @@
   </div>
 </template>
 
-<script setup>
-// UI组件现在自动导入，无需手动导入
+<script setup lang="ts">
+// 手动导入 Lucide 图标
+import {
+  Briefcase,
+  Database,
+  Download,
+  Mail,
+  Save,
+  Send,
+  Settings,
+  Shield,
+} from "lucide-vue-next";
 
-import { Briefcase, Database, Download, Mail, Save, Send, Settings, Shield } from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
+import { toast } from "vue-sonner";
 
 // 页面配置
 definePageMeta({
-  layout: 'default',
-})
+  layout: "default",
+});
 
 useHead({
-  title: '系统配置 - ERP 管理系统',
-})
+  title: "系统配置 - ERP 管理系统",
+});
 
 // 状态管理
-const saving = ref(false)
-const testing = ref(false)
-const backing = ref(false)
+const saving = ref(false);
+const testing = ref(false);
+const backing = ref(false);
 
 // 基础配置
 const basicConfig = ref({
-  companyName: '某某科技有限公司',
-  systemName: 'ERP管理系统',
-  version: 'v1.0.0',
-  adminEmail: 'admin@company.com',
-  address: '北京市朝阳区某某街道123号',
-})
+  companyName: "某某科技有限公司",
+  systemName: "ERP管理系统",
+  version: "v1.0.0",
+  adminEmail: "admin@company.com",
+  address: "北京市朝阳区某某街道123号",
+});
 
 // 业务配置
 const businessConfig = ref({
-  defaultCurrency: 'CNY',
+  defaultCurrency: "CNY",
   decimalPlaces: 2,
   taxRate: 13.0,
   stockWarningThreshold: 10,
   autoApproval: false,
-})
+});
 
 // 安全配置
 const securityConfig = ref({
@@ -455,180 +502,158 @@ const securityConfig = ref({
   lockoutDuration: 30,
   requirePasswordComplexity: true,
   enableTwoFactor: false,
-})
+});
 
 // 邮件配置
 const emailConfig = ref({
-  smtpHost: '',
+  smtpHost: "",
   smtpPort: 587,
-  fromEmail: '',
-  fromName: 'ERP系统',
-  smtpUsername: '',
-  smtpPassword: '',
+  fromEmail: "",
+  fromName: "ERP系统",
+  smtpUsername: "",
+  smtpPassword: "",
   enableSSL: false,
   enableTLS: true,
-})
+});
 
 // 备份配置
 const backupConfig = ref({
-  frequency: 'daily',
+  frequency: "daily",
   retentionDays: 30,
-  backupPath: '/var/backups/erp',
+  backupPath: "/var/backups/erp",
   enableAutoBackup: true,
   compressBackup: true,
-})
+});
 
 // 选项数据
 const currencyOptions = ref([
-  { label: '人民币 (CNY)', value: 'CNY' },
-  { label: '美元 (USD)', value: 'USD' },
-  { label: '欧元 (EUR)', value: 'EUR' },
-  { label: '日元 (JPY)', value: 'JPY' },
-])
+  { label: "人民币 (CNY)", value: "CNY" },
+  { label: "美元 (USD)", value: "USD" },
+  { label: "欧元 (EUR)", value: "EUR" },
+  { label: "日元 (JPY)", value: "JPY" },
+]);
 
 const backupFrequencyOptions = ref([
-  { label: '每日', value: 'daily' },
-  { label: '每周', value: 'weekly' },
-  { label: '每月', value: 'monthly' },
-  { label: '手动', value: 'manual' },
-])
+  { label: "每日", value: "daily" },
+  { label: "每周", value: "weekly" },
+  { label: "每月", value: "monthly" },
+  { label: "手动", value: "manual" },
+]);
 
 // 方法
 const saveAllConfigs = async () => {
-  saving.value = true
+  saving.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    console.log('保存所有配置:', {
-      basic: basicConfig.value,
-      business: businessConfig.value,
-      security: securityConfig.value,
-      email: emailConfig.value,
-      backup: backupConfig.value,
-    })
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    toast.success("所有配置保存成功");
+  } catch (_error) {
+    toast.error("保存失败，请重试");
+  } finally {
+    saving.value = false;
   }
-  catch (error) {
-    console.error('保存配置失败:', error)
-  }
-  finally {
-    saving.value = false
-  }
-}
+};
 
 const saveBasicConfig = async () => {
-  saving.value = true
+  saving.value = true;
   try {
     // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success('基础配置保存成功')
-  }
-  catch (error) {
-    toast.error('保存失败，请重试', {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("基础配置保存成功");
+  } catch (error: any) {
+    toast.error("保存失败，请重试", {
       description: error.message,
-    })
+    });
+  } finally {
+    saving.value = false;
   }
-  finally {
-    saving.value = false
-  }
-}
+};
 
 const saveBusinessConfig = async () => {
-  saving.value = true
+  saving.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success('业务配置保存成功')
-  }
-  catch (error) {
-    toast.error('保存失败，请重试', {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("业务配置保存成功");
+  } catch (error: any) {
+    toast.error("保存失败，请重试", {
       description: error.message,
-    })
+    });
+  } finally {
+    saving.value = false;
   }
-  finally {
-    saving.value = false
-  }
-}
+};
 
 const saveSecurityConfig = async () => {
-  saving.value = true
+  saving.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success('安全配置保存成功')
-  }
-  catch (error) {
-    toast.error('保存失败，请重试', {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("安全配置保存成功");
+  } catch (error: any) {
+    toast.error("保存失败，请重试", {
       description: error.message,
-    })
+    });
+  } finally {
+    saving.value = false;
   }
-  finally {
-    saving.value = false
-  }
-}
+};
 
 const saveEmailConfig = async () => {
-  saving.value = true
+  saving.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success('邮件配置保存成功')
-  }
-  catch (error) {
-    toast.error('保存失败，请重试', {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("邮件配置保存成功");
+  } catch (error: any) {
+    toast.error("保存失败，请重试", {
       description: error.message,
-    })
+    });
+  } finally {
+    saving.value = false;
   }
-  finally {
-    saving.value = false
-  }
-}
+};
 
 const saveBackupConfig = async () => {
-  saving.value = true
+  saving.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success('备份配置保存成功')
-  }
-  catch (error) {
-    toast.error('保存失败，请重试', {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success("备份配置保存成功");
+  } catch (error: any) {
+    toast.error("保存失败，请重试", {
       description: error.message,
-    })
+    });
+  } finally {
+    saving.value = false;
   }
-  finally {
-    saving.value = false
-  }
-}
+};
 
 const testEmailConnection = async () => {
-  testing.value = true
+  testing.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    toast.success('邮件连接测试成功')
-  }
-  catch (error) {
-    toast.error('邮件连接测试失败', {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    toast.success("邮件连接测试成功");
+  } catch (error: any) {
+    toast.error("邮件连接测试失败", {
       description: error.message,
-    })
+    });
+  } finally {
+    testing.value = false;
   }
-  finally {
-    testing.value = false
-  }
-}
+};
 
 const performBackup = async () => {
-  backing.value = true
+  backing.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 3000))
-    toast.success('数据备份完成')
-  }
-  catch (error) {
-    toast.error('数据备份失败', {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    toast.success("数据备份完成");
+  } catch (error: any) {
+    toast.error("数据备份失败", {
       description: error.message,
-    })
+    });
+  } finally {
+    backing.value = false;
   }
-  finally {
-    backing.value = false
-  }
-}
+};
 
 // 初始化
 onMounted(() => {
   // 加载配置数据
-})
+});
 </script>

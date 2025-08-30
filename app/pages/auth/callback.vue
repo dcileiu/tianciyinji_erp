@@ -1,18 +1,24 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+  >
     <div class="text-center">
       <!-- 加载状态 -->
       <div v-if="isLoading" class="space-y-4">
         <Loader2 class="h-8 w-8 animate-spin mx-auto text-primary" />
         <h2 class="text-xl font-semibold text-foreground">正在验证...</h2>
-        <p class="text-sm text-muted-foreground">请稍候，我们正在验证您的邮箱。</p>
+        <p class="text-sm text-muted-foreground">
+          请稍候，我们正在验证您的邮箱。
+        </p>
       </div>
 
       <!-- 成功状态 -->
       <div v-if="isSuccess" class="space-y-4">
         <CheckCircle class="h-8 w-8 mx-auto text-green-600" />
         <h2 class="text-xl font-semibold text-green-600">验证成功！</h2>
-        <p class="text-sm text-muted-foreground">您的邮箱已成功验证，即将跳转到仪表板...</p>
+        <p class="text-sm text-muted-foreground">
+          您的邮箱已成功验证，即将跳转到仪表板...
+        </p>
       </div>
 
       <!-- 错误状态 -->
@@ -26,12 +32,19 @@
         </div>
         <div class="space-y-2">
           <Button class="w-full" @click="handleRetry">重新尝试</Button>
-          <Button variant="outline" class="w-full" @click="$router.push('/login')">返回登录</Button>
+          <Button
+            variant="outline"
+            class="w-full"
+            @click="$router.push('/login')"
+            >返回登录</Button
+          >
         </div>
 
         <!-- 调试信息（开发环境） -->
         <details v-if="$config.public.dev" class="mt-4">
-          <summary class="text-xs text-gray-500 cursor-pointer">显示调试信息</summary>
+          <summary class="text-xs text-gray-500 cursor-pointer">
+            显示调试信息
+          </summary>
           <div class="mt-2 p-2 bg-gray-100 text-xs">
             <p>
               <strong>URL:</strong>
@@ -50,96 +63,89 @@
 
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
-
-import { AlertTriangle, CheckCircle, Loader2 } from 'lucide-vue-next'
+// 但需要手动导入 Lucide 图标
+import { AlertTriangle, CheckCircle, Loader2 } from 'lucide-vue-next';
 
 // 使用认证布局
 definePageMeta({
   layout: false,
-})
+});
 
 // 页面标题
 useHead({
   title: '邮箱验证 - ERP 管理系统',
-})
+});
 
-const router = useRouter()
-const route = useRoute()
-const supabase = useSupabaseClient()
+const router = useRouter();
+const route = useRoute();
+const supabase = useSupabaseClient();
 
-const isLoading = ref(true)
-const isSuccess = ref(false)
-const errorMsg = ref('')
+const isLoading = ref(true);
+const isSuccess = ref(false);
+const errorMsg = ref('');
 
 // 处理邮箱验证
 const handleEmailConfirmation = async () => {
   try {
-    isLoading.value = true
-    errorMsg.value = ''
+    isLoading.value = true;
+    errorMsg.value = '';
 
     // 检查新格式参数 (token_hash + type)
-    const token_hash = route.query.token_hash as string
-    const type = route.query.type as string
+    const token_hash = route.query.token_hash as string;
+    const type = route.query.type as string;
 
     if (token_hash && type) {
       // 新格式：使用 verifyOtp
       const { error: verifyError } = await supabase.auth.verifyOtp({
         token_hash,
         type: type as any,
-      })
+      });
 
       if (verifyError) {
-        throw verifyError
+        throw verifyError;
       }
-    }
-    else {
+    } else {
       // 对于 PKCE 流程，@nuxtjs/supabase 模块会自动处理
       // 只需等待一下让模块处理完成，然后检查认证状态
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // 检查用户是否已认证
-      const user = useSupabaseUser()
+      const user = useSupabaseUser();
       if (!user.value) {
         // 如果还没有用户，尝试刷新会话
-        await supabase.auth.getSession()
-        await new Promise(resolve => setTimeout(resolve, 500))
+        await supabase.auth.getSession();
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         if (!user.value) {
-          throw new Error('验证链接无效或已过期')
+          throw new Error('验证链接无效或已过期');
         }
       }
     }
 
-    isSuccess.value = true
+    isSuccess.value = true;
 
     // 延迟跳转到仪表板
     setTimeout(() => {
-      router.push('/dashboard')
-    }, 2000)
-  }
-  catch (err: any) {
-    console.error('Email confirmation error:', err)
-
+      router.push('/dashboard');
+    }, 2000);
+  } catch (err: any) {
     // 处理常见的 Supabase 错误消息，转换为中文
-    let errorMessage = getLocalizedErrorMessage(err.message)
+    let errorMessage = getLocalizedErrorMessage(err.message);
 
     if (!errorMessage) {
       // 如果没有匹配的本地化消息，使用原始消息或默认消息
       if (err.message) {
-        errorMessage = `验证失败：${err.message}`
-      }
-      else {
-        errorMessage = '邮箱验证失败，请重试或联系管理员'
+        errorMessage = `验证失败：${err.message}`;
+      } else {
+        errorMessage = '邮箱验证失败，请重试或联系管理员';
       }
     }
 
-    errorMsg.value = errorMessage
-    console.log('errorMsg.value：', errorMsg.value)
+    errorMsg.value = errorMessage;
+  } finally {
+    isLoading.value = false;
   }
-  finally {
-    isLoading.value = false
-  }
-}
+};
 
 // 错误消息本地化
 const getLocalizedErrorMessage = (message: string): string | null => {
@@ -165,32 +171,34 @@ const getLocalizedErrorMessage = (message: string): string | null => {
     'Unexpected error': '意外错误',
     'Database error': '数据库错误',
     'Configuration error': '配置错误',
-  }
+  };
 
-  if (!message) return null
+  if (!message) {
+    return null;
+  }
 
   // 精确匹配
   if (errorMessages[message]) {
-    return errorMessages[message]
+    return errorMessages[message];
   }
 
   // 模糊匹配
   for (const [key, value] of Object.entries(errorMessages)) {
     if (message.toLowerCase().includes(key.toLowerCase())) {
-      return value
+      return value;
     }
   }
 
-  return null
-}
+  return null;
+};
 
 // 重新尝试
 const handleRetry = () => {
-  handleEmailConfirmation()
-}
+  handleEmailConfirmation();
+};
 
 // 页面加载时执行验证
 onMounted(() => {
-  handleEmailConfirmation()
-})
+  handleEmailConfirmation();
+});
 </script>

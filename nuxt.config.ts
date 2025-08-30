@@ -1,17 +1,20 @@
-import tailwindcss from '@tailwindcss/vite'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/supabase', '@nuxt/eslint', 'shadcn-nuxt'],
+  modules: ['@nuxtjs/supabase', '@nuxtjs/tailwindcss', 'shadcn-nuxt'],
 
-  // 组件自动导入配置
+  // shadcn-nuxt 配置
+  shadcn: {
+    prefix: '',
+    componentDir: './app/components/ui',
+  },
+
+  // 组件自动导入配置（shadcn-nuxt会自动处理ui组件）
   components: [
-    // 启用嵌套组件扫描
     {
       path: '~/components',
       pathPrefix: false,
+      ignore: ['**/ui/**'], // 由shadcn-nuxt处理
     },
-    // UI组件通过 shadcn-nuxt 模块自动处理，无需手动配置
   ],
 
   // 自动导入配置
@@ -41,6 +44,14 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/tailwind.css'],
 
+  // PostCSS 配置
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
@@ -66,21 +77,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-08-20',
 
   vite: {
-    plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['vue', 'vue-router', '@vueuse/core'],
+      include: ['vue', 'vue-router', '@vueuse/core', 'lucide-vue-next'],
     },
-  },
-
-  eslint: {
-    config: {
-      stylistic: true,
-    },
-  },
-
-  shadcn: {
-    prefix: '',
-    componentDir: './app/components/ui',
   },
 
   supabase: {
@@ -99,4 +98,4 @@ export default defineNuxtConfig({
       ],
     },
   },
-})
+});

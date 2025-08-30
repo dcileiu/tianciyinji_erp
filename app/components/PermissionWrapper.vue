@@ -23,22 +23,20 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { Lock } from 'lucide-vue-next'
-
 interface Props {
   /** 是否有权限 - 由父组件传入 */
-  hasPermission?: boolean
+  hasPermission?: boolean;
   /** 是否显示无权限时的后备内容 */
-  showFallback?: boolean
+  showFallback?: boolean;
   /** 自定义无权限提示信息 */
-  fallbackMessage?: string
+  fallbackMessage?: string;
   /** 是否显示返回按钮 */
-  showBackButton?: boolean
+  showBackButton?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   hasPermission: true,
   showFallback: true,
   showBackButton: true,
-})
+});
 </script>

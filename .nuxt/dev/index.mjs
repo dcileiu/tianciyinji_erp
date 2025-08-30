@@ -1039,7 +1039,7 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _axkrLzPzVBwu232YrjlN8mFRQZ8qrz0sOiUjB2V70Y = (function(nitro) {
+const _suylsTu7nuucXNq6MiDZ5vqKfikuxXBQreQmgg_X4 = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
@@ -1068,7 +1068,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _iMQJVjDnwwTaDNr6fcZeXWnc2gQTE_y4zFg5h9hRQ = (nitroApp) => {
+const _vHF76_S4scRG_unqzODkoFBEUU6qylKFfOfWIZSLKgA = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -1138,8 +1138,8 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _axkrLzPzVBwu232YrjlN8mFRQZ8qrz0sOiUjB2V70Y,
-_iMQJVjDnwwTaDNr6fcZeXWnc2gQTE_y4zFg5h9hRQ
+  _suylsTu7nuucXNq6MiDZ5vqKfikuxXBQreQmgg_X4,
+_vHF76_S4scRG_unqzODkoFBEUU6qylKFfOfWIZSLKgA
 ];
 
 const assets = {};
@@ -1549,13 +1549,13 @@ async function getIslandContext(event) {
   return ctx;
 }
 
-const _lazy_SRpGB8 = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_EOZoEh = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _9KxSSR, lazy: false, middleware: true, method: undefined },
-  { route: '/__nuxt_error', handler: _lazy_SRpGB8, lazy: true, middleware: false, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_EOZoEh, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_SRpGB8, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_EOZoEh, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {

@@ -25,13 +25,17 @@
           side="bottom"
           :side-offset="4"
         >
-          <DropdownMenuLabel class="text-xs text-muted-foreground">Teams</DropdownMenuLabel>
+          <DropdownMenuLabel class="text-xs text-muted-foreground"
+            >Teams</DropdownMenuLabel
+          >
           <template v-for="(team, index) in teams" :key="team.name">
             <DropdownMenuItem
               :class="team.name === activeTeam.name ? 'bg-accent' : ''"
               @click="activeTeam = team"
             >
-              <div class="flex size-6 items-center justify-center rounded-sm border">
+              <div
+                class="flex size-6 items-center justify-center rounded-sm border"
+              >
                 <component :is="team.logo" class="size-4 shrink-0" />
               </div>
               {{ team.name }}
@@ -40,7 +44,9 @@
           </template>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <div class="flex size-6 items-center justify-center rounded-md border bg-background">
+            <div
+              class="flex size-6 items-center justify-center rounded-md border bg-background"
+            >
               <Plus class="size-4" />
             </div>
             <div class="font-medium text-muted-foreground">Add team</div>
@@ -52,28 +58,22 @@
 </template>
 
 <script setup lang="ts">
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
-import type { LucideIcon } from 'lucide-vue-next'
-import { ChevronsUpDown, Plus } from 'lucide-vue-next'
+import type { LucideIcon } from 'lucide-vue-next';
+import { ChevronsUpDown, Plus } from 'lucide-vue-next';
+
+// shadcn-nuxt 会自动导入所有 UI 组件
 
 interface Team {
-  name: string
-  logo: LucideIcon
-  plan: string
+  name: string;
+  logo: LucideIcon;
+  plan: string;
 }
 
 const props = defineProps<{
-  teams: Team[]
-}>()
+  teams: Team[];
+}>();
 
-const activeTeam = ref(props.teams?.[0] || { name: '', logo: Plus, plan: '' })
+const activeTeam = ref(
+  props.teams?.[0] || { name: '默认团队', logo: Plus, plan: '免费版' }
+);
 </script>

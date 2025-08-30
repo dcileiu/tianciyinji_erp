@@ -1,48 +1,30 @@
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
+import { ArrowLeft } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import type { WithClassAsProps } from './interface';
+import { useCarousel } from './useCarousel';
 
-import type { WithClassAsProps } from './interface'
-import type { ButtonVariants } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-vue-next'
-import { cn } from '@/lib/utils'
+const props = defineProps<WithClassAsProps>();
 
-import { useCarousel } from './useCarousel'
-
-const props = withDefaults(
-  defineProps<
-    {
-      variant?: ButtonVariants['variant']
-      size?: ButtonVariants['size']
-    } & WithClassAsProps
-  >(),
-  {
-    variant: 'outline',
-    size: 'icon',
-  },
-)
-
-const { orientation, canScrollPrev, scrollPrev } = useCarousel()
+const { orientation, canScrollPrev, scrollPrev } = useCarousel();
 </script>
 
 <template>
   <Button
-    data-slot="carousel-previous"
     :disabled="!canScrollPrev"
-    :class="
-      cn(
-        'absolute size-8 rounded-full',
-        orientation === 'horizontal'
-          ? 'top-1/2 -left-12 -translate-y-1/2'
-          : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
-        props.class,
-      )
-    "
-    :variant="variant"
-    :size="size"
+    :class="cn(
+      'touch-manipulation absolute h-8 w-8 rounded-full p-0',
+      orientation === 'horizontal'
+        ? '-left-12 top-1/2 -translate-y-1/2'
+        : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
+      props.class,
+    )"
+    variant="outline"
     @click="scrollPrev"
   >
     <slot>
-      <ArrowLeft />
+      <ArrowLeft class="h-4 w-4 text-current" />
       <span class="sr-only">Previous Slide</span>
     </slot>
   </Button>

@@ -39,9 +39,18 @@
 
       <!-- 图标 -->
       <div class="flex items-center mr-3">
-        <component :is="iconComponent" v-if="iconComponent" class="w-4 h-4 text-gray-500" />
-        <div v-else class="w-4 h-4 bg-gray-300 rounded flex items-center justify-center">
-          <span class="text-xs text-gray-600">{{ getTypeIcon(item.type) }}</span>
+        <component
+          :is="iconComponent"
+          v-if="iconComponent"
+          class="w-4 h-4 text-gray-500"
+        />
+        <div
+          v-else
+          class="w-4 h-4 bg-gray-300 rounded flex items-center justify-center"
+        >
+          <span class="text-xs text-gray-600">{{
+            getTypeIcon(item.type)
+          }}</span>
         </div>
       </div>
 
@@ -95,13 +104,25 @@
       <!-- 状态指示器 -->
       <div class="flex items-center space-x-2 ml-2">
         <!-- 必需权限标识 -->
-        <div v-if="item.is_required" class="w-2 h-2 bg-red-500 rounded-full" title="必需权限"></div>
+        <div
+          v-if="item.is_required"
+          class="w-2 h-2 bg-red-500 rounded-full"
+          title="必需权限"
+        ></div>
 
         <!-- 隐藏状态 -->
-        <EyeOff v-if="item.is_hidden" class="w-3 h-3 text-gray-400" title="隐藏项" />
+        <EyeOff
+          v-if="item.is_hidden"
+          class="w-3 h-3 text-gray-400"
+          title="隐藏项"
+        />
 
         <!-- 禁用状态 -->
-        <Ban v-if="!item.is_active" class="w-3 h-3 text-red-400" title="已禁用" />
+        <Ban
+          v-if="!item.is_active"
+          class="w-3 h-3 text-red-400"
+          title="已禁用"
+        />
       </div>
     </div>
 
@@ -124,18 +145,16 @@
 
 <script setup lang="ts">
 import {
-  Ban,
   ChevronRight,
   Database,
-  EyeOff,
   FileText,
   Globe,
   Menu,
   Settings,
   Shield,
   Zap,
-} from 'lucide-vue-next'
-import { computed } from 'vue'
+} from "lucide-vue-next";
+import { computed } from "vue";
 
 // Props
 const props = defineProps({
@@ -159,32 +178,38 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
 // Emits
-const emit = defineEmits(['toggle-selection', 'toggle-expand'])
+const emit = defineEmits(["toggle-selection", "toggle-expand"]);
 
 // 计算属性
 const hasChildren = computed(() => {
-  return props.item.children && props.item.children.length > 0
-})
+  return props.item.children && props.item.children.length > 0;
+});
 
 const isExpanded = computed(() => {
-  return props.expandedIds.has(props.item.id)
-})
+  return props.expandedIds.has(props.item.id);
+});
 
 const isSelected = computed(() => {
-  return props.selectedIds.includes(props.item.id)
-})
+  return props.selectedIds.includes(props.item.id);
+});
 
 const isIndeterminate = computed(() => {
-  if (!hasChildren.value) return false
+  if (!hasChildren.value) {
+    return false;
+  }
 
-  const childIds = getAllChildIds(props.item.children)
-  const selectedChildIds = childIds.filter((id: any) => props.selectedIds.includes(id))
+  const childIds = getAllChildIds(props.item.children);
+  const selectedChildIds = childIds.filter((id: any) =>
+    props.selectedIds.includes(id)
+  );
 
-  return selectedChildIds.length > 0 && selectedChildIds.length < childIds.length
-})
+  return (
+    selectedChildIds.length > 0 && selectedChildIds.length < childIds.length
+  );
+});
 
 const iconComponent = computed(() => {
   const iconMap: Record<string, any> = {
@@ -195,71 +220,77 @@ const iconComponent = computed(() => {
     api: Globe,
     system: Settings,
     security: Shield,
-  }
+  };
 
-  return iconMap[props.item.type as string] || null
-})
+  return iconMap[props.item.type as string] || null;
+});
 
 // 方法
 const getAllChildIds = (children: any[]): any[] => {
-  const ids: any[] = []
+  const ids: any[] = [];
   for (const child of children) {
-    ids.push(child.id)
+    ids.push(child.id);
     if (child.children && child.children.length > 0) {
-      ids.push(...getAllChildIds(child.children))
+      ids.push(...getAllChildIds(child.children));
     }
   }
-  return ids
-}
+  return ids;
+};
 
 const getTypeIcon = (type: string) => {
   const iconMap: Record<string, string> = {
-    menu: '📋',
-    page: '📄',
-    function: '⚡',
-    data: '💾',
-    api: '🌐',
-    system: '⚙️',
-    security: '🛡️',
-  }
-  return iconMap[type] || '📦'
-}
+    menu: "📋",
+    page: "📄",
+    function: "⚡",
+    data: "💾",
+    api: "🌐",
+    system: "⚙️",
+    security: "🛡️",
+  };
+  return iconMap[type] || "📦";
+};
 
 const getTypeLabel = (type: string) => {
   const labelMap: Record<string, string> = {
-    menu: '菜单',
-    page: '页面',
-    function: '功能',
-    data: '数据',
-    api: 'API',
-    system: '系统',
-    security: '安全',
-  }
-  return labelMap[type] || type
-}
+    menu: "菜单",
+    page: "页面",
+    function: "功能",
+    data: "数据",
+    api: "API",
+    system: "系统",
+    security: "安全",
+  };
+  return labelMap[type] || type;
+};
 
 const getTypeClass = (type: string) => {
   const classMap: Record<string, string> = {
-    menu: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-    page: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    function: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-    data: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-    api: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300',
-    system: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    security: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-  }
-  return classMap[type] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
-}
+    menu: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+    page: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+    function:
+      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+    data: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+    api: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300",
+    system: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
+    security: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+  };
+  return (
+    classMap[type] ||
+    "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+  );
+};
 
 const handleToggleSelection = (event: any) => {
-  if (props.disabled) return
+  if (props.disabled) {
+    return;
+  }
 
-  emit('toggle-selection', props.item.id, event.target.checked)
-}
+  emit("toggle-selection", props.item.id, event.target.checked);
+};
 
 const handleToggleExpand = () => {
-  emit('toggle-expand', props.item.id)
-}
+  emit("toggle-expand", props.item.id);
+};
 </script>
 
 <style scoped>
@@ -272,12 +303,12 @@ const handleToggleExpand = () => {
 }
 
 /* 自定义复选框的半选状态样式 */
-input[type='checkbox']:indeterminate {
+input[type="checkbox"]:indeterminate {
   @apply bg-blue-600 border-blue-600;
 }
 
-input[type='checkbox']:indeterminate::before {
-  content: '';
+input[type="checkbox"]:indeterminate::before {
+  content: "";
   @apply block w-2 h-0.5 bg-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }
 </style>

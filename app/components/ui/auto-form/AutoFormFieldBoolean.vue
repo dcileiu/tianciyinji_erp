@@ -1,17 +1,23 @@
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
+import { computed } from 'vue';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
+import { Switch } from '@/components/ui/switch';
+import AutoFormLabel from './AutoFormLabel.vue';
+import type { FieldProps } from './interface';
+import { beautifyObjectName, maybeBooleanishToBoolean } from './utils';
 
-import type { FieldProps } from './interface'
-
-import { computed } from 'vue'
-import AutoFormLabel from './AutoFormLabel.vue'
-import { beautifyObjectName, maybeBooleanishToBoolean } from './utils'
-
-const props = defineProps<FieldProps>()
+const props = defineProps<FieldProps>();
 
 const booleanComponent = computed(() =>
-  props.config?.component === 'switch' ? 'Switch' : 'Checkbox',
-)
+  props.config?.component === 'switch' ? Switch : Checkbox
+);
 </script>
 
 <template>

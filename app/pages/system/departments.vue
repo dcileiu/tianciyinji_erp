@@ -7,7 +7,10 @@
         <p class="text-gray-600">管理组织架构和部门层级关系</p>
       </div>
       <div>
-        <Button class="bg-blue-600 hover:bg-blue-700" @click="showCreateDialog = true">
+        <Button
+          class="bg-blue-600 hover:bg-blue-700"
+          @click="showCreateDialog = true"
+        >
           <Building class="w-4 h-4 mr-2" />
           新增部门
         </Button>
@@ -60,10 +63,15 @@
       </CardHeader>
       <CardContent>
         <div v-if="loading" class="flex justify-center py-8">
-          <div class="animate-spin -full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+          ></div>
         </div>
 
-        <div v-else-if="filteredDepartments.length === 0" class="text-center py-12 text-gray-500">
+        <div
+          v-else-if="filteredDepartments.length === 0"
+          class="text-center py-12 text-gray-500"
+        >
           <Building class="w-16 h-16 mx-auto mb-4 opacity-50" />
           <h3 class="text-lg mb-2">暂无部门数据</h3>
           <p class="mb-4">开始创建您的第一个部门</p>
@@ -73,7 +81,7 @@
           </Button>
         </div>
 
-        <div v-else class="-md border">
+        <div v-else class="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -86,51 +94,83 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="department in filteredDepartments" :key="department.id">
+              <TableRow
+                v-for="department in filteredDepartments"
+                :key="department.id"
+              >
                 <TableCell>
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-100 -lg flex items-center justify-center">
+                    <div
+                      class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                    >
                       <Building class="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <div class="font-medium text-gray-900 mb-1">{{ department.name }}</div>
-                      <div class="text-sm text-gray-500">{{ department.description }}</div>
+                      <div class="font-medium text-gray-900 mb-1">
+                        {{ department.name }}
+                      </div>
+                      <div class="text-sm text-gray-500">
+                        {{ department.description }}
+                      </div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <div
-                      class="w-8 h-8 bg-gray-200 -full flex items-center justify-center text-gray-700 text-sm font-medium"
+                      class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 text-sm font-medium"
                     >
-                      {{ department.manager?.charAt(0) || 'N' }}
+                      {{ department.manager?.charAt(0) || "N" }}
                     </div>
-                    <span class="font-medium">{{ department.manager || '未指定' }}</span>
+                    <span class="font-medium">{{
+                      department.manager || "未指定"
+                    }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span v-if="department.parentDepartment" class="text-gray-600">
+                  <span
+                    v-if="department.parentDepartment"
+                    class="text-gray-600"
+                  >
                     {{ department.parentDepartment }}
                   </span>
                   <Badge v-else variant="secondary">顶级部门</Badge>
                 </TableCell>
                 <TableCell>
-                  <span class="font-medium">{{ department.employeeCount || 0 }}</span>
+                  <span class="font-medium">{{
+                    department.employeeCount || 0
+                  }}</span>
                 </TableCell>
                 <TableCell>
-                  <Badge :variant="department.status === 'active' ? 'default' : 'destructive'">
-                    {{ department.status === 'active' ? '启用' : '停用' }}
+                  <Badge
+                    :variant="
+                      department.status === 'active' ? 'default' : 'destructive'
+                    "
+                  >
+                    {{ department.status === "active" ? "启用" : "停用" }}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Button variant="outline" size="sm" @click="editDepartment(department)">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      @click="editDepartment(department)"
+                    >
                       <Edit class="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="sm" @click="addSubDepartment(department)">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      @click="addSubDepartment(department)"
+                    >
                       <Plus class="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="sm" @click="confirmDelete(department)">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      @click="confirmDelete(department)"
+                    >
                       <Trash2 class="w-4 h-4 text-red-500" />
                     </Button>
                   </div>
@@ -146,13 +186,19 @@
     <Dialog v-model:open="showCreateDialog">
       <DialogContent class="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{{ editingDepartment ? '编辑部门' : '新增部门' }}</DialogTitle>
+          <DialogTitle>{{
+            editingDepartment ? "编辑部门" : "新增部门"
+          }}</DialogTitle>
         </DialogHeader>
 
         <div class="space-y-6">
           <div class="space-y-2">
             <Label for="name">部门名称 *</Label>
-            <Input id="name" v-model="departmentForm.name" placeholder="请输入部门名称" />
+            <Input
+              id="name"
+              v-model="departmentForm.name"
+              placeholder="请输入部门名称"
+            />
           </div>
 
           <div class="space-y-2">
@@ -185,14 +231,18 @@
 
           <div class="space-y-2">
             <Label for="manager">部门负责人</Label>
-            <Input id="manager" v-model="departmentForm.manager" placeholder="请输入负责人姓名" />
+            <Input
+              id="manager"
+              v-model="departmentForm.manager"
+              placeholder="请输入负责人姓名"
+            />
           </div>
 
           <div class="space-y-2">
             <Label for="count">员工数量</Label>
             <Input
               id="count"
-              v-model.number="departmentForm.sort"
+              v-model.number="departmentForm.employeeCount"
               type="number"
               placeholder="请输入员工数量"
               :min="0"
@@ -223,131 +273,139 @@
 </template>
 
 <script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
+// 手动导入 Lucide 图标
+import {
+  Building,
+  Edit,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+} from "lucide-vue-next";
 
-import { Building, Edit, Plus, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
+import { toast } from "vue-sonner";
 
 // 页面状态
-const loading = ref(false)
-const searchQuery = ref('')
-const statusFilter = ref('')
+const loading = ref(false);
+const searchQuery = ref("");
+const statusFilter = ref("all");
 
 // 对话框状态
-const showCreateDialog = ref(false)
-const editingDepartment = ref<any>(null)
+const showCreateDialog = ref(false);
+const editingDepartment = ref<any>(null);
 
 // 部门表单
 const departmentForm = ref({
-  code: '',
-  name: '',
-  description: '',
-  status: 'active',
-  parentId: '',
-  manager: '',
+  code: "",
+  name: "",
+  description: "",
+  status: "active",
+  parentId: "",
+  manager: "",
+  employeeCount: 0,
   sort: 0,
-})
+});
 
 // 状态筛选选项
 const statusFilterOptions = [
-  { label: '全部状态', value: '' },
-  { label: '启用', value: 'active' },
-  { label: '停用', value: 'inactive' },
-]
+  { label: "全部状态", value: "all" },
+  { label: "启用", value: "active" },
+  { label: "停用", value: "inactive" },
+];
 
 // 模拟部门数据
 const departments = ref([
   {
-    id: '1',
-    code: 'TECH',
-    name: '技术部',
-    description: '负责产品研发和技术支持',
-    status: 'active',
-    parentId: '',
-    parentDepartment: '',
-    manager: '张三',
+    id: "1",
+    code: "TECH",
+    name: "技术部",
+    description: "负责产品研发和技术支持",
+    status: "active",
+    parentId: "",
+    parentDepartment: "",
+    manager: "张三",
     employeeCount: 15,
     sort: 1,
   },
   {
-    id: '2',
-    code: 'SALES',
-    name: '销售部',
-    description: '负责产品销售和客户关系维护',
-    status: 'active',
-    parentId: '',
-    parentDepartment: '',
-    manager: '李四',
+    id: "2",
+    code: "SALES",
+    name: "销售部",
+    description: "负责产品销售和客户关系维护",
+    status: "active",
+    parentId: "",
+    parentDepartment: "",
+    manager: "李四",
     employeeCount: 12,
     sort: 2,
   },
   {
-    id: '3',
-    code: 'TECH_FE',
-    name: '前端开发组',
-    description: '负责前端界面开发',
-    status: 'active',
-    parentId: '1',
-    parentDepartment: '技术部',
-    manager: '王五',
+    id: "3",
+    code: "TECH_FE",
+    name: "前端开发组",
+    description: "负责前端界面开发",
+    status: "active",
+    parentId: "1",
+    parentDepartment: "技术部",
+    manager: "王五",
     employeeCount: 8,
     sort: 1,
   },
   {
-    id: '4',
-    code: 'TECH_BE',
-    name: '后端开发组',
-    description: '负责后端服务开发',
-    status: 'active',
-    parentId: '1',
-    parentDepartment: '技术部',
-    manager: '赵六',
+    id: "4",
+    code: "TECH_BE",
+    name: "后端开发组",
+    description: "负责后端服务开发",
+    status: "active",
+    parentId: "1",
+    parentDepartment: "技术部",
+    manager: "赵六",
     employeeCount: 7,
     sort: 2,
   },
-])
+]);
 
 // 计算属性
 const filteredDepartments = computed(() => {
-  let result = departments.value
+  let result = departments.value;
 
   if (searchQuery.value) {
     result = result.filter(
-      dept =>
-        dept.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-        || dept.manager.toLowerCase().includes(searchQuery.value.toLowerCase()),
-    )
+      (dept) =>
+        dept.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        dept.manager.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
   }
 
-  if (statusFilter.value) {
-    result = result.filter(dept => dept.status === statusFilter.value)
+  if (statusFilter.value && statusFilter.value !== "all") {
+    result = result.filter((dept) => dept.status === statusFilter.value);
   }
 
-  return result
-})
+  return result;
+});
 
 const parentDepartmentOptions = computed(() => {
-  const options = [{ label: '无上级部门', value: '' }]
+  const options = [{ label: "无上级部门", value: "all" }];
 
   // 只显示顶级部门作为上级部门选项
-  const topLevelDepts = departments.value.filter(dept => !dept.parentId)
+  const topLevelDepts = departments.value.filter((dept) => !dept.parentId);
   topLevelDepts.forEach((dept) => {
     if (!editingDepartment.value || dept.id !== editingDepartment.value.id) {
-      options.push({ label: dept.name, value: dept.id })
+      options.push({ label: dept.name, value: dept.id });
     }
-  })
+  });
 
-  return options
-})
+  return options;
+});
 
 // 方法
 const resetFilters = () => {
-  searchQuery.value = ''
-  statusFilter.value = ''
-}
+  searchQuery.value = "";
+  statusFilter.value = "all";
+};
 
 const editDepartment = (department: any) => {
-  editingDepartment.value = department
+  editingDepartment.value = department;
   Object.assign(departmentForm.value, {
     code: department.code,
     name: department.name,
@@ -355,82 +413,86 @@ const editDepartment = (department: any) => {
     status: department.status,
     parentId: department.parentId,
     manager: department.manager,
+    employeeCount: department.employeeCount,
     sort: department.sort,
-  })
-  showCreateDialog.value = true
-}
+  });
+  showCreateDialog.value = true;
+};
 
 const addSubDepartment = (parentDepartment: any) => {
-  editingDepartment.value = null
+  editingDepartment.value = null;
   departmentForm.value = {
-    code: '',
-    name: '',
-    description: '',
-    status: 'active',
+    code: "",
+    name: "",
+    description: "",
+    status: "active",
     parentId: parentDepartment.id,
-    manager: '',
+    manager: "",
+    employeeCount: 0,
     sort: 0,
-  }
-  showCreateDialog.value = true
-}
+  };
+  showCreateDialog.value = true;
+};
 
 const confirmDelete = (department: any) => {
   if (confirm(`确定要删除部门 "${department.name}" 吗？`)) {
-    deleteDepartment(department.id)
+    deleteDepartment(department.id);
   }
-}
+};
 
 const deleteDepartment = (id: any) => {
-  departments.value = departments.value.filter(d => d.id !== id)
-  toast.success('部门删除成功')
-}
+  departments.value = departments.value.filter((d) => d.id !== id);
+  toast.success("部门删除成功");
+};
 
 const closeCreateDialog = () => {
-  showCreateDialog.value = false
-  editingDepartment.value = null
+  showCreateDialog.value = false;
+  editingDepartment.value = null;
   departmentForm.value = {
-    code: '',
-    name: '',
-    description: '',
-    status: 'active',
-    parentId: '',
-    manager: '',
+    code: "",
+    name: "",
+    description: "",
+    status: "active",
+    parentId: "",
+    manager: "",
+    employeeCount: 0,
     sort: 0,
-  }
-}
+  };
+};
 
 const saveDepartment = () => {
   if (!departmentForm.value.name) {
-    toast.error('请输入部门名称')
-    return
+    toast.error("请输入部门名称");
+    return;
   }
 
   if (editingDepartment.value) {
     // 更新部门
-    const index = departments.value.findIndex(d => d.id === editingDepartment.value.id)
+    const index = departments.value.findIndex(
+      (d) => d.id === editingDepartment.value.id
+    );
     if (index !== -1) {
       departments.value[index] = {
         ...departmentForm.value,
         id: editingDepartment.value.id,
-        parentDepartment: '',
-        employeeCount: 0,
-      }
+        parentDepartment: "",
+        employeeCount: departmentForm.value.employeeCount || 0,
+      };
     }
-    toast.success('部门更新成功')
-  }
-  else {
+    toast.success("部门更新成功");
+  } else {
     // 新增部门
     const newDepartment = {
       ...departmentForm.value,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
-      parentDepartment: '',
-      employeeCount: 0,
-    }
-    departments.value.push(newDepartment)
-    toast.success('部门创建成功')
+      parentDepartment: "",
+      employeeCount: departmentForm.value.employeeCount || 0,
+    };
+    departments.value.push(newDepartment);
+    toast.success("部门创建成功");
   }
 
-  closeCreateDialog()
-}
+  closeCreateDialog();
+};
 </script>

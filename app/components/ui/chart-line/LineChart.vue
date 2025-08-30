@@ -1,12 +1,17 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
-// UI组件现在自动导入，无需手动导入
-
-import { cn } from '@/lib/utils'
-import { Axis, type BulletLegendItemInterface, CurveType, Line } from '@unovis/ts'
-import { VisAxis, VisLine, VisXYContainer } from '@unovis/vue'
-import { useMounted } from '@vueuse/core'
-import { type Component, computed, ref } from 'vue'
-import type { BaseChartProps } from '.'
+import type { BulletLegendItemInterface } from '@unovis/ts';
+import { Axis, CurveType, Line } from '@unovis/ts';
+import { VisAxis, VisLine, VisXYContainer } from '@unovis/vue';
+import { useMounted } from '@vueuse/core';
+import type { Component } from 'vue';
+import { computed, ref } from 'vue';
+import {
+  ChartCrosshair,
+  ChartLegend,
+  defaultColors,
+} from '@/components/ui/chart';
+import { cn } from '@/lib/utils';
+import type { BaseChartProps } from '.';
 
 const props = withDefaults(
   defineProps<
@@ -14,11 +19,11 @@ const props = withDefaults(
       /**
        * Render custom tooltip component.
        */
-      customTooltip?: Component
+      customTooltip?: Component;
       /**
        * Type of curve
        */
-      curveType?: CurveType
+      curveType?: CurveType;
     }
   >(),
   {
@@ -30,54 +35,46 @@ const props = withDefaults(
     showTooltip: true,
     showLegend: true,
     showGridLine: true,
-  },
-)
+  }
+);
 
 const emits = defineEmits<{
-  legendItemClick: [d: BulletLegendItemInterface, i: number]
-}>()
+  legendItemClick: [d: BulletLegendItemInterface, i: number];
+}>();
 
-type KeyOfT = Extract<keyof T, string>
-type Data = (typeof props.data)[number]
+type KeyOfT = Extract<keyof T, string>;
+type Data = (typeof props.data)[number];
 
-const index = computed(() => props.index as KeyOfT)
-const colors = computed(() => (props.colors?.length ? props.colors : ['#8b5cf6']))
+const index = computed(() => props.index as KeyOfT);
+const colors = computed(() =>
+  props.colors?.length ? props.colors : defaultColors(props.categories.length)
+);
 
 const legendItems = ref<BulletLegendItemInterface[]>(
   props.categories.map((category, i) => ({
     name: category,
     color: colors.value[i],
     inactive: false,
-  })),
-)
+  }))
+);
 
-const isMounted = useMounted()
+const isMounted = useMounted();
 
 function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
-  emits('legendItemClick', d, i)
+  emits('legendItemClick', d, i);
 }
 </script>
 
 <template>
   <div :class="cn('w-full h-[400px] flex flex-col items-end', $attrs.class ?? '')">
-    <ChartLegend
-      v-if="showLegend"
-      v-model:items="legendItems"
-      @legend-item-click="handleLegendItemClick"
-    />
+    <ChartLegend v-if="showLegend" v-model:items="legendItems" @legend-item-click="handleLegendItemClick" />
 
     <VisXYContainer
       :margin="{ left: 20, right: 20 }"
       :data="data"
       :style="{ height: isMounted ? '100%' : 'auto' }"
     >
-      <ChartCrosshair
-        v-if="showTooltip"
-        :colors="colors"
-        :items="legendItems"
-        :index="index"
-        :custom-tooltip="customTooltip"
-      />
+      <ChartCrosshair v-if="showTooltip" :colors="colors" :items="legendItems" :index="index" :custom-tooltip="customTooltip" />
 
       <template v-for="(category, i) in categories" :key="category">
         <VisLine
@@ -87,9 +84,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
           :color="colors[i]"
           :attributes="{
             [Line.selectors.line]: {
-              opacity: legendItems.find(item => item.name === category)?.inactive
-                ? filterOpacity
-                : 1,
+              opacity: legendItems.find(item => item.name === category)?.inactive ? filterOpacity : 1,
             },
           }"
         />
@@ -118,7 +113,7 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
         tick-text-color="hsl(var(--vis-text-color))"
       />
 
-      <slot></slot>
+      <slot />
     </VisXYContainer>
   </div>
 </template>

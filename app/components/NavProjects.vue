@@ -16,7 +16,11 @@
               <span class="sr-only">More</span>
             </SidebarMenuAction>
           </DropdownMenuTrigger>
-          <DropdownMenuContent class="w-48 rounded-lg" side="bottom" align="end">
+          <DropdownMenuContent
+            class="w-48 rounded-lg"
+            side="bottom"
+            align="end"
+          >
             <DropdownMenuItem>
               <Folder class="text-muted-foreground" />
               <span>View Project</span>
@@ -44,29 +48,14 @@
 </template>
 
 <script setup lang="ts">
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from '@/components/ui/sidebar'
-import type { LucideIcon } from 'lucide-vue-next'
-import { Folder, Forward, MoreHorizontal, Trash2 } from 'lucide-vue-next'
+import type { LucideIcon } from "lucide-vue-next";
+import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-vue-next";
 
 defineProps<{
   projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
-}>()
+    name: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+}>();
 </script>
