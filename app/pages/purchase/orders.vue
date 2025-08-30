@@ -442,36 +442,36 @@ import {
   Loader2,
   Plus,
   Trash2,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "采购订单管理 - ERP 管理系统",
+  title: '采购订单管理 - ERP 管理系统',
 });
 
 // 状态管理
 const loading = ref(false);
 const saving = ref(false);
 const showOrderDialog = ref(false);
-const dialogMode = ref<"view" | "create" | "edit">("view");
+const dialogMode = ref<'view' | 'create' | 'edit'>('view');
 
 // 筛选条件
-const searchQuery = ref("");
-const statusFilter = ref("all");
-const supplierFilter = ref("all");
-const dateRange = ref("");
+const searchQuery = ref('');
+const statusFilter = ref('all');
+const supplierFilter = ref('all');
+const dateRange = ref('');
 
 // 表单数据
 const orderForm = ref({
-  order_no: "",
-  supplier_id: "",
-  order_date: new Date().toISOString().split("T")[0],
-  expected_date: "",
-  remark: "",
+  order_no: '',
+  supplier_id: '',
+  order_date: new Date().toISOString().split('T')[0],
+  expected_date: '',
+  remark: '',
   items: [] as Array<{
     product_name: string;
     quantity: number;
@@ -490,58 +490,58 @@ const orderStats = ref({
 
 // 选项数据
 const statusOptions = ref([
-  { label: "全部状态", value: "all" },
-  { label: "草稿", value: "draft" },
-  { label: "待审核", value: "pending" },
-  { label: "已批准", value: "approved" },
-  { label: "进行中", value: "in_progress" },
-  { label: "已完成", value: "completed" },
-  { label: "已取消", value: "cancelled" },
+  { label: '全部状态', value: 'all' },
+  { label: '草稿', value: 'draft' },
+  { label: '待审核', value: 'pending' },
+  { label: '已批准', value: 'approved' },
+  { label: '进行中', value: 'in_progress' },
+  { label: '已完成', value: 'completed' },
+  { label: '已取消', value: 'cancelled' },
 ]);
 
 const suppliers = ref([
-  { id: "1", name: "供应商A" },
-  { id: "2", name: "供应商B" },
-  { id: "3", name: "供应商C" },
+  { id: '1', name: '供应商A' },
+  { id: '2', name: '供应商B' },
+  { id: '3', name: '供应商C' },
 ]);
 
 const supplierOptions = ref([
-  { label: "全部供应商", value: "all" },
-  { label: "供应商A", value: "1" },
-  { label: "供应商B", value: "2" },
-  { label: "供应商C", value: "3" },
+  { label: '全部供应商', value: 'all' },
+  { label: '供应商A', value: '1' },
+  { label: '供应商B', value: '2' },
+  { label: '供应商C', value: '3' },
 ]);
 
 // 模拟数据
 const mockOrders = ref([
   {
-    id: "1",
-    order_no: "PO202401001",
-    supplier_id: "1",
-    supplier_name: "供应商A",
+    id: '1',
+    order_no: 'PO202401001',
+    supplier_id: '1',
+    supplier_name: '供应商A',
     total_amount: 156_780,
-    status: "pending",
-    order_date: new Date("2024-01-15"),
-    expected_date: new Date("2024-01-25"),
+    status: 'pending',
+    order_date: new Date('2024-01-15'),
+    expected_date: new Date('2024-01-25'),
     items: [
-      { product_name: "商品A", quantity: 100, unit: "个", unit_price: 50 },
-      { product_name: "商品B", quantity: 200, unit: "个", unit_price: 30 },
+      { product_name: '商品A', quantity: 100, unit: '个', unit_price: 50 },
+      { product_name: '商品B', quantity: 200, unit: '个', unit_price: 30 },
     ],
-    remark: "紧急采购",
+    remark: '紧急采购',
   },
   {
-    id: "2",
-    order_no: "PO202401002",
-    supplier_id: "2",
-    supplier_name: "供应商B",
+    id: '2',
+    order_no: 'PO202401002',
+    supplier_id: '2',
+    supplier_name: '供应商B',
     total_amount: 89_560,
-    status: "approved",
-    order_date: new Date("2024-01-14"),
-    expected_date: new Date("2024-01-24"),
+    status: 'approved',
+    order_date: new Date('2024-01-14'),
+    expected_date: new Date('2024-01-24'),
     items: [
-      { product_name: "商品C", quantity: 150, unit: "箱", unit_price: 45 },
+      { product_name: '商品C', quantity: 150, unit: '箱', unit_price: 45 },
     ],
-    remark: "",
+    remark: '',
   },
 ]);
 
@@ -558,11 +558,11 @@ const filteredOrders = computed(() => {
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((order) => order.status === statusFilter.value);
   }
 
-  if (supplierFilter.value && supplierFilter.value !== "all") {
+  if (supplierFilter.value && supplierFilter.value !== 'all') {
     result = result.filter(
       (order) => order.supplier_id === supplierFilter.value
     );
@@ -579,64 +579,64 @@ const totalAmount = computed(() => {
 
 // 状态映射
 const statusMap: Record<string, string> = {
-  draft: "草稿",
-  pending: "待审核",
-  approved: "已批准",
-  in_progress: "进行中",
-  completed: "已完成",
-  cancelled: "已取消",
+  draft: '草稿',
+  pending: '待审核',
+  approved: '已批准',
+  in_progress: '进行中',
+  completed: '已完成',
+  cancelled: '已取消',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  draft: "secondary",
-  pending: "outline",
-  approved: "secondary",
-  in_progress: "default",
-  completed: "default",
-  cancelled: "destructive",
+  draft: 'secondary',
+  pending: 'outline',
+  approved: 'secondary',
+  in_progress: 'default',
+  completed: 'default',
+  cancelled: 'destructive',
 };
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 
 const getStatusSeverity = (status: string) =>
-  statusSeverityMap[status] || "secondary";
+  statusSeverityMap[status] || 'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("zh-CN");
+  return new Date(date).toLocaleDateString('zh-CN');
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  statusFilter.value = "all";
-  supplierFilter.value = "all";
-  dateRange.value = "";
+  searchQuery.value = '';
+  statusFilter.value = 'all';
+  supplierFilter.value = 'all';
+  dateRange.value = '';
 };
 
 const handleCreate = () => {
-  dialogMode.value = "create";
+  dialogMode.value = 'create';
   orderForm.value = {
     order_no: `PO${Date.now()}`,
-    supplier_id: "",
-    order_date: new Date().toISOString().split("T")[0],
-    expected_date: "",
-    remark: "",
+    supplier_id: '',
+    order_date: new Date().toISOString().split('T')[0],
+    expected_date: '',
+    remark: '',
     items: [],
   };
   showOrderDialog.value = true;
 };
 
 const viewOrder = (order: any) => {
-  dialogMode.value = "view";
+  dialogMode.value = 'view';
   Object.assign(orderForm.value, {
     ...order,
-    order_date: new Date(order.order_date).toISOString().split("T")[0],
+    order_date: new Date(order.order_date).toISOString().split('T')[0],
     expected_date: order.expected_date
-      ? new Date(order.expected_date).toISOString().split("T")[0]
-      : "",
+      ? new Date(order.expected_date).toISOString().split('T')[0]
+      : '',
   });
   showOrderDialog.value = true;
 };
@@ -644,14 +644,14 @@ const viewOrder = (order: any) => {
 const editingOrder = ref<any>(null);
 
 const editOrder = (order: any) => {
-  dialogMode.value = "edit";
+  dialogMode.value = 'edit';
   editingOrder.value = order;
   Object.assign(orderForm.value, {
     ...order,
-    order_date: new Date(order.order_date).toISOString().split("T")[0],
+    order_date: new Date(order.order_date).toISOString().split('T')[0],
     expected_date: order.expected_date
-      ? new Date(order.expected_date).toISOString().split("T")[0]
-      : "",
+      ? new Date(order.expected_date).toISOString().split('T')[0]
+      : '',
   });
   showOrderDialog.value = true;
 };
@@ -673,15 +673,15 @@ const saveOrder = async () => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (dialogMode.value === "create") {
+    if (dialogMode.value === 'create') {
       const newOrder = {
         id: Date.now().toString(),
         ...orderForm.value,
         supplier_name:
           suppliers.value.find((s) => s.id === orderForm.value.supplier_id)
-            ?.name || "",
+            ?.name || '',
         total_amount: totalAmount.value,
-        status: "draft",
+        status: 'draft',
         order_date: orderForm.value.order_date
           ? new Date(orderForm.value.order_date)
           : new Date(),
@@ -690,7 +690,7 @@ const saveOrder = async () => {
           : new Date(),
       };
       mockOrders.value.push(newOrder);
-    } else if (dialogMode.value === "edit") {
+    } else if (dialogMode.value === 'edit') {
       const index = mockOrders.value.findIndex(
         (o) => o.id === editingOrder.value?.id
       );
@@ -701,7 +701,7 @@ const saveOrder = async () => {
           id: mockOrders.value[index]?.id,
           supplier_name:
             suppliers.value.find((s) => s.id === orderForm.value.supplier_id)
-              ?.name || "",
+              ?.name || '',
           total_amount: totalAmount.value,
           order_date: orderForm.value.order_date
             ? new Date(orderForm.value.order_date)
@@ -722,9 +722,9 @@ const saveOrder = async () => {
 
 const addOrderItem = () => {
   orderForm.value.items.push({
-    product_name: "新商品",
+    product_name: '新商品',
     quantity: 1,
-    unit: "个",
+    unit: '个',
     unit_price: 0,
   });
 };

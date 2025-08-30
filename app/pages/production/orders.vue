@@ -488,71 +488,71 @@ import {
   Search,
   Settings,
   X,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "生产订单管理 - ERP 管理系统",
+  title: '生产订单管理 - ERP 管理系统',
 });
 
 // 状态管理
 const loading = ref(false);
 const saving = ref(false);
 const showOrderDialog = ref(false);
-const dialogMode = ref<"view" | "create" | "edit">("view");
+const dialogMode = ref<'view' | 'create' | 'edit'>('view');
 const editingOrder = ref<any>(null);
 // 筛选条件
-const searchQuery = ref("");
-const statusFilter = ref("all");
-const workshopFilter = ref("all");
-const priorityFilter = ref("all");
+const searchQuery = ref('');
+const statusFilter = ref('all');
+const workshopFilter = ref('all');
+const priorityFilter = ref('all');
 
 // 表单数据
 const orderForm = ref({
-  order_no: "",
-  product_id: "",
+  order_no: '',
+  product_id: '',
   quantity: 1,
-  workshop_id: "",
-  priority: "medium",
-  start_date: new Date().toISOString().split("T")[0],
-  due_date: "",
-  notes: "",
+  workshop_id: '',
+  priority: 'medium',
+  start_date: new Date().toISOString().split('T')[0],
+  due_date: '',
+  notes: '',
 });
 
 // 选项数据
 const statusOptions = ref([
-  { label: "全部状态", value: "all" },
-  { label: "待确认", value: "pending" },
-  { label: "已确认", value: "confirmed" },
-  { label: "生产中", value: "producing" },
-  { label: "已完工", value: "completed" },
-  { label: "已取消", value: "cancelled" },
+  { label: '全部状态', value: 'all' },
+  { label: '待确认', value: 'pending' },
+  { label: '已确认', value: 'confirmed' },
+  { label: '生产中', value: 'producing' },
+  { label: '已完工', value: 'completed' },
+  { label: '已取消', value: 'cancelled' },
 ]);
 
 const workshopOptions = ref([
-  { label: "全部车间", value: "all" },
-  { label: "装配车间", value: "assembly" },
-  { label: "机加工车间", value: "machining" },
-  { label: "喷涂车间", value: "painting" },
-  { label: "包装车间", value: "packaging" },
+  { label: '全部车间', value: 'all' },
+  { label: '装配车间', value: 'assembly' },
+  { label: '机加工车间', value: 'machining' },
+  { label: '喷涂车间', value: 'painting' },
+  { label: '包装车间', value: 'packaging' },
 ]);
 
 const priorityOptions = ref([
-  { label: "全部优先级", value: "all" },
-  { label: "低", value: "low" },
-  { label: "中", value: "medium" },
-  { label: "高", value: "high" },
-  { label: "紧急", value: "urgent" },
+  { label: '全部优先级', value: 'all' },
+  { label: '低', value: 'low' },
+  { label: '中', value: 'medium' },
+  { label: '高', value: 'high' },
+  { label: '紧急', value: 'urgent' },
 ]);
 
 const productOptions = ref([
-  { label: "产品A", value: "product-a" },
-  { label: "产品B", value: "product-b" },
-  { label: "产品C", value: "product-c" },
+  { label: '产品A', value: 'product-a' },
+  { label: '产品B', value: 'product-b' },
+  { label: '产品C', value: 'product-c' },
 ]);
 
 // 统计数据
@@ -566,30 +566,30 @@ const orderStats = ref({
 // 模拟数据
 const mockOrders = ref([
   {
-    id: "1",
-    order_no: "PO-2024-001",
-    product_name: "智能手机组件",
+    id: '1',
+    order_no: 'PO-2024-001',
+    product_name: '智能手机组件',
     quantity: 1000,
     produced_quantity: 750,
-    workshop_name: "装配车间",
-    status: "producing",
-    priority: "high",
-    start_date: new Date("2024-01-15"),
-    due_date: new Date("2024-01-25"),
-    notes: "紧急订单，需优先生产",
+    workshop_name: '装配车间',
+    status: 'producing',
+    priority: 'high',
+    start_date: new Date('2024-01-15'),
+    due_date: new Date('2024-01-25'),
+    notes: '紧急订单，需优先生产',
   },
   {
-    id: "2",
-    order_no: "PO-2024-002",
-    product_name: "电脑配件",
+    id: '2',
+    order_no: 'PO-2024-002',
+    product_name: '电脑配件',
     quantity: 500,
     produced_quantity: 500,
-    workshop_name: "机加工车间",
-    status: "completed",
-    priority: "medium",
-    start_date: new Date("2024-01-10"),
-    due_date: new Date("2024-01-20"),
-    notes: "常规生产订单",
+    workshop_name: '机加工车间',
+    status: 'completed',
+    priority: 'medium',
+    start_date: new Date('2024-01-10'),
+    due_date: new Date('2024-01-20'),
+    notes: '常规生产订单',
   },
 ]);
 
@@ -606,17 +606,17 @@ const filteredOrders = computed(() => {
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((order) => order.status === statusFilter.value);
   }
 
-  if (workshopFilter.value && workshopFilter.value !== "all") {
+  if (workshopFilter.value && workshopFilter.value !== 'all') {
     result = result.filter(
       (order) => order.workshop_name === workshopFilter.value
     );
   }
 
-  if (priorityFilter.value && priorityFilter.value !== "all") {
+  if (priorityFilter.value && priorityFilter.value !== 'all') {
     result = result.filter((order) => order.priority === priorityFilter.value);
   }
 
@@ -627,52 +627,52 @@ const totalCount = computed(() => mockOrders.value.length);
 
 // 映射对象
 const statusMap: Record<string, string> = {
-  pending: "待确认",
-  confirmed: "已确认",
-  producing: "生产中",
-  completed: "已完工",
-  cancelled: "已取消",
+  pending: '待确认',
+  confirmed: '已确认',
+  producing: '生产中',
+  completed: '已完工',
+  cancelled: '已取消',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  pending: "outline",
-  confirmed: "secondary",
-  producing: "default",
-  completed: "default",
-  cancelled: "destructive",
+  pending: 'outline',
+  confirmed: 'secondary',
+  producing: 'default',
+  completed: 'default',
+  cancelled: 'destructive',
 };
 
 const priorityMap: Record<string, string> = {
-  low: "低",
-  medium: "中",
-  high: "高",
-  urgent: "紧急",
+  low: '低',
+  medium: '中',
+  high: '高',
+  urgent: '紧急',
 };
 
 const prioritySeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  low: "secondary",
-  medium: "secondary",
-  high: "outline",
-  urgent: "destructive",
+  low: 'secondary',
+  medium: 'secondary',
+  high: 'outline',
+  urgent: 'destructive',
 };
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 const getStatusSeverity = (status: string) =>
-  statusSeverityMap[status] || "secondary";
+  statusSeverityMap[status] || 'secondary';
 const getPriorityDisplayName = (priority: string) =>
   priorityMap[priority] || priority;
 const getPrioritySeverity = (priority: string) =>
-  prioritySeverityMap[priority] || "secondary";
+  prioritySeverityMap[priority] || 'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("zh-CN");
+  return new Date(date).toLocaleDateString('zh-CN');
 };
 
 const getDueDateClass = (dueDate: Date) => {
@@ -683,49 +683,49 @@ const getDueDateClass = (dueDate: Date) => {
   );
 
   if (diffDays < 0) {
-    return "text-red-600"; // 已过期
+    return 'text-red-600'; // 已过期
   }
   if (diffDays <= 3) {
-    return "text-orange-600"; // 即将到期
+    return 'text-orange-600'; // 即将到期
   }
-  return "text-muted-color"; // 正常
+  return 'text-muted-color'; // 正常
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  statusFilter.value = "all";
-  workshopFilter.value = "all";
-  priorityFilter.value = "all";
+  searchQuery.value = '';
+  statusFilter.value = 'all';
+  workshopFilter.value = 'all';
+  priorityFilter.value = 'all';
 };
 
 const handleCreate = () => {
   editingOrder.value = null;
-  dialogMode.value = "create";
+  dialogMode.value = 'create';
   orderForm.value = {
     order_no: `PO-${Date.now()}`,
-    product_id: "",
+    product_id: '',
     quantity: 1,
-    workshop_id: "",
-    priority: "medium",
-    start_date: new Date().toISOString().split("T")[0],
-    due_date: "",
-    notes: "",
+    workshop_id: '',
+    priority: 'medium',
+    start_date: new Date().toISOString().split('T')[0],
+    due_date: '',
+    notes: '',
   };
   showOrderDialog.value = true;
 };
 
 const viewOrder = (order: any) => {
   editingOrder.value = order;
-  dialogMode.value = "view";
+  dialogMode.value = 'view';
   Object.assign(orderForm.value, {
     ...order,
     start_date:
       order.start_date instanceof Date
-        ? order.start_date.toISOString().split("T")[0]
+        ? order.start_date.toISOString().split('T')[0]
         : order.start_date,
     due_date:
       order.due_date instanceof Date
-        ? order.due_date.toISOString().split("T")[0]
+        ? order.due_date.toISOString().split('T')[0]
         : order.due_date,
   });
   showOrderDialog.value = true;
@@ -733,16 +733,16 @@ const viewOrder = (order: any) => {
 
 const editOrder = (order: any) => {
   editingOrder.value = order;
-  dialogMode.value = "edit";
+  dialogMode.value = 'edit';
   Object.assign(orderForm.value, {
     ...order,
     start_date:
       order.start_date instanceof Date
-        ? order.start_date.toISOString().split("T")[0]
+        ? order.start_date.toISOString().split('T')[0]
         : order.start_date,
     due_date:
       order.due_date instanceof Date
-        ? order.due_date.toISOString().split("T")[0]
+        ? order.due_date.toISOString().split('T')[0]
         : order.due_date,
   });
   showOrderDialog.value = true;
@@ -774,19 +774,19 @@ const saveOrder = async () => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (dialogMode.value === "create") {
+    if (dialogMode.value === 'create') {
       const newOrder = {
         id: Date.now().toString(),
         ...orderForm.value,
         product_name:
           productOptions.value.find(
             (p) => p.value === orderForm.value.product_id
-          )?.label || "",
+          )?.label || '',
         workshop_name:
           workshopOptions.value.find(
             (w) => w.value === orderForm.value.workshop_id
-          )?.label || "",
-        status: "pending",
+          )?.label || '',
+        status: 'pending',
         produced_quantity: 0,
         start_date: orderForm.value.start_date
           ? new Date(orderForm.value.start_date)
@@ -796,7 +796,7 @@ const saveOrder = async () => {
           : new Date(),
       };
       mockOrders.value.push(newOrder as any);
-    } else if (dialogMode.value === "edit") {
+    } else if (dialogMode.value === 'edit') {
       const index = mockOrders.value.findIndex(
         (o) => o.id === editingOrder.value?.id
       );

@@ -112,43 +112,43 @@
 const { register } = useAuth();
 
 const form = ref({
-  email: "",
-  password: "",
-  confirmPassword: "",
+  email: '',
+  password: '',
+  confirmPassword: '',
 });
 
 const errors = ref({
-  email: "",
-  password: "",
-  confirmPassword: "",
+  email: '',
+  password: '',
+  confirmPassword: '',
 });
 const isLoading = ref(false);
-const error = ref("");
-const success = ref("");
+const error = ref('');
+const success = ref('');
 
 const validateForm = () => {
   errors.value = {
-    email: "",
-    password: "",
-    confirmPassword: "",
+    email: '',
+    password: '',
+    confirmPassword: '',
   };
 
   if (!form.value.email) {
-    errors.value.email = "请输入邮箱地址";
+    errors.value.email = '请输入邮箱地址';
   } else if (!/\S+@\S+\.\S+/.test(form.value.email)) {
-    errors.value.email = "请输入有效的邮箱地址";
+    errors.value.email = '请输入有效的邮箱地址';
   }
 
   if (!form.value.password) {
-    errors.value.password = "请输入密码";
+    errors.value.password = '请输入密码';
   } else if (form.value.password.length < 6) {
-    errors.value.password = "密码长度不能少于6个字符";
+    errors.value.password = '密码长度不能少于6个字符';
   }
 
   if (!form.value.confirmPassword) {
-    errors.value.confirmPassword = "请确认密码";
+    errors.value.confirmPassword = '请确认密码';
   } else if (form.value.password !== form.value.confirmPassword) {
-    errors.value.confirmPassword = "两次输入的密码不一致";
+    errors.value.confirmPassword = '两次输入的密码不一致';
   }
 
   return Object.keys(errors.value).length === 0;
@@ -160,26 +160,26 @@ const handleRegister = async () => {
   }
 
   isLoading.value = true;
-  error.value = "";
-  success.value = "";
+  error.value = '';
+  success.value = '';
 
   try {
     const result = await register(form.value.email, form.value.password);
 
     if (result.success) {
       if (result.needsEmailConfirmation) {
-        success.value = "注册成功！请检查您的邮箱并点击确认链接。";
+        success.value = '注册成功！请检查您的邮箱并点击确认链接。';
       } else {
-        success.value = "注册成功！正在跳转...";
+        success.value = '注册成功！正在跳转...';
         setTimeout(() => {
-          navigateTo("/dashboard");
+          navigateTo('/dashboard');
         }, 1000);
       }
     } else {
-      error.value = result.error?.message || "注册失败，请重试";
+      error.value = result.error?.message || '注册失败，请重试';
     }
   } catch (err: any) {
-    error.value = err.message || "注册失败，请重试";
+    error.value = err.message || '注册失败，请重试';
   } finally {
     isLoading.value = false;
   }

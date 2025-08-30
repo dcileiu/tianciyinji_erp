@@ -482,16 +482,16 @@ import {
   Trash2,
   Truck,
   Users,
-} from "lucide-vue-next";
-import { toast } from "vue-sonner";
+} from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "角色权限配置 - ERP 管理系统",
+  title: '角色权限配置 - ERP 管理系统',
 });
 
 // 权限检查
@@ -506,7 +506,7 @@ const selectedRole = ref(null as any);
 const showRoleDialog = ref(false);
 const editingRole = ref(null as any);
 // 搜索和筛选
-const roleSearchQuery = ref("");
+const roleSearchQuery = ref('');
 
 // 权限选择状态
 const selectedMenus = ref([] as string[]);
@@ -514,132 +514,132 @@ const selectedResources = ref([] as string[]);
 
 // 表单数据
 const roleForm = ref({
-  name: "",
-  code: "",
-  description: "",
-  status: "active",
+  name: '',
+  code: '',
+  description: '',
+  status: 'active',
 });
 
 // 选项数据
 const statusOptions = ref([
-  { label: "启用", value: "active" },
-  { label: "停用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' },
 ]);
 
 // 模拟数据
 const mockRoles = ref([
   {
-    id: "1",
-    name: "超级管理员",
-    code: "super_admin",
-    description: "系统最高权限管理员",
-    status: "active",
+    id: '1',
+    name: '超级管理员',
+    code: 'super_admin',
+    description: '系统最高权限管理员',
+    status: 'active',
     is_system: true,
     user_count: 1,
     menu_count: 15,
     resource_count: 45,
-    created_at: new Date("2024-01-01"),
+    created_at: new Date('2024-01-01'),
   },
   {
-    id: "2",
-    name: "业务管理员",
-    code: "business_admin",
-    description: "业务模块管理权限",
-    status: "active",
+    id: '2',
+    name: '业务管理员',
+    code: 'business_admin',
+    description: '业务模块管理权限',
+    status: 'active',
     is_system: false,
     user_count: 3,
     menu_count: 8,
     resource_count: 20,
-    created_at: new Date("2024-01-02"),
+    created_at: new Date('2024-01-02'),
   },
   {
-    id: "3",
-    name: "普通用户",
-    code: "user",
-    description: "基础查看权限",
-    status: "active",
+    id: '3',
+    name: '普通用户',
+    code: 'user',
+    description: '基础查看权限',
+    status: 'active',
     is_system: false,
     user_count: 10,
     menu_count: 5,
     resource_count: 10,
-    created_at: new Date("2024-01-03"),
+    created_at: new Date('2024-01-03'),
   },
 ]);
 
 // 菜单树数据
 const menuTree = ref([
   {
-    key: "dashboard",
-    label: "仪表盘",
-    icon: "Home",
-    path: "/dashboard",
+    key: 'dashboard',
+    label: '仪表盘',
+    icon: 'Home',
+    path: '/dashboard',
   },
   {
-    key: "master-data",
-    label: "基础数据",
-    icon: "Database",
+    key: 'master-data',
+    label: '基础数据',
+    icon: 'Database',
     children: [
       {
-        key: "products",
-        label: "产品管理",
-        icon: "Box",
-        path: "/master-data/products",
+        key: 'products',
+        label: '产品管理',
+        icon: 'Box',
+        path: '/master-data/products',
       },
       {
-        key: "customers",
-        label: "客户管理",
-        icon: "Users",
-        path: "/master-data/customers",
+        key: 'customers',
+        label: '客户管理',
+        icon: 'Users',
+        path: '/master-data/customers',
       },
       {
-        key: "suppliers",
-        label: "供应商管理",
-        icon: "Truck",
-        path: "/master-data/suppliers",
+        key: 'suppliers',
+        label: '供应商管理',
+        icon: 'Truck',
+        path: '/master-data/suppliers',
       },
     ],
   },
   {
-    key: "sales",
-    label: "销售管理",
-    icon: "ShoppingCart",
+    key: 'sales',
+    label: '销售管理',
+    icon: 'ShoppingCart',
     children: [
       {
-        key: "sales-orders",
-        label: "销售订单",
-        icon: "File",
-        path: "/sales/orders",
+        key: 'sales-orders',
+        label: '销售订单',
+        icon: 'File',
+        path: '/sales/orders',
       },
       {
-        key: "sales-customers",
-        label: "客户管理",
-        icon: "Users",
-        path: "/sales/customers",
+        key: 'sales-customers',
+        label: '客户管理',
+        icon: 'Users',
+        path: '/sales/customers',
       },
     ],
   },
   {
-    key: "system",
-    label: "系统管理",
-    icon: "Settings",
+    key: 'system',
+    label: '系统管理',
+    icon: 'Settings',
     children: [
       {
-        key: "users",
-        label: "用户管理",
-        icon: "Users",
-        path: "/system/users",
+        key: 'users',
+        label: '用户管理',
+        icon: 'Users',
+        path: '/system/users',
       },
       {
-        key: "roles",
-        label: "角色管理",
-        icon: "Shield",
-        path: "/system/roles",
+        key: 'roles',
+        label: '角色管理',
+        icon: 'Shield',
+        path: '/system/roles',
       },
       {
-        key: "permissions",
-        label: "权限配置",
-        icon: "Key",
-        path: "/system/role-permissions",
+        key: 'permissions',
+        label: '权限配置',
+        icon: 'Key',
+        path: '/system/role-permissions',
       },
     ],
   },
@@ -648,38 +648,38 @@ const menuTree = ref([
 // 资源分类数据
 const resourceCategories = ref([
   {
-    id: "user",
-    name: "用户管理",
+    id: 'user',
+    name: '用户管理',
     resources: [
-      { id: "user:view", name: "查看用户" },
-      { id: "user:create", name: "新增用户" },
-      { id: "user:edit", name: "编辑用户" },
-      { id: "user:delete", name: "删除用户" },
-      { id: "user:export", name: "导出用户" },
-      { id: "user:import", name: "导入用户" },
+      { id: 'user:view', name: '查看用户' },
+      { id: 'user:create', name: '新增用户' },
+      { id: 'user:edit', name: '编辑用户' },
+      { id: 'user:delete', name: '删除用户' },
+      { id: 'user:export', name: '导出用户' },
+      { id: 'user:import', name: '导入用户' },
     ],
   },
   {
-    id: "role",
-    name: "角色管理",
+    id: 'role',
+    name: '角色管理',
     resources: [
-      { id: "role:view", name: "查看角色" },
-      { id: "role:create", name: "新增角色" },
-      { id: "role:edit", name: "编辑角色" },
-      { id: "role:delete", name: "删除角色" },
-      { id: "role:assign", name: "分配角色" },
+      { id: 'role:view', name: '查看角色' },
+      { id: 'role:create', name: '新增角色' },
+      { id: 'role:edit', name: '编辑角色' },
+      { id: 'role:delete', name: '删除角色' },
+      { id: 'role:assign', name: '分配角色' },
     ],
   },
   {
-    id: "product",
-    name: "产品管理",
+    id: 'product',
+    name: '产品管理',
     resources: [
-      { id: "product:view", name: "查看产品" },
-      { id: "product:create", name: "新增产品" },
-      { id: "product:edit", name: "编辑产品" },
-      { id: "product:delete", name: "删除产品" },
-      { id: "product:export", name: "导出产品" },
-      { id: "product:price", name: "价格管理" },
+      { id: 'product:view', name: '查看产品' },
+      { id: 'product:create', name: '新增产品' },
+      { id: 'product:edit', name: '编辑产品' },
+      { id: 'product:delete', name: '删除产品' },
+      { id: 'product:export', name: '导出产品' },
+      { id: 'product:price', name: '价格管理' },
     ],
   },
 ]);
@@ -687,16 +687,16 @@ const resourceCategories = ref([
 // 辅助函数
 const getMenuIcon = (iconName: string) => {
   const iconMap: Record<string, any> = {
-    Home: Home,
-    Database: Database,
-    ShoppingCart: ShoppingCart,
-    Settings: Settings,
-    Box: Box,
-    Users: Users,
-    Truck: Truck,
-    File: File,
-    Shield: Shield,
-    Key: Key,
+    Home,
+    Database,
+    ShoppingCart,
+    Settings,
+    Box,
+    Users,
+    Truck,
+    File,
+    Shield,
+    Key,
   };
   return iconMap[iconName] || FileText;
 };
@@ -724,8 +724,8 @@ const selectRole = (role: any) => {
 
 const loadRolePermissions = async (_role: any) => {
   // 模拟加载角色权限
-  selectedMenus.value = ["dashboard", "master-data", "products"];
-  selectedResources.value = ["user:view", "product:view", "product:create"];
+  selectedMenus.value = ['dashboard', 'master-data', 'products'];
+  selectedResources.value = ['user:view', 'product:view', 'product:create'];
 };
 
 const editRole = (role: any) => {
@@ -739,10 +739,10 @@ const editRole = (role: any) => {
 
 const openCreateRoleDialog = () => {
   editingRole.value = null;
-  roleForm.value.name = "";
-  roleForm.value.code = "";
-  roleForm.value.description = "";
-  roleForm.value.status = "active";
+  roleForm.value.name = '';
+  roleForm.value.code = '';
+  roleForm.value.description = '';
+  roleForm.value.status = 'active';
   showRoleDialog.value = true;
 };
 
@@ -767,7 +767,7 @@ const saveRole = async () => {
         mockRoles.value[index]!.description = roleForm.value.description;
         mockRoles.value[index]!.status = roleForm.value.status;
       }
-      toast.success("角色更新成功");
+      toast.success('角色更新成功');
     } else {
       // 新增角色
       const newRole = {
@@ -780,12 +780,12 @@ const saveRole = async () => {
         created_at: new Date(),
       };
       mockRoles.value.push(newRole);
-      toast.success("角色创建成功");
+      toast.success('角色创建成功');
     }
 
     closeRoleDialog();
   } catch (_error) {
-    toast.error("保存角色失败");
+    toast.error('保存角色失败');
   } finally {
     savingPermissions.value = false;
   }
@@ -802,16 +802,16 @@ const deleteRole = (roleId: string) => {
   if (selectedRole.value?.id === roleId) {
     selectedRole.value = null;
   }
-  toast.success("角色删除成功");
+  toast.success('角色删除成功');
 };
 
 const saveMenuPermissions = async () => {
   savingPermissions.value = true;
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success("菜单权限保存成功");
+    toast.success('菜单权限保存成功');
   } catch (_error) {
-    toast.error("保存菜单权限失败");
+    toast.error('保存菜单权限失败');
   } finally {
     savingPermissions.value = false;
   }
@@ -821,9 +821,9 @@ const saveResourcePermissions = async () => {
   savingPermissions.value = true;
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success("资源权限保存成功");
+    toast.success('资源权限保存成功');
   } catch (_error) {
-    toast.error("保存资源权限失败");
+    toast.error('保存资源权限失败');
   } finally {
     savingPermissions.value = false;
   }

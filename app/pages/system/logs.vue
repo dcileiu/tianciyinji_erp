@@ -379,17 +379,17 @@ import {
   Search,
   Trash2,
   Users,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
-import { toast } from "vue-sonner";
+import { toast } from 'vue-sonner';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "系统日志 - ERP 管理系统",
+  title: '系统日志 - ERP 管理系统',
 });
 
 // 状态管理
@@ -398,8 +398,8 @@ const showLogDetail = ref(false);
 const selectedLog = ref(null as any);
 
 // 搜索和筛选
-const searchQuery = ref("");
-const logTypeFilter = ref("all");
+const searchQuery = ref('');
+const logTypeFilter = ref('all');
 const dateRange = ref({
   start: undefined as string | undefined,
   end: undefined as string | undefined,
@@ -415,68 +415,68 @@ const logStats = ref({
 
 // 选项数据
 const logTypeOptions = ref([
-  { label: "登录日志", value: "login" },
-  { label: "操作日志", value: "operation" },
-  { label: "错误日志", value: "error" },
-  { label: "系统日志", value: "system" },
+  { label: '登录日志', value: 'login' },
+  { label: '操作日志', value: 'operation' },
+  { label: '错误日志', value: 'error' },
+  { label: '系统日志', value: 'system' },
 ]);
 
 // 模拟数据
 const mockLogs = ref([
   {
-    id: "1",
-    type: "login",
-    user_name: "管理员",
-    action: "用户登录",
-    resource: "/api/auth/login",
-    ip_address: "192.168.1.100",
-    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-    method: "POST",
-    status: "default",
-    created_at: new Date("2024-01-15 10:30:00"),
-    request_data: { username: "admin", remember: true },
+    id: '1',
+    type: 'login',
+    user_name: '管理员',
+    action: '用户登录',
+    resource: '/api/auth/login',
+    ip_address: '192.168.1.100',
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    method: 'POST',
+    status: 'default',
+    created_at: new Date('2024-01-15 10:30:00'),
+    request_data: { username: 'admin', remember: true },
     error_message: null,
   },
   {
-    id: "2",
-    type: "operation",
-    user_name: "张三",
-    action: "创建用户",
-    resource: "/api/users",
-    ip_address: "192.168.1.101",
+    id: '2',
+    type: 'operation',
+    user_name: '张三',
+    action: '创建用户',
+    resource: '/api/users',
+    ip_address: '192.168.1.101',
     user_agent:
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-    method: "POST",
-    status: "default",
-    created_at: new Date("2024-01-15 10:25:00"),
-    request_data: { name: "李四", email: "lisi@example.com" },
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+    method: 'POST',
+    status: 'default',
+    created_at: new Date('2024-01-15 10:25:00'),
+    request_data: { name: '李四', email: 'lisi@example.com' },
     error_message: null,
   },
   {
-    id: "3",
-    type: "error",
-    user_name: "李四",
-    action: "删除产品",
-    resource: "/api/products/123",
-    ip_address: "192.168.1.102",
-    user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
-    method: "DELETE",
-    status: "failed",
-    created_at: new Date("2024-01-15 10:20:00"),
+    id: '3',
+    type: 'error',
+    user_name: '李四',
+    action: '删除产品',
+    resource: '/api/products/123',
+    ip_address: '192.168.1.102',
+    user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+    method: 'DELETE',
+    status: 'failed',
+    created_at: new Date('2024-01-15 10:20:00'),
     request_data: null,
-    error_message: "产品不存在或已被删除",
+    error_message: '产品不存在或已被删除',
   },
   {
-    id: "4",
-    type: "system",
-    user_name: "系统",
-    action: "系统启动",
-    resource: "/system/startup",
-    ip_address: "127.0.0.1",
-    user_agent: "System Process",
-    method: "SYSTEM",
-    status: "default",
-    created_at: new Date("2024-01-15 09:00:00"),
+    id: '4',
+    type: 'system',
+    user_name: '系统',
+    action: '系统启动',
+    resource: '/system/startup',
+    ip_address: '127.0.0.1',
+    user_agent: 'System Process',
+    method: 'SYSTEM',
+    status: 'default',
+    created_at: new Date('2024-01-15 09:00:00'),
     request_data: null,
     error_message: null,
   },
@@ -496,7 +496,7 @@ const filteredLogs = computed(() => {
     );
   }
 
-  if (logTypeFilter.value && logTypeFilter.value !== "all") {
+  if (logTypeFilter.value && logTypeFilter.value !== 'all') {
     result = result.filter((log) => log.type === logTypeFilter.value);
   }
 
@@ -518,30 +518,30 @@ const filteredLogs = computed(() => {
 
 // 类型映射
 const logTypeMap: Record<string, string> = {
-  login: "登录日志",
-  operation: "操作日志",
-  error: "错误日志",
-  system: "系统日志",
+  login: '登录日志',
+  operation: '操作日志',
+  error: '错误日志',
+  system: '系统日志',
 };
 
 const logTypeSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  login: "secondary",
-  operation: "default",
-  error: "destructive",
-  system: "secondary",
+  login: 'secondary',
+  operation: 'default',
+  error: 'destructive',
+  system: 'secondary',
 };
 
 // 方法
 const getLogTypeDisplayName = (type: string) => logTypeMap[type] || type;
 
 const getLogTypeSeverity = (type: string) =>
-  logTypeSeverityMap[type] || "secondary";
+  logTypeSeverityMap[type] || 'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleString("zh-CN");
+  return new Date(date).toLocaleString('zh-CN');
 };
 
 const truncateUserAgent = (userAgent: string) => {
@@ -551,8 +551,8 @@ const truncateUserAgent = (userAgent: string) => {
 const applyFilters = () => {};
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  logTypeFilter.value = "all";
+  searchQuery.value = '';
+  logTypeFilter.value = 'all';
   dateRange.value = {
     start: undefined,
     end: undefined,
@@ -566,11 +566,11 @@ const viewLogDetail = (log: any) => {
 
 const exportLogs = () => {
   // 这里实现导出逻辑
-  toast.success("日志已成功导出");
+  toast.success('日志已成功导出');
 };
 
 const confirmClearLogs = () => {
-  if (confirm("确定要清空所有日志吗？此操作不可撤销。")) {
+  if (confirm('确定要清空所有日志吗？此操作不可撤销。')) {
     clearLogs();
   }
 };
@@ -584,7 +584,7 @@ const clearLogs = () => {
     errors: 0,
     activeUsers: 0,
   };
-  toast.success("所有日志已清空");
+  toast.success('所有日志已清空');
 };
 
 // 初始化

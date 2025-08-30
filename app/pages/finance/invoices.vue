@@ -451,15 +451,15 @@ import {
   Search,
   Send,
   Trash2,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 definePageMeta({
-  title: "发票管理",
-  layout: "default",
+  title: '发票管理',
+  layout: 'default',
 });
 
 useHead({
-  title: "发票管理 - ERP系统",
+  title: '发票管理 - ERP系统',
 });
 
 // 响应式状态
@@ -470,22 +470,22 @@ const editingInvoice = ref(null);
 
 // 筛选条件
 const filters = ref({
-  type: "",
-  status: "",
-  search: "",
+  type: '',
+  status: '',
+  search: '',
 });
 
 // 下拉选项数据
 const invoiceTypes = ref([
-  { value: "sales", label: "销售发票" },
-  { value: "purchase", label: "采购发票" },
+  { value: 'sales', label: '销售发票' },
+  { value: 'purchase', label: '采购发票' },
 ]);
 
 const invoiceStatuses = ref([
-  { value: "draft", label: "草稿" },
-  { value: "sent", label: "已发送" },
-  { value: "paid", label: "已付款" },
-  { value: "overdue", label: "逾期" },
+  { value: 'draft', label: '草稿' },
+  { value: 'sent', label: '已发送' },
+  { value: 'paid', label: '已付款' },
+  { value: 'overdue', label: '逾期' },
 ]);
 
 // 类型定义
@@ -498,68 +498,68 @@ interface InvoiceItem {
 
 // 发票表单数据
 const invoiceForm = ref({
-  invoice_no: "",
-  type: "",
-  status: "draft",
-  customer_name: "",
-  contact_person: "",
+  invoice_no: '',
+  type: '',
+  status: 'draft',
+  customer_name: '',
+  contact_person: '',
   amount: 0,
   tax_amount: 0,
   total_amount: 0,
-  invoice_date: "",
-  due_date: "",
-  notes: "",
+  invoice_date: '',
+  due_date: '',
+  notes: '',
   items: [] as InvoiceItem[],
 });
 
 // 选项数据
 const invoiceTypeOptions = ref([
-  { label: "销售发票", value: "sales" },
-  { label: "采购发票", value: "purchase" },
+  { label: '销售发票', value: 'sales' },
+  { label: '采购发票', value: 'purchase' },
 ]);
 
 const statusOptions = ref([
-  { label: "草稿", value: "draft" },
-  { label: "已发送", value: "sent" },
-  { label: "已付款", value: "paid" },
-  { label: "逾期", value: "overdue" },
+  { label: '草稿', value: 'draft' },
+  { label: '已发送', value: 'sent' },
+  { label: '已付款', value: 'paid' },
+  { label: '逾期', value: 'overdue' },
 ]);
 
 // 模拟数据
 const mockInvoices = ref([
   {
-    id: "1",
-    invoice_no: "INV-2024-001",
-    type: "sales",
-    customer_name: "ABC公司",
-    contact_person: "张经理",
+    id: '1',
+    invoice_no: 'INV-2024-001',
+    type: 'sales',
+    customer_name: 'ABC公司',
+    contact_person: '张经理',
     amount: 85_000,
     tax_amount: 11_050,
     total_amount: 96_050,
-    status: "sent",
-    invoice_date: new Date("2024-01-15"),
-    due_date: new Date("2024-02-15"),
-    notes: "销售发票备注",
+    status: 'sent',
+    invoice_date: new Date('2024-01-15'),
+    due_date: new Date('2024-02-15'),
+    notes: '销售发票备注',
     items: [
-      { description: "产品A", quantity: 10, unit_price: 5000, amount: 50_000 },
-      { description: "产品B", quantity: 7, unit_price: 5000, amount: 35_000 },
+      { description: '产品A', quantity: 10, unit_price: 5000, amount: 50_000 },
+      { description: '产品B', quantity: 7, unit_price: 5000, amount: 35_000 },
     ],
   },
   {
-    id: "2",
-    invoice_no: "INV-2024-002",
-    type: "purchase",
-    customer_name: "XYZ供应商",
-    contact_person: "李总",
+    id: '2',
+    invoice_no: 'INV-2024-002',
+    type: 'purchase',
+    customer_name: 'XYZ供应商',
+    contact_person: '李总',
     amount: 45_000,
     tax_amount: 5850,
     total_amount: 50_850,
-    status: "paid",
-    invoice_date: new Date("2024-01-10"),
-    due_date: new Date("2024-02-10"),
-    notes: "采购发票备注",
+    status: 'paid',
+    invoice_date: new Date('2024-01-10'),
+    due_date: new Date('2024-02-10'),
+    notes: '采购发票备注',
     items: [
-      { description: "原料C", quantity: 15, unit_price: 3000, amount: 45_000 },
+      { description: '原料C', quantity: 15, unit_price: 3000, amount: 45_000 },
     ],
   },
 ]);
@@ -616,49 +616,49 @@ const totalAmount = computed(() => {
 
 // 类型映射
 const typeMap: Record<string, string> = {
-  sales: "销售发票",
-  purchase: "采购发票",
+  sales: '销售发票',
+  purchase: '采购发票',
 };
 
 const typeSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  sales: "default",
-  purchase: "secondary",
+  sales: 'default',
+  purchase: 'secondary',
 };
 
 const statusMap: Record<string, string> = {
-  draft: "草稿",
-  sent: "已发送",
-  paid: "已付款",
-  overdue: "逾期",
+  draft: '草稿',
+  sent: '已发送',
+  paid: '已付款',
+  overdue: '逾期',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  draft: "secondary",
-  sent: "outline",
-  paid: "default",
-  overdue: "destructive",
+  draft: 'secondary',
+  sent: 'outline',
+  paid: 'default',
+  overdue: 'destructive',
 };
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type;
 const getTypeSeverity = (
   type: string
-): "default" | "destructive" | "outline" | "secondary" =>
-  typeSeverityMap[type] || "secondary";
+): 'default' | 'destructive' | 'outline' | 'secondary' =>
+  typeSeverityMap[type] || 'secondary';
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 const getStatusSeverity = (
   status: string
-): "default" | "destructive" | "outline" | "secondary" =>
-  statusSeverityMap[status] || "secondary";
+): 'default' | 'destructive' | 'outline' | 'secondary' =>
+  statusSeverityMap[status] || 'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("zh-CN");
+  return new Date(date).toLocaleDateString('zh-CN');
 };
 
 const loadInvoices = async () => {
@@ -681,17 +681,17 @@ const openInvoiceDialog = (invoice: any = null) => {
   } else {
     editingInvoice.value = null;
     invoiceForm.value = {
-      invoice_no: "",
-      type: "",
-      status: "draft",
-      customer_name: "",
-      contact_person: "",
+      invoice_no: '',
+      type: '',
+      status: 'draft',
+      customer_name: '',
+      contact_person: '',
       amount: 0,
       tax_amount: 0,
       total_amount: 0,
-      invoice_date: "",
-      due_date: "",
-      notes: "",
+      invoice_date: '',
+      due_date: '',
+      notes: '',
       items: [],
     };
   }
@@ -717,7 +717,7 @@ const sendInvoice = async (invoice: any) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const index = mockInvoices.value.findIndex((i) => i.id === invoice.id);
       if (index !== -1 && mockInvoices.value[index]) {
-        mockInvoices.value[index]!.status = "sent";
+        mockInvoices.value[index]!.status = 'sent';
       }
     } catch (_error) {}
   }
@@ -764,7 +764,7 @@ const saveInvoice = async () => {
           ...mockInvoices.value[index],
           ...calculatedInvoice,
           invoice_date: new Date(calculatedInvoice.invoice_date),
-          id: mockInvoices.value[index]?.id || "",
+          id: mockInvoices.value[index]?.id || '',
           due_date: new Date(calculatedInvoice.due_date),
         };
       }
@@ -787,7 +787,7 @@ const saveInvoice = async () => {
 
 const addInvoiceItem = () => {
   invoiceForm.value.items.push({
-    description: "",
+    description: '',
     quantity: 1,
     unit_price: 0,
     amount: 0,

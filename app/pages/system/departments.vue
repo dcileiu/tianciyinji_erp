@@ -281,14 +281,14 @@ import {
   RefreshCw,
   Search,
   Trash2,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
-import { toast } from "vue-sonner";
+import { toast } from 'vue-sonner';
 
 // 页面状态
 const loading = ref(false);
-const searchQuery = ref("");
-const statusFilter = ref("all");
+const searchQuery = ref('');
+const statusFilter = ref('all');
 
 // 对话框状态
 const showCreateDialog = ref(false);
@@ -296,70 +296,70 @@ const editingDepartment = ref<any>(null);
 
 // 部门表单
 const departmentForm = ref({
-  code: "",
-  name: "",
-  description: "",
-  status: "active",
-  parentId: "",
-  manager: "",
+  code: '',
+  name: '',
+  description: '',
+  status: 'active',
+  parentId: '',
+  manager: '',
   employeeCount: 0,
   sort: 0,
 });
 
 // 状态筛选选项
 const statusFilterOptions = [
-  { label: "全部状态", value: "all" },
-  { label: "启用", value: "active" },
-  { label: "停用", value: "inactive" },
+  { label: '全部状态', value: 'all' },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' },
 ];
 
 // 模拟部门数据
 const departments = ref([
   {
-    id: "1",
-    code: "TECH",
-    name: "技术部",
-    description: "负责产品研发和技术支持",
-    status: "active",
-    parentId: "",
-    parentDepartment: "",
-    manager: "张三",
+    id: '1',
+    code: 'TECH',
+    name: '技术部',
+    description: '负责产品研发和技术支持',
+    status: 'active',
+    parentId: '',
+    parentDepartment: '',
+    manager: '张三',
     employeeCount: 15,
     sort: 1,
   },
   {
-    id: "2",
-    code: "SALES",
-    name: "销售部",
-    description: "负责产品销售和客户关系维护",
-    status: "active",
-    parentId: "",
-    parentDepartment: "",
-    manager: "李四",
+    id: '2',
+    code: 'SALES',
+    name: '销售部',
+    description: '负责产品销售和客户关系维护',
+    status: 'active',
+    parentId: '',
+    parentDepartment: '',
+    manager: '李四',
     employeeCount: 12,
     sort: 2,
   },
   {
-    id: "3",
-    code: "TECH_FE",
-    name: "前端开发组",
-    description: "负责前端界面开发",
-    status: "active",
-    parentId: "1",
-    parentDepartment: "技术部",
-    manager: "王五",
+    id: '3',
+    code: 'TECH_FE',
+    name: '前端开发组',
+    description: '负责前端界面开发',
+    status: 'active',
+    parentId: '1',
+    parentDepartment: '技术部',
+    manager: '王五',
     employeeCount: 8,
     sort: 1,
   },
   {
-    id: "4",
-    code: "TECH_BE",
-    name: "后端开发组",
-    description: "负责后端服务开发",
-    status: "active",
-    parentId: "1",
-    parentDepartment: "技术部",
-    manager: "赵六",
+    id: '4',
+    code: 'TECH_BE',
+    name: '后端开发组',
+    description: '负责后端服务开发',
+    status: 'active',
+    parentId: '1',
+    parentDepartment: '技术部',
+    manager: '赵六',
     employeeCount: 7,
     sort: 2,
   },
@@ -377,7 +377,7 @@ const filteredDepartments = computed(() => {
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((dept) => dept.status === statusFilter.value);
   }
 
@@ -385,7 +385,7 @@ const filteredDepartments = computed(() => {
 });
 
 const parentDepartmentOptions = computed(() => {
-  const options = [{ label: "无上级部门", value: "all" }];
+  const options = [{ label: '无上级部门', value: 'all' }];
 
   // 只显示顶级部门作为上级部门选项
   const topLevelDepts = departments.value.filter((dept) => !dept.parentId);
@@ -400,8 +400,8 @@ const parentDepartmentOptions = computed(() => {
 
 // 方法
 const resetFilters = () => {
-  searchQuery.value = "";
-  statusFilter.value = "all";
+  searchQuery.value = '';
+  statusFilter.value = 'all';
 };
 
 const editDepartment = (department: any) => {
@@ -422,12 +422,12 @@ const editDepartment = (department: any) => {
 const addSubDepartment = (parentDepartment: any) => {
   editingDepartment.value = null;
   departmentForm.value = {
-    code: "",
-    name: "",
-    description: "",
-    status: "active",
+    code: '',
+    name: '',
+    description: '',
+    status: 'active',
     parentId: parentDepartment.id,
-    manager: "",
+    manager: '',
     employeeCount: 0,
     sort: 0,
   };
@@ -442,19 +442,19 @@ const confirmDelete = (department: any) => {
 
 const deleteDepartment = (id: any) => {
   departments.value = departments.value.filter((d) => d.id !== id);
-  toast.success("部门删除成功");
+  toast.success('部门删除成功');
 };
 
 const closeCreateDialog = () => {
   showCreateDialog.value = false;
   editingDepartment.value = null;
   departmentForm.value = {
-    code: "",
-    name: "",
-    description: "",
-    status: "active",
-    parentId: "",
-    manager: "",
+    code: '',
+    name: '',
+    description: '',
+    status: 'active',
+    parentId: '',
+    manager: '',
     employeeCount: 0,
     sort: 0,
   };
@@ -462,7 +462,7 @@ const closeCreateDialog = () => {
 
 const saveDepartment = () => {
   if (!departmentForm.value.name) {
-    toast.error("请输入部门名称");
+    toast.error('请输入部门名称');
     return;
   }
 
@@ -475,22 +475,22 @@ const saveDepartment = () => {
       departments.value[index] = {
         ...departmentForm.value,
         id: editingDepartment.value.id,
-        parentDepartment: "",
+        parentDepartment: '',
         employeeCount: departmentForm.value.employeeCount || 0,
       };
     }
-    toast.success("部门更新成功");
+    toast.success('部门更新成功');
   } else {
     // 新增部门
     const newDepartment = {
       ...departmentForm.value,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
-      parentDepartment: "",
+      parentDepartment: '',
       employeeCount: departmentForm.value.employeeCount || 0,
     };
     departments.value.push(newDepartment);
-    toast.success("部门创建成功");
+    toast.success('部门创建成功');
   }
 
   closeCreateDialog();

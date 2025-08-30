@@ -289,22 +289,22 @@ import {
   Search,
   ShoppingCart,
   Users,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "销售报表 - ERP 管理系统",
+  title: '销售报表 - ERP 管理系统',
 });
 
 // 页面状态
 const loading = ref(false);
 const dateRange = ref();
-const customerFilter = ref("all");
-const searchQuery = ref("");
+const customerFilter = ref('all');
+const searchQuery = ref('');
 
 // 统计数据
 const salesStats = ref({
@@ -316,58 +316,58 @@ const salesStats = ref({
 
 // 客户选项
 const customerOptions = ref([
-  { label: "全部客户", value: "all" },
-  { label: "苏州华智科技有限公司", value: "C001" },
-  { label: "上海浦东制造有限公司", value: "C002" },
-  { label: "北京智能设备有限公司", value: "C003" },
-  { label: "深圳创新科技有限公司", value: "C004" },
+  { label: '全部客户', value: 'all' },
+  { label: '苏州华智科技有限公司', value: 'C001' },
+  { label: '上海浦东制造有限公司', value: 'C002' },
+  { label: '北京智能设备有限公司', value: 'C003' },
+  { label: '深圳创新科技有限公司', value: 'C004' },
 ]);
 
 // 销售明细数据
 const salesDetails = ref([
   {
-    id: "1",
-    order_no: "SO202501001",
-    customer_name: "苏州华智科技有限公司",
-    product_name: "智能控制器",
+    id: '1',
+    order_no: 'SO202501001',
+    customer_name: '苏州华智科技有限公司',
+    product_name: '智能控制器',
     quantity: 10,
     unit_price: 2500,
     total_amount: 25_000,
-    order_date: "2025-01-15",
-    status: "completed",
+    order_date: '2025-01-15',
+    status: 'completed',
   },
   {
-    id: "2",
-    order_no: "SO202501002",
-    customer_name: "上海浦东制造有限公司",
-    product_name: "传感器模块",
+    id: '2',
+    order_no: 'SO202501002',
+    customer_name: '上海浦东制造有限公司',
+    product_name: '传感器模块',
     quantity: 50,
     unit_price: 150,
     total_amount: 7500,
-    order_date: "2025-01-16",
-    status: "processing",
+    order_date: '2025-01-16',
+    status: 'processing',
   },
   {
-    id: "3",
-    order_no: "SO202501003",
-    customer_name: "北京智能设备有限公司",
-    product_name: "工业显示屏",
+    id: '3',
+    order_no: 'SO202501003',
+    customer_name: '北京智能设备有限公司',
+    product_name: '工业显示屏',
     quantity: 5,
     unit_price: 8000,
     total_amount: 40_000,
-    order_date: "2025-01-17",
-    status: "pending",
+    order_date: '2025-01-17',
+    status: 'pending',
   },
   {
-    id: "4",
-    order_no: "SO202501004",
-    customer_name: "深圳创新科技有限公司",
-    product_name: "自动化设备",
+    id: '4',
+    order_no: 'SO202501004',
+    customer_name: '深圳创新科技有限公司',
+    product_name: '自动化设备',
     quantity: 2,
     unit_price: 50_000,
     total_amount: 100_000,
-    order_date: "2025-01-18",
-    status: "completed",
+    order_date: '2025-01-18',
+    status: 'completed',
   },
 ]);
 
@@ -388,12 +388,12 @@ const filteredSalesData = computed(() => {
     );
   }
 
-  if (customerFilter.value && customerFilter.value !== "all") {
+  if (customerFilter.value && customerFilter.value !== 'all') {
     // 根据客户名称筛选（这里简化处理）
     const customerName = customerOptions.value.find(
       (c) => c.value === customerFilter.value
     )?.label;
-    if (customerName && customerName !== "全部客户") {
+    if (customerName && customerName !== '全部客户') {
       result = result.filter((item) => item.customer_name === customerName);
     }
   }
@@ -403,43 +403,43 @@ const filteredSalesData = computed(() => {
 
 // 方法
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("zh-CN", {
+  return new Intl.NumberFormat('zh-CN', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
 };
 
 const formatDate = (dateStr: string) => {
-  return new Date(dateStr).toLocaleDateString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+  return new Date(dateStr).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   });
 };
 
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    pending: "待处理",
-    processing: "处理中",
-    completed: "已完成",
-    cancelled: "已取消",
+    pending: '待处理',
+    processing: '处理中',
+    completed: '已完成',
+    cancelled: '已取消',
   };
   return statusMap[status] || status;
 };
 
 const getStatusVariant = (
   status: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    pending: "secondary",
-    processing: "default",
-    completed: "default",
-    cancelled: "destructive",
+    pending: 'secondary',
+    processing: 'default',
+    completed: 'default',
+    cancelled: 'destructive',
   };
-  return variantMap[status] || "secondary";
+  return variantMap[status] || 'secondary';
 };
 
 const exportReport = () => {

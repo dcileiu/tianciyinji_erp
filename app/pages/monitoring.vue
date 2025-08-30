@@ -152,14 +152,14 @@ import {
   RefreshCw,
   Server,
   Wifi,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "系统监控 - ERP 管理系统",
+  title: '系统监控 - ERP 管理系统',
 });
 
 const refreshData = () => {

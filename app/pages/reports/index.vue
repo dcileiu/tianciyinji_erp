@@ -590,15 +590,15 @@ import {
   Share,
   TrendingUp,
   Users,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "报表分析 - 智能ERP管理系统",
+  title: '报表分析 - 智能ERP管理系统',
 });
 
 interface ReportItem {
@@ -623,59 +623,59 @@ const reportStats = ref({
 // 最近生成的报表
 const recentReports = ref<ReportItem[]>([
   {
-    id: "1",
-    name: "销售月度报表",
-    description: "2024年1月销售数据统计",
-    type: "sales",
-    status: "completed",
-    size: "2.4MB",
-    createdAt: new Date("2024-01-20 14:30:00"),
+    id: '1',
+    name: '销售月度报表',
+    description: '2024年1月销售数据统计',
+    type: 'sales',
+    status: 'completed',
+    size: '2.4MB',
+    createdAt: new Date('2024-01-20 14:30:00'),
   },
   {
-    id: "2",
-    name: "库存状态报表",
-    description: "当前库存状态和预警分析",
-    type: "inventory",
-    status: "completed",
-    size: "1.8MB",
-    createdAt: new Date("2024-01-20 10:15:00"),
+    id: '2',
+    name: '库存状态报表',
+    description: '当前库存状态和预警分析',
+    type: 'inventory',
+    status: 'completed',
+    size: '1.8MB',
+    createdAt: new Date('2024-01-20 10:15:00'),
   },
   {
-    id: "3",
-    name: "生产效率报表",
-    description: "本周生产线效率统计",
-    type: "production",
-    status: "processing",
-    size: "3.2MB",
-    createdAt: new Date("2024-01-19 16:45:00"),
+    id: '3',
+    name: '生产效率报表',
+    description: '本周生产线效率统计',
+    type: 'production',
+    status: 'processing',
+    size: '3.2MB',
+    createdAt: new Date('2024-01-19 16:45:00'),
   },
   {
-    id: "4",
-    name: "财务收支报表",
-    description: "第一季度财务收支分析",
-    type: "finance",
-    status: "completed",
-    size: "4.1MB",
-    createdAt: new Date("2024-01-19 09:20:00"),
+    id: '4',
+    name: '财务收支报表',
+    description: '第一季度财务收支分析',
+    type: 'finance',
+    status: 'completed',
+    size: '4.1MB',
+    createdAt: new Date('2024-01-19 09:20:00'),
   },
   {
-    id: "5",
-    name: "客户分析报表",
-    description: "客户活跃度和价值分析",
-    type: "customer",
-    status: "failed",
-    size: "0MB",
-    createdAt: new Date("2024-01-18 15:10:00"),
+    id: '5',
+    name: '客户分析报表',
+    description: '客户活跃度和价值分析',
+    type: 'customer',
+    status: 'failed',
+    size: '0MB',
+    createdAt: new Date('2024-01-18 15:10:00'),
   },
 ]);
 
 // 方法
 const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat("zh-CN", {
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+  return new Intl.DateTimeFormat('zh-CN', {
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   }).format(new Date(date));
 };
 
@@ -692,32 +692,32 @@ const getReportIcon = (type: string) => {
 
 const getReportIconBg = (type: string) => {
   const bgMap: Record<string, string> = {
-    sales: "bg-green-100 dark:bg-green-900",
-    inventory: "bg-blue-100 dark:bg-blue-900",
-    production: "bg-indigo-100 dark:bg-indigo-900",
-    finance: "bg-emerald-100 dark:bg-emerald-900",
-    customer: "bg-purple-100 dark:bg-purple-900",
+    sales: 'bg-green-100 dark:bg-green-900',
+    inventory: 'bg-blue-100 dark:bg-blue-900',
+    production: 'bg-indigo-100 dark:bg-indigo-900',
+    finance: 'bg-emerald-100 dark:bg-emerald-900',
+    customer: 'bg-purple-100 dark:bg-purple-900',
   };
-  return bgMap[type] || "bg-gray-100 dark:bg-gray-900";
+  return bgMap[type] || 'bg-gray-100 dark:bg-gray-900';
 };
 
 const getReportIconColor = (type: string) => {
   const colorMap: Record<string, string> = {
-    sales: "text-green-600 dark:text-green-400",
-    inventory: "text-blue-600 dark:text-blue-400",
-    production: "text-indigo-600 dark:text-indigo-400",
-    finance: "text-emerald-600 dark:text-emerald-400",
-    customer: "text-purple-600 dark:text-purple-400",
+    sales: 'text-green-600 dark:text-green-400',
+    inventory: 'text-blue-600 dark:text-blue-400',
+    production: 'text-indigo-600 dark:text-indigo-400',
+    finance: 'text-emerald-600 dark:text-emerald-400',
+    customer: 'text-purple-600 dark:text-purple-400',
   };
-  return colorMap[type] || "text-gray-600 dark:text-gray-400";
+  return colorMap[type] || 'text-gray-600 dark:text-gray-400';
 };
 
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    completed: "已完成",
-    processing: "生成中",
-    failed: "失败",
-    scheduled: "已安排",
+    completed: '已完成',
+    processing: '生成中',
+    failed: '失败',
+    scheduled: '已安排',
   };
   return statusMap[status] || status;
 };
@@ -725,14 +725,14 @@ const getStatusText = (status: string) => {
 const getStatusVariant = (status: string) => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    completed: "default",
-    processing: "secondary",
-    failed: "destructive",
-    scheduled: "outline",
+    completed: 'default',
+    processing: 'secondary',
+    failed: 'destructive',
+    scheduled: 'outline',
   };
-  return variantMap[status] || "secondary";
+  return variantMap[status] || 'secondary';
 };
 
 const exportAllReports = () => {};

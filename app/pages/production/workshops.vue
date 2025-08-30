@@ -471,15 +471,15 @@
 
 <script setup lang="ts">
 // 手动导入 Lucide 图标
-import { Check, Loader2, Plus, Search, Trash2 } from "lucide-vue-next";
+import { Check, Loader2, Plus, Search, Trash2 } from 'lucide-vue-next';
 
 // 页面状态
 const loading = ref(false);
 const saving = ref(false);
-const statusFilter = ref("all");
-const typeFilter = ref("all");
-const managerFilter = ref("all");
-const searchQuery = ref("");
+const statusFilter = ref('all');
+const typeFilter = ref('all');
+const managerFilter = ref('all');
+const searchQuery = ref('');
 
 // 对话框状态
 const showCreateDialog = ref(false);
@@ -487,14 +487,14 @@ const editingWorkshop = ref<any>(null);
 
 // 车间表单
 const workshopForm = ref({
-  code: "",
-  name: "",
-  type: "",
-  status: "active",
-  manager: "",
+  code: '',
+  name: '',
+  type: '',
+  status: 'active',
+  manager: '',
   capacity: 0,
-  location: "",
-  description: "",
+  location: '',
+  description: '',
 });
 
 // 统计数据
@@ -507,84 +507,84 @@ const stats = ref({
 
 // 状态选项
 const statusOptions = ref([
-  { label: "全部状态", value: "all" },
-  { label: "运行中", value: "active" },
-  { label: "维护中", value: "maintenance" },
-  { label: "停产", value: "inactive" },
+  { label: '全部状态', value: 'all' },
+  { label: '运行中', value: 'active' },
+  { label: '维护中', value: 'maintenance' },
+  { label: '停产', value: 'inactive' },
 ]);
 
 // 类型选项
 const typeOptions = ref([
-  { label: "全部类型", value: "all" },
-  { label: "机械加工", value: "machining" },
-  { label: "装配", value: "assembly" },
-  { label: "检测", value: "testing" },
-  { label: "包装", value: "packaging" },
-  { label: "喷涂", value: "painting" },
+  { label: '全部类型', value: 'all' },
+  { label: '机械加工', value: 'machining' },
+  { label: '装配', value: 'assembly' },
+  { label: '检测', value: 'testing' },
+  { label: '包装', value: 'packaging' },
+  { label: '喷涂', value: 'painting' },
 ]);
 
 // 负责人选项
 const managerOptions = ref([
-  { label: "全部负责人", value: "all" },
-  { label: "张三", value: "张三" },
-  { label: "李四", value: "李四" },
-  { label: "王五", value: "王五" },
-  { label: "赵六", value: "赵六" },
+  { label: '全部负责人', value: 'all' },
+  { label: '张三', value: '张三' },
+  { label: '李四', value: '李四' },
+  { label: '王五', value: '王五' },
+  { label: '赵六', value: '赵六' },
 ]);
 
 // 模拟车间数据
 const workshops = ref([
   {
-    id: "1",
-    code: "WS001",
-    name: "机械加工车间A",
-    type: "machining",
-    status: "active",
-    manager: "张三",
+    id: '1',
+    code: 'WS001',
+    name: '机械加工车间A',
+    type: 'machining',
+    status: 'active',
+    manager: '张三',
     equipment_count: 25,
     capacity: 500,
     utilization: 85,
-    location: "1号厂房",
-    description: "主要负责金属零件的精密加工",
+    location: '1号厂房',
+    description: '主要负责金属零件的精密加工',
   },
   {
-    id: "2",
-    code: "WS002",
-    name: "装配车间B",
-    type: "assembly",
-    status: "active",
-    manager: "李四",
+    id: '2',
+    code: 'WS002',
+    name: '装配车间B',
+    type: 'assembly',
+    status: 'active',
+    manager: '李四',
     equipment_count: 18,
     capacity: 300,
     utilization: 72,
-    location: "2号厂房",
-    description: "产品最终装配和调试",
+    location: '2号厂房',
+    description: '产品最终装配和调试',
   },
   {
-    id: "3",
-    code: "WS003",
-    name: "检测车间C",
-    type: "testing",
-    status: "maintenance",
-    manager: "王五",
+    id: '3',
+    code: 'WS003',
+    name: '检测车间C',
+    type: 'testing',
+    status: 'maintenance',
+    manager: '王五',
     equipment_count: 12,
     capacity: 200,
     utilization: 45,
-    location: "3号厂房",
-    description: "产品质量检测和认证",
+    location: '3号厂房',
+    description: '产品质量检测和认证',
   },
   {
-    id: "4",
-    code: "WS004",
-    name: "包装车间D",
-    type: "packaging",
-    status: "active",
-    manager: "赵六",
+    id: '4',
+    code: 'WS004',
+    name: '包装车间D',
+    type: 'packaging',
+    status: 'active',
+    manager: '赵六',
     equipment_count: 8,
     capacity: 800,
     utilization: 90,
-    location: "4号厂房",
-    description: "产品包装和发货准备",
+    location: '4号厂房',
+    description: '产品包装和发货准备',
   },
 ]);
 
@@ -600,17 +600,17 @@ const filteredWorkshops = computed(() => {
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(
       (workshop) => workshop.status === statusFilter.value
     );
   }
 
-  if (typeFilter.value && typeFilter.value !== "all") {
+  if (typeFilter.value && typeFilter.value !== 'all') {
     result = result.filter((workshop) => workshop.type === typeFilter.value);
   }
 
-  if (managerFilter.value && managerFilter.value !== "all") {
+  if (managerFilter.value && managerFilter.value !== 'all') {
     result = result.filter(
       (workshop) => workshop.manager === managerFilter.value
     );
@@ -622,11 +622,11 @@ const filteredWorkshops = computed(() => {
 // 方法
 const getTypeText = (type: string) => {
   const typeMap: Record<string, string> = {
-    machining: "机械加工",
-    assembly: "装配",
-    testing: "检测",
-    packaging: "包装",
-    painting: "喷涂",
+    machining: '机械加工',
+    assembly: '装配',
+    testing: '检测',
+    packaging: '包装',
+    painting: '喷涂',
   };
   return typeMap[type] || type;
 };
@@ -634,22 +634,22 @@ const getTypeText = (type: string) => {
 const getTypeSeverity = (type: string) => {
   const severityMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    machining: "secondary",
-    assembly: "default",
-    testing: "outline",
-    packaging: "secondary",
-    painting: "outline",
+    machining: 'secondary',
+    assembly: 'default',
+    testing: 'outline',
+    packaging: 'secondary',
+    painting: 'outline',
   };
-  return severityMap[type] || "secondary";
+  return severityMap[type] || 'secondary';
 };
 
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    active: "运行中",
-    maintenance: "维护中",
-    inactive: "停产",
+    active: '运行中',
+    maintenance: '维护中',
+    inactive: '停产',
   };
   return statusMap[status] || status;
 };
@@ -657,13 +657,13 @@ const getStatusText = (status: string) => {
 const getStatusSeverity = (status: string) => {
   const severityMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    active: "default",
-    maintenance: "outline",
-    inactive: "destructive",
+    active: 'default',
+    maintenance: 'outline',
+    inactive: 'destructive',
   };
-  return severityMap[status] || "secondary";
+  return severityMap[status] || 'secondary';
 };
 
 const viewWorkshop = (_workshop: any) => {
@@ -697,14 +697,14 @@ const closeCreateDialog = () => {
   showCreateDialog.value = false;
   editingWorkshop.value = null;
   workshopForm.value = {
-    code: "",
-    name: "",
-    type: "",
-    status: "active",
-    manager: "",
+    code: '',
+    name: '',
+    type: '',
+    status: 'active',
+    manager: '',
     capacity: 0,
-    location: "",
-    description: "",
+    location: '',
+    description: '',
   };
 };
 

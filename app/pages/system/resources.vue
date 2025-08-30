@@ -362,16 +362,16 @@ import {
   Server,
   Settings,
   Trash2,
-} from "lucide-vue-next";
-import { toast } from "vue-sonner";
+} from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "资源管理 - ERP 管理系统",
+  title: '资源管理 - ERP 管理系统',
 });
 
 // 权限检查
@@ -387,100 +387,100 @@ const editingResource = ref(null as any);
 const selectedResources = ref([]);
 
 // 模拟数据搜索和筛选
-const searchQuery = ref("");
-const typeFilter = ref("all");
-const statusFilter = ref("all");
+const searchQuery = ref('');
+const typeFilter = ref('all');
+const statusFilter = ref('all');
 
 // 表单数据
 const resourceForm = ref({
-  key: "",
-  name: "",
-  type: "page",
-  description: "",
-  path: "",
+  key: '',
+  name: '',
+  type: 'page',
+  description: '',
+  path: '',
   methods: [],
-  status: "active",
+  status: 'active',
 });
 
 // 选项数据
 const typeOptions = ref([
-  { label: "页面", value: "page" },
-  { label: "功能", value: "function" },
-  { label: "数据", value: "data" },
-  { label: "API", value: "api" },
-  { label: "按钮", value: "button" },
-  { label: "菜单", value: "menu" },
+  { label: '页面', value: 'page' },
+  { label: '功能', value: 'function' },
+  { label: '数据', value: 'data' },
+  { label: 'API', value: 'api' },
+  { label: '按钮', value: 'button' },
+  { label: '菜单', value: 'menu' },
 ]);
 
 const statusOptions = ref([
-  { label: "启用", value: "active" },
-  { label: "禁用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '禁用', value: 'inactive' },
 ]);
 
 const methodOptions = ref([
-  { label: "GET", value: "GET" },
-  { label: "POST", value: "POST" },
-  { label: "PUT", value: "PUT" },
-  { label: "DELETE", value: "DELETE" },
-  { label: "PATCH", value: "PATCH" },
+  { label: 'GET', value: 'GET' },
+  { label: 'POST', value: 'POST' },
+  { label: 'PUT', value: 'PUT' },
+  { label: 'DELETE', value: 'DELETE' },
+  { label: 'PATCH', value: 'PATCH' },
 ]);
 
 // 模拟数据
 const mockResources = ref([
   {
-    id: "1",
-    key: "user:view",
-    name: "查看用户",
-    type: "function",
-    description: "查看用户列表和详情",
-    path: "/api/users",
-    methods: ["GET"],
-    status: "active",
-    created_at: new Date("2024-01-01"),
+    id: '1',
+    key: 'user:view',
+    name: '查看用户',
+    type: 'function',
+    description: '查看用户列表和详情',
+    path: '/api/users',
+    methods: ['GET'],
+    status: 'active',
+    created_at: new Date('2024-01-01'),
   },
   {
-    id: "2",
-    key: "user:create",
-    name: "创建用户",
-    type: "function",
-    description: "创建新用户",
-    path: "/api/users",
-    methods: ["POST"],
-    status: "active",
-    created_at: new Date("2024-01-02"),
+    id: '2',
+    key: 'user:create',
+    name: '创建用户',
+    type: 'function',
+    description: '创建新用户',
+    path: '/api/users',
+    methods: ['POST'],
+    status: 'active',
+    created_at: new Date('2024-01-02'),
   },
   {
-    id: "3",
-    key: "user:edit",
-    name: "编辑用户",
-    type: "function",
-    description: "编辑用户信息",
-    path: "/api/users/:id",
-    methods: ["PUT", "PATCH"],
-    status: "active",
-    created_at: new Date("2024-01-03"),
+    id: '3',
+    key: 'user:edit',
+    name: '编辑用户',
+    type: 'function',
+    description: '编辑用户信息',
+    path: '/api/users/:id',
+    methods: ['PUT', 'PATCH'],
+    status: 'active',
+    created_at: new Date('2024-01-03'),
   },
   {
-    id: "4",
-    key: "user:delete",
-    name: "删除用户",
-    type: "function",
-    description: "删除用户",
-    path: "/api/users/:id",
-    methods: ["DELETE"],
-    status: "active",
-    created_at: new Date("2024-01-04"),
+    id: '4',
+    key: 'user:delete',
+    name: '删除用户',
+    type: 'function',
+    description: '删除用户',
+    path: '/api/users/:id',
+    methods: ['DELETE'],
+    status: 'active',
+    created_at: new Date('2024-01-04'),
   },
   {
-    id: "5",
-    key: "dashboard",
-    name: "仪表盘页面",
-    type: "page",
-    description: "系统仪表盘页面",
-    path: "/dashboard",
+    id: '5',
+    key: 'dashboard',
+    name: '仪表盘页面',
+    type: 'page',
+    description: '系统仪表盘页面',
+    path: '/dashboard',
     methods: [],
-    status: "active",
-    created_at: new Date("2024-01-05"),
+    status: 'active',
+    created_at: new Date('2024-01-05'),
   },
 ]);
 
@@ -498,11 +498,11 @@ const filteredResources = computed(() => {
     );
   }
 
-  if (typeFilter.value && typeFilter.value !== "all") {
+  if (typeFilter.value && typeFilter.value !== 'all') {
     result = result.filter((resource) => resource.type === typeFilter.value);
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(
       (resource) => resource.status === statusFilter.value
     );
@@ -515,24 +515,24 @@ const hasSelected = computed(() => selectedResources.value.length > 0);
 
 // 类型映射
 const typeMap: Record<string, string> = {
-  page: "页面",
-  function: "功能",
-  data: "数据",
-  api: "API",
-  button: "按钮",
-  menu: "菜单",
+  page: '页面',
+  function: '功能',
+  data: '数据',
+  api: 'API',
+  button: '按钮',
+  menu: '菜单',
 };
 
 const severityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  page: "secondary",
-  function: "default",
-  data: "outline",
-  api: "destructive",
-  button: "secondary",
-  menu: "secondary",
+  page: 'secondary',
+  function: 'default',
+  data: 'outline',
+  api: 'destructive',
+  button: 'secondary',
+  menu: 'secondary',
 };
 
 // 方法
@@ -552,12 +552,12 @@ const getTypeDisplayName = (type: string) => typeMap[type] || type;
 
 const getTypeSeverity = (
   type: string
-): "default" | "destructive" | "outline" | "secondary" =>
-  (severityMap[type] as "default" | "destructive" | "outline" | "secondary") ||
-  "secondary";
+): 'default' | 'destructive' | 'outline' | 'secondary' =>
+  (severityMap[type] as 'default' | 'destructive' | 'outline' | 'secondary') ||
+  'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleString("zh-CN");
+  return new Date(date).toLocaleString('zh-CN');
 };
 
 const loadResources = async () => {
@@ -573,13 +573,13 @@ const loadResources = async () => {
 const openCreateDialog = () => {
   editingResource.value = null;
   Object.assign(resourceForm.value, {
-    key: "",
-    name: "",
-    type: "page",
-    description: "",
-    path: "",
+    key: '',
+    name: '',
+    type: 'page',
+    description: '',
+    path: '',
     methods: [],
-    status: "active",
+    status: 'active',
   });
   showDialog.value = true;
 };
@@ -625,7 +625,7 @@ const saveResource = async () => {
         mockResources.value[index]!.methods = resourceForm.value.methods;
         mockResources.value[index]!.status = resourceForm.value.status;
       }
-      toast.success("资源更新成功");
+      toast.success('资源更新成功');
     } else {
       // 新增资源
       const newResource = {
@@ -634,12 +634,12 @@ const saveResource = async () => {
         created_at: new Date(),
       };
       mockResources.value.push(newResource);
-      toast.success("资源添加成功");
+      toast.success('资源添加成功');
     }
 
     closeDialog();
   } catch (_error) {
-    toast.error("操作失败，请重试");
+    toast.error('操作失败，请重试');
   } finally {
     saving.value = false;
   }
@@ -655,13 +655,13 @@ const deleteResource = (id: string) => {
   const index = mockResources.value.findIndex((r) => r.id === id);
   if (index !== -1) {
     mockResources.value.splice(index, 1);
-    toast.success("资源删除成功");
+    toast.success('资源删除成功');
   }
 };
 
 const handleBatchDelete = () => {
   if (selectedResources.value.length === 0) {
-    toast.warning("请选择要删除的资源");
+    toast.warning('请选择要删除的资源');
     return;
   }
 
@@ -678,9 +678,9 @@ const handleBatchDelete = () => {
 };
 
 const clearFilters = () => {
-  searchQuery.value = "";
-  typeFilter.value = "all";
-  statusFilter.value = "all";
+  searchQuery.value = '';
+  typeFilter.value = 'all';
+  statusFilter.value = 'all';
 };
 
 const exportResources = () => {

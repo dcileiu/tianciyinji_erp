@@ -149,10 +149,10 @@ import {
   Lock,
   LogIn,
   Mail,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
-import { useAuth } from "~/composables/useAuth";
-import type { LoginForm } from "~/types/auth";
+import { useAuth } from '~/composables/useAuth';
+import type { LoginForm } from '~/types/auth';
 
 // 页面配置 - 禁用布局，让登录页面全屏显示
 definePageMeta({
@@ -165,27 +165,27 @@ const router = useRouter();
 
 // 响应式数据
 const loading = ref(false);
-const error = ref("");
+const error = ref('');
 const showPassword = ref(false);
 const form = ref<LoginForm>({
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 });
 
 // 表单验证
 const emailError = computed(() => {
   if (!form.value.email) {
-    return "";
+    return '';
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(form.value.email) ? "" : "请输入有效的邮箱地址";
+  return emailRegex.test(form.value.email) ? '' : '请输入有效的邮箱地址';
 });
 
 const passwordError = computed(() => {
   if (!form.value.password) {
-    return "";
+    return '';
   }
-  return form.value.password.length < 6 ? "密码至少需要6个字符" : "";
+  return form.value.password.length < 6 ? '密码至少需要6个字符' : '';
 });
 
 const isFormValid = computed(() => {
@@ -205,19 +205,19 @@ const handleLogin = async () => {
 
   try {
     loading.value = true;
-    error.value = "";
+    error.value = '';
 
     const result = await login(form.value);
 
     if (result.success) {
       // 登录成功，跳转到仪表盘
-      await router.push("/dashboard");
+      await router.push('/dashboard');
     } else {
       // 显示错误信息
-      error.value = result.error?.message || "登录失败，请重试";
+      error.value = result.error?.message || '登录失败，请重试';
     }
   } catch (_err) {
-    error.value = "登录过程中发生错误，请重试";
+    error.value = '登录过程中发生错误，请重试';
   } finally {
     loading.value = false;
   }
@@ -225,6 +225,6 @@ const handleLogin = async () => {
 
 // 页面标题
 useHead({
-  title: "登录 - ERP管理系统",
+  title: '登录 - ERP管理系统',
 });
 </script>

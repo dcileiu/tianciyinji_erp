@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useSidebar } from "@/components/ui/sidebar";
 import {
   BadgeCheck,
   Bell,
@@ -7,7 +6,8 @@ import {
   LogOut,
   Moon,
   Sun,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
+import { useSidebar } from '@/components/ui/sidebar';
 
 defineProps<{
   user: {
@@ -26,26 +26,26 @@ const isDark = ref(false);
 const toggleTheme = () => {
   isDark.value = !isDark.value;
   if (isDark.value) {
-    document.documentElement.classList.add("dark");
-    localStorage.setItem("theme", "dark");
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
   } else {
-    document.documentElement.classList.remove("dark");
-    localStorage.setItem("theme", "light");
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
   }
 };
 
 // 页面加载时恢复主题
 onMounted(() => {
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
     isDark.value = true;
-    document.documentElement.classList.add("dark");
+    document.documentElement.classList.add('dark');
   } else {
     // 默认为明亮主题
     isDark.value = false;
-    document.documentElement.classList.remove("dark");
+    document.documentElement.classList.remove('dark');
     if (!savedTheme) {
-      localStorage.setItem("theme", "light");
+      localStorage.setItem('theme', 'light');
     }
   }
 });

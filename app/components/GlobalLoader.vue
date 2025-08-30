@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2 } from "lucide-vue-next";
+import { Loader2 } from 'lucide-vue-next';
 
 const { isLoading } = useGlobalLoading();
 </script>

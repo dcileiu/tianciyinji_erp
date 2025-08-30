@@ -514,15 +514,15 @@ import {
   TrendingUp,
   Upload,
   Warehouse,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "库存管理 - 智能ERP管理系统",
+  title: '库存管理 - 智能ERP管理系统',
 });
 
 interface InventoryItem {
@@ -544,22 +544,22 @@ interface InventoryItem {
 const loading = ref(false);
 const adjusting = ref(false);
 const showAdjustDialog = ref(false);
-const pageSize = ref("20");
+const pageSize = ref('20');
 const currentPage = ref(1);
 
 // 筛选条件
-const searchQuery = ref("");
-const warehouseFilter = ref("all");
-const categoryFilter = ref("all");
-const statusFilter = ref("all");
+const searchQuery = ref('');
+const warehouseFilter = ref('all');
+const categoryFilter = ref('all');
+const statusFilter = ref('all');
 
 // 调整表单
 const adjustForm = ref({
-  product_id: "",
-  warehouse_id: "",
-  adjust_type: "in",
+  product_id: '',
+  warehouse_id: '',
+  adjust_type: 'in',
   quantity: 0,
-  reason: "",
+  reason: '',
 });
 
 // 统计数据
@@ -573,114 +573,114 @@ const inventoryStats = ref({
 
 // 选项数据
 const warehouses = ref([
-  { id: "1", name: "原料仓库A" },
-  { id: "2", name: "成品仓库B" },
-  { id: "3", name: "工具仓库C" },
-  { id: "4", name: "备品仓库D" },
+  { id: '1', name: '原料仓库A' },
+  { id: '2', name: '成品仓库B' },
+  { id: '3', name: '工具仓库C' },
+  { id: '4', name: '备品仓库D' },
 ]);
 
 const categories = ref([
-  { id: "1", name: "电子产品" },
-  { id: "2", name: "服装鞋帽" },
-  { id: "3", name: "食品饮料" },
-  { id: "4", name: "办公用品" },
-  { id: "5", name: "工业原料" },
+  { id: '1', name: '电子产品' },
+  { id: '2', name: '服装鞋帽' },
+  { id: '3', name: '食品饮料' },
+  { id: '4', name: '办公用品' },
+  { id: '5', name: '工业原料' },
 ]);
 
 const products = ref([
-  { id: "1", name: "iPhone 15 Pro Max 256GB" },
-  { id: "2", name: "华为 Mate 60 Pro 512GB" },
-  { id: "3", name: "小米14 Ultra 16GB+1TB" },
-  { id: "4", name: "钢材A型" },
-  { id: "5", name: "塑料原料B" },
+  { id: '1', name: 'iPhone 15 Pro Max 256GB' },
+  { id: '2', name: '华为 Mate 60 Pro 512GB' },
+  { id: '3', name: '小米14 Ultra 16GB+1TB' },
+  { id: '4', name: '钢材A型' },
+  { id: '5', name: '塑料原料B' },
 ]);
 
 const statusOptions = ref([
-  { label: "正常", value: "normal" },
-  { label: "低库存", value: "low" },
-  { label: "缺货", value: "out_of_stock" },
-  { label: "超储", value: "overstock" },
+  { label: '正常', value: 'normal' },
+  { label: '低库存', value: 'low' },
+  { label: '缺货', value: 'out_of_stock' },
+  { label: '超储', value: 'overstock' },
 ]);
 
 const adjustTypes = ref([
-  { label: "入库", value: "in" },
-  { label: "出库", value: "out" },
-  { label: "盘点调整", value: "adjust" },
-  { label: "损耗", value: "loss" },
-  { label: "退货入库", value: "return" },
+  { label: '入库', value: 'in' },
+  { label: '出库', value: 'out' },
+  { label: '盘点调整', value: 'adjust' },
+  { label: '损耗', value: 'loss' },
+  { label: '退货入库', value: 'return' },
 ]);
 
 // 模拟库存数据
 const mockInventory = ref<InventoryItem[]>([
   {
-    product_id: "1",
-    product_name: "iPhone 15 Pro Max 256GB",
-    product_code: "P001",
-    warehouse_id: "2",
-    category_id: "1",
+    product_id: '1',
+    product_name: 'iPhone 15 Pro Max 256GB',
+    product_code: 'P001',
+    warehouse_id: '2',
+    category_id: '1',
     current_stock: 25,
     min_stock: 10,
     max_stock: 100,
     unit_cost: 7500,
-    unit: "台",
-    status: "normal",
-    last_updated: new Date("2024-01-20"),
+    unit: '台',
+    status: 'normal',
+    last_updated: new Date('2024-01-20'),
   },
   {
-    product_id: "2",
-    product_name: "华为 Mate 60 Pro 512GB",
-    product_code: "P002",
-    warehouse_id: "2",
-    category_id: "1",
+    product_id: '2',
+    product_name: '华为 Mate 60 Pro 512GB',
+    product_code: 'P002',
+    warehouse_id: '2',
+    category_id: '1',
     current_stock: 8,
     min_stock: 15,
     max_stock: 80,
     unit_cost: 5200,
-    unit: "台",
-    status: "low",
-    last_updated: new Date("2024-01-19"),
+    unit: '台',
+    status: 'low',
+    last_updated: new Date('2024-01-19'),
   },
   {
-    product_id: "3",
-    product_name: "小米14 Ultra 16GB+1TB",
-    product_code: "P003",
-    warehouse_id: "2",
-    category_id: "1",
+    product_id: '3',
+    product_name: '小米14 Ultra 16GB+1TB',
+    product_code: 'P003',
+    warehouse_id: '2',
+    category_id: '1',
     current_stock: 32,
     min_stock: 20,
     max_stock: 120,
     unit_cost: 4800,
-    unit: "台",
-    status: "normal",
-    last_updated: new Date("2024-01-18"),
+    unit: '台',
+    status: 'normal',
+    last_updated: new Date('2024-01-18'),
   },
   {
-    product_id: "4",
-    product_name: "商务西装套装",
-    product_code: "P004",
-    warehouse_id: "1",
-    category_id: "2",
+    product_id: '4',
+    product_name: '商务西装套装',
+    product_code: 'P004',
+    warehouse_id: '1',
+    category_id: '2',
     current_stock: 0,
     min_stock: 30,
     max_stock: 200,
     unit_cost: 650,
-    unit: "套",
-    status: "out_of_stock",
-    last_updated: new Date("2024-01-17"),
+    unit: '套',
+    status: 'out_of_stock',
+    last_updated: new Date('2024-01-17'),
   },
   {
-    product_id: "5",
-    product_name: "办公椅人体工学座椅",
-    product_code: "P005",
-    warehouse_id: "3",
-    category_id: "4",
+    product_id: '5',
+    product_name: '办公椅人体工学座椅',
+    product_code: 'P005',
+    warehouse_id: '3',
+    category_id: '4',
     current_stock: 18,
     min_stock: 25,
     max_stock: 100,
     unit_cost: 450,
-    unit: "把",
-    status: "low",
-    last_updated: new Date("2024-01-16"),
+    unit: '把',
+    status: 'low',
+    last_updated: new Date('2024-01-16'),
   },
 ]);
 
@@ -697,17 +697,17 @@ const filteredInventory = computed(() => {
     );
   }
 
-  if (warehouseFilter.value && warehouseFilter.value !== "all") {
+  if (warehouseFilter.value && warehouseFilter.value !== 'all') {
     result = result.filter(
       (item) => item.warehouse_id === warehouseFilter.value
     );
   }
 
-  if (categoryFilter.value && categoryFilter.value !== "all") {
+  if (categoryFilter.value && categoryFilter.value !== 'all') {
     result = result.filter((item) => item.category_id === categoryFilter.value);
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((item) => item.status === statusFilter.value);
   }
 
@@ -727,10 +727,10 @@ const totalPages = computed(() => {
 // 方法
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    normal: "正常",
-    low: "低库存",
-    out_of_stock: "缺货",
-    overstock: "超储",
+    normal: '正常',
+    low: '低库存',
+    out_of_stock: '缺货',
+    overstock: '超储',
   };
   return statusMap[status] || status;
 };
@@ -738,41 +738,41 @@ const getStatusText = (status: string) => {
 const getStatusVariant = (status: string) => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    normal: "default",
-    low: "outline",
-    out_of_stock: "destructive",
-    overstock: "secondary",
+    normal: 'default',
+    low: 'outline',
+    out_of_stock: 'destructive',
+    overstock: 'secondary',
   };
-  return variantMap[status] || "secondary";
+  return variantMap[status] || 'secondary';
 };
 
 const getWarehouseName = (warehouseId: string) => {
   const warehouse = warehouses.value.find((w) => w.id === warehouseId);
-  return warehouse?.name || "未知仓库";
+  return warehouse?.name || '未知仓库';
 };
 
 const getCategoryName = (categoryId: string) => {
   const category = categories.value.find((c) => c.id === categoryId);
-  return category?.name || "未知分类";
+  return category?.name || '未知分类';
 };
 
 const getStockColorClass = (currentStock: number, minStock: number) => {
   if (currentStock === 0) {
-    return "text-red-600";
+    return 'text-red-600';
   }
   if (currentStock < minStock) {
-    return "text-orange-600";
+    return 'text-orange-600';
   }
-  return "text-green-600";
+  return 'text-green-600';
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  warehouseFilter.value = "all";
-  categoryFilter.value = "all";
-  statusFilter.value = "all";
+  searchQuery.value = '';
+  warehouseFilter.value = 'all';
+  categoryFilter.value = 'all';
+  statusFilter.value = 'all';
 };
 
 const refreshData = async () => {
@@ -790,11 +790,11 @@ const exportInventory = () => {};
 
 const openAdjustDialog = () => {
   adjustForm.value = {
-    product_id: "",
-    warehouse_id: "",
-    adjust_type: "in",
+    product_id: '',
+    warehouse_id: '',
+    adjust_type: 'in',
     quantity: 0,
-    reason: "",
+    reason: '',
   };
   showAdjustDialog.value = true;
 };
@@ -809,9 +809,9 @@ const adjustStock = (item: InventoryItem) => {
   adjustForm.value = {
     product_id: item.product_id,
     warehouse_id: item.warehouse_id,
-    adjust_type: "adjust",
+    adjust_type: 'adjust',
     quantity: 0,
-    reason: "",
+    reason: '',
   };
   showAdjustDialog.value = true;
 };
@@ -833,8 +833,8 @@ const saveAdjustment = async () => {
     if (item) {
       const quantity = Number(adjustForm.value.quantity);
       if (
-        adjustForm.value.adjust_type === "in" ||
-        adjustForm.value.adjust_type === "return"
+        adjustForm.value.adjust_type === 'in' ||
+        adjustForm.value.adjust_type === 'return'
       ) {
         item.current_stock += quantity;
       } else {
@@ -843,13 +843,13 @@ const saveAdjustment = async () => {
 
       // 更新状态
       if (item.current_stock === 0) {
-        item.status = "out_of_stock";
+        item.status = 'out_of_stock';
       } else if (item.current_stock < item.min_stock) {
-        item.status = "low";
+        item.status = 'low';
       } else if (item.current_stock > item.max_stock) {
-        item.status = "overstock";
+        item.status = 'overstock';
       } else {
-        item.status = "normal";
+        item.status = 'normal';
       }
 
       item.last_updated = new Date();

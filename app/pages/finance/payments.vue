@@ -387,34 +387,34 @@ import {
   RefreshCw,
   Search,
   Trash2,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面状态
 const loading = ref(false);
 const saving = ref(false);
 
 // 搜索过滤
-const searchKeyword = ref("");
-const selectedStatus = ref("");
-const selectedMethod = ref("");
+const searchKeyword = ref('');
+const selectedStatus = ref('');
+const selectedMethod = ref('');
 const dateRange = ref<string | undefined>(undefined);
 
 // 对话框状态
 const showPaymentModal = ref(false);
 const isEditing = ref(false);
 const currentPayment = ref<any>({});
-const dialogMode = ref("create");
+const dialogMode = ref('create');
 
 // 初始化当前支付记录
 const initCurrentPayment = () => ({
-  id: "",
-  paymentNo: "",
-  supplier: "",
+  id: '',
+  paymentNo: '',
+  supplier: '',
   amount: 0,
-  paymentMethod: "",
-  status: "pending",
-  paymentDate: "",
-  description: "",
+  paymentMethod: '',
+  status: 'pending',
+  paymentDate: '',
+  description: '',
   created_at: new Date(),
   updated_at: new Date(),
 });
@@ -424,67 +424,67 @@ currentPayment.value = initCurrentPayment();
 // 模拟支付数据
 const payments = ref([
   {
-    id: "1",
-    paymentNo: "PAY-2025-001",
-    supplier: "钢材供应商A",
+    id: '1',
+    paymentNo: 'PAY-2025-001',
+    supplier: '钢材供应商A',
     amount: 125_420,
-    paymentMethod: "bank_transfer",
-    status: "completed",
-    paymentDate: new Date("2025-01-15"),
-    description: "采购钢材货款",
-    created_at: new Date("2025-01-15"),
-    updated_at: new Date("2025-01-15"),
+    paymentMethod: 'bank_transfer',
+    status: 'completed',
+    paymentDate: new Date('2025-01-15'),
+    description: '采购钢材货款',
+    created_at: new Date('2025-01-15'),
+    updated_at: new Date('2025-01-15'),
   },
   {
-    id: "2",
-    paymentNo: "PAY-2025-002",
-    supplier: "电子器件供应商B",
+    id: '2',
+    paymentNo: 'PAY-2025-002',
+    supplier: '电子器件供应商B',
     amount: 89_500,
-    paymentMethod: "credit_card",
-    status: "pending",
-    paymentDate: new Date("2025-01-16"),
-    description: "电子元件采购",
-    created_at: new Date("2025-01-16"),
-    updated_at: new Date("2025-01-16"),
+    paymentMethod: 'credit_card',
+    status: 'pending',
+    paymentDate: new Date('2025-01-16'),
+    description: '电子元件采购',
+    created_at: new Date('2025-01-16'),
+    updated_at: new Date('2025-01-16'),
   },
   {
-    id: "3",
-    paymentNo: "PAY-2025-003",
-    supplier: "物流公司C",
+    id: '3',
+    paymentNo: 'PAY-2025-003',
+    supplier: '物流公司C',
     amount: 15_600,
-    paymentMethod: "alipay",
-    status: "processing",
-    paymentDate: new Date("2025-01-17"),
-    description: "运输费用",
-    created_at: new Date("2025-01-17"),
-    updated_at: new Date("2025-01-17"),
+    paymentMethod: 'alipay',
+    status: 'processing',
+    paymentDate: new Date('2025-01-17'),
+    description: '运输费用',
+    created_at: new Date('2025-01-17'),
+    updated_at: new Date('2025-01-17'),
   },
 ]);
 
 // 状态选项
 const statusOptions = [
-  { label: "全部状态", value: "all" },
-  { label: "待支付", value: "pending" },
-  { label: "处理中", value: "processing" },
-  { label: "已完成", value: "completed" },
-  { label: "已取消", value: "cancelled" },
+  { label: '全部状态', value: 'all' },
+  { label: '待支付', value: 'pending' },
+  { label: '处理中', value: 'processing' },
+  { label: '已完成', value: 'completed' },
+  { label: '已取消', value: 'cancelled' },
 ];
 
 // 支付方式选项
 const methodOptions = [
-  { label: "全部方式", value: "all" },
-  { label: "银行转账", value: "bank_transfer" },
-  { label: "信用卡", value: "credit_card" },
-  { label: "支付宝", value: "alipay" },
-  { label: "微信支付", value: "wechat_pay" },
-  { label: "现金", value: "cash" },
+  { label: '全部方式', value: 'all' },
+  { label: '银行转账', value: 'bank_transfer' },
+  { label: '信用卡', value: 'credit_card' },
+  { label: '支付宝', value: 'alipay' },
+  { label: '微信支付', value: 'wechat_pay' },
+  { label: '现金', value: 'cash' },
 ];
 
 // 供应商选项
 const supplierOptions = [
-  { label: "钢材供应商A", value: "钢材供应商A" },
-  { label: "电子器件供应商B", value: "电子器件供应商B" },
-  { label: "物流公司C", value: "物流公司C" },
+  { label: '钢材供应商A', value: '钢材供应商A' },
+  { label: '电子器件供应商B', value: '电子器件供应商B' },
+  { label: '物流公司C', value: '物流公司C' },
 ];
 
 // 计算属性
@@ -519,7 +519,7 @@ const filteredPayments = computed(() => {
 });
 
 const pendingPaymentsCount = computed(() => {
-  return payments.value.filter((p) => p.status === "pending").length;
+  return payments.value.filter((p) => p.status === 'pending').length;
 });
 
 const totalAmount = computed(() => {
@@ -530,90 +530,90 @@ const totalAmount = computed(() => {
 });
 
 const modalTitle = computed(() => {
-  return isEditing.value ? "编辑支付" : "新建支付";
+  return isEditing.value ? '编辑支付' : '新建支付';
 });
 
 // 方法
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    pending: "待支付",
-    processing: "处理中",
-    completed: "已完成",
-    cancelled: "已取消",
+    pending: '待支付',
+    processing: '处理中',
+    completed: '已完成',
+    cancelled: '已取消',
   };
   return statusMap[status] || status;
 };
 
 const getStatusVariant = (
   status: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    pending: "secondary",
-    processing: "outline",
-    completed: "default",
-    cancelled: "destructive",
+    pending: 'secondary',
+    processing: 'outline',
+    completed: 'default',
+    cancelled: 'destructive',
   };
-  return variantMap[status] || "outline";
+  return variantMap[status] || 'outline';
 };
 
 const getMethodText = (method: string) => {
   const methodMap: Record<string, string> = {
-    bank_transfer: "银行转账",
-    credit_card: "信用卡",
-    alipay: "支付宝",
-    wechat_pay: "微信支付",
-    cash: "现金",
+    bank_transfer: '银行转账',
+    credit_card: '信用卡',
+    alipay: '支付宝',
+    wechat_pay: '微信支付',
+    cash: '现金',
   };
   return methodMap[method] || method;
 };
 
 const getMethodVariant = (
   method: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    bank_transfer: "outline",
-    credit_card: "secondary",
-    alipay: "default",
-    wechat_pay: "default",
-    cash: "outline",
+    bank_transfer: 'outline',
+    credit_card: 'secondary',
+    alipay: 'default',
+    wechat_pay: 'default',
+    cash: 'outline',
   };
-  return variantMap[method] || "outline";
+  return variantMap[method] || 'outline';
 };
 
 const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   }).format(new Date(date));
 };
 
 const resetFilters = () => {
-  searchKeyword.value = "";
-  selectedStatus.value = "";
-  selectedMethod.value = "";
+  searchKeyword.value = '';
+  selectedStatus.value = '';
+  selectedMethod.value = '';
   dateRange.value = undefined;
 };
 
 const openPaymentModal = () => {
   isEditing.value = false;
   currentPayment.value = {
-    id: "",
+    id: '',
     paymentNo: `PAY-${new Date().getFullYear()}-${String(
       payments.value.length + 1
-    ).padStart(3, "0")}`,
-    supplier: "",
+    ).padStart(3, '0')}`,
+    supplier: '',
     amount: 0,
-    paymentMethod: "bank_transfer",
-    status: "pending",
+    paymentMethod: 'bank_transfer',
+    status: 'pending',
     paymentDate: new Date(),
-    description: "",
+    description: '',
     created_at: new Date(),
     updated_at: new Date(),
   };
@@ -693,7 +693,7 @@ const savePayment = async () => {
 const closePaymentModal = () => {
   showPaymentModal.value = false;
   isEditing.value = false;
-  dialogMode.value = "create";
+  dialogMode.value = 'create';
   currentPayment.value = initCurrentPayment();
 };
 </script>

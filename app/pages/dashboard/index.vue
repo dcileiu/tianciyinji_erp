@@ -409,13 +409,13 @@ import {
   ShoppingCart,
   TrendingUp,
   Users,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 获取用户信息
 const user = useSupabaseUser();
 
 // 响应式数据
-const chartPeriod = ref("30d");
+const chartPeriod = ref('30d');
 const todaySales = ref(125_680);
 const salesGrowth = ref(12.5);
 const pendingOrders = ref(23);
@@ -428,50 +428,50 @@ const newCustomers = ref(42);
 const recentOrders = ref([
   {
     id: 1,
-    orderNo: "SO-2025-001",
-    customer: "张三科技有限公司",
+    orderNo: 'SO-2025-001',
+    customer: '张三科技有限公司',
     amount: 15_680,
-    status: "待确认",
+    status: '待确认',
     createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30分钟前
   },
   {
     id: 2,
-    orderNo: "SO-2025-002",
-    customer: "李四贸易公司",
+    orderNo: 'SO-2025-002',
+    customer: '李四贸易公司',
     amount: 23_400,
-    status: "已确认",
+    status: '已确认',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2小时前
   },
   {
     id: 3,
-    orderNo: "SO-2025-003",
-    customer: "王五集团",
+    orderNo: 'SO-2025-003',
+    customer: '王五集团',
     amount: 45_200,
-    status: "已发货",
+    status: '已发货',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5小时前
   },
   {
     id: 4,
-    orderNo: "SO-2025-004",
-    customer: "赵六实业",
+    orderNo: 'SO-2025-004',
+    customer: '赵六实业',
     amount: 12_800,
-    status: "已完成",
+    status: '已完成',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1天前
   },
 ]);
 
 // 热销产品数据
 const topProducts = ref([
-  { id: 1, name: "智能手机 Pro Max", sales: 245, revenue: 588_000 },
-  { id: 2, name: "无线蓝牙耳机", sales: 189, revenue: 132_300 },
-  { id: 3, name: "平板电脑 Air", sales: 156, revenue: 468_000 },
-  { id: 4, name: "智能手表 Series", sales: 134, revenue: 201_000 },
-  { id: 5, name: "便携充电宝", sales: 98, revenue: 29_400 },
+  { id: 1, name: '智能手机 Pro Max', sales: 245, revenue: 588_000 },
+  { id: 2, name: '无线蓝牙耳机', sales: 189, revenue: 132_300 },
+  { id: 3, name: '平板电脑 Air', sales: 156, revenue: 468_000 },
+  { id: 4, name: '智能手表 Series', sales: 134, revenue: 201_000 },
+  { id: 5, name: '便携充电宝', sales: 98, revenue: 29_400 },
 ]);
 
 // 工具函数
 const formatNumber = (num: number) => {
-  return new Intl.NumberFormat("zh-CN").format(num);
+  return new Intl.NumberFormat('zh-CN').format(num);
 };
 
 const formatTime = (date: Date) => {
@@ -493,16 +493,16 @@ const formatTime = (date: Date) => {
 
 const getOrderStatusVariant = (status: string) => {
   switch (status) {
-    case "待确认":
-      return "secondary";
-    case "已确认":
-      return "default";
-    case "已发货":
-      return "outline";
-    case "已完成":
-      return "secondary";
+    case '待确认':
+      return 'secondary';
+    case '已确认':
+      return 'default';
+    case '已发货':
+      return 'outline';
+    case '已完成':
+      return 'secondary';
     default:
-      return "secondary";
+      return 'secondary';
   }
 };
 
@@ -518,6 +518,6 @@ const refreshData = () => {
 
 // 页面元信息
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 </script>

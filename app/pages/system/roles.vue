@@ -446,21 +446,21 @@ import {
   Trash2,
   Users,
   X,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "角色管理 - ERP 管理系统",
+  title: '角色管理 - ERP 管理系统',
 });
 
 // 响应式数据
-const searchQuery = ref("");
-const selectedType = ref("all");
-const selectedStatus = ref("all");
+const searchQuery = ref('');
+const selectedType = ref('all');
+const selectedStatus = ref('all');
 const showRoleDialog = ref(false);
 const showPermissionDialog = ref(false);
 const editingRole = ref(null as any);
@@ -509,57 +509,57 @@ const roleStats = reactive({
 
 // 表单数据
 const roleForm = reactive({
-  name: "",
-  description: "",
-  type: "custom",
-  status: "active",
+  name: '',
+  description: '',
+  type: 'custom',
+  status: 'active',
   permissions: [],
 });
 
 // 选项数据
 const typeOptions = ref([
-  { label: "系统角色", value: "system" },
-  { label: "自定义角色", value: "custom" },
+  { label: '系统角色', value: 'system' },
+  { label: '自定义角色', value: 'custom' },
 ]);
 
 const statusOptions = ref([
-  { label: "启用", value: "active" },
-  { label: "停用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' },
 ]);
 
 // 权限树数据
 const permissionTree = ref([
   {
-    key: "user",
-    label: "用户管理",
-    icon: "Users",
+    key: 'user',
+    label: '用户管理',
+    icon: 'Users',
     children: [
-      { key: "user:view", label: "查看用户", icon: "Eye" },
-      { key: "user:create", label: "新增用户", icon: "Plus" },
-      { key: "user:edit", label: "编辑用户", icon: "Edit" },
-      { key: "user:delete", label: "删除用户", icon: "Trash2" },
+      { key: 'user:view', label: '查看用户', icon: 'Eye' },
+      { key: 'user:create', label: '新增用户', icon: 'Plus' },
+      { key: 'user:edit', label: '编辑用户', icon: 'Edit' },
+      { key: 'user:delete', label: '删除用户', icon: 'Trash2' },
     ],
   },
   {
-    key: "role",
-    label: "角色管理",
-    icon: "Shield",
+    key: 'role',
+    label: '角色管理',
+    icon: 'Shield',
     children: [
-      { key: "role:view", label: "查看角色", icon: "Eye" },
-      { key: "role:create", label: "新增角色", icon: "Plus" },
-      { key: "role:edit", label: "编辑角色", icon: "Edit" },
-      { key: "role:delete", label: "删除角色", icon: "Trash2" },
+      { key: 'role:view', label: '查看角色', icon: 'Eye' },
+      { key: 'role:create', label: '新增角色', icon: 'Plus' },
+      { key: 'role:edit', label: '编辑角色', icon: 'Edit' },
+      { key: 'role:delete', label: '删除角色', icon: 'Trash2' },
     ],
   },
   {
-    key: "product",
-    label: "产品管理",
-    icon: "Settings",
+    key: 'product',
+    label: '产品管理',
+    icon: 'Settings',
     children: [
-      { key: "product:view", label: "查看产品", icon: "Eye" },
-      { key: "product:create", label: "新增产品", icon: "Plus" },
-      { key: "product:edit", label: "编辑产品", icon: "Edit" },
-      { key: "product:delete", label: "删除产品", icon: "Trash2" },
+      { key: 'product:view', label: '查看产品', icon: 'Eye' },
+      { key: 'product:create', label: '新增产品', icon: 'Plus' },
+      { key: 'product:edit', label: '编辑产品', icon: 'Edit' },
+      { key: 'product:delete', label: '删除产品', icon: 'Trash2' },
     ],
   },
 ]);
@@ -567,43 +567,43 @@ const permissionTree = ref([
 // 模拟角色数据
 const roles = ref([
   {
-    id: "1",
-    name: "超级管理员",
-    description: "系统最高权限管理员",
-    type: "system",
-    status: "active",
+    id: '1',
+    name: '超级管理员',
+    description: '系统最高权限管理员',
+    type: 'system',
+    status: 'active',
     permissions: [
-      "user:view",
-      "user:create",
-      "user:edit",
-      "user:delete",
-      "role:view",
-      "role:create",
-      "role:edit",
-      "role:delete",
+      'user:view',
+      'user:create',
+      'user:edit',
+      'user:delete',
+      'role:view',
+      'role:create',
+      'role:edit',
+      'role:delete',
     ],
     user_count: 1,
-    created_at: new Date("2024-01-01"),
+    created_at: new Date('2024-01-01'),
   },
   {
-    id: "2",
-    name: "业务管理员",
-    description: "业务模块管理权限",
-    type: "custom",
-    status: "active",
-    permissions: ["product:view", "product:create", "product:edit"],
+    id: '2',
+    name: '业务管理员',
+    description: '业务模块管理权限',
+    type: 'custom',
+    status: 'active',
+    permissions: ['product:view', 'product:create', 'product:edit'],
     user_count: 3,
-    created_at: new Date("2024-01-02"),
+    created_at: new Date('2024-01-02'),
   },
   {
-    id: "3",
-    name: "普通用户",
-    description: "基础查看权限",
-    type: "custom",
-    status: "active",
-    permissions: ["product:view"],
+    id: '3',
+    name: '普通用户',
+    description: '基础查看权限',
+    type: 'custom',
+    status: 'active',
+    permissions: ['product:view'],
     user_count: 10,
-    created_at: new Date("2024-01-03"),
+    created_at: new Date('2024-01-03'),
   },
 ] as any[]);
 
@@ -615,9 +615,9 @@ const filteredRoles = computed(() => {
       role.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       role.description.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesType =
-      selectedType.value === "all" || role.type === selectedType.value;
+      selectedType.value === 'all' || role.type === selectedType.value;
     const matchesStatus =
-      selectedStatus.value === "all" || role.status === selectedStatus.value;
+      selectedStatus.value === 'all' || role.status === selectedStatus.value;
 
     return matchesSearch && matchesType && matchesStatus;
   });
@@ -626,82 +626,82 @@ const filteredRoles = computed(() => {
 // 方法
 const getTypeDisplayName = (type: string): string => {
   const typeMap: Record<string, string> = {
-    system: "系统角色",
-    custom: "自定义",
+    system: '系统角色',
+    custom: '自定义',
   };
   return typeMap[type] || type;
 };
 
 const getTypeVariant = (
   type: string
-): "default" | "outline" | "destructive" | "secondary" => {
+): 'default' | 'outline' | 'destructive' | 'secondary' => {
   const variantMap: Record<
     string,
-    "default" | "outline" | "destructive" | "secondary"
+    'default' | 'outline' | 'destructive' | 'secondary'
   > = {
-    system: "destructive",
-    custom: "default",
-    business: "secondary",
+    system: 'destructive',
+    custom: 'default',
+    business: 'secondary',
   };
-  return variantMap[type] || "default";
+  return variantMap[type] || 'default';
 };
 
 const getStatusDisplayName = (status: string): string => {
   const statusMap: Record<string, string> = {
-    active: "启用",
-    inactive: "停用",
+    active: '启用',
+    inactive: '停用',
   };
   return statusMap[status] || status;
 };
 
 const getStatusVariant = (
   status: string
-): "default" | "outline" | "destructive" | "secondary" => {
+): 'default' | 'outline' | 'destructive' | 'secondary' => {
   const variantMap: Record<
     string,
-    "default" | "outline" | "destructive" | "secondary"
+    'default' | 'outline' | 'destructive' | 'secondary'
   > = {
-    active: "default",
-    inactive: "secondary",
+    active: 'default',
+    inactive: 'secondary',
   };
-  return variantMap[status] || "default";
+  return variantMap[status] || 'default';
 };
 
 const formatDate = (date: Date): string => {
-  return date.toLocaleDateString("zh-CN");
+  return date.toLocaleDateString('zh-CN');
 };
 
 const getPermissionName = (permission: string): string => {
   const permissionMap: Record<string, string> = {
-    "user:view": "查看用户",
-    "user:create": "新增用户",
-    "user:edit": "编辑用户",
-    "user:delete": "删除用户",
-    "role:view": "查看角色",
-    "role:create": "新增角色",
-    "role:edit": "编辑角色",
-    "role:delete": "删除角色",
-    "product:view": "查看产品",
-    "product:create": "新增产品",
-    "product:edit": "编辑产品",
-    "product:delete": "删除产品",
+    'user:view': '查看用户',
+    'user:create': '新增用户',
+    'user:edit': '编辑用户',
+    'user:delete': '删除用户',
+    'role:view': '查看角色',
+    'role:create': '新增角色',
+    'role:edit': '编辑角色',
+    'role:delete': '删除角色',
+    'product:view': '查看产品',
+    'product:create': '新增产品',
+    'product:edit': '编辑产品',
+    'product:delete': '删除产品',
   };
   return permissionMap[permission] || permission;
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  selectedType.value = "all";
-  selectedStatus.value = "all";
+  searchQuery.value = '';
+  selectedType.value = 'all';
+  selectedStatus.value = 'all';
 };
 
 const openCreateDialog = () => {
   editingRole.value = null;
   Object.assign(roleForm, {
-    name: "",
-    description: "",
-    type: "custom",
-    status: "active",
+    name: '',
+    description: '',
+    type: 'custom',
+    status: 'active',
     permissions: [],
   });
   selectedPermissions.value = {};
@@ -798,10 +798,10 @@ const deleteRole = (roleId: string) => {
 const updateStats = () => {
   roleStats.totalRoles = roles.value.length;
   roleStats.activeRoles = roles.value.filter(
-    (r) => r.status === "active"
+    (r) => r.status === 'active'
   ).length;
-  roleStats.systemRoles = roles.value.filter((r) => r.type === "system").length;
-  roleStats.customRoles = roles.value.filter((r) => r.type === "custom").length;
+  roleStats.systemRoles = roles.value.filter((r) => r.type === 'system').length;
+  roleStats.customRoles = roles.value.filter((r) => r.type === 'custom').length;
 };
 
 // 初始化

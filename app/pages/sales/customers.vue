@@ -646,15 +646,15 @@ import {
   UserCheck,
   Users,
   UserX,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "客户管理 - ERP 管理系统",
+  title: '客户管理 - ERP 管理系统',
 });
 
 interface Customer {
@@ -679,55 +679,55 @@ const loading = ref(false);
 const saving = ref(false);
 const showCustomerDialog = ref(false);
 const showDeleteDialog = ref(false);
-const dialogMode = ref<"view" | "create" | "edit">("view");
+const dialogMode = ref<'view' | 'create' | 'edit'>('view');
 const editingCustomer = ref<Customer | null>(null);
 const deletingCustomer = ref<Customer | null>(null);
 
 // 筛选条件
-const searchQuery = ref("");
-const typeFilter = ref("all");
-const regionFilter = ref("all");
-const statusFilter = ref("all");
+const searchQuery = ref('');
+const typeFilter = ref('all');
+const regionFilter = ref('all');
+const statusFilter = ref('all');
 const pageSize = ref(10);
 
 // 表单数据
 const customerForm = ref({
-  customer_no: "",
-  name: "",
-  type: "",
-  region: "",
-  contact_person: "",
-  phone: "",
-  email: "",
-  address: "",
-  status: "active",
-  notes: "",
+  customer_no: '',
+  name: '',
+  type: '',
+  region: '',
+  contact_person: '',
+  phone: '',
+  email: '',
+  address: '',
+  status: 'active',
+  notes: '',
 });
 
 // 选项数据
 const typeOptions = ref([
-  { label: "企业客户", value: "enterprise" },
-  { label: "个人客户", value: "individual" },
-  { label: "经销商", value: "distributor" },
+  { label: '企业客户', value: 'enterprise' },
+  { label: '个人客户', value: 'individual' },
+  { label: '经销商', value: 'distributor' },
 ]);
 
 const regionOptions = ref([
-  { label: "华北地区", value: "north" },
-  { label: "华东地区", value: "east" },
-  { label: "华南地区", value: "south" },
-  { label: "西南地区", value: "southwest" },
+  { label: '华北地区', value: 'north' },
+  { label: '华东地区', value: 'east' },
+  { label: '华南地区', value: 'south' },
+  { label: '西南地区', value: 'southwest' },
 ]);
 
 const statusOptions = ref([
-  { label: "活跃", value: "active" },
-  { label: "不活跃", value: "inactive" },
-  { label: "潜在客户", value: "potential" },
+  { label: '活跃', value: 'active' },
+  { label: '不活跃', value: 'inactive' },
+  { label: '潜在客户', value: 'potential' },
 ]);
 
 const pageSizeOptions = ref([
-  { label: "10条/页", value: 10 },
-  { label: "20条/页", value: 20 },
-  { label: "50条/页", value: 50 },
+  { label: '10条/页', value: 10 },
+  { label: '20条/页', value: 20 },
+  { label: '50条/页', value: 50 },
 ]);
 
 // 统计数据
@@ -741,68 +741,68 @@ const customerStats = ref({
 // 模拟数据
 const mockCustomers = ref<Customer[]>([
   {
-    id: "1",
-    customer_no: "CUS-001",
-    name: "北京科技有限公司",
-    type: "enterprise",
-    region: "north",
-    contact_person: "张经理",
-    phone: "010-12345678",
-    email: "zhang@example.com",
-    address: "北京市朝阳区科技园区",
+    id: '1',
+    customer_no: 'CUS-001',
+    name: '北京科技有限公司',
+    type: 'enterprise',
+    region: 'north',
+    contact_person: '张经理',
+    phone: '010-12345678',
+    email: 'zhang@example.com',
+    address: '北京市朝阳区科技园区',
     total_orders: 25,
     total_amount: 580_000,
-    status: "active",
-    created_at: new Date("2024-01-15"),
-    notes: "重要客户，长期合作伙伴",
+    status: 'active',
+    created_at: new Date('2024-01-15'),
+    notes: '重要客户，长期合作伙伴',
   },
   {
-    id: "2",
-    customer_no: "CUS-002",
-    name: "上海制造集团",
-    type: "enterprise",
-    region: "east",
-    contact_person: "李总",
-    phone: "021-87654321",
-    email: "li@example.com",
-    address: "上海市浦东新区工业园",
+    id: '2',
+    customer_no: 'CUS-002',
+    name: '上海制造集团',
+    type: 'enterprise',
+    region: 'east',
+    contact_person: '李总',
+    phone: '021-87654321',
+    email: 'li@example.com',
+    address: '上海市浦东新区工业园',
     total_orders: 18,
     total_amount: 420_000,
-    status: "active",
-    created_at: new Date("2024-01-10"),
-    notes: "新兴客户，发展潜力大",
+    status: 'active',
+    created_at: new Date('2024-01-10'),
+    notes: '新兴客户，发展潜力大',
   },
   {
-    id: "3",
-    customer_no: "CUS-003",
-    name: "广州贸易有限公司",
-    type: "distributor",
-    region: "south",
-    contact_person: "王主任",
-    phone: "020-11111111",
-    email: "wang@example.com",
-    address: "广州市天河区商务中心",
+    id: '3',
+    customer_no: 'CUS-003',
+    name: '广州贸易有限公司',
+    type: 'distributor',
+    region: 'south',
+    contact_person: '王主任',
+    phone: '020-11111111',
+    email: 'wang@example.com',
+    address: '广州市天河区商务中心',
     total_orders: 32,
     total_amount: 720_000,
-    status: "active",
-    created_at: new Date("2024-01-05"),
-    notes: "优质经销商",
+    status: 'active',
+    created_at: new Date('2024-01-05'),
+    notes: '优质经销商',
   },
   {
-    id: "4",
-    customer_no: "CUS-004",
-    name: "深圳个人用户",
-    type: "individual",
-    region: "south",
-    contact_person: "刘先生",
-    phone: "0755-22222222",
-    email: "liu@example.com",
-    address: "深圳市南山区",
+    id: '4',
+    customer_no: 'CUS-004',
+    name: '深圳个人用户',
+    type: 'individual',
+    region: 'south',
+    contact_person: '刘先生',
+    phone: '0755-22222222',
+    email: 'liu@example.com',
+    address: '深圳市南山区',
     total_orders: 5,
     total_amount: 45_000,
-    status: "potential",
-    created_at: new Date("2024-01-20"),
-    notes: "潜在大客户",
+    status: 'potential',
+    created_at: new Date('2024-01-20'),
+    notes: '潜在大客户',
   },
 ]);
 
@@ -820,17 +820,17 @@ const filteredCustomers = computed(() => {
     );
   }
 
-  if (typeFilter.value && typeFilter.value !== "all") {
+  if (typeFilter.value && typeFilter.value !== 'all') {
     result = result.filter((customer) => customer.type === typeFilter.value);
   }
 
-  if (regionFilter.value && regionFilter.value !== "all") {
+  if (regionFilter.value && regionFilter.value !== 'all') {
     result = result.filter(
       (customer) => customer.region === regionFilter.value
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(
       (customer) => customer.status === statusFilter.value
     );
@@ -841,59 +841,59 @@ const filteredCustomers = computed(() => {
 
 // 映射对象
 const typeMap: Record<string, string> = {
-  enterprise: "企业客户",
-  individual: "个人客户",
-  distributor: "经销商",
+  enterprise: '企业客户',
+  individual: '个人客户',
+  distributor: '经销商',
 };
 
 const typeVariantMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  enterprise: "secondary",
-  individual: "default",
-  distributor: "outline",
+  enterprise: 'secondary',
+  individual: 'default',
+  distributor: 'outline',
 };
 
 const regionMap: Record<string, string> = {
-  north: "华北地区",
-  east: "华东地区",
-  south: "华南地区",
-  southwest: "西南地区",
+  north: '华北地区',
+  east: '华东地区',
+  south: '华南地区',
+  southwest: '西南地区',
 };
 
 const statusMap: Record<string, string> = {
-  active: "活跃",
-  inactive: "不活跃",
-  potential: "潜在客户",
+  active: '活跃',
+  inactive: '不活跃',
+  potential: '潜在客户',
 };
 
 const statusVariantMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  active: "default",
-  inactive: "destructive",
-  potential: "outline",
+  active: 'default',
+  inactive: 'destructive',
+  potential: 'outline',
 };
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type;
-const getTypeVariant = (type: string) => typeVariantMap[type] || "secondary";
+const getTypeVariant = (type: string) => typeVariantMap[type] || 'secondary';
 const getRegionDisplayName = (region: string) => regionMap[region] || region;
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 const getStatusVariant = (status: string) =>
-  statusVariantMap[status] || "secondary";
+  statusVariantMap[status] || 'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("zh-CN");
+  return new Date(date).toLocaleDateString('zh-CN');
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  typeFilter.value = "all";
-  regionFilter.value = "all";
-  statusFilter.value = "all";
+  searchQuery.value = '';
+  typeFilter.value = 'all';
+  regionFilter.value = 'all';
+  statusFilter.value = 'all';
 };
 
 const refreshData = async () => {
@@ -915,32 +915,32 @@ const importCustomers = () => {
 
 const openCreateForm = () => {
   editingCustomer.value = null;
-  dialogMode.value = "create";
+  dialogMode.value = 'create';
   customerForm.value = {
     customer_no: `CUS-${String(Date.now()).slice(-3)}`,
-    name: "",
-    type: "",
-    region: "",
-    contact_person: "",
-    phone: "",
-    email: "",
-    address: "",
-    status: "active",
-    notes: "",
+    name: '',
+    type: '',
+    region: '',
+    contact_person: '',
+    phone: '',
+    email: '',
+    address: '',
+    status: 'active',
+    notes: '',
   };
   showCustomerDialog.value = true;
 };
 
 const viewCustomer = (customer: Customer) => {
   editingCustomer.value = customer;
-  dialogMode.value = "view";
+  dialogMode.value = 'view';
   Object.assign(customerForm.value, customer);
   showCustomerDialog.value = true;
 };
 
 const editCustomer = (customer: Customer) => {
   editingCustomer.value = customer;
-  dialogMode.value = "edit";
+  dialogMode.value = 'edit';
   Object.assign(customerForm.value, customer);
   showCustomerDialog.value = true;
 };
@@ -952,12 +952,12 @@ const viewOrders = (customer: Customer) => {
 
 const contactCustomer = (customer: Customer) => {
   // 打开拨号应用
-  window.open(`tel:${customer.phone}`, "_blank");
+  window.open(`tel:${customer.phone}`, '_blank');
 };
 
 const sendEmail = (customer: Customer) => {
   // 打开邮件应用
-  window.open(`mailto:${customer.email}`, "_blank");
+  window.open(`mailto:${customer.email}`, '_blank');
 };
 
 const toggleStatus = async (customer: Customer, newStatus: string) => {
@@ -1009,7 +1009,7 @@ const saveCustomer = async () => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (dialogMode.value === "create") {
+    if (dialogMode.value === 'create') {
       const newCustomer: Customer = {
         id: Date.now().toString(),
         ...customerForm.value,
@@ -1018,7 +1018,7 @@ const saveCustomer = async () => {
         created_at: new Date(),
       };
       mockCustomers.value.push(newCustomer);
-    } else if (dialogMode.value === "edit" && editingCustomer.value) {
+    } else if (dialogMode.value === 'edit' && editingCustomer.value) {
       const index = mockCustomers.value.findIndex(
         (c) => c.id === editingCustomer.value?.id
       );

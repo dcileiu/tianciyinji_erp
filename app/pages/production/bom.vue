@@ -299,32 +299,32 @@ import {
   Package,
   Plus,
   Trash2,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 响应式数据
 const loading = ref(false);
-const searchQuery = ref("");
-const selectedStatus = ref("all");
-const selectedCategory = ref("all");
-const selectedVersion = ref("all");
+const searchQuery = ref('');
+const selectedStatus = ref('all');
+const selectedCategory = ref('all');
+const selectedVersion = ref('all');
 const currentPage = ref(1);
 const pageSize = ref(10);
 const showCreateDialog = ref(false);
 
 // 选项数据
 const statusOptions = ref([
-  { label: "全部状态", value: "all" },
-  { label: "草稿", value: "draft" },
-  { label: "已审核", value: "approved" },
-  { label: "启用", value: "active" },
-  { label: "停用", value: "inactive" },
+  { label: '全部状态', value: 'all' },
+  { label: '草稿', value: 'draft' },
+  { label: '已审核', value: 'approved' },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' },
 ]);
 
 const categoryOptions = ref([
-  { label: "全部类别", value: "all" },
-  { label: "电子产品", value: "electronics" },
-  { label: "机械产品", value: "mechanical" },
-  { label: "化工产品", value: "chemical" },
+  { label: '全部类别', value: 'all' },
+  { label: '电子产品', value: 'electronics' },
+  { label: '机械产品', value: 'mechanical' },
+  { label: '化工产品', value: 'chemical' },
 ]);
 
 // 统计数据
@@ -339,79 +339,79 @@ const stats = ref({
 const boms = ref([
   {
     id: 1,
-    product_code: "PRD-001",
-    product_name: "智能手机X1",
-    product_category: "electronics",
-    version: "V1.0",
+    product_code: 'PRD-001',
+    product_name: '智能手机X1',
+    product_category: 'electronics',
+    version: 'V1.0',
     is_current: true,
     material_count: 25,
     total_quantity: 150,
     total_cost: 1250.5,
-    status: "active",
-    created_by: "张工程师",
-    created_at: new Date("2024-01-15"),
-    updated_at: new Date("2024-01-20"),
-    effective_date: new Date("2024-01-20"),
+    status: 'active',
+    created_by: '张工程师',
+    created_at: new Date('2024-01-15'),
+    updated_at: new Date('2024-01-20'),
+    effective_date: new Date('2024-01-20'),
   },
   {
     id: 2,
-    product_code: "PRD-002",
-    product_name: "平板电脑T1",
-    product_category: "electronics",
-    version: "V2.1",
+    product_code: 'PRD-002',
+    product_name: '平板电脑T1',
+    product_category: 'electronics',
+    version: 'V2.1',
     is_current: true,
     material_count: 32,
     total_quantity: 180,
     total_cost: 1850.75,
-    status: "approved",
-    created_by: "李工程师",
-    created_at: new Date("2024-01-10"),
-    updated_at: new Date("2024-01-18"),
+    status: 'approved',
+    created_by: '李工程师',
+    created_at: new Date('2024-01-10'),
+    updated_at: new Date('2024-01-18'),
   },
   {
     id: 3,
-    product_code: "PRD-003",
-    product_name: "机械键盘K1",
-    product_category: "mechanical",
-    version: "V1.5",
+    product_code: 'PRD-003',
+    product_name: '机械键盘K1',
+    product_category: 'mechanical',
+    version: 'V1.5',
     is_current: false,
     material_count: 18,
     total_quantity: 95,
     total_cost: 680.25,
-    status: "inactive",
-    created_by: "王工程师",
-    created_at: new Date("2023-12-20"),
-    updated_at: new Date("2024-01-05"),
+    status: 'inactive',
+    created_by: '王工程师',
+    created_at: new Date('2023-12-20'),
+    updated_at: new Date('2024-01-05'),
   },
   {
     id: 4,
-    product_code: "PRD-004",
-    product_name: "无线耳机E1",
-    product_category: "electronics",
-    version: "V1.0",
+    product_code: 'PRD-004',
+    product_name: '无线耳机E1',
+    product_category: 'electronics',
+    version: 'V1.0',
     is_current: true,
     material_count: 15,
     total_quantity: 75,
     total_cost: 420.8,
-    status: "draft",
-    created_by: "赵工程师",
-    created_at: new Date("2024-01-25"),
-    updated_at: new Date("2024-01-25"),
+    status: 'draft',
+    created_by: '赵工程师',
+    created_at: new Date('2024-01-25'),
+    updated_at: new Date('2024-01-25'),
   },
   {
     id: 5,
-    product_code: "PRD-005",
-    product_name: "智能手表W1",
-    product_category: "electronics",
-    version: "V3.0",
+    product_code: 'PRD-005',
+    product_name: '智能手表W1',
+    product_category: 'electronics',
+    version: 'V3.0',
     is_current: true,
     material_count: 28,
     total_quantity: 120,
     total_cost: 980.6,
-    status: "active",
-    created_by: "孙工程师",
-    created_at: new Date("2024-01-12"),
-    updated_at: new Date("2024-01-22"),
+    status: 'active',
+    created_by: '孙工程师',
+    created_at: new Date('2024-01-12'),
+    updated_at: new Date('2024-01-22'),
   },
 ]);
 
@@ -422,12 +422,12 @@ const filteredBOMs = computed(() => {
       !searchQuery.value ||
       bom.product_name.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesStatus =
-      selectedStatus.value === "all" || bom.status === selectedStatus.value;
+      selectedStatus.value === 'all' || bom.status === selectedStatus.value;
     const matchesCategory =
-      selectedCategory.value === "all" ||
+      selectedCategory.value === 'all' ||
       bom.product_category === selectedCategory.value;
     const matchesVersion =
-      selectedVersion.value === "all" ||
+      selectedVersion.value === 'all' ||
       bom.version.toLowerCase().includes(selectedVersion.value.toLowerCase());
 
     return matchesSearch && matchesStatus && matchesCategory && matchesVersion;
@@ -444,40 +444,40 @@ const paginatedBOMs = computed(() => {
 // 辅助函数
 const getCategoryText = (category: string): string => {
   const categories: Record<string, string> = {
-    electronics: "电子产品",
-    mechanical: "机械产品",
-    chemical: "化工产品",
+    electronics: '电子产品',
+    mechanical: '机械产品',
+    chemical: '化工产品',
   };
-  return categories[category] || "未知类别";
+  return categories[category] || '未知类别';
 };
 
 const getStatusText = (status: string): string => {
   const texts: Record<string, string> = {
-    draft: "草稿",
-    approved: "已审核",
-    active: "启用",
-    inactive: "停用",
+    draft: '草稿',
+    approved: '已审核',
+    active: '启用',
+    inactive: '停用',
   };
-  return texts[status] || "未知状态";
+  return texts[status] || '未知状态';
 };
 
 const getStatusSeverity = (
   status: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   const severityMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    draft: "outline",
-    approved: "secondary",
-    active: "default",
-    inactive: "destructive",
+    draft: 'outline',
+    approved: 'secondary',
+    active: 'default',
+    inactive: 'destructive',
   };
-  return severityMap[status] || "secondary";
+  return severityMap[status] || 'secondary';
 };
 
 const formatDate = (date: Date): string => {
-  return date.toLocaleDateString("zh-CN");
+  return date.toLocaleDateString('zh-CN');
 };
 
 // 操作函数
@@ -499,11 +499,11 @@ const confirmDelete = (bom: any) => {
 
 // 页面标题
 useHead({
-  title: "BOM物料清单管理 - ERP 管理系统",
+  title: 'BOM物料清单管理 - ERP 管理系统',
 });
 
 // 页面元数据
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 </script>

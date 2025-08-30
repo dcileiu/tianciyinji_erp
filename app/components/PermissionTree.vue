@@ -84,13 +84,13 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch } from 'vue';
 
 // Props
 const props = defineProps({
   title: {
     type: String,
-    default: "权限配置",
+    default: '权限配置',
   },
   treeData: {
     type: Array,
@@ -107,10 +107,10 @@ const props = defineProps({
 });
 
 // Emits
-const emit = defineEmits(["update:selectedIds"]);
+const emit = defineEmits(['update:selectedIds']);
 
 // 状态
-const searchQuery = ref("");
+const searchQuery = ref('');
 const expandedIds = ref(new Set());
 
 // 计算属性
@@ -247,7 +247,7 @@ const handleToggleSelection = (id: any, selected: boolean) => {
     }
   }
 
-  emit("update:selectedIds", newSelectedIds);
+  emit('update:selectedIds', newSelectedIds);
 };
 
 const handleToggleExpand = (id: any) => {
@@ -293,14 +293,14 @@ const selectAll = () => {
     return ids;
   };
 
-  emit("update:selectedIds", getAllIds(props.treeData));
+  emit('update:selectedIds', getAllIds(props.treeData));
 };
 
 const clearAll = () => {
   if (props.disabled) {
     return;
   }
-  emit("update:selectedIds", []);
+  emit('update:selectedIds', []);
 };
 
 // 监听搜索变化，自动展开相关节点

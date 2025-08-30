@@ -431,199 +431,199 @@ import {
   Shield,
   Trash2,
   Users,
-} from "lucide-vue-next";
-import { toast } from "vue-sonner";
+} from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "菜单管理 - ERP 管理系统",
+  title: '菜单管理 - ERP 管理系统',
 });
 
 // 状态管理
 const loading = ref(false);
 const saving = ref(false);
-const error = ref("");
+const error = ref('');
 const showMenuDialog = ref(false);
 const editingMenu = ref(null as any);
 
 // 搜索和筛选
-const searchQuery = ref("");
-const statusFilter = ref("all");
+const searchQuery = ref('');
+const statusFilter = ref('all');
 
 // 表单数据
 const menuForm = ref({
-  name: "",
+  name: '',
   parent_id: null,
-  path: "",
-  icon: "",
+  path: '',
+  icon: '',
   sort_order: 0,
-  externalUrl: "",
-  status: "active",
-  description: "",
-  permission: "",
+  externalUrl: '',
+  status: 'active',
+  description: '',
+  permission: '',
   is_external: false,
   is_hidden: false,
-  type: "MENU", // 目录 | 菜单 | 按钮
+  type: 'MENU', // 目录 | 菜单 | 按钮
   children: [],
 });
 
 // 选项数据
 const statusOptions = ref([
-  { label: "启用", value: "active" },
-  { label: "禁用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '禁用', value: 'inactive' },
 ]);
 
 // 模拟数据
 const mockMenus = ref([
   {
-    id: "1",
-    name: "仪表盘",
+    id: '1',
+    name: '仪表盘',
     parent_id: null,
-    path: "/dashboard",
-    icon: "Home",
+    path: '/dashboard',
+    icon: 'Home',
     sort_order: 1,
-    status: "active",
-    description: "系统仪表盘",
-    permission: "dashboard:view",
+    status: 'active',
+    description: '系统仪表盘',
+    permission: 'dashboard:view',
     is_external: false,
     is_hidden: false,
-    created_at: new Date("2024-01-01"),
+    created_at: new Date('2024-01-01'),
     children: [],
   },
   {
-    id: "2",
-    name: "系统管理",
+    id: '2',
+    name: '系统管理',
     parent_id: null,
-    path: "",
-    icon: "Settings",
+    path: '',
+    icon: 'Settings',
     sort_order: 2,
-    status: "active",
-    description: "系统管理模块",
-    permission: "system:view",
+    status: 'active',
+    description: '系统管理模块',
+    permission: 'system:view',
     is_external: false,
     is_hidden: false,
-    created_at: new Date("2024-01-02"),
+    created_at: new Date('2024-01-02'),
     children: [
       {
-        id: "21",
-        name: "用户管理",
-        parent_id: "2",
-        path: "/system/users",
-        icon: "Users",
+        id: '21',
+        name: '用户管理',
+        parent_id: '2',
+        path: '/system/users',
+        icon: 'Users',
         sort_order: 1,
-        status: "active",
-        description: "用户管理",
-        permission: "user:view",
+        status: 'active',
+        description: '用户管理',
+        permission: 'user:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date("2024-01-02"),
+        created_at: new Date('2024-01-02'),
       },
       {
-        id: "22",
-        name: "角色管理",
-        parent_id: "2",
-        path: "/system/roles",
-        icon: "Shield",
+        id: '22',
+        name: '角色管理',
+        parent_id: '2',
+        path: '/system/roles',
+        icon: 'Shield',
         sort_order: 2,
-        status: "active",
-        description: "角色管理",
-        permission: "role:view",
+        status: 'active',
+        description: '角色管理',
+        permission: 'role:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date("2024-01-02"),
+        created_at: new Date('2024-01-02'),
       },
       {
-        id: "23",
-        name: "菜单管理",
-        parent_id: "2",
-        path: "/system/menus",
-        icon: "Menu",
+        id: '23',
+        name: '菜单管理',
+        parent_id: '2',
+        path: '/system/menus',
+        icon: 'Menu',
         sort_order: 3,
-        status: "active",
-        description: "菜单管理",
-        permission: "menu:view",
+        status: 'active',
+        description: '菜单管理',
+        permission: 'menu:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date("2024-01-02"),
+        created_at: new Date('2024-01-02'),
       },
       {
-        id: "24",
-        name: "部门管理",
-        parent_id: "2",
-        path: "/system/departments",
-        icon: "Building",
+        id: '24',
+        name: '部门管理',
+        parent_id: '2',
+        path: '/system/departments',
+        icon: 'Building',
         sort_order: 4,
-        status: "active",
-        description: "部门管理",
-        permission: "department:view",
+        status: 'active',
+        description: '部门管理',
+        permission: 'department:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date("2024-01-02"),
+        created_at: new Date('2024-01-02'),
       },
     ],
   },
   {
-    id: "3",
-    name: "仓库管理",
+    id: '3',
+    name: '仓库管理',
     parent_id: null,
-    path: "",
-    icon: "Package",
+    path: '',
+    icon: 'Package',
     sort_order: 3,
-    status: "active",
-    description: "仓库管理模块",
-    permission: "warehouse:view",
+    status: 'active',
+    description: '仓库管理模块',
+    permission: 'warehouse:view',
     is_external: false,
     is_hidden: false,
-    created_at: new Date("2024-01-03"),
+    created_at: new Date('2024-01-03'),
     children: [
       {
-        id: "31",
-        name: "库存管理",
-        parent_id: "3",
-        path: "/warehouse/inventory",
-        icon: "Package",
+        id: '31',
+        name: '库存管理',
+        parent_id: '3',
+        path: '/warehouse/inventory',
+        icon: 'Package',
         sort_order: 1,
-        status: "active",
-        description: "库存管理",
-        permission: "inventory:view",
+        status: 'active',
+        description: '库存管理',
+        permission: 'inventory:view',
         is_external: false,
         is_hidden: false,
-        created_at: new Date("2024-01-03"),
+        created_at: new Date('2024-01-03'),
       },
     ],
   },
   {
-    id: "4",
-    name: "财务管理",
+    id: '4',
+    name: '财务管理',
     parent_id: null,
-    path: "",
-    icon: "DollarSign",
+    path: '',
+    icon: 'DollarSign',
     sort_order: 4,
-    status: "active",
-    description: "财务管理模块",
-    permission: "finance:view",
+    status: 'active',
+    description: '财务管理模块',
+    permission: 'finance:view',
     is_external: false,
     is_hidden: false,
-    created_at: new Date("2024-01-04"),
+    created_at: new Date('2024-01-04'),
     children: [],
   },
   {
-    id: "5",
-    name: "报表中心",
+    id: '5',
+    name: '报表中心',
     parent_id: null,
-    path: "",
-    icon: "BarChart3",
+    path: '',
+    icon: 'BarChart3',
     sort_order: 5,
-    status: "active",
-    description: "报表中心模块",
-    permission: "reports:view",
+    status: 'active',
+    description: '报表中心模块',
+    permission: 'reports:view',
     is_external: false,
     is_hidden: false,
-    created_at: new Date("2024-01-05"),
+    created_at: new Date('2024-01-05'),
     children: [],
   },
 ]);
@@ -641,7 +641,7 @@ const filteredMenus = computed(() => {
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((menu) => menu.status === statusFilter.value);
   }
 
@@ -650,38 +650,38 @@ const filteredMenus = computed(() => {
 
 // 方法
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleString("zh-CN");
+  return new Date(date).toLocaleString('zh-CN');
 };
 
 const loadMenus = async () => {
   loading.value = true;
-  error.value = "";
+  error.value = '';
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   } catch (_err) {
-    error.value = "加载菜单失败";
+    error.value = '加载菜单失败';
   } finally {
     loading.value = false;
   }
 };
 
 const refreshMenus = () => {
-  searchQuery.value = "";
-  statusFilter.value = "all";
+  searchQuery.value = '';
+  statusFilter.value = 'all';
   loadMenus();
 };
 
 const openCreateDialog = () => {
   editingMenu.value = null;
   Object.assign(menuForm.value, {
-    name: "",
+    name: '',
     parent_id: null,
-    path: "",
-    icon: "",
+    path: '',
+    icon: '',
     sort_order: 0,
-    status: "active",
-    description: "",
-    permission: "",
+    status: 'active',
+    description: '',
+    permission: '',
     is_external: false,
     is_hidden: false,
   });
@@ -691,14 +691,14 @@ const openCreateDialog = () => {
 const addChildMenu = (parentMenu: any) => {
   editingMenu.value = null;
   Object.assign(menuForm.value, {
-    name: "",
+    name: '',
     parent_id: parentMenu.id,
-    path: "",
-    icon: "",
+    path: '',
+    icon: '',
     sort_order: 0,
-    status: "active",
-    description: "",
-    permission: "",
+    status: 'active',
+    description: '',
+    permission: '',
     is_external: false,
     is_hidden: false,
   });
@@ -776,9 +776,9 @@ const saveMenu = async () => {
     }
 
     closeMenuDialog();
-    toast.success(editingMenu.value ? "菜单更新成功" : "菜单创建成功");
+    toast.success(editingMenu.value ? '菜单更新成功' : '菜单创建成功');
   } catch (_error) {
-    toast.error("操作失败，请重试");
+    toast.error('操作失败，请重试');
   } finally {
     saving.value = false;
   }
@@ -806,7 +806,7 @@ const deleteMenu = (menuId: string) => {
   };
 
   mockMenus.value = deleteFromTree(mockMenus.value);
-  toast.success("菜单删除成功");
+  toast.success('菜单删除成功');
 };
 
 // 获取菜单图标

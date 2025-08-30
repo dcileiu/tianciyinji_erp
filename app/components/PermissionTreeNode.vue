@@ -153,8 +153,8 @@ import {
   Settings,
   Shield,
   Zap,
-} from "lucide-vue-next";
-import { computed } from "vue";
+} from 'lucide-vue-next';
+import { computed } from 'vue';
 
 // Props
 const props = defineProps({
@@ -181,7 +181,7 @@ const props = defineProps({
 });
 
 // Emits
-const emit = defineEmits(["toggle-selection", "toggle-expand"]);
+const emit = defineEmits(['toggle-selection', 'toggle-expand']);
 
 // 计算属性
 const hasChildren = computed(() => {
@@ -239,44 +239,44 @@ const getAllChildIds = (children: any[]): any[] => {
 
 const getTypeIcon = (type: string) => {
   const iconMap: Record<string, string> = {
-    menu: "📋",
-    page: "📄",
-    function: "⚡",
-    data: "💾",
-    api: "🌐",
-    system: "⚙️",
-    security: "🛡️",
+    menu: '📋',
+    page: '📄',
+    function: '⚡',
+    data: '💾',
+    api: '🌐',
+    system: '⚙️',
+    security: '🛡️',
   };
-  return iconMap[type] || "📦";
+  return iconMap[type] || '📦';
 };
 
 const getTypeLabel = (type: string) => {
   const labelMap: Record<string, string> = {
-    menu: "菜单",
-    page: "页面",
-    function: "功能",
-    data: "数据",
-    api: "API",
-    system: "系统",
-    security: "安全",
+    menu: '菜单',
+    page: '页面',
+    function: '功能',
+    data: '数据',
+    api: 'API',
+    system: '系统',
+    security: '安全',
   };
   return labelMap[type] || type;
 };
 
 const getTypeClass = (type: string) => {
   const classMap: Record<string, string> = {
-    menu: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-    page: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+    menu: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    page: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     function:
-      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-    data: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
-    api: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300",
-    system: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
-    security: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+      'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+    data: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
+    api: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300',
+    system: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
+    security: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
   };
   return (
     classMap[type] ||
-    "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+    'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
   );
 };
 
@@ -285,11 +285,11 @@ const handleToggleSelection = (event: any) => {
     return;
   }
 
-  emit("toggle-selection", props.item.id, event.target.checked);
+  emit('toggle-selection', props.item.id, event.target.checked);
 };
 
 const handleToggleExpand = () => {
-  emit("toggle-expand", props.item.id);
+  emit('toggle-expand', props.item.id);
 };
 </script>
 

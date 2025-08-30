@@ -144,9 +144,9 @@ import {
   EyeOff,
   Loader2,
   Lock,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
-import { useAuth } from "~/composables/useAuth";
+import { useAuth } from '~/composables/useAuth';
 
 // 页面配置 - 禁用布局，让密码重置页面全屏显示
 definePageMeta({
@@ -160,11 +160,11 @@ const route = useRoute();
 
 // 响应式数据
 const loading = ref(false);
-const error = ref("");
-const success = ref("");
+const error = ref('');
+const success = ref('');
 const form = ref({
-  password: "",
-  confirmPassword: "",
+  password: '',
+  confirmPassword: '',
 });
 
 const showPassword = ref(false);
@@ -173,18 +173,18 @@ const showConfirmPassword = ref(false);
 // 表单验证
 const passwordError = computed(() => {
   if (!form.value.password) {
-    return "";
+    return '';
   }
-  return form.value.password.length < 6 ? "密码至少需要6个字符" : "";
+  return form.value.password.length < 6 ? '密码至少需要6个字符' : '';
 });
 
 const confirmPasswordError = computed(() => {
   if (!form.value.confirmPassword) {
-    return "";
+    return '';
   }
   return form.value.password !== form.value.confirmPassword
-    ? "两次输入的密码不一致"
-    : "";
+    ? '两次输入的密码不一致'
+    : '';
 });
 
 const isFormValid = computed(() => {
@@ -204,21 +204,21 @@ const handleResetPassword = async () => {
 
   try {
     loading.value = true;
-    error.value = "";
-    success.value = "";
+    error.value = '';
+    success.value = '';
 
     const result = await updatePassword(form.value.password);
 
     if (result.success) {
-      success.value = "密码更新成功！即将跳转到登录页面...";
+      success.value = '密码更新成功！即将跳转到登录页面...';
       setTimeout(() => {
-        router.push("/login");
+        router.push('/login');
       }, 2000);
     } else {
-      error.value = result.error?.message || "密码更新失败，请重试";
+      error.value = result.error?.message || '密码更新失败，请重试';
     }
   } catch (_err) {
-    error.value = "密码更新过程中发生错误，请重试";
+    error.value = '密码更新过程中发生错误，请重试';
   } finally {
     loading.value = false;
   }
@@ -228,13 +228,13 @@ const handleResetPassword = async () => {
 onMounted(() => {
   const token = route.query.token || route.hash;
   if (!token) {
-    error.value = "无效的密码重置链接，请重新申请";
+    error.value = '无效的密码重置链接，请重新申请';
   }
 });
 
 // 页面标题
 useHead({
-  title: "重置密码 - ERP管理系统",
+  title: '重置密码 - ERP管理系统',
 });
 </script>
 

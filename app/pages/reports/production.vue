@@ -331,15 +331,15 @@ import {
   RefreshCw,
   Search,
   TrendingUp,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "生产报表 - ERP 管理系统",
+  title: '生产报表 - ERP 管理系统',
 });
 
 // 数据管理
@@ -349,14 +349,14 @@ const { workshops } = useWorkshops();
 const dateRange = ref({
   start: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
     .toISOString()
-    .split("T")[0],
-  end: new Date().toISOString().split("T")[0],
+    .split('T')[0],
+  end: new Date().toISOString().split('T')[0],
 });
-const workshopFilter = ref("all");
+const workshopFilter = ref('all');
 
 // 车间选项
 const workshopOptions = computed(() => [
-  { label: "全部车间", value: "all" },
+  { label: '全部车间', value: 'all' },
   ...workshops.value.map((workshop) => ({
     label: workshop.name,
     value: workshop.id,
@@ -373,69 +373,69 @@ const productionStats = ref({
 
 const productionDetails = ref([
   {
-    id: "1",
-    order_no: "PO202501001",
-    product_name: "智能手机A型",
+    id: '1',
+    order_no: 'PO202501001',
+    product_name: '智能手机A型',
     planned_quantity: 1000,
     completed_quantity: 950,
-    workshop_name: "组装车间",
-    status: "completed",
+    workshop_name: '组装车间',
+    status: 'completed',
     completion_rate: 0.95,
   },
   {
-    id: "2",
-    order_no: "PO202501002",
-    product_name: "笔记本电脑B型",
+    id: '2',
+    order_no: 'PO202501002',
+    product_name: '笔记本电脑B型',
     planned_quantity: 500,
     completed_quantity: 420,
-    workshop_name: "测试车间",
-    status: "in_progress",
+    workshop_name: '测试车间',
+    status: 'in_progress',
     completion_rate: 0.84,
   },
   {
-    id: "3",
-    order_no: "PO202501003",
-    product_name: "平板电脑C型",
+    id: '3',
+    order_no: 'PO202501003',
+    product_name: '平板电脑C型',
     planned_quantity: 800,
     completed_quantity: 720,
-    workshop_name: "包装车间",
-    status: "in_progress",
+    workshop_name: '包装车间',
+    status: 'in_progress',
     completion_rate: 0.9,
   },
 ]);
 
 const topWorkshops = ref([
   {
-    id: "1",
-    name: "组装车间",
+    id: '1',
+    name: '组装车间',
     orders: 45,
     completion_rate: 95.2,
     output: 4500,
   },
   {
-    id: "2",
-    name: "测试车间",
+    id: '2',
+    name: '测试车间',
     orders: 38,
     completion_rate: 88.7,
     output: 3800,
   },
   {
-    id: "3",
-    name: "包装车间",
+    id: '3',
+    name: '包装车间',
     orders: 32,
     completion_rate: 92.1,
     output: 3200,
   },
   {
-    id: "4",
-    name: "质检车间",
+    id: '4',
+    name: '质检车间',
     orders: 28,
     completion_rate: 85.3,
     output: 2800,
   },
   {
-    id: "5",
-    name: "维修车间",
+    id: '5',
+    name: '维修车间',
     orders: 15,
     completion_rate: 78.9,
     output: 1500,
@@ -444,36 +444,36 @@ const topWorkshops = ref([
 
 const topProducts = ref([
   {
-    id: "1",
-    name: "智能手机A型",
+    id: '1',
+    name: '智能手机A型',
     orders: 25,
     total_quantity: 25_000,
     completion_rate: 96.5,
   },
   {
-    id: "2",
-    name: "笔记本电脑B型",
+    id: '2',
+    name: '笔记本电脑B型',
     orders: 18,
     total_quantity: 18_000,
     completion_rate: 89.2,
   },
   {
-    id: "3",
-    name: "平板电脑C型",
+    id: '3',
+    name: '平板电脑C型',
     orders: 15,
     total_quantity: 15_000,
     completion_rate: 91.8,
   },
   {
-    id: "4",
-    name: "智能手表D型",
+    id: '4',
+    name: '智能手表D型',
     orders: 12,
     total_quantity: 12_000,
     completion_rate: 87.3,
   },
   {
-    id: "5",
-    name: "耳机E型",
+    id: '5',
+    name: '耳机E型',
     orders: 10,
     total_quantity: 10_000,
     completion_rate: 94.1,
@@ -489,10 +489,10 @@ const exportReport = () => {};
 
 const getStatusName = (status: string) => {
   const statuses = {
-    planned: "已计划",
-    in_progress: "生产中",
-    completed: "已完成",
-    cancelled: "已取消",
+    planned: '已计划',
+    in_progress: '生产中',
+    completed: '已完成',
+    cancelled: '已取消',
   };
   return statuses[status as keyof typeof statuses] || status;
 };

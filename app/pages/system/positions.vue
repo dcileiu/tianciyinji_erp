@@ -345,16 +345,16 @@ import {
   RefreshCw,
   Search,
   Trash2,
-} from "lucide-vue-next";
-import { toast } from "vue-sonner";
+} from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "岗位管理 - ERP 管理系统",
+  title: '岗位管理 - ERP 管理系统',
 });
 
 // 状态管理
@@ -364,108 +364,108 @@ const showCreateDialog = ref(false);
 const editingPosition = ref(null as any);
 
 // 搜索和筛选
-const searchQuery = ref("");
-const departmentFilter = ref("all");
-const statusFilter = ref("all");
+const searchQuery = ref('');
+const departmentFilter = ref('all');
+const statusFilter = ref('all');
 
 // 表单数据
 const positionForm = ref({
-  code: "",
-  name: "",
-  department_id: "",
-  level: "junior",
+  code: '',
+  name: '',
+  department_id: '',
+  level: 'junior',
   min_salary: 0,
   max_salary: 0,
-  description: "",
-  requirements: "",
-  status: "active",
+  description: '',
+  requirements: '',
+  status: 'active',
 });
 
 // 选项数据
 const statusOptions = ref([
-  { label: "启用", value: "active" },
-  { label: "停用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' },
 ]);
 
 const levelOptions = ref([
-  { label: "初级", value: "junior" },
-  { label: "中级", value: "intermediate" },
-  { label: "高级", value: "senior" },
-  { label: "专家", value: "expert" },
-  { label: "主管", value: "supervisor" },
-  { label: "经理", value: "manager" },
-  { label: "总监", value: "director" },
+  { label: '初级', value: 'junior' },
+  { label: '中级', value: 'intermediate' },
+  { label: '高级', value: 'senior' },
+  { label: '专家', value: 'expert' },
+  { label: '主管', value: 'supervisor' },
+  { label: '经理', value: 'manager' },
+  { label: '总监', value: 'director' },
 ]);
 
 // 模拟数据
 const departments = ref([
-  { id: "1", name: "技术部" },
-  { id: "2", name: "销售部" },
-  { id: "3", name: "人事部" },
-  { id: "4", name: "财务部" },
-  { id: "5", name: "运营部" },
+  { id: '1', name: '技术部' },
+  { id: '2', name: '销售部' },
+  { id: '3', name: '人事部' },
+  { id: '4', name: '财务部' },
+  { id: '5', name: '运营部' },
 ]);
 
 const mockPositions = ref([
   {
-    id: "1",
-    code: "DEV001",
-    name: "前端开发工程师",
-    department_id: "1",
-    department_name: "技术部",
-    level: "intermediate",
+    id: '1',
+    code: 'DEV001',
+    name: '前端开发工程师',
+    department_id: '1',
+    department_name: '技术部',
+    level: 'intermediate',
     min_salary: 8000,
     max_salary: 15_000,
-    description: "负责前端页面开发和维护",
-    requirements: "熟悉Vue.js、React等前端框架",
+    description: '负责前端页面开发和维护',
+    requirements: '熟悉Vue.js、React等前端框架',
     employee_count: 5,
-    status: "active",
-    created_at: new Date("2024-01-01"),
+    status: 'active',
+    created_at: new Date('2024-01-01'),
   },
   {
-    id: "2",
-    code: "DEV002",
-    name: "后端开发工程师",
-    department_id: "1",
-    department_name: "技术部",
-    level: "senior",
+    id: '2',
+    code: 'DEV002',
+    name: '后端开发工程师',
+    department_id: '1',
+    department_name: '技术部',
+    level: 'senior',
     min_salary: 12_000,
     max_salary: 25_000,
-    description: "负责后端API开发和数据库设计",
-    requirements: "熟悉Java、Python、Node.js等后端技术",
+    description: '负责后端API开发和数据库设计',
+    requirements: '熟悉Java、Python、Node.js等后端技术',
     employee_count: 3,
-    status: "active",
-    created_at: new Date("2024-01-02"),
+    status: 'active',
+    created_at: new Date('2024-01-02'),
   },
   {
-    id: "3",
-    code: "SAL001",
-    name: "销售专员",
-    department_id: "2",
-    department_name: "销售部",
-    level: "junior",
+    id: '3',
+    code: 'SAL001',
+    name: '销售专员',
+    department_id: '2',
+    department_name: '销售部',
+    level: 'junior',
     min_salary: 5000,
     max_salary: 8000,
-    description: "负责客户开发和销售业务",
-    requirements: "具备良好的沟通能力和销售技巧",
+    description: '负责客户开发和销售业务',
+    requirements: '具备良好的沟通能力和销售技巧',
     employee_count: 8,
-    status: "active",
-    created_at: new Date("2024-01-03"),
+    status: 'active',
+    created_at: new Date('2024-01-03'),
   },
   {
-    id: "4",
-    code: "HR001",
-    name: "人事专员",
-    department_id: "3",
-    department_name: "人事部",
-    level: "intermediate",
+    id: '4',
+    code: 'HR001',
+    name: '人事专员',
+    department_id: '3',
+    department_name: '人事部',
+    level: 'intermediate',
     min_salary: 6000,
     max_salary: 10_000,
-    description: "负责招聘、培训和员工关系维护",
-    requirements: "熟悉人力资源管理相关法规",
+    description: '负责招聘、培训和员工关系维护',
+    requirements: '熟悉人力资源管理相关法规',
     employee_count: 2,
-    status: "active",
-    created_at: new Date("2024-01-04"),
+    status: 'active',
+    created_at: new Date('2024-01-04'),
   },
 ]);
 
@@ -482,13 +482,13 @@ const filteredPositions = computed(() => {
     );
   }
 
-  if (departmentFilter.value && departmentFilter.value !== "all") {
+  if (departmentFilter.value && departmentFilter.value !== 'all') {
     result = result.filter(
       (position) => position.department_id === departmentFilter.value
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(
       (position) => position.status === statusFilter.value
     );
@@ -499,13 +499,13 @@ const filteredPositions = computed(() => {
 
 // 类型映射
 const levelMap: Record<string, string> = {
-  junior: "初级",
-  intermediate: "中级",
-  senior: "高级",
-  expert: "专家",
-  supervisor: "主管",
-  manager: "经理",
-  director: "总监",
+  junior: '初级',
+  intermediate: '中级',
+  senior: '高级',
+  expert: '专家',
+  supervisor: '主管',
+  manager: '经理',
+  director: '总监',
 };
 
 // 方法
@@ -513,24 +513,24 @@ const getLevelDisplayName = (level: string) => levelMap[level] || level;
 
 const getLevelSeverity = (
   level: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   const severityMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    junior: "secondary",
-    intermediate: "default",
-    senior: "outline",
-    expert: "destructive",
-    manager: "default",
+    junior: 'secondary',
+    intermediate: 'default',
+    senior: 'outline',
+    expert: 'destructive',
+    manager: 'default',
   };
-  return severityMap[level] || "secondary";
+  return severityMap[level] || 'secondary';
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  departmentFilter.value = "all";
-  statusFilter.value = "all";
+  searchQuery.value = '';
+  departmentFilter.value = 'all';
+  statusFilter.value = 'all';
 };
 
 const viewPosition = (_position: any) => {};
@@ -553,15 +553,15 @@ const closeDialog = () => {
   showCreateDialog.value = false;
   editingPosition.value = null;
   Object.assign(positionForm.value, {
-    code: "",
-    name: "",
-    department_id: "",
-    level: "junior",
+    code: '',
+    name: '',
+    department_id: '',
+    level: 'junior',
     min_salary: 0,
     max_salary: 0,
-    description: "",
-    requirements: "",
-    status: "active",
+    description: '',
+    requirements: '',
+    status: 'active',
   });
 };
 
@@ -578,13 +578,13 @@ const savePosition = () => {
       mockPositions.value[index] = {
         ...mockPositions.value[index],
         ...positionForm.value,
-        id: mockPositions.value[index]?.id || "",
+        id: mockPositions.value[index]?.id || '',
         employee_count: mockPositions.value[index]?.employee_count || 0,
         created_at: mockPositions.value[index]?.created_at || new Date(),
-        department_name: department?.name || "",
+        department_name: department?.name || '',
       };
     }
-    toast.success("岗位更新成功");
+    toast.success('岗位更新成功');
   } else {
     // 添加新岗位
     const department = departments.value.find(
@@ -593,12 +593,12 @@ const savePosition = () => {
     const newPosition = {
       id: Date.now().toString(),
       ...positionForm.value,
-      department_name: department?.name || "",
+      department_name: department?.name || '',
       employee_count: 0,
       created_at: new Date(),
     };
     mockPositions.value.push(newPosition);
-    toast.success("岗位创建成功");
+    toast.success('岗位创建成功');
   }
 
   closeDialog();
@@ -614,7 +614,7 @@ const deletePosition = (positionId: string) => {
   mockPositions.value = mockPositions.value.filter(
     (position) => position.id !== positionId
   );
-  toast.success("岗位删除成功");
+  toast.success('岗位删除成功');
 };
 
 // 初始化

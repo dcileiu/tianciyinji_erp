@@ -448,15 +448,15 @@ import {
   Plus,
   Search,
   Trash2,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "收款单管理 - ERP 管理系统",
+  title: '收款单管理 - ERP 管理系统',
 });
 
 // 响应式数据
@@ -464,44 +464,44 @@ const loading = ref(false);
 const saving = ref(false);
 const showCreateDialog = ref(false);
 const editingReceipt = ref<any>(null);
-const dialogMode = ref("create");
+const dialogMode = ref('create');
 
 // 收款单表单初始化函数
 const initReceiptForm = () => ({
-  receipt_no: "",
-  receipt_date: new Date().toISOString().split("T")[0],
-  customer_id: "",
+  receipt_no: '',
+  receipt_date: new Date().toISOString().split('T')[0],
+  customer_id: '',
   amount: 0,
-  payment_method: "",
-  receiver_account: "",
-  status: "draft",
-  remark: "",
+  payment_method: '',
+  receiver_account: '',
+  status: 'draft',
+  remark: '',
   created_at: new Date(),
   updated_at: new Date(),
 });
 
 // 搜索筛选
-const searchQuery = ref("");
-const statusFilter = ref("");
-const paymentMethodFilter = ref("");
+const searchQuery = ref('');
+const statusFilter = ref('');
+const paymentMethodFilter = ref('');
 const dateRange = ref<string | undefined>(undefined);
 
 // 状态选项
 const statusOptions = ref([
-  { label: "全部状态", value: "all" },
-  { label: "草稿", value: "draft" },
-  { label: "已确认", value: "confirmed" },
-  { label: "已取消", value: "cancelled" },
+  { label: '全部状态', value: 'all' },
+  { label: '草稿', value: 'draft' },
+  { label: '已确认', value: 'confirmed' },
+  { label: '已取消', value: 'cancelled' },
 ]);
 
 // 收款方式选项
 const paymentMethodOptions = ref([
-  { label: "全部方式", value: "all" },
-  { label: "银行转账", value: "bank_transfer" },
-  { label: "现金", value: "cash" },
-  { label: "支票", value: "check" },
-  { label: "支付宝", value: "alipay" },
-  { label: "微信", value: "wechat" },
+  { label: '全部方式', value: 'all' },
+  { label: '银行转账', value: 'bank_transfer' },
+  { label: '现金', value: 'cash' },
+  { label: '支票', value: 'check' },
+  { label: '支付宝', value: 'alipay' },
+  { label: '微信', value: 'wechat' },
 ]);
 
 // 收款单表单
@@ -510,37 +510,37 @@ const receiptForm = ref(initReceiptForm());
 // 模拟数据
 const receipts = ref([
   {
-    id: "1",
-    receipt_no: "REC202501001",
-    customer_id: "C001",
-    customer_name: "苏州华智科技有限公司",
-    receipt_date: "2025-01-15",
+    id: '1',
+    receipt_no: 'REC202501001',
+    customer_id: 'C001',
+    customer_name: '苏州华智科技有限公司',
+    receipt_date: '2025-01-15',
     amount: 150_000,
-    payment_method: "bank_transfer",
-    receiver_account: "6222021234567890",
-    status: "confirmed",
-    remark: "销售订单回款",
-    created_at: "2025-01-15T10:00:00Z",
+    payment_method: 'bank_transfer',
+    receiver_account: '6222021234567890',
+    status: 'confirmed',
+    remark: '销售订单回款',
+    created_at: '2025-01-15T10:00:00Z',
   },
   {
-    id: "2",
-    receipt_no: "REC202501002",
-    customer_id: "C002",
-    customer_name: "上海浦东制造有限公司",
-    receipt_date: "2025-01-16",
+    id: '2',
+    receipt_no: 'REC202501002',
+    customer_id: 'C002',
+    customer_name: '上海浦东制造有限公司',
+    receipt_date: '2025-01-16',
     amount: 88_000,
-    payment_method: "cash",
-    receiver_account: "",
-    status: "draft",
-    remark: "现金收款",
-    created_at: "2025-01-16T14:30:00Z",
+    payment_method: 'cash',
+    receiver_account: '',
+    status: 'draft',
+    remark: '现金收款',
+    created_at: '2025-01-16T14:30:00Z',
   },
 ]);
 
 const customers = ref([
-  { id: "C001", name: "苏州华智科技有限公司" },
-  { id: "C002", name: "上海浦东制造有限公司" },
-  { id: "C003", name: "北京智能设备有限公司" },
+  { id: 'C001', name: '苏州华智科技有限公司' },
+  { id: 'C002', name: '上海浦东制造有限公司' },
+  { id: 'C003', name: '北京智能设备有限公司' },
 ]);
 
 const receiptStats = ref({
@@ -563,11 +563,11 @@ const filteredReceipts = computed(() => {
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((receipt) => receipt.status === statusFilter.value);
   }
 
-  if (paymentMethodFilter.value && paymentMethodFilter.value !== "all") {
+  if (paymentMethodFilter.value && paymentMethodFilter.value !== 'all') {
     result = result.filter(
       (receipt) => receipt.payment_method === paymentMethodFilter.value
     );
@@ -585,53 +585,53 @@ const totalAmount = computed(() => {
 
 // 工具函数
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("zh-CN").format(amount || 0);
+  return new Intl.NumberFormat('zh-CN').format(amount || 0);
 };
 
 const formatDate = (date: string) => {
   if (!date) {
-    return "";
+    return '';
   }
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   }).format(new Date(date));
 };
 
 const getStatusName = (status: string) => {
   const nameMap: Record<string, string> = {
-    draft: "草稿",
-    confirmed: "已确认",
-    cancelled: "已取消",
+    draft: '草稿',
+    confirmed: '已确认',
+    cancelled: '已取消',
   };
   return nameMap[status] || status;
 };
 
 const getPaymentMethodName = (method: string) => {
   const nameMap: Record<string, string> = {
-    cash: "现金",
-    bank_transfer: "银行转账",
-    check: "支票",
-    alipay: "支付宝",
-    wechat: "微信",
-    other: "其他",
+    cash: '现金',
+    bank_transfer: '银行转账',
+    check: '支票',
+    alipay: '支付宝',
+    wechat: '微信',
+    other: '其他',
   };
   return nameMap[method] || method;
 };
 
 const getStatusVariant = (
   status: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    draft: "secondary",
-    confirmed: "default",
-    cancelled: "destructive",
+    draft: 'secondary',
+    confirmed: 'default',
+    cancelled: 'destructive',
   };
-  return variantMap[status] || "secondary";
+  return variantMap[status] || 'secondary';
 };
 
 // 收款单操作
@@ -647,7 +647,7 @@ const confirmReceipt = async (id: string) => {
   try {
     const receipt = receipts.value.find((r) => r.id === id);
     if (receipt) {
-      receipt.status = "confirmed";
+      receipt.status = 'confirmed';
     }
   } catch (_err) {}
 };
@@ -668,7 +668,7 @@ const confirmDeleteReceipt = (receipt: any) => {
 const closeCreateDialog = () => {
   showCreateDialog.value = false;
   editingReceipt.value = null;
-  dialogMode.value = "create";
+  dialogMode.value = 'create';
   receiptForm.value = initReceiptForm();
 };
 
@@ -711,9 +711,9 @@ const saveReceipt = async () => {
 
 // 其他操作
 const resetFilters = () => {
-  searchQuery.value = "";
-  statusFilter.value = "all";
-  paymentMethodFilter.value = "all";
+  searchQuery.value = '';
+  statusFilter.value = 'all';
+  paymentMethodFilter.value = 'all';
   dateRange.value = undefined;
 };
 

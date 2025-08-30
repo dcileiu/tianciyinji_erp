@@ -573,22 +573,22 @@ import {
   ShoppingCart,
   Star,
   X,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "供应商管理 - ERP 管理系统",
+  title: '供应商管理 - ERP 管理系统',
 });
 
 // 状态管理
 const loading = ref(false);
 const saving = ref(false);
 const showSupplierDialog = ref(false);
-const dialogMode = ref<"view" | "create" | "edit">("view");
+const dialogMode = ref<'view' | 'create' | 'edit'>('view');
 const editingSupplier = ref(null as any);
 const selectedSuppliers = ref<string[]>([]);
 
@@ -597,48 +597,48 @@ const currentPage = ref(1);
 const pageSize = ref(20);
 
 // 筛选条件
-const searchQuery = ref("");
-const typeFilter = ref("all");
-const statusFilter = ref("all");
-const ratingFilter = ref("all");
+const searchQuery = ref('');
+const typeFilter = ref('all');
+const statusFilter = ref('all');
+const ratingFilter = ref('all');
 
 // 表单数据
 const supplierForm = ref({
-  supplier_no: "",
-  name: "",
-  type: "",
-  rating: "",
-  contact_person: "",
-  phone: "",
-  email: "",
-  address: "",
-  status: "active",
-  notes: "",
+  supplier_no: '',
+  name: '',
+  type: '',
+  rating: '',
+  contact_person: '',
+  phone: '',
+  email: '',
+  address: '',
+  status: 'active',
+  notes: '',
 });
 
 // 选项数据
 const typeOptions = ref([
-  { label: "全部类型", value: "all" },
-  { label: "原材料供应商", value: "raw_material" },
-  { label: "设备供应商", value: "equipment" },
-  { label: "服务供应商", value: "service" },
-  { label: "物流供应商", value: "logistics" },
+  { label: '全部类型', value: 'all' },
+  { label: '原材料供应商', value: 'raw_material' },
+  { label: '设备供应商', value: 'equipment' },
+  { label: '服务供应商', value: 'service' },
+  { label: '物流供应商', value: 'logistics' },
 ]);
 
 const statusOptions = ref([
-  { label: "全部状态", value: "all" },
-  { label: "正常合作", value: "active" },
-  { label: "暂停合作", value: "suspended" },
-  { label: "终止合作", value: "terminated" },
-  { label: "潜在供应商", value: "potential" },
+  { label: '全部状态', value: 'all' },
+  { label: '正常合作', value: 'active' },
+  { label: '暂停合作', value: 'suspended' },
+  { label: '终止合作', value: 'terminated' },
+  { label: '潜在供应商', value: 'potential' },
 ]);
 
 const ratingOptions = ref([
-  { label: "全部评级", value: "all" },
-  { label: "A级", value: "A" },
-  { label: "B级", value: "B" },
-  { label: "C级", value: "C" },
-  { label: "D级", value: "D" },
+  { label: '全部评级', value: 'all' },
+  { label: 'A级', value: 'A' },
+  { label: 'B级', value: 'B' },
+  { label: 'C级', value: 'C' },
+  { label: 'D级', value: 'D' },
 ]);
 
 // 统计数据
@@ -652,52 +652,52 @@ const stats = ref({
 // 模拟数据
 const mockSuppliers = ref([
   {
-    id: "1",
-    supplier_no: "SUP-001",
-    name: "ABC材料供应公司",
-    type: "raw_material",
-    rating: "A",
-    contact_person: "王经理",
-    phone: "010-12345678",
-    email: "wang@abc.com",
-    address: "北京市朝阳区工业园区",
+    id: '1',
+    supplier_no: 'SUP-001',
+    name: 'ABC材料供应公司',
+    type: 'raw_material',
+    rating: 'A',
+    contact_person: '王经理',
+    phone: '010-12345678',
+    email: 'wang@abc.com',
+    address: '北京市朝阳区工业园区',
     total_orders: 45,
     total_amount: 850_000,
-    status: "active",
-    created_at: new Date("2024-01-15"),
-    notes: "优质供应商，长期合作伙伴",
+    status: 'active',
+    created_at: new Date('2024-01-15'),
+    notes: '优质供应商，长期合作伙伴',
   },
   {
-    id: "2",
-    supplier_no: "SUP-002",
-    name: "XYZ设备制造厂",
-    type: "equipment",
-    rating: "B",
-    contact_person: "李总",
-    phone: "021-87654321",
-    email: "li@xyz.com",
-    address: "上海市浦东新区制造基地",
+    id: '2',
+    supplier_no: 'SUP-002',
+    name: 'XYZ设备制造厂',
+    type: 'equipment',
+    rating: 'B',
+    contact_person: '李总',
+    phone: '021-87654321',
+    email: 'li@xyz.com',
+    address: '上海市浦东新区制造基地',
     total_orders: 28,
     total_amount: 650_000,
-    status: "active",
-    created_at: new Date("2024-01-10"),
-    notes: "设备质量稳定，价格合理",
+    status: 'active',
+    created_at: new Date('2024-01-10'),
+    notes: '设备质量稳定，价格合理',
   },
   {
-    id: "3",
-    supplier_no: "SUP-003",
-    name: "快递物流服务有限公司",
-    type: "logistics",
-    rating: "A",
-    contact_person: "张主管",
-    phone: "400-123456",
-    email: "zhang@logistics.com",
-    address: "广州市天河区物流园",
+    id: '3',
+    supplier_no: 'SUP-003',
+    name: '快递物流服务有限公司',
+    type: 'logistics',
+    rating: 'A',
+    contact_person: '张主管',
+    phone: '400-123456',
+    email: 'zhang@logistics.com',
+    address: '广州市天河区物流园',
     total_orders: 67,
     total_amount: 320_000,
-    status: "active",
-    created_at: new Date("2024-01-05"),
-    notes: "物流效率高，服务好",
+    status: 'active',
+    created_at: new Date('2024-01-05'),
+    notes: '物流效率高，服务好',
   },
 ]);
 
@@ -715,17 +715,17 @@ const filteredSuppliers = computed(() => {
     );
   }
 
-  if (typeFilter.value && typeFilter.value !== "all") {
+  if (typeFilter.value && typeFilter.value !== 'all') {
     result = result.filter((supplier) => supplier.type === typeFilter.value);
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter(
       (supplier) => supplier.status === statusFilter.value
     );
   }
 
-  if (ratingFilter.value && ratingFilter.value !== "all") {
+  if (ratingFilter.value && ratingFilter.value !== 'all') {
     result = result.filter(
       (supplier) => supplier.rating === ratingFilter.value
     );
@@ -746,57 +746,57 @@ const paginatedSuppliers = computed(() => {
 
 // 映射对象
 const typeMap: Record<string, string> = {
-  raw_material: "原材料供应商",
-  equipment: "设备供应商",
-  service: "服务供应商",
-  logistics: "物流供应商",
+  raw_material: '原材料供应商',
+  equipment: '设备供应商',
+  service: '服务供应商',
+  logistics: '物流供应商',
 };
 
 const typeSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  raw_material: "secondary",
-  equipment: "default",
-  service: "outline",
-  logistics: "secondary",
+  raw_material: 'secondary',
+  equipment: 'default',
+  service: 'outline',
+  logistics: 'secondary',
 };
 
 const statusMap: Record<string, string> = {
-  active: "正常合作",
-  suspended: "暂停合作",
-  terminated: "终止合作",
-  potential: "潜在供应商",
+  active: '正常合作',
+  suspended: '暂停合作',
+  terminated: '终止合作',
+  potential: '潜在供应商',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  active: "default",
-  suspended: "outline",
-  terminated: "destructive",
-  potential: "secondary",
+  active: 'default',
+  suspended: 'outline',
+  terminated: 'destructive',
+  potential: 'secondary',
 };
 
 const ratingSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  A: "default",
-  B: "secondary",
-  C: "outline",
-  D: "destructive",
+  A: 'default',
+  B: 'secondary',
+  C: 'outline',
+  D: 'destructive',
 };
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type;
-const getTypeSeverity = (type: string) => typeSeverityMap[type] || "secondary";
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'secondary';
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 const getStatusSeverity = (status: string) =>
-  statusSeverityMap[status] || "secondary";
+  statusSeverityMap[status] || 'secondary';
 const getRatingSeverity = (rating: string) =>
-  ratingSeverityMap[rating] || "secondary";
+  ratingSeverityMap[rating] || 'secondary';
 
 const toggleSelectAll = (checked: boolean) => {
   if (checked) {
@@ -829,32 +829,32 @@ const nextPage = () => {
 
 const openCreateForm = () => {
   editingSupplier.value = null;
-  dialogMode.value = "create";
+  dialogMode.value = 'create';
   supplierForm.value = {
     supplier_no: `SUP-${Date.now()}`,
-    name: "",
-    type: "",
-    rating: "",
-    contact_person: "",
-    phone: "",
-    email: "",
-    address: "",
-    status: "active",
-    notes: "",
+    name: '',
+    type: '',
+    rating: '',
+    contact_person: '',
+    phone: '',
+    email: '',
+    address: '',
+    status: 'active',
+    notes: '',
   };
   showSupplierDialog.value = true;
 };
 
 const viewSupplier = (supplier: any) => {
   editingSupplier.value = supplier;
-  dialogMode.value = "view";
+  dialogMode.value = 'view';
   Object.assign(supplierForm.value, supplier);
   showSupplierDialog.value = true;
 };
 
 const editSupplier = (supplier: any) => {
   editingSupplier.value = supplier;
-  dialogMode.value = "edit";
+  dialogMode.value = 'edit';
   Object.assign(supplierForm.value, supplier);
   showSupplierDialog.value = true;
 };
@@ -889,7 +889,7 @@ const saveSupplier = async () => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (dialogMode.value === "create") {
+    if (dialogMode.value === 'create') {
       const newSupplier = {
         id: Date.now().toString(),
         ...supplierForm.value,
@@ -898,7 +898,7 @@ const saveSupplier = async () => {
         created_at: new Date(),
       };
       mockSuppliers.value.push(newSupplier);
-    } else if (dialogMode.value === "edit") {
+    } else if (dialogMode.value === 'edit') {
       const index = mockSuppliers.value.findIndex(
         (s) => s.id === editingSupplier.value?.id
       );

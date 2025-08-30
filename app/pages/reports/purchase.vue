@@ -343,15 +343,15 @@ import {
   ShoppingBag,
   TrendingUp,
   Users,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "采购报表 - ERP 管理系统",
+  title: '采购报表 - ERP 管理系统',
 });
 
 // 状态管理
@@ -361,16 +361,16 @@ const loading = ref(false);
 const dateRange = ref({
   start: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
     .toISOString()
-    .split("T")[0],
-  end: new Date().toISOString().split("T")[0],
+    .split('T')[0],
+  end: new Date().toISOString().split('T')[0],
 });
-const supplierFilter = ref("all");
+const supplierFilter = ref('all');
 
 // 选项数据
 const supplierOptions = ref([
-  { label: "ABC供应商", value: "supplier-1" },
-  { label: "XYZ材料厂", value: "supplier-2" },
-  { label: "优质零件公司", value: "supplier-3" },
+  { label: 'ABC供应商', value: 'supplier-1' },
+  { label: 'XYZ材料厂', value: 'supplier-2' },
+  { label: '优质零件公司', value: 'supplier-3' },
 ]);
 
 // 统计数据
@@ -388,28 +388,28 @@ const purchaseStats = ref({
 // 模拟数据
 const purchaseDetails = ref([
   {
-    id: "1",
-    order_no: "PO-2024-001",
-    supplier_name: "ABC供应商",
-    product_name: "钢材料",
+    id: '1',
+    order_no: 'PO-2024-001',
+    supplier_name: 'ABC供应商',
+    product_name: '钢材料',
     quantity: 1000,
     unit_price: 25,
     total_amount: 25_000,
-    status: "completed",
-    order_date: new Date("2024-01-15"),
-    delivery_date: new Date("2024-01-20"),
+    status: 'completed',
+    order_date: new Date('2024-01-15'),
+    delivery_date: new Date('2024-01-20'),
   },
   {
-    id: "2",
-    order_no: "PO-2024-002",
-    supplier_name: "XYZ材料厂",
-    product_name: "电子元件",
+    id: '2',
+    order_no: 'PO-2024-002',
+    supplier_name: 'XYZ材料厂',
+    product_name: '电子元件',
     quantity: 500,
     unit_price: 120,
     total_amount: 60_000,
-    status: "pending",
-    order_date: new Date("2024-01-18"),
-    delivery_date: new Date("2024-01-25"),
+    status: 'pending',
+    order_date: new Date('2024-01-18'),
+    delivery_date: new Date('2024-01-25'),
   },
 ]);
 
@@ -429,47 +429,47 @@ const avgOrderAmount = computed(() => {
 
 // 映射对象
 const statusMap: Record<string, string> = {
-  pending: "待处理",
-  confirmed: "已确认",
-  shipped: "已发货",
-  completed: "已完成",
-  cancelled: "已取消",
+  pending: '待处理',
+  confirmed: '已确认',
+  shipped: '已发货',
+  completed: '已完成',
+  cancelled: '已取消',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  pending: "outline",
-  confirmed: "secondary",
-  shipped: "secondary",
-  completed: "default",
-  cancelled: "destructive",
+  pending: 'outline',
+  confirmed: 'secondary',
+  shipped: 'secondary',
+  completed: 'default',
+  cancelled: 'destructive',
 };
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 const getStatusVariant = (
   status: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   switch (status) {
-    case "pending":
-      return "secondary";
-    case "confirmed":
-      return "default";
-    case "shipped":
-      return "default";
-    case "delivered":
-      return "default";
-    case "cancelled":
-      return "destructive";
+    case 'pending':
+      return 'secondary';
+    case 'confirmed':
+      return 'default';
+    case 'shipped':
+      return 'default';
+    case 'delivered':
+      return 'default';
+    case 'cancelled':
+      return 'destructive';
     default:
-      return "default";
+      return 'default';
   }
 };
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("zh-CN");
+  return new Date(date).toLocaleDateString('zh-CN');
 };
 
 const applyFilters = () => {

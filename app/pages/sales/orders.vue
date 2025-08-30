@@ -536,154 +536,158 @@ import {
   Trash2,
   TrendingUp,
   Upload,
-} from "lucide-vue-next"
+} from 'lucide-vue-next';
 
 // 导入日期范围组件
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { RangeCalendar } from "@/components/ui/range-calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { RangeCalendar } from '@/components/ui/range-calendar';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
-})
+  layout: 'default',
+});
 
 useHead({
-  title: "销售订单 - 智能ERP管理系统",
-})
+  title: '销售订单 - 智能ERP管理系统',
+});
 
 // 页面状态
-const loading = ref(false)
-const saving = ref(false)
-const searchKeyword = ref("")
-const selectedStatus = ref("all")
+const loading = ref(false);
+const saving = ref(false);
+const searchKeyword = ref('');
+const selectedStatus = ref('all');
 const dateRange = ref({
-  start: "",
-  end: "",
-})
-const dateRangeValue = ref()
-const pageSize = ref("20")
-const currentPage = ref(1)
+  start: '',
+  end: '',
+});
+const dateRangeValue = ref();
+const pageSize = ref('20');
+const currentPage = ref(1);
 
 // 对话框状态
-const showOrderModal = ref(false)
-const showDeleteDialog = ref(false)
-const isEditing = ref(false)
+const showOrderModal = ref(false);
+const showDeleteDialog = ref(false);
+const isEditing = ref(false);
 
 interface Order {
-  id: string
-  orderNo: string
-  customerName: string
-  amount: number
-  status: string
-  orderDate: Date
-  deliveryDate: Date
-  remarks: string
-  created_at: Date
-  updated_at: Date
+  id: string;
+  orderNo: string;
+  customerName: string;
+  amount: number;
+  status: string;
+  orderDate: Date;
+  deliveryDate: Date;
+  remarks: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
-const deleteTarget = ref<Order | null>(null)
+const deleteTarget = ref<Order | null>(null);
 
 // 当前编辑的订单
 const currentOrder = ref({
-  id: "",
-  orderNo: "",
-  customerName: "",
+  id: '',
+  orderNo: '',
+  customerName: '',
   amount: 0,
-  status: "pending",
-  orderDate: new Date().toISOString().split("T")[0],
-  deliveryDate: new Date().toISOString().split("T")[0],
-  remarks: "",
+  status: 'pending',
+  orderDate: new Date().toISOString().split('T')[0],
+  deliveryDate: new Date().toISOString().split('T')[0],
+  remarks: '',
   created_at: new Date(),
   updated_at: new Date(),
-})
+});
 
 // 模拟订单数据
 const orders = ref([
   {
-    id: "1",
-    orderNo: "SO-2025-001",
-    customerName: "苏州华智科技有限公司",
+    id: '1',
+    orderNo: 'SO-2025-001',
+    customerName: '苏州华智科技有限公司',
     amount: 125_420,
-    status: "confirmed",
-    orderDate: new Date("2025-01-15"),
-    deliveryDate: new Date("2025-01-25"),
-    remarks: "加急订单，请尽快处理",
-    created_at: new Date("2025-01-15"),
-    updated_at: new Date("2025-01-15"),
+    status: 'confirmed',
+    orderDate: new Date('2025-01-15'),
+    deliveryDate: new Date('2025-01-25'),
+    remarks: '加急订单，请尽快处理',
+    created_at: new Date('2025-01-15'),
+    updated_at: new Date('2025-01-15'),
   },
   {
-    id: "2",
-    orderNo: "SO-2025-002",
-    customerName: "上海浦东制造有限公司",
+    id: '2',
+    orderNo: 'SO-2025-002',
+    customerName: '上海浦东制造有限公司',
     amount: 89_500,
-    status: "pending",
-    orderDate: new Date("2025-01-16"),
-    deliveryDate: new Date("2025-01-30"),
-    remarks: "常规订单",
-    created_at: new Date("2025-01-16"),
-    updated_at: new Date("2025-01-16"),
+    status: 'pending',
+    orderDate: new Date('2025-01-16'),
+    deliveryDate: new Date('2025-01-30'),
+    remarks: '常规订单',
+    created_at: new Date('2025-01-16'),
+    updated_at: new Date('2025-01-16'),
   },
   {
-    id: "3",
-    orderNo: "SO-2025-003",
-    customerName: "北京智能设备有限公司",
+    id: '3',
+    orderNo: 'SO-2025-003',
+    customerName: '北京智能设备有限公司',
     amount: 67_800,
-    status: "shipped",
-    orderDate: new Date("2025-01-17"),
-    deliveryDate: new Date("2025-01-27"),
-    remarks: "",
-    created_at: new Date("2025-01-17"),
-    updated_at: new Date("2025-01-17"),
+    status: 'shipped',
+    orderDate: new Date('2025-01-17'),
+    deliveryDate: new Date('2025-01-27'),
+    remarks: '',
+    created_at: new Date('2025-01-17'),
+    updated_at: new Date('2025-01-17'),
   },
   {
-    id: "4",
-    orderNo: "SO-2025-004",
-    customerName: "深圳创新科技有限公司",
+    id: '4',
+    orderNo: 'SO-2025-004',
+    customerName: '深圳创新科技有限公司',
     amount: 234_500,
-    status: "production",
-    orderDate: new Date("2025-01-18"),
-    deliveryDate: new Date("2025-02-05"),
-    remarks: "大批量订单，分批交付",
-    created_at: new Date("2025-01-18"),
-    updated_at: new Date("2025-01-18"),
+    status: 'production',
+    orderDate: new Date('2025-01-18'),
+    deliveryDate: new Date('2025-02-05'),
+    remarks: '大批量订单，分批交付',
+    created_at: new Date('2025-01-18'),
+    updated_at: new Date('2025-01-18'),
   },
   {
-    id: "5",
-    orderNo: "SO-2025-005",
-    customerName: "广州精密制造有限公司",
+    id: '5',
+    orderNo: 'SO-2025-005',
+    customerName: '广州精密制造有限公司',
     amount: 156_780,
-    status: "delivered",
-    orderDate: new Date("2025-01-19"),
-    deliveryDate: new Date("2025-01-28"),
-    remarks: "已完成交付，客户满意",
-    created_at: new Date("2025-01-19"),
-    updated_at: new Date("2025-01-19"),
+    status: 'delivered',
+    orderDate: new Date('2025-01-19'),
+    deliveryDate: new Date('2025-01-28'),
+    remarks: '已完成交付，客户满意',
+    created_at: new Date('2025-01-19'),
+    updated_at: new Date('2025-01-19'),
   },
-])
+]);
 
 // 状态选项
 const statusOptions = [
-  { label: "待确认", value: "pending" },
-  { label: "已确认", value: "confirmed" },
-  { label: "生产中", value: "production" },
-  { label: "已发货", value: "shipped" },
-  { label: "已完成", value: "delivered" },
-  { label: "已取消", value: "cancelled" },
-]
+  { label: '待确认', value: 'pending' },
+  { label: '已确认', value: 'confirmed' },
+  { label: '生产中', value: 'production' },
+  { label: '已发货', value: 'shipped' },
+  { label: '已完成', value: 'delivered' },
+  { label: '已取消', value: 'cancelled' },
+];
 
 // 客户选项
 const customerOptions = [
-  { label: "苏州华智科技有限公司", value: "苏州华智科技有限公司" },
-  { label: "上海浦东制造有限公司", value: "上海浦东制造有限公司" },
-  { label: "北京智能设备有限公司", value: "北京智能设备有限公司" },
-  { label: "深圳创新科技有限公司", value: "深圳创新科技有限公司" },
-  { label: "广州精密制造有限公司", value: "广州精密制造有限公司" },
-]
+  { label: '苏州华智科技有限公司', value: '苏州华智科技有限公司' },
+  { label: '上海浦东制造有限公司', value: '上海浦东制造有限公司' },
+  { label: '北京智能设备有限公司', value: '北京智能设备有限公司' },
+  { label: '深圳创新科技有限公司', value: '深圳创新科技有限公司' },
+  { label: '广州精密制造有限公司', value: '广州精密制造有限公司' },
+];
 
 // 计算属性
 const filteredOrders = computed(() => {
-  let result = orders.value
+  let result = orders.value;
 
   if (searchKeyword.value) {
     result = result.filter(
@@ -694,214 +698,214 @@ const filteredOrders = computed(() => {
         order.customerName
           .toLowerCase()
           .includes(searchKeyword.value.toLowerCase())
-    )
+    );
   }
 
-  if (selectedStatus.value && selectedStatus.value !== "all") {
-    result = result.filter((order) => order.status === selectedStatus.value)
+  if (selectedStatus.value && selectedStatus.value !== 'all') {
+    result = result.filter((order) => order.status === selectedStatus.value);
   }
 
   if (dateRange.value.start && dateRange.value.end) {
-    const startDate = new Date(dateRange.value.start)
-    const endDate = new Date(dateRange.value.end)
+    const startDate = new Date(dateRange.value.start);
+    const endDate = new Date(dateRange.value.end);
     result = result.filter((order) => {
-      const orderDate = new Date(order.orderDate)
-      return orderDate >= startDate && orderDate <= endDate
-    })
+      const orderDate = new Date(order.orderDate);
+      return orderDate >= startDate && orderDate <= endDate;
+    });
   }
 
-  return result
-})
+  return result;
+});
 
 const paginatedOrders = computed(() => {
-  const start = (currentPage.value - 1) * Number(pageSize.value)
-  const end = start + Number(pageSize.value)
-  return filteredOrders.value.slice(start, end)
-})
+  const start = (currentPage.value - 1) * Number(pageSize.value);
+  const end = start + Number(pageSize.value);
+  return filteredOrders.value.slice(start, end);
+});
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredOrders.value.length / Number(pageSize.value))
-})
+  return Math.ceil(filteredOrders.value.length / Number(pageSize.value));
+});
 
 const pendingOrdersCount = computed(() => {
-  return orders.value.filter((o) => o.status === "pending").length
-})
+  return orders.value.filter((o) => o.status === 'pending').length;
+});
 
 const totalAmount = computed(() => {
-  return filteredOrders.value.reduce((sum, order) => sum + order.amount, 0)
-})
+  return filteredOrders.value.reduce((sum, order) => sum + order.amount, 0);
+});
 
 const modalTitle = computed(() => {
-  return isEditing.value ? "编辑订单" : "新建订单"
-})
+  return isEditing.value ? '编辑订单' : '新建订单';
+});
 
 // 方法
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    pending: "待确认",
-    confirmed: "已确认",
-    production: "生产中",
-    shipped: "已发货",
-    delivered: "已完成",
-    cancelled: "已取消",
-  }
-  return statusMap[status] || status
-}
+    pending: '待确认',
+    confirmed: '已确认',
+    production: '生产中',
+    shipped: '已发货',
+    delivered: '已完成',
+    cancelled: '已取消',
+  };
+  return statusMap[status] || status;
+};
 
 const getStatusVariant = (status: string) => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    pending: "outline",
-    confirmed: "secondary",
-    production: "secondary",
-    shipped: "default",
-    delivered: "default",
-    cancelled: "destructive",
-  }
-  return variantMap[status] || "secondary"
-}
+    pending: 'outline',
+    confirmed: 'secondary',
+    production: 'secondary',
+    shipped: 'default',
+    delivered: 'default',
+    cancelled: 'destructive',
+  };
+  return variantMap[status] || 'secondary';
+};
 
 const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(date))
-}
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date(date));
+};
 
 const formatTimeAgo = (date: Date) => {
-  const now = new Date()
-  const diffTime = now.getTime() - new Date(date).getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  const now = new Date();
+  const diffTime = now.getTime() - new Date(date).getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) {
-    return "今天"
+    return '今天';
   }
   if (diffDays === 1) {
-    return "昨天"
+    return '昨天';
   }
   if (diffDays < 7) {
-    return `${diffDays}天前`
+    return `${diffDays}天前`;
   }
   if (diffDays < 30) {
-    return `${Math.floor(diffDays / 7)}周前`
+    return `${Math.floor(diffDays / 7)}周前`;
   }
-  return `${Math.floor(diffDays / 30)}月前`
-}
+  return `${Math.floor(diffDays / 30)}月前`;
+};
 
 const updateDateRange = (range: any) => {
   if (range?.start && range?.end) {
     dateRange.value = {
       start: range.start.toString().split('T')[0],
-      end: range.end.toString().split('T')[0]
-    }
+      end: range.end.toString().split('T')[0],
+    };
   }
-}
+};
 
 const clearDateRange = () => {
-  dateRange.value = { start: "", end: "" }
-  dateRangeValue.value = undefined
-}
+  dateRange.value = { start: '', end: '' };
+  dateRangeValue.value = undefined;
+};
 
 const resetFilters = () => {
-  searchKeyword.value = ""
-  selectedStatus.value = "all"
-  clearDateRange()
-}
+  searchKeyword.value = '';
+  selectedStatus.value = 'all';
+  clearDateRange();
+};
 
 const refreshData = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-const exportData = () => { }
+const exportData = () => {};
 
-const importOrders = () => { }
+const importOrders = () => {};
 
 const openOrderModal = () => {
-  isEditing.value = false
+  isEditing.value = false;
   currentOrder.value = {
-    id: "",
+    id: '',
     orderNo: `SO-${new Date().getFullYear()}-${String(
       orders.value.length + 1
-    ).padStart(3, "0")}`,
-    customerName: "",
+    ).padStart(3, '0')}`,
+    customerName: '',
     amount: 0,
-    status: "pending",
-    orderDate: new Date().toISOString().split("T")[0],
-    deliveryDate: new Date().toISOString().split("T")[0],
-    remarks: "",
+    status: 'pending',
+    orderDate: new Date().toISOString().split('T')[0],
+    deliveryDate: new Date().toISOString().split('T')[0],
+    remarks: '',
     created_at: new Date(),
     updated_at: new Date(),
-  }
-  showOrderModal.value = true
-}
+  };
+  showOrderModal.value = true;
+};
 
 const editOrder = (order: Order) => {
-  isEditing.value = true
+  isEditing.value = true;
   currentOrder.value = {
     ...order,
-    orderDate: new Date(order.orderDate).toISOString().split("T")[0],
-    deliveryDate: new Date(order.deliveryDate).toISOString().split("T")[0],
+    orderDate: new Date(order.orderDate).toISOString().split('T')[0],
+    deliveryDate: new Date(order.deliveryDate).toISOString().split('T')[0],
     created_at: new Date(),
     updated_at: new Date(),
-  }
-  showOrderModal.value = true
-}
+  };
+  showOrderModal.value = true;
+};
 
 const viewOrder = (order: Order) => {
-  editOrder(order)
-}
+  editOrder(order);
+};
 
 const duplicateOrder = (order: Order) => {
-  isEditing.value = false
+  isEditing.value = false;
   currentOrder.value = {
     ...order,
-    id: "",
+    id: '',
     orderNo: `SO-${new Date().getFullYear()}-${String(
       orders.value.length + 1
-    ).padStart(3, "0")}`,
-    orderDate: new Date().toISOString().split("T")[0],
-    deliveryDate: new Date().toISOString().split("T")[0],
-    status: "pending",
+    ).padStart(3, '0')}`,
+    orderDate: new Date().toISOString().split('T')[0],
+    deliveryDate: new Date().toISOString().split('T')[0],
+    status: 'pending',
     created_at: new Date(),
     updated_at: new Date(),
-  }
-  showOrderModal.value = true
-}
+  };
+  showOrderModal.value = true;
+};
 
 const confirmDelete = (order: Order) => {
-  deleteTarget.value = order
-  showDeleteDialog.value = true
-}
+  deleteTarget.value = order;
+  showDeleteDialog.value = true;
+};
 
 const deleteOrder = () => {
   if (deleteTarget.value) {
     const index = orders.value.findIndex(
       (o) => o.id === deleteTarget.value?.id
-    )
+    );
     if (index !== -1) {
-      orders.value.splice(index, 1)
+      orders.value.splice(index, 1);
     }
   }
-  showDeleteDialog.value = false
-  deleteTarget.value = null
-}
+  showDeleteDialog.value = false;
+  deleteTarget.value = null;
+};
 
 const saveOrder = async () => {
   try {
-    saving.value = true
+    saving.value = true;
 
     if (isEditing.value) {
       const index = orders.value.findIndex(
         (o) => o.id === currentOrder.value.id
-      )
+      );
       if (index !== -1) {
         orders.value[index] = {
           ...currentOrder.value,
@@ -909,7 +913,7 @@ const saveOrder = async () => {
           orderDate: new Date(currentOrder.value.orderDate!),
           deliveryDate: new Date(currentOrder.value.deliveryDate!),
           updated_at: new Date(),
-        }
+        };
       }
     } else {
       const newOrder = {
@@ -920,24 +924,24 @@ const saveOrder = async () => {
         deliveryDate: new Date(currentOrder.value.deliveryDate!),
         created_at: new Date(),
         updated_at: new Date(),
-      }
-      orders.value.push(newOrder)
+      };
+      orders.value.push(newOrder);
     }
 
-    closeOrderModal()
+    closeOrderModal();
   } catch (_error) {
   } finally {
-    saving.value = false
+    saving.value = false;
   }
-}
+};
 
 const closeOrderModal = () => {
-  showOrderModal.value = false
-  isEditing.value = false
-}
+  showOrderModal.value = false;
+  isEditing.value = false;
+};
 
 // 监听分页变化
 watch([pageSize, filteredOrders], () => {
-  currentPage.value = 1
-})
+  currentPage.value = 1;
+});
 </script>

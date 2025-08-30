@@ -425,105 +425,105 @@ import {
   Search,
   Trash2,
   Warehouse,
-} from "lucide-vue-next";
-import type { Transfer } from "~/types/database";
+} from 'lucide-vue-next';
+import type { Transfer } from '~/types/database';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "库存调拨 - ERP 管理系统",
+  title: '库存调拨 - ERP 管理系统',
 });
 
 // 状态管理
 const loading = ref(false);
 const saving = ref(false);
 const showDialog = ref(false);
-const dialogMode = ref<"view" | "create" | "edit">("view");
+const dialogMode = ref<'view' | 'create' | 'edit'>('view');
 const editingTransfer = ref<Transfer | null>(null);
 
 // 筛选条件
 const filters = ref({
-  status: "all",
-  from_warehouse: "all",
-  search: "",
+  status: 'all',
+  from_warehouse: 'all',
+  search: '',
 });
 
 // 表单数据
 const transferForm = ref({
-  transfer_no: "",
-  from_warehouse_id: "",
-  to_warehouse_id: "",
-  status: "draft",
-  remark: "",
+  transfer_no: '',
+  from_warehouse_id: '',
+  to_warehouse_id: '',
+  status: 'draft',
+  remark: '',
   items: [] as any[],
 });
 
 // 选项数据
 const statusOptions = ref([
-  { label: "草稿", value: "draft" },
-  { label: "待审核", value: "pending" },
-  { label: "已批准", value: "approved" },
-  { label: "运输中", value: "in_transit" },
-  { label: "已完成", value: "completed" },
-  { label: "已取消", value: "cancelled" },
+  { label: '草稿', value: 'draft' },
+  { label: '待审核', value: 'pending' },
+  { label: '已批准', value: 'approved' },
+  { label: '运输中', value: 'in_transit' },
+  { label: '已完成', value: 'completed' },
+  { label: '已取消', value: 'cancelled' },
 ]);
 
 const warehouses = ref([
-  { id: "WH001", name: "主仓库" },
-  { id: "WH002", name: "原料仓库" },
-  { id: "WH003", name: "成品仓库" },
+  { id: 'WH001', name: '主仓库' },
+  { id: 'WH002', name: '原料仓库' },
+  { id: 'WH003', name: '成品仓库' },
 ]);
 
 // 模拟数据
 const mockTransfers = ref([
   {
-    id: "1",
-    transfer_no: "TF202401001",
-    from_warehouse_id: "WH001",
-    from_warehouse_name: "主仓库",
-    to_warehouse_id: "WH002",
-    to_warehouse_name: "原料仓库",
-    status: "pending",
-    operator_name: "张三",
+    id: '1',
+    transfer_no: 'TF202401001',
+    from_warehouse_id: 'WH001',
+    from_warehouse_name: '主仓库',
+    to_warehouse_id: 'WH002',
+    to_warehouse_name: '原料仓库',
+    status: 'pending',
+    operator_name: '张三',
     total_quantity: 200,
-    created_at: new Date("2024-01-15"),
-    remark: "紧急调拨",
+    created_at: new Date('2024-01-15'),
+    remark: '紧急调拨',
     items: [
       {
-        product_name: "商品A",
+        product_name: '商品A',
         current_stock: 500,
         transfer_quantity: 100,
-        unit: "个",
+        unit: '个',
       },
       {
-        product_name: "商品B",
+        product_name: '商品B',
         current_stock: 300,
         transfer_quantity: 100,
-        unit: "个",
+        unit: '个',
       },
     ],
   },
   {
-    id: "2",
-    transfer_no: "TF202401002",
-    from_warehouse_id: "WH002",
-    from_warehouse_name: "原料仓库",
-    to_warehouse_id: "WH003",
-    to_warehouse_name: "成品仓库",
-    status: "completed",
-    operator_name: "李四",
+    id: '2',
+    transfer_no: 'TF202401002',
+    from_warehouse_id: 'WH002',
+    from_warehouse_name: '原料仓库',
+    to_warehouse_id: 'WH003',
+    to_warehouse_name: '成品仓库',
+    status: 'completed',
+    operator_name: '李四',
     total_quantity: 150,
-    created_at: new Date("2024-01-14"),
-    remark: "常规调拨",
+    created_at: new Date('2024-01-14'),
+    remark: '常规调拨',
     items: [
       {
-        product_name: "商品C",
+        product_name: '商品C',
         current_stock: 200,
         transfer_quantity: 150,
-        unit: "箱",
+        unit: '箱',
       },
     ],
   },
@@ -544,13 +544,13 @@ const filteredTransfers = computed(() => {
     );
   }
 
-  if (filters.value.status && filters.value.status !== "all") {
+  if (filters.value.status && filters.value.status !== 'all') {
     result = result.filter(
       (transfer) => transfer.status === filters.value.status
     );
   }
 
-  if (filters.value.from_warehouse && filters.value.from_warehouse !== "all") {
+  if (filters.value.from_warehouse && filters.value.from_warehouse !== 'all') {
     result = result.filter(
       (transfer) => transfer.from_warehouse_id === filters.value.from_warehouse
     );
@@ -569,34 +569,34 @@ const totalQuantity = computed(() => {
 
 // 状态映射
 const statusMap: Record<string, string> = {
-  draft: "草稿",
-  pending: "待审核",
-  approved: "已批准",
-  in_transit: "运输中",
-  completed: "已完成",
-  cancelled: "已取消",
+  draft: '草稿',
+  pending: '待审核',
+  approved: '已批准',
+  in_transit: '运输中',
+  completed: '已完成',
+  cancelled: '已取消',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  draft: "secondary",
-  pending: "outline",
-  approved: "secondary",
-  in_transit: "default",
-  completed: "default",
-  cancelled: "destructive",
+  draft: 'secondary',
+  pending: 'outline',
+  approved: 'secondary',
+  in_transit: 'default',
+  completed: 'default',
+  cancelled: 'destructive',
 };
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 
 const getStatusSeverity = (status: string) =>
-  statusSeverityMap[status] || "secondary";
+  statusSeverityMap[status] || 'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("zh-CN");
+  return new Date(date).toLocaleDateString('zh-CN');
 };
 
 // 加载调拨单数据
@@ -613,7 +613,7 @@ const loadTransfers = async () => {
 const openTransferDialog = (transfer: any = null) => {
   if (transfer) {
     editingTransfer.value = transfer;
-    dialogMode.value = "edit";
+    dialogMode.value = 'edit';
     Object.assign(transferForm.value, {
       transfer_no: transfer.transfer_no,
       from_warehouse_id: transfer.from_warehouse_id,
@@ -624,13 +624,13 @@ const openTransferDialog = (transfer: any = null) => {
     });
   } else {
     editingTransfer.value = null;
-    dialogMode.value = "create";
+    dialogMode.value = 'create';
     transferForm.value = {
       transfer_no: `TF${Date.now()}`,
-      from_warehouse_id: "",
-      to_warehouse_id: "",
-      status: "draft",
-      remark: "",
+      from_warehouse_id: '',
+      to_warehouse_id: '',
+      status: 'draft',
+      remark: '',
       items: [],
     };
   }
@@ -639,7 +639,7 @@ const openTransferDialog = (transfer: any = null) => {
 
 const viewTransfer = (transfer: any) => {
   editingTransfer.value = transfer;
-  dialogMode.value = "view";
+  dialogMode.value = 'view';
   Object.assign(transferForm.value, {
     transfer_no: transfer.transfer_no,
     from_warehouse_id: transfer.from_warehouse_id,
@@ -696,10 +696,10 @@ const saveTransfer = () => {
 
 const addTransferItem = () => {
   transferForm.value.items.push({
-    product_name: "新商品",
+    product_name: '新商品',
     current_stock: 100,
     transfer_quantity: 1,
-    unit: "个",
+    unit: '个',
   });
 };
 

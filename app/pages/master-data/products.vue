@@ -603,15 +603,15 @@ import {
   Search,
   TrendingUp,
   Upload,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "产品管理 - 智能ERP管理系统",
+  title: '产品管理 - 智能ERP管理系统',
 });
 
 interface Product {
@@ -634,10 +634,10 @@ interface Product {
 // 页面状态
 const loading = ref(false);
 const saving = ref(false);
-const searchKeyword = ref("");
-const selectedCategory = ref("all");
-const selectedStatus = ref("all");
-const pageSize = ref("12");
+const searchKeyword = ref('');
+const selectedCategory = ref('all');
+const selectedStatus = ref('all');
+const pageSize = ref('12');
 const currentPage = ref(1);
 
 // 对话框状态
@@ -646,18 +646,18 @@ const isEditing = ref(false);
 
 // 当前编辑的产品
 const currentProduct = ref({
-  id: "",
-  code: "",
-  name: "",
-  category: "",
+  id: '',
+  code: '',
+  name: '',
+  category: '',
   price: 0,
   cost: 0,
   stock: 0,
   min_stock: 0,
-  unit: "个",
-  status: "active",
-  specifications: "",
-  description: "",
+  unit: '个',
+  status: 'active',
+  specifications: '',
+  description: '',
   created_at: new Date(),
   updated_at: new Date(),
 });
@@ -673,122 +673,122 @@ const productStats = ref({
 
 // 选项数据
 const categories = [
-  { label: "全部分类", value: "all" },
-  { label: "电子产品", value: "electronics" },
-  { label: "服装鞋帽", value: "clothing" },
-  { label: "食品饮料", value: "food" },
-  { label: "办公用品", value: "office" },
-  { label: "工业原料", value: "industrial" },
-  { label: "家居用品", value: "home" },
-  { label: "汽车配件", value: "auto" },
-  { label: "医疗器械", value: "medical" },
+  { label: '全部分类', value: 'all' },
+  { label: '电子产品', value: 'electronics' },
+  { label: '服装鞋帽', value: 'clothing' },
+  { label: '食品饮料', value: 'food' },
+  { label: '办公用品', value: 'office' },
+  { label: '工业原料', value: 'industrial' },
+  { label: '家居用品', value: 'home' },
+  { label: '汽车配件', value: 'auto' },
+  { label: '医疗器械', value: 'medical' },
 ];
 
 const statusOptions = [
-  { label: "全部状态", value: "all" },
-  { label: "在售", value: "active" },
-  { label: "停售", value: "inactive" },
-  { label: "缺货", value: "out_of_stock" },
-  { label: "预售", value: "pre_sale" },
+  { label: '全部状态', value: 'all' },
+  { label: '在售', value: 'active' },
+  { label: '停售', value: 'inactive' },
+  { label: '缺货', value: 'out_of_stock' },
+  { label: '预售', value: 'pre_sale' },
 ];
 
 // 模拟产品数据
 const products = ref<Product[]>([
   {
-    id: "1",
-    code: "P001",
-    name: "iPhone 15 Pro Max 256GB",
-    category: "electronics",
+    id: '1',
+    code: 'P001',
+    name: 'iPhone 15 Pro Max 256GB',
+    category: 'electronics',
     price: 9999,
     cost: 7500,
     stock: 25,
     min_stock: 10,
-    unit: "台",
-    status: "active",
-    specifications: "6.7英寸，钛合金边框，A17 Pro芯片",
-    description: "苹果最新旗舰手机，配备先进的摄像系统和强劲的A17 Pro芯片",
-    created_at: new Date("2024-01-15"),
-    updated_at: new Date("2024-01-15"),
+    unit: '台',
+    status: 'active',
+    specifications: '6.7英寸，钛合金边框，A17 Pro芯片',
+    description: '苹果最新旗舰手机，配备先进的摄像系统和强劲的A17 Pro芯片',
+    created_at: new Date('2024-01-15'),
+    updated_at: new Date('2024-01-15'),
   },
   {
-    id: "2",
-    code: "P002",
-    name: "华为 Mate 60 Pro 512GB",
-    category: "electronics",
+    id: '2',
+    code: 'P002',
+    name: '华为 Mate 60 Pro 512GB',
+    category: 'electronics',
     price: 6999,
     cost: 5200,
     stock: 8,
     min_stock: 15,
-    unit: "台",
-    status: "active",
-    specifications: "6.82英寸，麒麟9000s，卫星通话",
-    description: "华为回归力作，支持卫星通话功能的高端智能手机",
-    created_at: new Date("2024-01-10"),
-    updated_at: new Date("2024-01-10"),
+    unit: '台',
+    status: 'active',
+    specifications: '6.82英寸，麒麟9000s，卫星通话',
+    description: '华为回归力作，支持卫星通话功能的高端智能手机',
+    created_at: new Date('2024-01-10'),
+    updated_at: new Date('2024-01-10'),
   },
   {
-    id: "3",
-    code: "P003",
-    name: "小米14 Ultra 16GB+1TB",
-    category: "electronics",
+    id: '3',
+    code: 'P003',
+    name: '小米14 Ultra 16GB+1TB',
+    category: 'electronics',
     price: 6499,
     cost: 4800,
     stock: 32,
     min_stock: 20,
-    unit: "台",
-    status: "active",
-    specifications: "6.73英寸，骁龙8 Gen3，徕卡影像",
-    description: "小米影像旗舰，与徕卡合作打造专业摄影体验",
-    created_at: new Date("2024-01-08"),
-    updated_at: new Date("2024-01-08"),
+    unit: '台',
+    status: 'active',
+    specifications: '6.73英寸，骁龙8 Gen3，徕卡影像',
+    description: '小米影像旗舰，与徕卡合作打造专业摄影体验',
+    created_at: new Date('2024-01-08'),
+    updated_at: new Date('2024-01-08'),
   },
   {
-    id: "4",
-    code: "P004",
-    name: "商务西装套装",
-    category: "clothing",
+    id: '4',
+    code: 'P004',
+    name: '商务西装套装',
+    category: 'clothing',
     price: 1299,
     cost: 650,
     stock: 45,
     min_stock: 30,
-    unit: "套",
-    status: "active",
-    specifications: "100%羊毛，意大利进口面料",
-    description: "高端商务西装，适合正式场合穿着",
-    created_at: new Date("2024-01-05"),
-    updated_at: new Date("2024-01-05"),
+    unit: '套',
+    status: 'active',
+    specifications: '100%羊毛，意大利进口面料',
+    description: '高端商务西装，适合正式场合穿着',
+    created_at: new Date('2024-01-05'),
+    updated_at: new Date('2024-01-05'),
   },
   {
-    id: "5",
-    code: "P005",
-    name: "办公椅人体工学座椅",
-    category: "office",
+    id: '5',
+    code: 'P005',
+    name: '办公椅人体工学座椅',
+    category: 'office',
     price: 899,
     cost: 450,
     stock: 18,
     min_stock: 25,
-    unit: "把",
-    status: "active",
-    specifications: "网布材质，多维度调节，承重150kg",
-    description: "人体工学设计的办公椅，提供舒适的办公体验",
-    created_at: new Date("2024-01-03"),
-    updated_at: new Date("2024-01-03"),
+    unit: '把',
+    status: 'active',
+    specifications: '网布材质，多维度调节，承重150kg',
+    description: '人体工学设计的办公椅，提供舒适的办公体验',
+    created_at: new Date('2024-01-03'),
+    updated_at: new Date('2024-01-03'),
   },
   {
-    id: "6",
-    code: "P006",
-    name: "有机绿茶叶500g",
-    category: "food",
+    id: '6',
+    code: 'P006',
+    name: '有机绿茶叶500g',
+    category: 'food',
     price: 168,
     cost: 85,
     stock: 120,
     min_stock: 50,
-    unit: "盒",
-    status: "active",
-    specifications: "有机认证，春茶头采，真空包装",
-    description: "优质有机绿茶，来自高山茶园的春茶头采",
-    created_at: new Date("2024-01-01"),
-    updated_at: new Date("2024-01-01"),
+    unit: '盒',
+    status: 'active',
+    specifications: '有机认证，春茶头采，真空包装',
+    description: '优质有机绿茶，来自高山茶园的春茶头采',
+    created_at: new Date('2024-01-01'),
+    updated_at: new Date('2024-01-01'),
   },
 ]);
 
@@ -806,13 +806,13 @@ const filteredProducts = computed(() => {
     );
   }
 
-  if (selectedCategory.value && selectedCategory.value !== "all") {
+  if (selectedCategory.value && selectedCategory.value !== 'all') {
     result = result.filter(
       (product) => product.category === selectedCategory.value
     );
   }
 
-  if (selectedStatus.value && selectedStatus.value !== "all") {
+  if (selectedStatus.value && selectedStatus.value !== 'all') {
     result = result.filter(
       (product) => product.status === selectedStatus.value
     );
@@ -832,16 +832,16 @@ const totalPages = computed(() => {
 });
 
 const modalTitle = computed(() => {
-  return isEditing.value ? "编辑产品" : "新增产品";
+  return isEditing.value ? '编辑产品' : '新增产品';
 });
 
 // 方法
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    active: "在售",
-    inactive: "停售",
-    out_of_stock: "缺货",
-    pre_sale: "预售",
+    active: '在售',
+    inactive: '停售',
+    out_of_stock: '缺货',
+    pre_sale: '预售',
   };
   return statusMap[status] || status;
 };
@@ -849,20 +849,20 @@ const getStatusText = (status: string) => {
 const getStatusVariant = (status: string) => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    active: "default",
-    inactive: "secondary",
-    out_of_stock: "destructive",
-    pre_sale: "outline",
+    active: 'default',
+    inactive: 'secondary',
+    out_of_stock: 'destructive',
+    pre_sale: 'outline',
   };
-  return variantMap[status] || "secondary";
+  return variantMap[status] || 'secondary';
 };
 
 const resetFilters = () => {
-  searchKeyword.value = "";
-  selectedCategory.value = "all";
-  selectedStatus.value = "all";
+  searchKeyword.value = '';
+  selectedCategory.value = 'all';
+  selectedStatus.value = 'all';
 };
 
 const refreshData = async () => {
@@ -881,18 +881,18 @@ const exportProducts = () => {};
 const openProductModal = () => {
   isEditing.value = false;
   currentProduct.value = {
-    id: "",
-    code: `P${String(products.value.length + 1).padStart(3, "0")}`,
-    name: "",
-    category: "",
+    id: '',
+    code: `P${String(products.value.length + 1).padStart(3, '0')}`,
+    name: '',
+    category: '',
     price: 0,
     cost: 0,
     stock: 0,
     min_stock: 0,
-    unit: "个",
-    status: "active",
-    specifications: "",
-    description: "",
+    unit: '个',
+    status: 'active',
+    specifications: '',
+    description: '',
     created_at: new Date(),
     updated_at: new Date(),
   };
@@ -913,8 +913,8 @@ const copyProduct = (product: Product) => {
   isEditing.value = false;
   currentProduct.value = {
     ...product,
-    id: "",
-    code: `P${String(products.value.length + 1).padStart(3, "0")}`,
+    id: '',
+    code: `P${String(products.value.length + 1).padStart(3, '0')}`,
     name: `${product.name} (副本)`,
     created_at: new Date(),
     updated_at: new Date(),
@@ -924,7 +924,7 @@ const copyProduct = (product: Product) => {
 
 const toggleStatus = async (product: Product) => {
   try {
-    const newStatus = product.status === "active" ? "inactive" : "active";
+    const newStatus = product.status === 'active' ? 'inactive' : 'active';
     const index = products.value.findIndex((p) => p.id === product.id);
     if (index !== -1) {
       products.value[index]!.status = newStatus;

@@ -353,16 +353,16 @@ import {
   RefreshCw,
   Search,
   Trash2,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
-import { toast } from "vue-sonner";
+import { toast } from 'vue-sonner';
 
 // 页面状态
 const loading = ref(false);
 const saving = ref(false);
-const searchQuery = ref("");
-const typeFilter = ref("all");
-const statusFilter = ref("all");
+const searchQuery = ref('');
+const typeFilter = ref('all');
+const statusFilter = ref('all');
 
 // 对话框状态
 const showCreateDialog = ref(false);
@@ -371,12 +371,12 @@ const editingDictionary = ref(false);
 
 // 当前编辑的字典
 const currentDictionary = ref({
-  id: "",
-  code: "",
-  name: "",
-  type: "system",
-  status: "active",
-  description: "",
+  id: '',
+  code: '',
+  name: '',
+  type: 'system',
+  status: 'active',
+  description: '',
   items: [] as any[],
 });
 
@@ -387,75 +387,75 @@ const currentItems = ref([] as any[]);
 // 模拟字典数据
 const dictionaries = ref([
   {
-    id: "1",
-    code: "USER_STATUS",
-    name: "用户状态",
-    type: "system",
-    status: "active",
-    description: "系统用户状态定义",
+    id: '1',
+    code: 'USER_STATUS',
+    name: '用户状态',
+    type: 'system',
+    status: 'active',
+    description: '系统用户状态定义',
     items: [
-      { value: "active", label: "启用", sort: 1, status: "active" },
-      { value: "inactive", label: "禁用", sort: 2, status: "active" },
-      { value: "locked", label: "锁定", sort: 3, status: "active" },
+      { value: 'active', label: '启用', sort: 1, status: 'active' },
+      { value: 'inactive', label: '禁用', sort: 2, status: 'active' },
+      { value: 'locked', label: '锁定', sort: 3, status: 'active' },
     ],
-    createdAt: new Date("2025-01-15"),
-    updatedAt: new Date("2025-01-15"),
+    createdAt: new Date('2025-01-15'),
+    updatedAt: new Date('2025-01-15'),
   },
   {
-    id: "2",
-    code: "ORDER_STATUS",
-    name: "订单状态",
-    type: "business",
-    status: "active",
-    description: "订单流程状态定义",
+    id: '2',
+    code: 'ORDER_STATUS',
+    name: '订单状态',
+    type: 'business',
+    status: 'active',
+    description: '订单流程状态定义',
     items: [
-      { value: "pending", label: "待确认", sort: 1, status: "active" },
-      { value: "confirmed", label: "已确认", sort: 2, status: "active" },
-      { value: "shipped", label: "已发货", sort: 3, status: "active" },
-      { value: "delivered", label: "已完成", sort: 4, status: "active" },
-      { value: "cancelled", label: "已取消", sort: 5, status: "active" },
+      { value: 'pending', label: '待确认', sort: 1, status: 'active' },
+      { value: 'confirmed', label: '已确认', sort: 2, status: 'active' },
+      { value: 'shipped', label: '已发货', sort: 3, status: 'active' },
+      { value: 'delivered', label: '已完成', sort: 4, status: 'active' },
+      { value: 'cancelled', label: '已取消', sort: 5, status: 'active' },
     ],
-    createdAt: new Date("2025-01-16"),
-    updatedAt: new Date("2025-01-16"),
+    createdAt: new Date('2025-01-16'),
+    updatedAt: new Date('2025-01-16'),
   },
   {
-    id: "3",
-    code: "PRODUCT_CATEGORY",
-    name: "产品分类",
-    type: "business",
-    status: "active",
-    description: "产品分类管理",
+    id: '3',
+    code: 'PRODUCT_CATEGORY',
+    name: '产品分类',
+    type: 'business',
+    status: 'active',
+    description: '产品分类管理',
     items: [
-      { value: "electronics", label: "电子产品", sort: 1, status: "active" },
-      { value: "machinery", label: "机械设备", sort: 2, status: "active" },
-      { value: "materials", label: "原材料", sort: 3, status: "active" },
+      { value: 'electronics', label: '电子产品', sort: 1, status: 'active' },
+      { value: 'machinery', label: '机械设备', sort: 2, status: 'active' },
+      { value: 'materials', label: '原材料', sort: 3, status: 'active' },
     ],
-    createdAt: new Date("2025-01-17"),
-    updatedAt: new Date("2025-01-17"),
+    createdAt: new Date('2025-01-17'),
+    updatedAt: new Date('2025-01-17'),
   },
 ]);
 
 // 选项数据
 const typeOptions = [
-  { label: "系统", value: "system" },
-  { label: "业务", value: "business" },
-  { label: "配置", value: "config" },
+  { label: '系统', value: 'system' },
+  { label: '业务', value: 'business' },
+  { label: '配置', value: 'config' },
 ];
 
 const statusOptions = [
-  { label: "启用", value: "active" },
-  { label: "禁用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '禁用', value: 'inactive' },
 ];
 
 const statusFilterOptions = [
-  { label: "全部状态", value: "all" },
-  { label: "启用", value: "active" },
-  { label: "禁用", value: "inactive" },
+  { label: '全部状态', value: 'all' },
+  { label: '启用', value: 'active' },
+  { label: '禁用', value: 'inactive' },
 ];
 
 const itemStatusOptions = [
-  { label: "启用", value: "active" },
-  { label: "禁用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '禁用', value: 'inactive' },
 ];
 
 // 计算属性
@@ -472,11 +472,11 @@ const filteredDictionaries = computed(() => {
     );
   }
 
-  if (typeFilter.value && typeFilter.value !== "all") {
+  if (typeFilter.value && typeFilter.value !== 'all') {
     result = result.filter((dict) => dict.type === typeFilter.value);
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((dict) => dict.status === statusFilter.value);
   }
 
@@ -486,52 +486,52 @@ const filteredDictionaries = computed(() => {
 // 方法
 const getTypeText = (type: string) => {
   const typeMap: Record<string, string> = {
-    system: "系统",
-    business: "业务",
-    config: "配置",
+    system: '系统',
+    business: '业务',
+    config: '配置',
   };
   return typeMap[type] || type;
 };
 
 const getTypeSeverity = (
   type: string
-): "default" | "destructive" | "outline" | "secondary" => {
+): 'default' | 'destructive' | 'outline' | 'secondary' => {
   const severityMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    system: "default",
-    business: "secondary",
-    config: "outline",
+    system: 'default',
+    business: 'secondary',
+    config: 'outline',
   };
-  return severityMap[type] || "secondary";
+  return severityMap[type] || 'secondary';
 };
 
 const formatDateTime = (date: Date) => {
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   }).format(new Date(date));
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  typeFilter.value = "all";
-  statusFilter.value = "all";
+  searchQuery.value = '';
+  typeFilter.value = 'all';
+  statusFilter.value = 'all';
 };
 
 const createNewDictionary = () => {
   editingDictionary.value = false;
   currentDictionary.value = {
-    id: "",
-    code: "",
-    name: "",
-    type: "system",
-    status: "active",
-    description: "",
+    id: '',
+    code: '',
+    name: '',
+    type: 'system',
+    status: 'active',
+    description: '',
     items: [],
   };
   showCreateDialog.value = true;
@@ -562,7 +562,7 @@ const deleteDictionary = async (dictionaryId: string) => {
     if (index !== -1) {
       dictionaries.value.splice(index, 1);
     }
-    toast.success("字典删除成功");
+    toast.success('字典删除成功');
   } catch (_error) {
   } finally {
     loading.value = false;
@@ -599,7 +599,7 @@ const saveDictionary = async () => {
 
     showCreateDialog.value = false;
     editingDictionary.value = false;
-    toast.success("字典保存成功");
+    toast.success('字典保存成功');
   } catch (_error: any) {
   } finally {
     saving.value = false;
@@ -608,10 +608,10 @@ const saveDictionary = async () => {
 
 const addNewItem = () => {
   currentItems.value.push({
-    value: "",
-    label: "",
+    value: '',
+    label: '',
     sort: currentItems.value.length + 1,
-    status: "active",
+    status: 'active',
   });
 };
 
@@ -632,7 +632,7 @@ const saveDictionaryItems = async () => {
       }
     }
     showItemsDialog.value = false;
-    toast.success("字典项目保存成功");
+    toast.success('字典项目保存成功');
   } catch (_error: any) {
   } finally {
     saving.value = false;

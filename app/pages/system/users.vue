@@ -583,68 +583,68 @@ import {
   Upload,
   UserCheck,
   Users,
-} from "lucide-vue-next"
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
-})
+  layout: 'default',
+});
 
 useHead({
-  title: "用户管理 - 智能ERP管理系统",
-})
+  title: '用户管理 - 智能ERP管理系统',
+});
 
 interface User {
-  id: string
-  username: string
-  name: string
-  email: string
-  phone?: string
-  avatar?: string
-  department_id: string
-  role_id: string
-  status: string
-  is_online: boolean
-  last_login: Date
-  login_count: number
-  created_at: Date
-  updated_at: Date
-  remarks?: string
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  department_id: string;
+  role_id: string;
+  status: string;
+  is_online: boolean;
+  last_login: Date;
+  login_count: number;
+  created_at: Date;
+  updated_at: Date;
+  remarks?: string;
 }
 
 // 状态管理
-const loading = ref(false)
-const saving = ref(false)
-const resetting = ref(false)
-const showUserModal = ref(false)
-const showPasswordModal = ref(false)
-const isEditing = ref(false)
-const pageSize = ref("20")
-const currentPage = ref(1)
+const loading = ref(false);
+const saving = ref(false);
+const resetting = ref(false);
+const showUserModal = ref(false);
+const showPasswordModal = ref(false);
+const isEditing = ref(false);
+const pageSize = ref('20');
+const currentPage = ref(1);
 
 // 筛选条件
-const searchQuery = ref("")
-const roleFilter = ref("all")
-const departmentFilter = ref("all")
-const statusFilter = ref("all")
+const searchQuery = ref('');
+const roleFilter = ref('all');
+const departmentFilter = ref('all');
+const statusFilter = ref('all');
 
 // 表单数据
 const currentUser = ref({
-  id: "",
-  username: "",
-  name: "",
-  email: "",
-  phone: "",
-  department_id: "",
-  role_id: "",
-  password: "",
-  confirmPassword: "",
-  remarks: "",
-})
+  id: '',
+  username: '',
+  name: '',
+  email: '',
+  phone: '',
+  department_id: '',
+  role_id: '',
+  password: '',
+  confirmPassword: '',
+  remarks: '',
+});
 
-const resetPasswordUser = ref<User | null>(null)
-const newPassword = ref("")
-const confirmNewPassword = ref("")
+const resetPasswordUser = ref<User | null>(null);
+const newPassword = ref('');
+const confirmNewPassword = ref('');
 
 // 统计数据
 const userStats = ref({
@@ -653,280 +653,280 @@ const userStats = ref({
   admins: 8,
   online: 23,
   newThisMonth: 12,
-})
+});
 
 // 选项数据
 const departments = ref([
-  { id: "1", name: "技术部" },
-  { id: "2", name: "销售部" },
-  { id: "3", name: "财务部" },
-  { id: "4", name: "人力资源部" },
-  { id: "5", name: "运营部" },
-])
+  { id: '1', name: '技术部' },
+  { id: '2', name: '销售部' },
+  { id: '3', name: '财务部' },
+  { id: '4', name: '人力资源部' },
+  { id: '5', name: '运营部' },
+]);
 
 const roles = ref([
-  { id: "1", name: "超级管理员" },
-  { id: "2", name: "系统管理员" },
-  { id: "3", name: "部门经理" },
-  { id: "4", name: "普通用户" },
-  { id: "5", name: "访客" },
-])
+  { id: '1', name: '超级管理员' },
+  { id: '2', name: '系统管理员' },
+  { id: '3', name: '部门经理' },
+  { id: '4', name: '普通用户' },
+  { id: '5', name: '访客' },
+]);
 
 // 模拟用户数据
 const mockUsers = ref<User[]>([
   {
-    id: "1",
-    username: "admin",
-    name: "系统管理员",
-    email: "admin@example.com",
-    phone: "13800138000",
-    avatar: "",
-    department_id: "1",
-    role_id: "1",
-    status: "active",
+    id: '1',
+    username: 'admin',
+    name: '系统管理员',
+    email: 'admin@example.com',
+    phone: '13800138000',
+    avatar: '',
+    department_id: '1',
+    role_id: '1',
+    status: 'active',
     is_online: true,
-    last_login: new Date("2024-01-20 14:30:00"),
+    last_login: new Date('2024-01-20 14:30:00'),
     login_count: 1250,
-    created_at: new Date("2023-01-01"),
-    updated_at: new Date("2024-01-20"),
-    remarks: "系统超级管理员账户",
+    created_at: new Date('2023-01-01'),
+    updated_at: new Date('2024-01-20'),
+    remarks: '系统超级管理员账户',
   },
   {
-    id: "2",
-    username: "zhangsan",
-    name: "张三",
-    email: "zhangsan@example.com",
-    phone: "13800138001",
-    avatar: "",
-    department_id: "2",
-    role_id: "3",
-    status: "active",
+    id: '2',
+    username: 'zhangsan',
+    name: '张三',
+    email: 'zhangsan@example.com',
+    phone: '13800138001',
+    avatar: '',
+    department_id: '2',
+    role_id: '3',
+    status: 'active',
     is_online: false,
-    last_login: new Date("2024-01-19 16:45:00"),
+    last_login: new Date('2024-01-19 16:45:00'),
     login_count: 89,
-    created_at: new Date("2023-06-15"),
-    updated_at: new Date("2024-01-19"),
-    remarks: "销售部门经理",
+    created_at: new Date('2023-06-15'),
+    updated_at: new Date('2024-01-19'),
+    remarks: '销售部门经理',
   },
   {
-    id: "3",
-    username: "lisi",
-    name: "李四",
-    email: "lisi@example.com",
-    phone: "13800138002",
-    avatar: "",
-    department_id: "1",
-    role_id: "4",
-    status: "active",
+    id: '3',
+    username: 'lisi',
+    name: '李四',
+    email: 'lisi@example.com',
+    phone: '13800138002',
+    avatar: '',
+    department_id: '1',
+    role_id: '4',
+    status: 'active',
     is_online: true,
-    last_login: new Date("2024-01-20 09:15:00"),
+    last_login: new Date('2024-01-20 09:15:00'),
     login_count: 156,
-    created_at: new Date("2023-08-20"),
-    updated_at: new Date("2024-01-20"),
-    remarks: "技术部开发人员",
+    created_at: new Date('2023-08-20'),
+    updated_at: new Date('2024-01-20'),
+    remarks: '技术部开发人员',
   },
   {
-    id: "4",
-    username: "wangwu",
-    name: "王五",
-    email: "wangwu@example.com",
-    phone: "13800138003",
-    avatar: "",
-    department_id: "3",
-    role_id: "4",
-    status: "inactive",
+    id: '4',
+    username: 'wangwu',
+    name: '王五',
+    email: 'wangwu@example.com',
+    phone: '13800138003',
+    avatar: '',
+    department_id: '3',
+    role_id: '4',
+    status: 'inactive',
     is_online: false,
-    last_login: new Date("2024-01-10 11:20:00"),
+    last_login: new Date('2024-01-10 11:20:00'),
     login_count: 45,
-    created_at: new Date("2023-12-01"),
-    updated_at: new Date("2024-01-10"),
-    remarks: "财务部会计",
+    created_at: new Date('2023-12-01'),
+    updated_at: new Date('2024-01-10'),
+    remarks: '财务部会计',
   },
   {
-    id: "5",
-    username: "zhaoliu",
-    name: "赵六",
-    email: "zhaoliu@example.com",
-    phone: "13800138004",
-    avatar: "",
-    department_id: "4",
-    role_id: "4",
-    status: "pending",
+    id: '5',
+    username: 'zhaoliu',
+    name: '赵六',
+    email: 'zhaoliu@example.com',
+    phone: '13800138004',
+    avatar: '',
+    department_id: '4',
+    role_id: '4',
+    status: 'pending',
     is_online: false,
-    last_login: new Date("2024-01-18 15:30:00"),
+    last_login: new Date('2024-01-18 15:30:00'),
     login_count: 12,
-    created_at: new Date("2024-01-15"),
-    updated_at: new Date("2024-01-18"),
-    remarks: "人力资源专员",
+    created_at: new Date('2024-01-15'),
+    updated_at: new Date('2024-01-18'),
+    remarks: '人力资源专员',
   },
-])
+]);
 
 // 计算属性
 const filteredUsers = computed(() => {
-  let result = mockUsers.value
+  let result = mockUsers.value;
 
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
+    const query = searchQuery.value.toLowerCase();
     result = result.filter(
       (user) =>
         user.username.toLowerCase().includes(query) ||
         user.name.toLowerCase().includes(query) ||
         user.email.toLowerCase().includes(query)
-    )
+    );
   }
 
-  if (roleFilter.value && roleFilter.value !== "all") {
-    result = result.filter((user) => user.role_id === roleFilter.value)
+  if (roleFilter.value && roleFilter.value !== 'all') {
+    result = result.filter((user) => user.role_id === roleFilter.value);
   }
 
-  if (departmentFilter.value && departmentFilter.value !== "all") {
+  if (departmentFilter.value && departmentFilter.value !== 'all') {
     result = result.filter(
       (user) => user.department_id === departmentFilter.value
-    )
+    );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
-    result = result.filter((user) => user.status === statusFilter.value)
+  if (statusFilter.value && statusFilter.value !== 'all') {
+    result = result.filter((user) => user.status === statusFilter.value);
   }
 
-  return result
-})
+  return result;
+});
 
 const paginatedUsers = computed(() => {
-  const start = (currentPage.value - 1) * Number(pageSize.value)
-  const end = start + Number(pageSize.value)
-  return filteredUsers.value.slice(start, end)
-})
+  const start = (currentPage.value - 1) * Number(pageSize.value);
+  const end = start + Number(pageSize.value);
+  return filteredUsers.value.slice(start, end);
+});
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredUsers.value.length / Number(pageSize.value))
-})
+  return Math.ceil(filteredUsers.value.length / Number(pageSize.value));
+});
 
 const modalTitle = computed(() => {
-  return isEditing.value ? "编辑用户" : "新增用户"
-})
+  return isEditing.value ? '编辑用户' : '新增用户';
+});
 
 // 方法
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    active: "活跃",
-    inactive: "停用",
-    pending: "待激活",
-  }
-  return statusMap[status] || status
-}
+    active: '活跃',
+    inactive: '停用',
+    pending: '待激活',
+  };
+  return statusMap[status] || status;
+};
 
 const getStatusVariant = (status: string) => {
   const variantMap: Record<
     string,
-    "default" | "destructive" | "outline" | "secondary"
+    'default' | 'destructive' | 'outline' | 'secondary'
   > = {
-    active: "default",
-    inactive: "destructive",
-    pending: "outline",
-  }
-  return variantMap[status] || "secondary"
-}
+    active: 'default',
+    inactive: 'destructive',
+    pending: 'outline',
+  };
+  return variantMap[status] || 'secondary';
+};
 
 const getDepartmentName = (departmentId: string) => {
-  const department = departments.value.find((d) => d.id === departmentId)
-  return department?.name || "未知部门"
-}
+  const department = departments.value.find((d) => d.id === departmentId);
+  return department?.name || '未知部门';
+};
 
 const getRoleName = (roleId: string) => {
-  const role = roles.value.find((r) => r.id === roleId)
-  return role?.name || "未知角色"
-}
+  const role = roles.value.find((r) => r.id === roleId);
+  return role?.name || '未知角色';
+};
 
 const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date))
-}
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(date));
+};
 
 const resetFilters = () => {
-  searchQuery.value = ""
-  roleFilter.value = "all"
-  departmentFilter.value = "all"
-  statusFilter.value = "all"
-}
+  searchQuery.value = '';
+  roleFilter.value = 'all';
+  departmentFilter.value = 'all';
+  statusFilter.value = 'all';
+};
 
 const refreshData = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-const importUsers = () => { }
+const importUsers = () => {};
 
-const exportUsers = () => { }
+const exportUsers = () => {};
 
 const openUserModal = () => {
-  isEditing.value = false
+  isEditing.value = false;
   currentUser.value = {
-    id: "",
-    username: "",
-    name: "",
-    email: "",
-    phone: "",
-    department_id: "",
-    role_id: "",
-    password: "",
-    confirmPassword: "",
-    remarks: "",
-  }
-  showUserModal.value = true
-}
+    id: '',
+    username: '',
+    name: '',
+    email: '',
+    phone: '',
+    department_id: '',
+    role_id: '',
+    password: '',
+    confirmPassword: '',
+    remarks: '',
+  };
+  showUserModal.value = true;
+};
 
 const viewUser = (user: User) => {
-  editUser(user)
-}
+  editUser(user);
+};
 
 const editUser = (user: User) => {
-  isEditing.value = true
+  isEditing.value = true;
   currentUser.value = {
     id: user.id,
     username: user.username,
     name: user.name,
     email: user.email,
-    phone: user.phone || "",
+    phone: user.phone || '',
     department_id: user.department_id,
     role_id: user.role_id,
-    password: "",
-    confirmPassword: "",
-    remarks: user.remarks || "",
-  }
-  showUserModal.value = true
-}
+    password: '',
+    confirmPassword: '',
+    remarks: user.remarks || '',
+  };
+  showUserModal.value = true;
+};
 
 const resetPassword = (user: User) => {
-  resetPasswordUser.value = user
-  newPassword.value = ""
-  confirmNewPassword.value = ""
-  showPasswordModal.value = true
-}
+  resetPasswordUser.value = user;
+  newPassword.value = '';
+  confirmNewPassword.value = '';
+  showPasswordModal.value = true;
+};
 
 const toggleStatus = async (user: User) => {
   try {
-    const newStatus = user.status === "active" ? "inactive" : "active"
-    const index = mockUsers.value.findIndex((u) => u.id === user.id)
+    const newStatus = user.status === 'active' ? 'inactive' : 'active';
+    const index = mockUsers.value.findIndex((u) => u.id === user.id);
     if (index !== -1) {
-      mockUsers.value[index]!.status = newStatus
-      mockUsers.value[index]!.updated_at = new Date()
+      mockUsers.value[index]!.status = newStatus;
+      mockUsers.value[index]!.updated_at = new Date();
     }
-  } catch (_error) { }
-}
+  } catch (_error) {}
+};
 
 const saveUser = async () => {
   try {
-    saving.value = true
+    saving.value = true;
 
     // 简单验证
     if (
@@ -936,22 +936,22 @@ const saveUser = async () => {
         currentUser.value.email
       )
     ) {
-      throw new Error("请填写必填字段")
+      throw new Error('请填写必填字段');
     }
 
     if (
       !isEditing.value &&
       currentUser.value.password !== currentUser.value.confirmPassword
     ) {
-      throw new Error("两次输入的密码不一致")
+      throw new Error('两次输入的密码不一致');
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     if (isEditing.value) {
       const index = mockUsers.value.findIndex(
         (u) => u.id === currentUser.value.id
-      )
+      );
       if (index !== -1) {
         mockUsers.value[index] = {
           ...mockUsers.value[index],
@@ -962,14 +962,14 @@ const saveUser = async () => {
           phone: currentUser.value.phone,
           department_id: currentUser.value.department_id,
           role_id: currentUser.value.role_id,
-          status: mockUsers.value[index]?.status ?? "active",
+          status: mockUsers.value[index]?.status ?? 'active',
           remarks: currentUser.value.remarks,
           updated_at: new Date(),
           is_online: mockUsers.value[index]?.is_online ?? false,
           last_login: mockUsers.value[index]?.last_login ?? new Date(),
           login_count: mockUsers.value[index]?.login_count ?? 0,
           created_at: mockUsers.value[index]?.created_at ?? new Date(),
-        }
+        };
       }
     } else {
       const newUser: User = {
@@ -978,57 +978,57 @@ const saveUser = async () => {
         name: currentUser.value.name,
         email: currentUser.value.email,
         phone: currentUser.value.phone,
-        avatar: "",
+        avatar: '',
         department_id: currentUser.value.department_id,
         role_id: currentUser.value.role_id,
-        status: "active",
+        status: 'active',
         is_online: false,
         last_login: new Date(),
         login_count: 0,
         created_at: new Date(),
         updated_at: new Date(),
         remarks: currentUser.value.remarks,
-      }
-      mockUsers.value.push(newUser)
+      };
+      mockUsers.value.push(newUser);
     }
 
-    closeUserModal()
+    closeUserModal();
   } catch (_error) {
   } finally {
-    saving.value = false
+    saving.value = false;
   }
-}
+};
 
 const closeUserModal = () => {
-  showUserModal.value = false
-  isEditing.value = false
-}
+  showUserModal.value = false;
+  isEditing.value = false;
+};
 
 const confirmResetPassword = async () => {
   try {
-    resetting.value = true
+    resetting.value = true;
 
     if (newPassword.value !== confirmNewPassword.value) {
-      throw new Error("两次输入的密码不一致")
+      throw new Error('两次输入的密码不一致');
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    closePasswordModal()
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    closePasswordModal();
   } catch (_error) {
   } finally {
-    resetting.value = false
+    resetting.value = false;
   }
-}
+};
 
 const closePasswordModal = () => {
-  showPasswordModal.value = false
-  resetPasswordUser.value = null
-  newPassword.value = ""
-  confirmNewPassword.value = ""
-}
+  showPasswordModal.value = false;
+  resetPasswordUser.value = null;
+  newPassword.value = '';
+  confirmNewPassword.value = '';
+};
 
 // 监听分页变化
 watch([pageSize, filteredUsers], () => {
-  currentPage.value = 1
-})
+  currentPage.value = 1;
+});
 </script>

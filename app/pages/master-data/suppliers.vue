@@ -250,7 +250,7 @@ import {
   Search,
   Trash2,
   Truck,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 类型定义
 interface Supplier {
@@ -269,19 +269,19 @@ interface Supplier {
 // 响应式数据
 const suppliers = ref<Supplier[]>([]);
 const loading = ref(false);
-const searchQuery = ref("");
-const selectedStatus = ref("all");
-const selectedType = ref("all");
+const searchQuery = ref('');
+const selectedStatus = ref('all');
+const selectedType = ref('all');
 const showSupplierDialog = ref(false);
 const editingSupplier = ref(null);
 const submitting = ref(false);
 
 // 表单数据
 const supplierForm = reactive({
-  name: "",
-  contact_person: "",
-  phone: "",
-  type: "",
+  name: '',
+  contact_person: '',
+  phone: '',
+  type: '',
 });
 
 // 计算属性
@@ -297,13 +297,13 @@ const filteredSuppliers = computed(() => {
     );
   }
 
-  if (selectedStatus.value && selectedStatus.value !== "all") {
+  if (selectedStatus.value && selectedStatus.value !== 'all') {
     result = result.filter(
       (supplier) => supplier.status === selectedStatus.value
     );
   }
 
-  if (selectedType.value && selectedType.value !== "all") {
+  if (selectedType.value && selectedType.value !== 'all') {
     result = result.filter(
       (supplier) => supplier.supplier_type === selectedType.value
     );
@@ -338,10 +338,10 @@ const handleSubmit = async () => {
 
 const resetForm = () => {
   Object.assign(supplierForm, {
-    name: "",
-    contact_person: "",
-    phone: "",
-    type: "",
+    name: '',
+    contact_person: '',
+    phone: '',
+    type: '',
   });
 };
 
@@ -351,21 +351,21 @@ const handleSearch = () => {
 
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
-    active: "活跃",
-    inactive: "停用",
-    suspended: "暂停",
-    terminated: "终止",
-    potential: "潜在",
+    active: '活跃',
+    inactive: '停用',
+    suspended: '暂停',
+    terminated: '终止',
+    potential: '潜在',
   };
   return texts[status] || status;
 };
 
 const getTypeText = (type: string) => {
   const texts: Record<string, string> = {
-    raw_material: "原材料",
-    equipment: "设备",
-    service: "服务",
-    logistics: "物流",
+    raw_material: '原材料',
+    equipment: '设备',
+    service: '服务',
+    logistics: '物流',
   };
   return texts[type] || type;
 };
@@ -374,39 +374,39 @@ const getTypeText = (type: string) => {
 const mockSuppliers = [
   {
     id: 1,
-    supplier_no: "SUP001",
-    name: "华为技术有限公司",
-    contact_person: "张经理",
-    contact_phone: "138-0000-0001",
-    email: "zhang@huawei.com",
-    supplier_type: "equipment",
-    status: "active",
-    address: "深圳市龙岗区华为基地",
-    created_at: "2024-01-15",
+    supplier_no: 'SUP001',
+    name: '华为技术有限公司',
+    contact_person: '张经理',
+    contact_phone: '138-0000-0001',
+    email: 'zhang@huawei.com',
+    supplier_type: 'equipment',
+    status: 'active',
+    address: '深圳市龙岗区华为基地',
+    created_at: '2024-01-15',
   },
   {
     id: 2,
-    supplier_no: "SUP002",
-    name: "中石化集团",
-    contact_person: "李总监",
-    contact_phone: "138-0000-0002",
-    email: "li@sinopec.com",
-    supplier_type: "raw_material",
-    status: "active",
-    address: "北京市朝阳区中石化大厦",
-    created_at: "2024-01-10",
+    supplier_no: 'SUP002',
+    name: '中石化集团',
+    contact_person: '李总监',
+    contact_phone: '138-0000-0002',
+    email: 'li@sinopec.com',
+    supplier_type: 'raw_material',
+    status: 'active',
+    address: '北京市朝阳区中石化大厦',
+    created_at: '2024-01-10',
   },
   {
     id: 3,
-    supplier_no: "SUP003",
-    name: "顺丰速运",
-    contact_person: "王主管",
-    contact_phone: "138-0000-0003",
-    email: "wang@sf-express.com",
-    supplier_type: "logistics",
-    status: "inactive",
-    address: "广东省深圳市顺丰总部",
-    created_at: "2024-01-05",
+    supplier_no: 'SUP003',
+    name: '顺丰速运',
+    contact_person: '王主管',
+    contact_phone: '138-0000-0003',
+    email: 'wang@sf-express.com',
+    supplier_type: 'logistics',
+    status: 'inactive',
+    address: '广东省深圳市顺丰总部',
+    created_at: '2024-01-05',
   },
 ];
 
@@ -425,6 +425,6 @@ onMounted(async () => {
 
 // 页面元数据
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 </script>

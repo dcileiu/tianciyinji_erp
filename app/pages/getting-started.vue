@@ -336,14 +336,14 @@ import {
   ShoppingBag,
   ShoppingCart,
   TrendingUp,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "快速入门 - ERP 管理系统",
+  title: '快速入门 - ERP 管理系统',
 });
 </script>

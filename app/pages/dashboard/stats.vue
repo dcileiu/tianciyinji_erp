@@ -372,10 +372,10 @@ import {
   RefreshCw,
   ShoppingBag,
   Target,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
 // 响应式数据
-const selectedPeriod = ref("30d");
+const selectedPeriod = ref('30d');
 const totalRevenue = ref(2_345_678);
 const revenueChange = ref(12.5);
 const totalOrders = ref(1234);
@@ -393,46 +393,46 @@ const retentionChange = ref(3.1);
 
 // 销售排行榜数据
 const topSales = ref([
-  { id: 1, name: "张三", department: "华东区", amount: 156_800, orders: 45 },
-  { id: 2, name: "李四", department: "华南区", amount: 143_200, orders: 38 },
-  { id: 3, name: "王五", department: "华北区", amount: 128_900, orders: 42 },
-  { id: 4, name: "赵六", department: "西南区", amount: 115_600, orders: 35 },
-  { id: 5, name: "钱七", department: "东北区", amount: 98_400, orders: 28 },
+  { id: 1, name: '张三', department: '华东区', amount: 156_800, orders: 45 },
+  { id: 2, name: '李四', department: '华南区', amount: 143_200, orders: 38 },
+  { id: 3, name: '王五', department: '华北区', amount: 128_900, orders: 42 },
+  { id: 4, name: '赵六', department: '西南区', amount: 115_600, orders: 35 },
+  { id: 5, name: '钱七', department: '东北区', amount: 98_400, orders: 28 },
 ]);
 
 // 热销产品数据
 const topProducts = ref([
   {
     id: 1,
-    name: "智能手机 Pro",
-    category: "电子产品",
+    name: '智能手机 Pro',
+    category: '电子产品',
     sales: 245,
     revenue: 588_000,
   },
-  { id: 2, name: "无线耳机", category: "配件", sales: 189, revenue: 132_300 },
+  { id: 2, name: '无线耳机', category: '配件', sales: 189, revenue: 132_300 },
   {
     id: 3,
-    name: "平板电脑",
-    category: "电子产品",
+    name: '平板电脑',
+    category: '电子产品',
     sales: 156,
     revenue: 468_000,
   },
-  { id: 4, name: "智能手表", category: "可穿戴", sales: 134, revenue: 201_000 },
-  { id: 5, name: "充电宝", category: "配件", sales: 98, revenue: 29_400 },
+  { id: 4, name: '智能手表', category: '可穿戴', sales: 134, revenue: 201_000 },
+  { id: 5, name: '充电宝', category: '配件', sales: 98, revenue: 29_400 },
 ]);
 
 // 地域数据
 const regionData = ref([
-  { name: "华东地区", sales: 856_200, percentage: 35.2, color: "#3b82f6" },
-  { name: "华南地区", sales: 642_800, percentage: 26.4, color: "#10b981" },
-  { name: "华北地区", sales: 523_400, percentage: 21.5, color: "#f59e0b" },
-  { name: "西南地区", sales: 298_600, percentage: 12.3, color: "#ef4444" },
-  { name: "东北地区", sales: 114_500, percentage: 4.7, color: "#8b5cf6" },
+  { name: '华东地区', sales: 856_200, percentage: 35.2, color: '#3b82f6' },
+  { name: '华南地区', sales: 642_800, percentage: 26.4, color: '#10b981' },
+  { name: '华北地区', sales: 523_400, percentage: 21.5, color: '#f59e0b' },
+  { name: '西南地区', sales: 298_600, percentage: 12.3, color: '#ef4444' },
+  { name: '东北地区', sales: 114_500, percentage: 4.7, color: '#8b5cf6' },
 ]);
 
 // 工具函数
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("zh-CN", {
+  return new Intl.NumberFormat('zh-CN', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
@@ -440,29 +440,29 @@ const formatCurrency = (amount: number) => {
 
 const getPeriodLabel = () => {
   switch (selectedPeriod.value) {
-    case "7d":
-      return "上周";
-    case "30d":
-      return "上月";
-    case "90d":
-      return "上季度";
-    case "1y":
-      return "去年";
+    case '7d':
+      return '上周';
+    case '30d':
+      return '上月';
+    case '90d':
+      return '上季度';
+    case '1y':
+      return '去年';
     default:
-      return "上期";
+      return '上期';
   }
 };
 
 const getRankingColor = (index: number) => {
   switch (index) {
     case 0:
-      return "bg-yellow-500";
+      return 'bg-yellow-500';
     case 1:
-      return "bg-gray-400";
+      return 'bg-gray-400';
     case 2:
-      return "bg-orange-600";
+      return 'bg-orange-600';
     default:
-      return "bg-muted-foreground";
+      return 'bg-muted-foreground';
   }
 };
 
@@ -487,6 +487,6 @@ watch(selectedPeriod, (_newPeriod) => {
 
 // 页面元信息
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 </script>

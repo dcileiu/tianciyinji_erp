@@ -329,16 +329,16 @@ import {
   Trash2,
   User,
   Warehouse,
-} from "lucide-vue-next";
-import type { Warehouse as WarehouseType } from "~/types/database";
+} from 'lucide-vue-next';
+import type { Warehouse as WarehouseType } from '~/types/database';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "仓库管理 - ERP 管理系统",
+  title: '仓库管理 - ERP 管理系统',
 });
 
 // 状态管理
@@ -349,68 +349,68 @@ const editingWarehouse = ref(null as any);
 
 // 筛选条件
 const filters = ref({
-  type: "all",
-  status: "all",
-  search: "",
+  type: 'all',
+  status: 'all',
+  search: '',
 });
 
 // 表单数据
 const warehouseForm = ref({
-  warehouse_no: "",
-  name: "",
-  type: "raw_material" as "main" | "raw_material" | "finished_goods" | "backup",
-  location: "",
-  manager: "",
-  status: "active" as "active" | "inactive",
+  warehouse_no: '',
+  name: '',
+  type: 'raw_material' as 'main' | 'raw_material' | 'finished_goods' | 'backup',
+  location: '',
+  manager: '',
+  status: 'active' as 'active' | 'inactive',
 });
 
 // 选项数据
 const typeOptions = ref([
-  { label: "主仓库", value: "main" },
-  { label: "原料仓", value: "raw_material" },
-  { label: "成品仓", value: "finished_goods" },
-  { label: "备用仓", value: "backup" },
+  { label: '主仓库', value: 'main' },
+  { label: '原料仓', value: 'raw_material' },
+  { label: '成品仓', value: 'finished_goods' },
+  { label: '备用仓', value: 'backup' },
 ]);
 
 const statusOptions = ref([
-  { label: "启用", value: "active" },
-  { label: "停用", value: "inactive" },
+  { label: '启用', value: 'active' },
+  { label: '停用', value: 'inactive' },
 ]);
 
 // 模拟数据
 const mockWarehouses = ref<WarehouseType[]>([
   {
-    id: "1",
-    warehouse_no: "WH001",
-    name: "原料仓库A",
-    type: "raw_material",
-    location: "工业园区A栋1层",
-    manager: "张三",
-    status: "active",
-    created_at: "2024-01-01T00:00:00Z",
-    updated_at: "2024-01-01T00:00:00Z",
+    id: '1',
+    warehouse_no: 'WH001',
+    name: '原料仓库A',
+    type: 'raw_material',
+    location: '工业园区A栋1层',
+    manager: '张三',
+    status: 'active',
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
   },
   {
-    id: "2",
-    warehouse_no: "WH002",
-    name: "成品仓库B",
-    type: "finished_goods",
-    location: "工业园区B栋2层",
-    manager: "李四",
-    status: "active",
-    created_at: "2024-01-02T00:00:00Z",
-    updated_at: "2024-01-02T00:00:00Z",
+    id: '2',
+    warehouse_no: 'WH002',
+    name: '成品仓库B',
+    type: 'finished_goods',
+    location: '工业园区B栋2层',
+    manager: '李四',
+    status: 'active',
+    created_at: '2024-01-02T00:00:00Z',
+    updated_at: '2024-01-02T00:00:00Z',
   },
   {
-    id: "3",
-    warehouse_no: "WH003",
-    name: "工具仓库C",
-    type: "backup",
-    location: "工业园区C栋1层",
-    manager: "王五",
-    status: "inactive",
-    created_at: "2024-01-03T00:00:00Z",
-    updated_at: "2024-01-03T00:00:00Z",
+    id: '3',
+    warehouse_no: 'WH003',
+    name: '工具仓库C',
+    type: 'backup',
+    location: '工业园区C栋1层',
+    manager: '王五',
+    status: 'inactive',
+    created_at: '2024-01-03T00:00:00Z',
+    updated_at: '2024-01-03T00:00:00Z',
   },
 ]);
 
@@ -427,13 +427,13 @@ const filteredWarehouses = computed(() => {
     );
   }
 
-  if (filters.value.type && filters.value.type !== "all") {
+  if (filters.value.type && filters.value.type !== 'all') {
     result = result.filter(
       (warehouse) => warehouse.type === filters.value.type
     );
   }
 
-  if (filters.value.status && filters.value.status !== "all") {
+  if (filters.value.status && filters.value.status !== 'all') {
     result = result.filter(
       (warehouse) => warehouse.status === filters.value.status
     );
@@ -446,44 +446,44 @@ const totalCount = computed(() => mockWarehouses.value.length);
 
 // 类型映射
 const typeMap: Record<string, string> = {
-  main: "主仓库",
-  raw_material: "原料仓",
-  finished_goods: "成品仓",
-  backup: "备用仓",
+  main: '主仓库',
+  raw_material: '原料仓',
+  finished_goods: '成品仓',
+  backup: '备用仓',
 };
 
 const statusMap: Record<string, string> = {
-  active: "启用",
-  inactive: "停用",
+  active: '启用',
+  inactive: '停用',
 };
 
 const typeSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  main: "secondary",
-  raw_material: "secondary",
-  finished_goods: "default",
-  backup: "secondary",
+  main: 'secondary',
+  raw_material: 'secondary',
+  finished_goods: 'default',
+  backup: 'secondary',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  active: "default",
-  inactive: "destructive",
+  active: 'default',
+  inactive: 'destructive',
 };
 
 // 方法
 const getTypeDisplayName = (type: string) => typeMap[type] || type;
 
-const getTypeSeverity = (type: string) => typeSeverityMap[type] || "secondary";
+const getTypeSeverity = (type: string) => typeSeverityMap[type] || 'secondary';
 
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 
 const getStatusSeverity = (status: string) =>
-  statusSeverityMap[status] || "secondary";
+  statusSeverityMap[status] || 'secondary';
 
 const loadWarehouses = async () => {
   loading.value = true;
@@ -509,12 +509,12 @@ const openWarehouseDialog = (warehouse: any = null) => {
   } else {
     editingWarehouse.value = null;
     Object.assign(warehouseForm.value, {
-      warehouse_no: "",
-      name: "",
-      type: "raw_material",
-      location: "",
-      manager: "",
-      status: "active",
+      warehouse_no: '',
+      name: '',
+      type: 'raw_material',
+      location: '',
+      manager: '',
+      status: 'active',
     });
   }
   showDialog.value = true;

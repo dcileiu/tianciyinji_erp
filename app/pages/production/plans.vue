@@ -457,15 +457,15 @@
 
 <script setup lang="ts">
 // 手动导入 Lucide 图标
-import { CheckCircle, Clock, Plus, Trash2 } from "lucide-vue-next";
+import { CheckCircle, Clock, Plus, Trash2 } from 'lucide-vue-next';
 
 // 页面配置
 definePageMeta({
-  layout: "default",
+  layout: 'default',
 });
 
 useHead({
-  title: "生产计划管理 - ERP 管理系统",
+  title: '生产计划管理 - ERP 管理系统',
 });
 
 // 状态管理
@@ -475,17 +475,17 @@ const showCreateDialog = ref(false);
 const selectedPlans = ref([]);
 // const confirm = useConfirm() // 已移除
 // 筛选条件
-const searchQuery = ref("");
-const statusFilter = ref("all");
-const workshopFilter = ref("all");
+const searchQuery = ref('');
+const statusFilter = ref('all');
+const workshopFilter = ref('all');
 
 // 表单数据
 const planForm = ref({
-  plan_name: "",
-  workshop_id: "",
-  start_date: new Date().toISOString().split("T")[0],
-  end_date: "",
-  description: "",
+  plan_name: '',
+  workshop_id: '',
+  start_date: new Date().toISOString().split('T')[0],
+  end_date: '',
+  description: '',
   orders: [] as any[],
 });
 
@@ -499,59 +499,59 @@ const planStats = ref({
 
 // 选项数据
 const statusOptions = ref([
-  { label: "全部状态", value: "all" },
-  { label: "草稿", value: "draft" },
-  { label: "待审核", value: "pending" },
-  { label: "已审核", value: "approved" },
-  { label: "执行中", value: "executing" },
-  { label: "已完成", value: "completed" },
-  { label: "已取消", value: "cancelled" },
+  { label: '全部状态', value: 'all' },
+  { label: '草稿', value: 'draft' },
+  { label: '待审核', value: 'pending' },
+  { label: '已审核', value: 'approved' },
+  { label: '执行中', value: 'executing' },
+  { label: '已完成', value: 'completed' },
+  { label: '已取消', value: 'cancelled' },
 ]);
 
 const workshopOptions = ref([
-  { label: "全部车间", value: "all" },
-  { label: "装配车间", value: "assembly" },
-  { label: "机加工车间", value: "machining" },
-  { label: "喷涂车间", value: "painting" },
-  { label: "包装车间", value: "packaging" },
+  { label: '全部车间', value: 'all' },
+  { label: '装配车间', value: 'assembly' },
+  { label: '机加工车间', value: 'machining' },
+  { label: '喷涂车间', value: 'painting' },
+  { label: '包装车间', value: 'packaging' },
 ]);
 
 const priorityOptions = ref([
-  { label: "低", value: "low" },
-  { label: "中", value: "medium" },
-  { label: "高", value: "high" },
-  { label: "紧急", value: "urgent" },
+  { label: '低', value: 'low' },
+  { label: '中', value: 'medium' },
+  { label: '高', value: 'high' },
+  { label: '紧急', value: 'urgent' },
 ]);
 
 const availableOrders = ref([
-  { label: "PO-2024-001", value: "PO-2024-001" },
-  { label: "PO-2024-002", value: "PO-2024-002" },
-  { label: "PO-2024-003", value: "PO-2024-003" },
+  { label: 'PO-2024-001', value: 'PO-2024-001' },
+  { label: 'PO-2024-002', value: 'PO-2024-002' },
+  { label: 'PO-2024-003', value: 'PO-2024-003' },
 ]);
 
 // 模拟数据
 const mockPlans = ref([
   {
-    id: "1",
-    plan_name: "第一季度生产计划",
-    workshop_name: "装配车间",
-    start_date: new Date("2024-01-15"),
-    end_date: new Date("2024-03-31"),
+    id: '1',
+    plan_name: '第一季度生产计划',
+    workshop_name: '装配车间',
+    start_date: new Date('2024-01-15'),
+    end_date: new Date('2024-03-31'),
     total_orders: 25,
     completed_orders: 18,
     capacity_utilization: 85,
-    status: "executing",
+    status: 'executing',
   },
   {
-    id: "2",
-    plan_name: "紧急订单生产计划",
-    workshop_name: "机加工车间",
-    start_date: new Date("2024-01-20"),
-    end_date: new Date("2024-02-15"),
+    id: '2',
+    plan_name: '紧急订单生产计划',
+    workshop_name: '机加工车间',
+    start_date: new Date('2024-01-20'),
+    end_date: new Date('2024-02-15'),
     total_orders: 8,
     completed_orders: 8,
     capacity_utilization: 95,
-    status: "completed",
+    status: 'completed',
   },
 ]);
 
@@ -566,11 +566,11 @@ const filteredPlans = computed(() => {
     );
   }
 
-  if (statusFilter.value && statusFilter.value !== "all") {
+  if (statusFilter.value && statusFilter.value !== 'all') {
     result = result.filter((plan) => plan.status === statusFilter.value);
   }
 
-  if (workshopFilter.value && workshopFilter.value !== "all") {
+  if (workshopFilter.value && workshopFilter.value !== 'all') {
     result = result.filter(
       (plan) => plan.workshop_name === workshopFilter.value
     );
@@ -581,39 +581,39 @@ const filteredPlans = computed(() => {
 
 // 映射对象
 const statusMap: Record<string, string> = {
-  draft: "草稿",
-  pending: "待审核",
-  approved: "已审核",
-  executing: "执行中",
-  completed: "已完成",
-  cancelled: "已取消",
+  draft: '草稿',
+  pending: '待审核',
+  approved: '已审核',
+  executing: '执行中',
+  completed: '已完成',
+  cancelled: '已取消',
 };
 
 const statusSeverityMap: Record<
   string,
-  "default" | "destructive" | "outline" | "secondary"
+  'default' | 'destructive' | 'outline' | 'secondary'
 > = {
-  draft: "secondary",
-  pending: "outline",
-  approved: "secondary",
-  executing: "default",
-  completed: "default",
-  cancelled: "destructive",
+  draft: 'secondary',
+  pending: 'outline',
+  approved: 'secondary',
+  executing: 'default',
+  completed: 'default',
+  cancelled: 'destructive',
 };
 
 // 方法
 const getStatusDisplayName = (status: string) => statusMap[status] || status;
 const getStatusSeverity = (status: string) =>
-  statusSeverityMap[status] || "secondary";
+  statusSeverityMap[status] || 'secondary';
 
 const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("zh-CN");
+  return new Date(date).toLocaleDateString('zh-CN');
 };
 
 const resetFilters = () => {
-  searchQuery.value = "";
-  statusFilter.value = "all";
-  workshopFilter.value = "all";
+  searchQuery.value = '';
+  statusFilter.value = 'all';
+  workshopFilter.value = 'all';
 };
 
 // 修复所有下划线函数
@@ -639,9 +639,9 @@ const confirmDeletePlan = (_plan: any) => {
 
 const addPlanOrder = () => {
   planForm.value.orders.push({
-    order_no: "",
+    order_no: '',
     quantity: 1,
-    priority: "medium",
+    priority: 'medium',
   });
 };
 
@@ -660,11 +660,11 @@ const savePlan = async () => {
       workshop_name:
         workshopOptions.value.find(
           (w) => w.value === planForm.value.workshop_id
-        )?.label || "",
+        )?.label || '',
       total_orders: planForm.value.orders.length,
       completed_orders: 0,
       capacity_utilization: 0,
-      status: "draft",
+      status: 'draft',
     };
 
     mockPlans.value.push(newPlan as any);
@@ -672,11 +672,11 @@ const savePlan = async () => {
 
     // 重置表单
     planForm.value = {
-      plan_name: "",
-      workshop_id: "",
-      start_date: new Date().toISOString().split("T")[0],
-      end_date: "",
-      description: "",
+      plan_name: '',
+      workshop_id: '',
+      start_date: new Date().toISOString().split('T')[0],
+      end_date: '',
+      description: '',
       orders: [],
     };
   } catch (_error) {
