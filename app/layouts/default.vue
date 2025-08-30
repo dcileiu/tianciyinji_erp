@@ -3,7 +3,71 @@
     <ClientOnly>
       <AppSideBar />
       <template #fallback>
-        <div class="w-64 h-screen bg-sidebar border-r border-sidebar-border"></div>
+        <Sidebar variant="inset">
+          <div class="animate-pulse">
+            <SidebarHeader>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <div class="flex h-12 items-center gap-2 p-2">
+                    <Skeleton class="h-8 w-8 rounded-lg" />
+                    <div class="flex-1 space-y-1">
+                      <Skeleton class="h-4 w-20" />
+                      <Skeleton class="h-3 w-16" />
+                    </div>
+                    <Skeleton class="h-4 w-4" />
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarHeader>
+
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel>
+                  <Skeleton class="h-3 w-16" />
+                </SidebarGroupLabel>
+                <SidebarMenu>
+                  <SidebarMenuItem v-for="n in 8" :key="n" class="p-0">
+                    <div class="flex h-10 items-center gap-2 p-2">
+                      <Skeleton class="h-4 w-4" />
+                      <Skeleton class="h-4 w-20" />
+                      <Skeleton class="h-4 w-4 ml-auto" />
+                    </div>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroup>
+
+              <SidebarGroup class="mt-4">
+                <SidebarGroupLabel>
+                  <Skeleton class="h-3 w-12" />
+                </SidebarGroupLabel>
+                <SidebarMenu>
+                  <SidebarMenuItem v-for="n in 3" :key="n" class="p-0">
+                    <div class="flex h-10 items-center gap-2 p-2">
+                      <Skeleton class="h-4 w-4" />
+                      <Skeleton class="h-4 w-16" />
+                    </div>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroup>
+            </SidebarContent>
+
+            <SidebarFooter>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <div class="flex h-12 items-center gap-2 p-2">
+                    <Skeleton class="h-8 w-8 rounded-full" />
+                    <div class="flex-1 space-y-1">
+                      <Skeleton class="h-4 w-16" />
+                      <Skeleton class="h-3 w-24" />
+                    </div>
+                    <Skeleton class="h-4 w-4" />
+                  </div>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarFooter>
+          </div>
+          <SidebarRail />
+        </Sidebar>
       </template>
     </ClientOnly>
     <SidebarInset>

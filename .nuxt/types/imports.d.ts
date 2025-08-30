@@ -128,6 +128,7 @@ declare global {
   const useLazyFetch: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/fetch')['useLazyFetch']
   const useLink: typeof import('vue-router')['useLink']
   const useLoadingIndicator: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/loading-indicator')['useLoadingIndicator']
+  const useMenus: typeof import('../../app/composables/useMenus')['useMenus']
   const useModel: typeof import('vue')['useModel']
   const useNuxtApp: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']
   const useNuxtData: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']
@@ -208,6 +209,9 @@ declare global {
   export type { InitStep, InitLog, RetryConfig } from '../../app/composables/useDbInit'
   import('../../app/composables/useDbInit')
   // @ts-ignore
+  export type { Menu, MenuForm, MenuQuery } from '../../app/composables/useMenus'
+  import('../../app/composables/useMenus')
+  // @ts-ignore
   export type { ErrorCode, AppError } from '../../app/utils/error-handler'
   import('../../app/utils/error-handler')
   // @ts-ignore
@@ -220,7 +224,7 @@ declare global {
   export type { DatabaseUser, Customer, Supplier, Product, Warehouse, Inventory, SalesOrder, SalesOrderItem, PurchaseOrder, PurchaseOrderItem, InventoryMovement, Transfer, TransferItem, Department, Role, Dictionary, SystemLog, PaginationParams, PaginationResponse, ApiResponse } from '../../app/types/database'
   import('../../app/types/database')
   // @ts-ignore
-  export type { UserRole, ProductionStatus, Database } from '../../app/types/database.types'
+  export type { UserRole, ProductionStatus, Database,  } from '../../app/types/database.types'
   import('../../app/types/database.types')
 }
 // for vue template auto import
@@ -354,6 +358,7 @@ declare module 'vue' {
     readonly useLazyFetch: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/fetch')['useLazyFetch']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useLoadingIndicator: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/loading-indicator')['useLoadingIndicator']>
+    readonly useMenus: UnwrapRef<typeof import('../../app/composables/useMenus')['useMenus']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>

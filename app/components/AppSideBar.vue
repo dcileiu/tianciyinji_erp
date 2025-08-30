@@ -1,15 +1,85 @@
 <template>
   <Sidebar v-bind="$props" variant="inset">
+    <!-- 显示骨架屏当数据加载中 -->
+    <div v-if="isLoading" class="animate-pulse">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <div class="flex h-12 items-center gap-2 p-2">
+              <Skeleton class="h-8 w-8 rounded-lg" />
+              <div class="flex-1 space-y-1">
+                <Skeleton class="h-4 w-20" />
+                <Skeleton class="h-3 w-16" />
+              </div>
+              <Skeleton class="h-4 w-4" />
+            </div>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <!-- Business Modules Section Skeleton -->
+        <SidebarGroup>
+          <SidebarGroupLabel>
+            <Skeleton class="h-3 w-16" />
+          </SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem v-for="n in 8" :key="`menu-skeleton-${n}`" class="p-0">
+              <div class="flex h-10 items-center gap-2 p-2">
+                <Skeleton class="h-4 w-4" />
+                <Skeleton class="h-4 w-20" />
+                <Skeleton class="h-4 w-4 ml-auto" />
+              </div>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <!-- Projects Section Skeleton -->
+        <SidebarGroup class="mt-4">
+          <SidebarGroupLabel>
+            <Skeleton class="h-3 w-12" />
+          </SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem v-for="n in 3" :key="`project-skeleton-${n}`" class="p-0">
+              <div class="flex h-10 items-center gap-2 p-2">
+                <Skeleton class="h-4 w-4" />
+                <Skeleton class="h-4 w-16" />
+              </div>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <div class="flex h-12 items-center gap-2 p-2">
+              <Skeleton class="h-8 w-8 rounded-full" />
+              <div class="flex-1 space-y-1">
+                <Skeleton class="h-4 w-16" />
+                <Skeleton class="h-3 w-24" />
+              </div>
+              <Skeleton class="h-4 w-4" />
+            </div>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </div>
+
+    <!-- 实际内容 -->
+    <template v-else>
     <SidebarHeader>
-      <TeamSwitcher :teams="data.teams" />
+        <TeamSwitcher :teams="currentData.teams" />
     </SidebarHeader>
     <SidebarContent>
-      <NavMain :items="data.navMain" />
-      <NavProjects :projects="data.projects" />
+        <NavMain :items="currentData.navMain" />
+        <NavProjects :projects="currentData.projects" />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser :user="data.user" />
+        <NavUser :user="currentData.user" />
     </SidebarFooter>
+    </template>
+
     <SidebarRail />
   </Sidebar>
 </template>
@@ -40,8 +110,12 @@ withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
-// 数据配置 - 使用固定数据避免SSR不匹配
-const data = {
+// 加载状态
+const isLoading = ref(true)
+const { user } = useAuth()
+
+// 基础数据配置
+const baseData = {
   user: {
     name: 'User',
     email: 'user@example.com',
@@ -237,4 +311,52 @@ const data = {
     },
   ],
 }
+
+// 当前使用的数据
+const currentData = ref(baseData)
+
+// 初始化数据
+const initData = async () => {
+  try {
+    // 模拟数据加载延迟 - 让用户能看到骨架屏效果
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    // 根据用户信息更新数据
+    if (user.value) {
+      const userData = { ...baseData }
+      userData.user = {
+        name: (user.value.user_metadata?.name as string) || user.value.email?.split('@')[0] || 'User',
+        email: user.value.email || 'user@example.com',
+        avatar: user.value.user_metadata?.avatar_url || '',
+      }
+      currentData.value = userData
+    }
+  } catch (error) {
+    console.warn('侧边栏数据初始化失败:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// 监听用户状态变化
+watch(user, (newUser) => {
+  if (newUser) {
+    initData()
+  }
+}, { immediate: true })
+
+// 页面加载时初始化
+onMounted(() => {
+  // 如果用户已存在，立即初始化
+  if (user.value) {
+    initData()
+  } else {
+    // 否则等待一段时间后停止加载
+    setTimeout(() => {
+      if (!user.value) {
+        isLoading.value = false
+      }
+    }, 2000)
+  }
+})
 </script>

@@ -38,8 +38,8 @@ export type ProductionStatus =
   | 'paused';
 
 // 导出所有需要的类型
-export type {} from // 不再导出ProcessRoute和ProcessStep，因为它们未被使用
-'./production';
+export type { } from // 不再导出ProcessRoute和ProcessStep，因为它们未被使用
+  './production'
 
 // 数据库表结构类型定义
 export interface Database {
@@ -85,6 +85,48 @@ export interface Database {
           avatar?: string;
           status?: 'active' | 'inactive';
           last_login?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+
+      menus: {
+        Row: {
+          id: string;
+          name: string;
+          icon?: string | null;
+          path?: string | null;
+          parent_id: string; // '0' 表示根菜单
+          sort: number;
+          status: 'active' | 'inactive';
+          permission?: string | null;
+          type: 'directory' | 'menu' | 'permission';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          icon?: string | null;
+          path?: string | null;
+          parent_id?: string; // 默认为 '0'
+          sort?: number;
+          status?: 'active' | 'inactive';
+          permission?: string | null;
+          type?: 'directory' | 'menu' | 'permission';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          icon?: string | null;
+          path?: string | null;
+          parent_id?: string;
+          sort?: number;
+          status?: 'active' | 'inactive';
+          permission?: string | null;
+          type?: 'directory' | 'menu' | 'permission';
           created_at?: string;
           updated_at?: string;
         };
