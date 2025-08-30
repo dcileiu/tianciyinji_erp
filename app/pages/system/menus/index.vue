@@ -1,14 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- 页面标题 -->
-    <div v-if="loading && menus.length === 0" class="flex items-center justify-between">
-      <div>
-        <Skeleton class="h-8 w-24 mb-2" />
-        <Skeleton class="h-4 w-40" />
-      </div>
-      <Skeleton class="h-10 w-24 rounded" />
-    </div>
-    <div v-else class="flex items-center justify-between">
+    <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
           菜单管理
@@ -25,35 +18,20 @@
 
     <!-- 搜索和筛选 -->
     <Card>
-      <CardContent>
-        <div v-if="loading && menus.length === 0" class="flex flex-col md:flex-row gap-4">
-          <!-- 搜索框骨架屏 -->
-          <div class="flex-1">
-            <div class="relative">
-              <Skeleton class="h-10 w-full rounded" />
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <Skeleton class="h-10 w-32 rounded" />
-            <Skeleton class="h-10 w-32 rounded" />
-            <Skeleton class="h-10 w-10 rounded" />
-          </div>
-        </div>
-        <div v-else class="flex flex-col md:flex-row gap-4">
-          <div class="flex-1">
-            <div class="relative">
+      <CardContent class="p-4">
+        <div class="flex flex-col gap-4">
+          <div class="flex gap-2 flex-wrap items-center">
+            <div class="relative min-w-md max-w-md">
               <Search
                 class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"
               />
               <Input
                 v-model="searchQuery"
                 placeholder="搜索菜单名称或路径..."
-                class="pl-10"
+                class="pl-10 max-w-md w-full"
                 @input="handleSearch"
               />
             </div>
-          </div>
-          <div class="flex gap-2">
             <Select v-model="statusFilter" @update:model-value="handleFilter">
               <SelectTrigger class="w-32">
                 <SelectValue placeholder="全部状态" />
@@ -95,11 +73,7 @@
     <!-- 菜单列表 -->
     <Card>
       <CardHeader>
-        <CardTitle v-if="loading && menus.length === 0" class="flex items-center gap-2">
-          <Skeleton class="w-5 h-5 rounded" />
-          <Skeleton class="h-6 w-16" />
-        </CardTitle>
-        <CardTitle v-else class="flex items-center gap-2">
+        <CardTitle class="flex items-center gap-2">
           <Menu class="w-5 h-5" />
           菜单列表
         </CardTitle>

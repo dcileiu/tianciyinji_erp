@@ -74,24 +74,33 @@
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
             <Label for="menu-icon">菜单图标</Label>
-            <div class="flex space-x-2">
-              <Input
-                id="menu-icon"
-                v-model="iconString"
-                placeholder="例如: Home"
-                class="flex-1"
-                :disabled="formData.type === 'permission'"
-              />
-              <div class="flex items-center justify-center w-10 h-10 border rounded">
-                <component
-                  :is="getMenuIcon(formData.icon)"
-                  class="w-5 h-5"
-                  v-if="formData.icon && formData.type !== 'permission'"
-                />
-              </div>
-            </div>
+            <Popover>
+              <PopoverTrigger as-child>
+                <Button
+                  variant="outline"
+                  class="w-full justify-between"
+                  :disabled="formData.type === 'permission'"
+                >
+                  <div class="flex items-center space-x-2">
+                    <component
+                      :is="getMenuIcon(formData.icon)"
+                      :key="formData.icon || 'empty'"
+                      class="w-4 h-4"
+                      v-if="formData.icon"
+                    />
+                    <span>{{ formData.icon || '选择图标' }}</span>
+                  </div>
+                  <ChevronDown class="w-4 h-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent class="w-96 p-0" align="start">
+                <div class="p-4">
+                  <IconPicker v-model="iconString" />
+                </div>
+              </PopoverContent>
+            </Popover>
             <p class="text-xs text-gray-500">
-              {{ formData.type === 'permission' ? '权限类型无需图标' : '选填，支持 Lucide 图标名称' }}
+              {{ formData.type === 'permission' ? '权限类型无需图标' : '选择菜单图标' }}
             </p>
           </div>
 
@@ -150,26 +159,9 @@
 </template>
 
 <script setup lang="ts">
-import {
-  BarChart3,
-  Building,
-  Calendar,
-  CreditCard,
-  Database,
-  DollarSign,
-  FileText,
-  HelpCircle,
-  Home,
-  List,
-  Menu as MenuLucideIcon,
-  Package,
-  Settings,
-  Settings2,
-  Shield,
-  ShoppingBag,
-  ShoppingCart,
-  Users,
-} from 'lucide-vue-next'
+import { ChevronDown } from 'lucide-vue-next'
+import IconPicker from '~/components/IconPicker.vue'
+import { getIconByName } from '~/components/icons'
 import type { Menu, MenuForm } from '~/composables/useMenus'
 
 interface MenuDialogProps {
@@ -280,29 +272,9 @@ watch(() => props.editingMenu, (menu) => {
 
 // 获取菜单图标
 const getMenuIcon = (iconName?: string | null) => {
-  if (!iconName) return HelpCircle
+  if (!iconName) return getIconByName('HelpCircle')
 
-  const iconMap: Record<string, any> = {
-    Home,
-    Users,
-    Settings,
-    Settings2,
-    FileText,
-    BarChart3,
-    Package,
-    DollarSign,
-    CreditCard,
-    Shield,
-    Database,
-    Menu: MenuLucideIcon,
-    Building,
-    ShoppingCart,
-    ShoppingBag,
-    Calendar,
-    List,
-    HelpCircle,
-  }
-  return iconMap[iconName] || HelpCircle
+  return getIconByName(iconName)
 }
 
 // 事件处理

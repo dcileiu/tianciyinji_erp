@@ -117,20 +117,23 @@ export const useMenus = () => {
         permission: menuData.permission || null,
       }
 
-      // @ts-ignore
       const { data, error: createError } = await (supabase as any)
         .from('menus')
         .insert([processedData])
         .select()
         .single()
 
-      if (createError) throw createError
+      if (createError) {
+        console.error('创建菜单失败:', createError)
+        throw createError
+      }
 
       // 重新获取菜单列表
       await fetchMenus()
 
       return { data, error: null }
     } catch (err: any) {
+      console.error('创建菜单异常:', err)
       error.value = err.message || '创建菜单失败'
       return { data: null, error: err.message }
     } finally {
@@ -154,7 +157,6 @@ export const useMenus = () => {
         updated_at: new Date().toISOString(),
       }
 
-      // @ts-ignore
       const { data, error: updateError } = await (supabase as any)
         .from('menus')
         .update(processedData)
@@ -162,13 +164,17 @@ export const useMenus = () => {
         .select()
         .single()
 
-      if (updateError) throw updateError
+      if (updateError) {
+        console.error('更新菜单失败:', updateError)
+        throw updateError
+      }
 
       // 重新获取菜单列表
       await fetchMenus()
 
       return { data, error: null }
     } catch (err: any) {
+      console.error('更新菜单异常:', err)
       error.value = err.message || '更新菜单失败'
       return { data: null, error: err.message }
     } finally {
