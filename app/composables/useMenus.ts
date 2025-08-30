@@ -108,10 +108,10 @@ export const useMenus = () => {
       loading.value = true
       error.value = null
 
-      // 处理数据，保持 parent_id 为字符串类型
+      // 处理数据，根菜单的 parent_id 为 null
       const processedData = {
         ...menuData,
-        parent_id: menuData.parent_id || '0',
+        parent_id: menuData.parent_id === '0' || !menuData.parent_id ? null : menuData.parent_id,
         icon: menuData.icon || null,
         path: menuData.path || null,
         permission: menuData.permission || null,
@@ -144,10 +144,10 @@ export const useMenus = () => {
       loading.value = true
       error.value = null
 
-      // 处理数据，保持 parent_id 为字符串类型
+      // 处理数据，根菜单的 parent_id 为 null
       const processedData = {
         ...menuData,
-        parent_id: menuData.parent_id || '0',
+        parent_id: menuData.parent_id === '0' || !menuData.parent_id ? null : menuData.parent_id,
         icon: menuData.icon || null,
         path: menuData.path || null,
         permission: menuData.permission || null,
@@ -317,8 +317,8 @@ function buildMenuTree(flatMenus: any[]): Menu[] {
   flatMenus.forEach(menu => {
     const menuNode = menuMap.get(menu.id)!
 
-    if (!menu.parent_id || menu.parent_id === '0') {
-      // 根菜单
+    if (!menu.parent_id || menu.parent_id === null) {
+      // 根菜单 (parent_id 为 null)
       rootMenus.push(menuNode)
     } else {
       // 子菜单
