@@ -23,7 +23,7 @@
     <!-- 数据表格 -->
     <div class="w-full">
       <div class="flex items-center py-4">
-        <Input
+            <Input
           class="max-w-sm"
           placeholder="搜索部门名称、编码..."
           :model-value="table.getColumn('name')?.getFilterValue() as string"
@@ -49,18 +49,18 @@
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+        </div>
 
       <div class="rounded-md border">
-        <Table>
-          <TableHeader>
+          <Table>
+            <TableHeader>
             <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
               <TableHead v-for="header in headerGroup.headers" :key="header.id">
                 <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
               </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
             <template v-if="table.getRowModel().rows?.length">
               <TableRow
                 v-for="row in table.getRowModel().rows"
@@ -81,7 +81,7 @@
                 <div v-if="loading" class="flex items-center justify-center">
                   <Loader2 class="h-6 w-6 animate-spin mr-2" />
                   加载中...
-                </div>
+                    </div>
                 <div v-else>
                   <Building class="mx-auto h-16 w-16 text-muted-foreground mb-4" />
                   <h3 class="text-xl font-semibold mb-4">暂无部门数据</h3>
@@ -91,13 +91,13 @@
                   <Button @click="openDepartmentModal">
                     <Building class="mr-2 h-4 w-4" />
                     添加部门
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
 
       <div class="flex items-center justify-end space-x-2 py-4">
         <div class="flex-1 text-sm text-muted-foreground">
@@ -140,12 +140,12 @@
 
         <div class="space-y-4 py-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
+          <div class="space-y-2">
               <Label>部门名称 *</Label>
-              <Input
+            <Input
                 v-model="currentDepartment.name"
-                placeholder="请输入部门名称"
-              />
+              placeholder="请输入部门名称"
+            />
             </div>
             <div class="space-y-2">
               <Label>部门编码 *</Label>
@@ -166,33 +166,33 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
+          <div class="space-y-2">
               <Label>上级部门</Label>
               <Select v-model="currentDepartment.parent_id">
-                <SelectTrigger>
+              <SelectTrigger>
                   <SelectValue placeholder="选择上级部门" />
-                </SelectTrigger>
-                <SelectContent>
+              </SelectTrigger>
+              <SelectContent>
                   <SelectItem value="">无上级部门</SelectItem>
-                  <SelectItem
+                <SelectItem
                     v-for="dept in availableParentDepartments"
                     :key="dept.id"
                     :value="dept.id"
                   >
                     {{ dept.name }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div class="space-y-2">
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div class="space-y-2">
               <Label>排序</Label>
-              <Input
+            <Input
                 v-model.number="currentDepartment.sort"
                 type="number"
                 placeholder="排序数字"
                 min="1"
-              />
-            </div>
+            />
+          </div>
           </div>
 
           <div class="space-y-2">
@@ -249,29 +249,29 @@
 <script setup lang="ts">
 import { valueUpdater } from '@/utils'
 import type {
-    ColumnDef,
-    ColumnFiltersState,
-    SortingState,
-    VisibilityState,
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
 } from '@tanstack/vue-table'
 import {
-    FlexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useVueTable,
+  FlexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useVueTable,
 } from '@tanstack/vue-table'
 import {
-    ArrowUpDown,
-    Building,
-    ChevronDown,
-    Edit,
-    Loader2,
-    MoreHorizontal,
-    Plus,
-    RefreshCw,
-    Trash2,
+  ArrowUpDown,
+  Building,
+  ChevronDown,
+  Edit,
+  Loader2,
+  MoreHorizontal,
+  Plus,
+  RefreshCw,
+  Trash2,
 } from 'lucide-vue-next'
 import { h, ref } from 'vue'
 import { toast } from 'vue-sonner'
@@ -279,51 +279,51 @@ import type { Department, DepartmentForm } from '~/composables/useDepartments'
 
 // 导入所需的UI组件
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
 

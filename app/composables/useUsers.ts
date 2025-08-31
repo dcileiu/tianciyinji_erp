@@ -77,10 +77,13 @@ export const useUsers = () => {
       loading.value = true
       error.value = null
 
-      // 调用服务端 API
-      const result = await $fetch('/api/users', {
-        query: query
-      }) as any
+      // 使用认证错误处理包装器
+      const result = await withAuthErrorHandling(async () => {
+        // 调用服务端 API
+        return await $fetch('/api/users', {
+          query: query
+        }) as any
+      })
 
       if (result.code === 0) {
         // 转换数据格式

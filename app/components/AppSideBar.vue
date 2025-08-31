@@ -68,16 +68,16 @@
 
     <!-- 实际内容 -->
     <template v-else>
-    <SidebarHeader>
-        <TeamSwitcher :teams="currentData.teams" />
-    </SidebarHeader>
-    <SidebarContent>
-        <NavMain :items="currentData.navMain" />
-        <NavProjects :projects="currentData.projects" />
-    </SidebarContent>
-    <SidebarFooter>
-        <NavUser :user="currentData.user" />
-    </SidebarFooter>
+      <SidebarHeader>
+        <TeamSwitcher :teams="teams" />
+      </SidebarHeader>
+      <SidebarContent>
+        <AppSidebarMenu />
+        <NavProjects :projects="projects" />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser :user="currentUser" />
+      </SidebarFooter>
     </template>
 
     <SidebarRail />
@@ -89,16 +89,9 @@ import {
   AudioWaveform,
   BarChart3,
   Command,
-  CreditCard,
-  Database,
   GalleryVerticalEnd,
-  Home,
   Map,
-  Package,
   PieChart,
-  Settings2,
-  ShoppingBag,
-  ShoppingCart,
 } from 'lucide-vue-next'
 
 // shadcn-nuxt 会自动导入 Sidebar 相关组件
@@ -110,253 +103,65 @@ withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
-// 加载状态
-const isLoading = ref(true)
+// 使用权限系统
+const { loading: permissionLoading } = usePermissions()
 const { user } = useAuth()
 
-// 基础数据配置
-const baseData = {
-  user: {
-    name: 'User',
-    email: 'user@example.com',
-    avatar: '',
+// 加载状态
+const isLoading = computed(() => permissionLoading.value)
+
+// 团队数据
+const teams = ref([
+  {
+    name: '智能ERP',
+    logo: GalleryVerticalEnd,
+    plan: 'Enterprise',
   },
-  teams: [
-    {
-      name: '智能ERP',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: '财务系统',
-      logo: AudioWaveform,
-      plan: 'Professional',
-    },
-    {
-      name: '生产管理',
-      logo: Command,
-      plan: 'Standard',
-    },
-  ],
-  navMain: [
-    {
-      title: '仪表盘',
-      url: '/dashboard',
-      icon: Home,
-      isActive: true,
-      items: [
-        {
-          title: '概览',
-          url: '/dashboard',
-        },
-        {
-          title: '统计',
-          url: '/dashboard/stats',
-        },
-      ],
-    },
-    {
-      title: '销售管理',
-      url: '#',
-      icon: ShoppingCart,
-      items: [
-        {
-          title: '销售订单',
-          url: '/sales/orders',
-        },
-        {
-          title: '客户管理',
-          url: '/sales/customers',
-        },
-      ],
-    },
-    {
-      title: '采购管理',
-      url: '#',
-      icon: ShoppingBag,
-      items: [
-        {
-          title: '采购订单',
-          url: '/purchase/orders',
-        },
-        {
-          title: '供应商管理',
-          url: '/purchase/suppliers',
-        },
-      ],
-    },
-    {
-      title: '库存管理',
-      url: '#',
-      icon: Package,
-      items: [
-        {
-          title: '库存管理',
-          url: '/warehouse/inventory',
-        },
-        {
-          title: '仓库管理',
-          url: '/warehouse/warehouses',
-        },
-        {
-          title: '库存调拨',
-          url: '/warehouse/transfers',
-        },
-      ],
-    },
-    {
-      title: '生产管理',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: '生产订单',
-          url: '/production/orders',
-        },
-        {
-          title: '生产计划',
-          url: '/production/plans',
-        },
-        {
-          title: '物料清单',
-          url: '/production/bom',
-        },
-        {
-          title: '车间管理',
-          url: '/production/workshops',
-        },
-      ],
-    },
-    {
-      title: '财务管理',
-      url: '#',
-      icon: CreditCard,
-      items: [
-        {
-          title: '发票管理',
-          url: '/finance/invoices',
-        },
-        {
-          title: '付款管理',
-          url: '/finance/payments',
-        },
-        {
-          title: '收款管理',
-          url: '/finance/receipts',
-        },
-      ],
-    },
-    {
-      title: '基础数据',
-      url: '#',
-      icon: Database,
-      items: [
-        {
-          title: '产品管理',
-          url: '/master-data/products',
-        },
-        {
-          title: '客户管理',
-          url: '/master-data/customers',
-        },
-        {
-          title: '供应商管理',
-          url: '/master-data/suppliers',
-        },
-      ],
-    },
-    {
-      title: '系统设置',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: '系统配置',
-          url: '/system/config',
-        },
-        {
-          title: '用户管理',
-          url: '/system/users',
-        },
-        {
-          title: '角色管理',
-          url: '/system/roles',
-        },
-        {
-          title: '部门管理',
-          url: '/system/departments',
-        },
-        {
-          title: '菜单管理',
-          url: '/system/menus',
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: '报表分析',
-      url: '/reports',
-      icon: BarChart3,
-    },
-    {
-      name: '数据统计',
-      url: '/analytics',
-      icon: PieChart,
-    },
-    {
-      name: '系统监控',
-      url: '/monitoring',
-      icon: Map,
-    },
-  ],
-}
+  {
+    name: '财务系统',
+    logo: AudioWaveform,
+    plan: 'Professional',
+  },
+  {
+    name: '生产管理',
+    logo: Command,
+    plan: 'Standard',
+  },
+])
 
-// 当前使用的数据
-const currentData = ref(baseData)
+// 项目数据
+const projects = ref([
+  {
+    name: '报表分析',
+    url: '/reports',
+    icon: BarChart3,
+  },
+  {
+    name: '数据统计',
+    url: '/analytics',
+    icon: PieChart,
+  },
+  {
+    name: '系统监控',
+    url: '/monitoring',
+    icon: Map,
+  },
+])
 
-// 初始化数据
-const initData = async () => {
-  try {
-    // 模拟数据加载延迟 - 让用户能看到骨架屏效果
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    // 根据用户信息更新数据
-    if (user.value) {
-      const userData = { ...baseData }
-      userData.user = {
-        name: (user.value.user_metadata?.name as string) || user.value.email?.split('@')[0] || 'User',
-        email: user.value.email || 'user@example.com',
-        avatar: user.value.user_metadata?.avatar_url || '',
-      }
-      currentData.value = userData
+// 当前用户信息
+const currentUser = computed(() => {
+  if (!user.value) {
+    return {
+      name: 'User',
+      email: 'user@example.com',
+      avatar: '',
     }
-  } catch (error) {
-    console.warn('侧边栏数据初始化失败:', error)
-  } finally {
-    isLoading.value = false
   }
-}
 
-// 监听用户状态变化
-watch(user, (newUser) => {
-  if (newUser) {
-    initData()
-  }
-}, { immediate: true })
-
-// 页面加载时初始化
-onMounted(() => {
-  // 如果用户已存在，立即初始化
-  if (user.value) {
-    initData()
-  } else {
-    // 否则等待一段时间后停止加载
-    setTimeout(() => {
-      if (!user.value) {
-        isLoading.value = false
-      }
-    }, 2000)
+  return {
+    name: (user.value.user_metadata?.name as string) || user.value.email?.split('@')[0] || 'User',
+    email: user.value.email || 'user@example.com',
+    avatar: user.value.user_metadata?.avatar_url || '',
   }
 })
 </script>

@@ -1,13 +1,15 @@
-export default defineNuxtRouteMiddleware((to, _from) => {
+export default defineNuxtRouteMiddleware(async (to, _from) => {
   // 定义不需要认证的路由
   const publicRoutes = [
-    '/',
     '/login',
     '/login/register',
     '/login/forgot-password',
     '/auth/callback',
     '/login/reset-password',
     '/getting-started',
+    '/403',
+    '/404',
+    '/debug-permissions'
   ];
 
   // 如果是公开路由，直接通过
@@ -24,6 +26,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
 
   // 如果用户未登录，重定向到登录页面
   if (!user.value) {
+    console.log('用户未登录，重定向到登录页面');
     return navigateTo('/login');
   }
 

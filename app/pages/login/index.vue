@@ -149,44 +149,45 @@ import {
   Lock,
   LogIn,
   Mail,
-} from 'lucide-vue-next';
+} from 'lucide-vue-next'
 
-import { useAuth } from '~/composables/useAuth';
-import type { LoginForm } from '~/types/auth';
+import { useAuth } from '~/composables/useAuth'
+import type { LoginForm } from '~/types/auth'
 
-// 页面配置 - 禁用布局，让登录页面全屏显示
+// 页面配置 - 禁用布局，登录页面不需要认证
 definePageMeta({
   layout: false,
-});
+  requiresAuth: false
+})
 
 // 组合式函数
-const { login } = useAuth();
-const router = useRouter();
+const { login } = useAuth()
+const router = useRouter()
 
 // 响应式数据
-const loading = ref(false);
-const error = ref('');
-const showPassword = ref(false);
+const loading = ref(false)
+const error = ref('')
+const showPassword = ref(false)
 const form = ref<LoginForm>({
   email: '',
   password: '',
-});
+})
 
 // 表单验证
 const emailError = computed(() => {
   if (!form.value.email) {
-    return '';
+    return ''
   }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(form.value.email) ? '' : '请输入有效的邮箱地址';
-});
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(form.value.email) ? '' : '请输入有效的邮箱地址'
+})
 
 const passwordError = computed(() => {
   if (!form.value.password) {
-    return '';
+    return ''
   }
-  return form.value.password.length < 6 ? '密码至少需要6个字符' : '';
-});
+  return form.value.password.length < 6 ? '密码至少需要6个字符' : ''
+})
 
 const isFormValid = computed(() => {
   return (
@@ -194,37 +195,39 @@ const isFormValid = computed(() => {
     form.value.password &&
     !emailError.value &&
     !passwordError.value
-  );
-});
+  )
+})
 
 // 登录处理
 const handleLogin = async () => {
   if (!isFormValid.value) {
-    return;
+    return
   }
 
   try {
-    loading.value = true;
-    error.value = '';
+    loading.value = true
+    error.value = ''
 
-    const result = await login(form.value);
+    const result = await login(form.value)
 
     if (result.success) {
       // 登录成功，跳转到仪表盘
-      await router.push('/dashboard');
+      await router.push('/dashboard')
     } else {
       // 显示错误信息
-      error.value = result.error?.message || '登录失败，请重试';
+      error.value = result.error?.message || '登录失败，请重试'
     }
   } catch (_err) {
-    error.value = '登录过程中发生错误，请重试';
+    error.value = '登录过程中发生错误，请重试'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 // 页面标题
 useHead({
   title: '登录 - ERP管理系统',
-});
+})
+
+
 </script>

@@ -1,7 +1,5 @@
-import type { Database } from '~/types/database.types'
-
-// 部门数据类型定义（重命名避免冲突）
-export interface Department {
+// 部门数据类型定义
+export interface DepartmentData {
   id: string
   name: string
   code: string
@@ -13,8 +11,8 @@ export interface Department {
   created_at: string
   updated_at: string
   // 扩展字段
-  children?: Department[]
-  parent?: Department | null
+  children?: DepartmentData[]
+  parent?: DepartmentData | null
   manager?: {
     id: string
     name: string
@@ -34,20 +32,19 @@ export interface DepartmentForm {
   status: 'active' | 'inactive'
 }
 
-// 查询参数类型
+// 部门查询类型
 export interface DepartmentQuery {
-  search?: string
+  name?: string
+  status?: 'active' | 'inactive' | 'all'
   parent_id?: string
-  status?: string
-  sort?: 'name' | 'code' | 'sort' | 'created_at'
-  order?: 'asc' | 'desc'
+  manager_id?: string
 }
 
 export const useDepartments = () => {
   const supabase = useSupabaseClient<Database>()
 
   // 状态
-  const departments = ref<Department[]>([])
+  const departments = ref<DepartmentData[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -189,7 +186,7 @@ export const useDepartments = () => {
 
   // 获取部门树结构
   const getDepartmentTree = () => {
-    const buildTree = (depts: Department[], parentId: string | null = null): Department[] => {
+    const buildTree = (depts: DepartmentData[], parentId: string | null = null): DepartmentData[] => {
       return depts
         .filter(dept => dept.parent_id === parentId)
         .sort((a, b) => (a.sort || 0) - (b.sort || 0))
@@ -203,13 +200,13 @@ export const useDepartments = () => {
   }
 
     // 获取部门路径
-  const getDepartmentPath = (departmentId: string): Department[] => {
-    const path: Department[] = []
-    let current = departments.value.find((d: Department) => d.id === departmentId)
+  const getDepartmentPath = (departmentId: string): DepartmentData[] => {
+    const path: DepartmentData[] = []
+    let current = departments.value.find((d: DepartmentData) => d.id === departmentId)
 
     while (current) {
       path.unshift(current)
-      current = current.parent_id ? departments.value.find((d: Department) => d.id === current!.parent_id) : undefined
+      current = current.parent_id ? departments.value.find((d: DepartmentData) => d.id === current!.parent_id) : undefined
     }
 
     return path
@@ -217,7 +214,7 @@ export const useDepartments = () => {
 
   // 检查是否可以删除部门（是否有子部门）
   const canDeleteDepartment = (departmentId: string): boolean => {
-    return !departments.value.some((d: Department) => d.parent_id === departmentId)
+    return !departments.value.some((d: DepartmentData) => d.parent_id === departmentId)
   }
 
   return {

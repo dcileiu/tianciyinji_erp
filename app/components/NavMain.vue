@@ -1,58 +1,50 @@
 <script setup lang="ts">
-import type { LucideIcon } from 'lucide-vue-next';
-import { ChevronRight } from 'lucide-vue-next';
+import { ChevronRight } from 'lucide-vue-next'
+import { getIconByName } from '~/components/icons'
+import type { MenuPermission } from '~/stores/permissions'
 
-defineProps<{
-  items: {
-    title: string;
-    url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
-  }[];
-}>();
+interface Props {
+  items: MenuPermission[]
+}
+
+defineProps<Props>()
 </script>
 
 <template>
-  <SidebarGroup>
-    <SidebarGroupLabel class="text-xs">业务模块</SidebarGroupLabel>
-    <SidebarMenu>
-      <Collapsible
-        v-for="item in items"
-        :key="item.title"
-        as-child
-        :default-open="item.isActive"
-        class="group/collapsible"
-      >
-        <SidebarMenuItem>
-          <CollapsibleTrigger as-child>
-            <SidebarMenuButton :tooltip="item.title">
-              <component :is="item.icon" v-if="item.icon" />
-              <span>{{ item.title }}</span>
-              <ChevronRight
-                class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-              />
-            </SidebarMenuButton>
+  <nav class="flex flex-col gap-1">
+    <template v-for="item in items" :key="item.id">
+      <!-- 目录类型 - 可展开的菜单组 -->
+      <Collapsible v-if="item.type === 'directory' && item.children?.length" class="group">
+        <SidebarMenuButton as-child>
+          <CollapsibleTrigger class="w-full">
+            <component v-if="item.icon" :is="getIconByName(item.icon)" class="h-4 w-4" />
+            <span>{{ item.name }}</span>
+            <ChevronRight class="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-90" />
           </CollapsibleTrigger>
-          <CollapsibleContent>
-            <SidebarMenuSub>
-              <SidebarMenuSubItem
-                v-for="subItem in item.items"
-                :key="subItem.title"
-              >
-                <SidebarMenuSubButton as-child>
-                  <NuxtLink :to="subItem.url">
-                    <span>{{ subItem.title }}</span>
-                  </NuxtLink>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            </SidebarMenuSub>
-          </CollapsibleContent>
-        </SidebarMenuItem>
+        </SidebarMenuButton>
+
+        <CollapsibleContent>
+          <SidebarMenuSub class="ml-6 border-l pl-4">
+            <SidebarMenuSubItem v-for="subItem in item.children" :key="subItem.id">
+              <SidebarMenuSubButton as-child :is-active="$route.path === subItem.path">
+                <NuxtLink :to="subItem.path || '#'">
+                  <span>{{ subItem.name }}</span>
+                </NuxtLink>
+              </SidebarMenuSubButton>
+            </SidebarMenuSubItem>
+          </SidebarMenuSub>
+        </CollapsibleContent>
       </Collapsible>
-    </SidebarMenu>
-  </SidebarGroup>
+
+      <!-- 菜单类型 - 直接链接 -->
+      <SidebarMenuItem v-else>
+        <SidebarMenuButton as-child :is-active="$route.path === item.path">
+          <NuxtLink :to="item.path || '#'">
+            <component v-if="item.icon" :is="getIconByName(item.icon)" class="h-4 w-4" />
+            <span>{{ item.name }}</span>
+          </NuxtLink>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </template>
+  </nav>
 </template>

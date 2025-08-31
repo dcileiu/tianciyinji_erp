@@ -39,7 +39,7 @@ export type ProductionStatus =
 
 // 导出所有需要的类型
 export type { } from // 不再导出ProcessRoute和ProcessStep，因为它们未被使用
-    './production';
+  './production'
 
 export type Json =
   | string
@@ -155,7 +155,7 @@ export type Database = {
           name: string
           code: string
           description: string | null
-          status: number
+          status: string
           is_system: boolean
           created_at: string
           updated_at: string
@@ -165,7 +165,7 @@ export type Database = {
           name: string
           code: string
           description?: string | null
-          status?: number
+          status?: string
           is_system?: boolean
           created_at?: string
           updated_at?: string
@@ -175,7 +175,7 @@ export type Database = {
           name?: string
           code?: string
           description?: string | null
-          status?: number
+          status?: string
           is_system?: boolean
           created_at?: string
           updated_at?: string

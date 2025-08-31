@@ -116,6 +116,8 @@
     "../node_modules/.pnpm/@nuxtjs+tailwindcss@6.14.0_magicast@0.3.5/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/shadcn-nuxt@2.2.0_magicast@0.3.5/node_modules/runtime/server",
     "../node_modules/.pnpm/shadcn-nuxt@2.2.0_magicast@0.3.5/node_modules/dist/runtime/server",
+    "../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/runtime/server",
+    "../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_ac5ad1aed12f9445be87a3379f21bc23/node_modules/runtime/server",
     "../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_ac5ad1aed12f9445be87a3379f21bc23/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/@nuxt+telemetry@2.6.6_magicast@0.3.5/node_modules/runtime/server",
@@ -130,6 +132,7 @@
     "../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/node_modules",
     "../node_modules/.pnpm/@nuxtjs+tailwindcss@6.14.0_magicast@0.3.5/node_modules/@nuxtjs/tailwindcss/node_modules",
     "../node_modules/.pnpm/shadcn-nuxt@2.2.0_magicast@0.3.5/node_modules/shadcn-nuxt/node_modules",
+    "../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/node_modules",
     "../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_ac5ad1aed12f9445be87a3379f21bc23/node_modules/@nuxt/devtools/node_modules",
     "../node_modules/.pnpm/@nuxt+telemetry@2.6.6_magicast@0.3.5/node_modules/@nuxt/telemetry/node_modules",
     "../dist"

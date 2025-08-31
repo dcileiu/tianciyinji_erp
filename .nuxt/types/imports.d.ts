@@ -9,9 +9,11 @@ declare global {
   const Status: typeof import('../../app/types/common')['Status']
   const WarehouseType: typeof import('../../app/types/common')['WarehouseType']
   const abortNavigation: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['abortNavigation']
+  const acceptHMRUpdate: typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['acceptHMRUpdate']
   const addRouteMiddleware: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']
   const callOnce: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/once')['callOnce']
   const cancelIdleCallback: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']
+  const checkSessionValidity: typeof import('../../app/utils/auth-handler')['checkSessionValidity']
   const clearError: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['clearError']
   const clearNuxtData: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['clearNuxtData']
   const clearNuxtState: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/state')['clearNuxtState']
@@ -31,6 +33,7 @@ declare global {
   const definePayloadPlugin: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/nuxt')['definePayloadPlugin']
   const definePayloadReducer: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/payload')['definePayloadReducer']
   const definePayloadReviver: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']
+  const defineStore: typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['defineStore']
   const effect: typeof import('vue')['effect']
   const effectScope: typeof import('vue')['effectScope']
   const getAppManifest: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']
@@ -40,11 +43,13 @@ declare global {
   const getRouteRules: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/manifest')['getRouteRules']
   const h: typeof import('vue')['h']
   const handleAsyncError: typeof import('../../app/utils/error-handler')['handleAsyncError']
+  const handleAuthError: typeof import('../../app/utils/auth-handler')['handleAuthError']
   const handleError: typeof import('../../app/utils/error-handler')['handleError']
   const hasInjectionContext: typeof import('vue')['hasInjectionContext']
   const inject: typeof import('vue')['inject']
   const injectHead: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/head')['injectHead']
   const isAppError: typeof import('../../app/utils/error-handler')['isAppError']
+  const isAuthError: typeof import('../../app/utils/auth-handler')['isAuthError']
   const isNuxtError: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['isNuxtError']
   const isPrerendered: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/payload')['isPrerendered']
   const isProxy: typeof import('vue')['isProxy']
@@ -100,6 +105,7 @@ declare global {
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
   const showError: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['showError']
+  const storeToRefs: typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['storeToRefs']
   const supabase: typeof import('../../app/composables/useSupabase')['supabase']
   const toRaw: typeof import('vue')['toRaw']
   const toRef: typeof import('vue')['toRef']
@@ -134,6 +140,9 @@ declare global {
   const useNuxtApp: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']
   const useNuxtData: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']
   const useNuxtDevTools: typeof import('../../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_ac5ad1aed12f9445be87a3379f21bc23/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']
+  const usePermissions: typeof import('../../app/composables/usePermissions')['usePermissions']
+  const usePermissionsStore: typeof import('../../app/stores/permissions')['usePermissionsStore']
+  const usePinia: typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']
   const usePreviewMode: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']
   const useProductionReports: typeof import('../../app/composables/useProductionReports')['useProductionReports']
   const useProducts: typeof import('../../app/composables/useSupabase')['useProducts']
@@ -190,7 +199,7 @@ declare global {
   const useSuppliers: typeof import('../../app/composables/useSuppliers')['useSuppliers']
   const useTemplateRef: typeof import('vue')['useTemplateRef']
   const useTransitionState: typeof import('vue')['useTransitionState']
-  const useUserMenus: typeof import('../../app/composables/useUserMenus')['useUserMenus']
+  const useUserStore: typeof import('../../app/stores/user')['useUserStore']
   const useUsers: typeof import('../../app/composables/useUsers')['useUsers']
   const useWorkshops: typeof import('../../app/composables/useWorkshops')['useWorkshops']
   const valueUpdater: typeof import('../../app/utils/index')['valueUpdater']
@@ -198,6 +207,7 @@ declare global {
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
   const watchSyncEffect: typeof import('vue')['watchSyncEffect']
+  const withAuthErrorHandling: typeof import('../../app/utils/auth-handler')['withAuthErrorHandling']
   const withCtx: typeof import('vue')['withCtx']
   const withDirectives: typeof import('vue')['withDirectives']
   const withKeys: typeof import('vue')['withKeys']
@@ -214,7 +224,7 @@ declare global {
   export type { InitStep, InitLog, RetryConfig } from '../../app/composables/useDbInit'
   import('../../app/composables/useDbInit')
   // @ts-ignore
-  export type { DepartmentForm, DepartmentQuery } from '../../app/composables/useDepartments'
+  export type { DepartmentData, DepartmentForm, DepartmentQuery } from '../../app/composables/useDepartments'
   import('../../app/composables/useDepartments')
   // @ts-ignore
   export type { Menu, MenuForm, MenuQuery } from '../../app/composables/useMenus'
@@ -222,9 +232,6 @@ declare global {
   // @ts-ignore
   export type { RoleData, RoleForm } from '../../app/composables/useRoles'
   import('../../app/composables/useRoles')
-  // @ts-ignore
-  export type { MenuItem, MenuGroup } from '../../app/composables/useUserMenus'
-  import('../../app/composables/useUserMenus')
   // @ts-ignore
   export type { UserData, UserForm, UserQuery, UserStats } from '../../app/composables/useUsers'
   import('../../app/composables/useUsers')
@@ -243,6 +250,12 @@ declare global {
   // @ts-ignore
   export type { UserRole, ProductionStatus, Json, Database,  } from '../../app/types/database.types'
   import('../../app/types/database.types')
+  // @ts-ignore
+  export type { MenuPermission, UserRoleData } from '../../app/stores/permissions'
+  import('../../app/stores/permissions')
+  // @ts-ignore
+  export type { UserProfile } from '../../app/stores/user'
+  import('../../app/stores/user')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -256,9 +269,11 @@ declare module 'vue' {
     readonly Status: UnwrapRef<typeof import('../../app/types/common')['Status']>
     readonly WarehouseType: UnwrapRef<typeof import('../../app/types/common')['WarehouseType']>
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
+    readonly acceptHMRUpdate: UnwrapRef<typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['acceptHMRUpdate']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
     readonly callOnce: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/once')['callOnce']>
     readonly cancelIdleCallback: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']>
+    readonly checkSessionValidity: UnwrapRef<typeof import('../../app/utils/auth-handler')['checkSessionValidity']>
     readonly clearError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['clearError']>
     readonly clearNuxtData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['clearNuxtData']>
     readonly clearNuxtState: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/state')['clearNuxtState']>
@@ -278,6 +293,7 @@ declare module 'vue' {
     readonly definePayloadPlugin: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/nuxt')['definePayloadPlugin']>
     readonly definePayloadReducer: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/payload')['definePayloadReducer']>
     readonly definePayloadReviver: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
+    readonly defineStore: UnwrapRef<typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['defineStore']>
     readonly effect: UnwrapRef<typeof import('vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
@@ -287,11 +303,13 @@ declare module 'vue' {
     readonly getRouteRules: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/manifest')['getRouteRules']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly handleAsyncError: UnwrapRef<typeof import('../../app/utils/error-handler')['handleAsyncError']>
+    readonly handleAuthError: UnwrapRef<typeof import('../../app/utils/auth-handler')['handleAuthError']>
     readonly handleError: UnwrapRef<typeof import('../../app/utils/error-handler')['handleError']>
     readonly hasInjectionContext: UnwrapRef<typeof import('vue')['hasInjectionContext']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly injectHead: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/head')['injectHead']>
     readonly isAppError: UnwrapRef<typeof import('../../app/utils/error-handler')['isAppError']>
+    readonly isAuthError: UnwrapRef<typeof import('../../app/utils/auth-handler')['isAuthError']>
     readonly isNuxtError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['isNuxtError']>
     readonly isPrerendered: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/payload')['isPrerendered']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
@@ -347,6 +365,7 @@ declare module 'vue' {
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
     readonly showError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['showError']>
+    readonly storeToRefs: UnwrapRef<typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['storeToRefs']>
     readonly supabase: UnwrapRef<typeof import('../../app/composables/useSupabase')['supabase']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
@@ -381,6 +400,9 @@ declare module 'vue' {
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
     readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_ac5ad1aed12f9445be87a3379f21bc23/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
+    readonly usePermissions: UnwrapRef<typeof import('../../app/composables/usePermissions')['usePermissions']>
+    readonly usePermissionsStore: UnwrapRef<typeof import('../../app/stores/permissions')['usePermissionsStore']>
+    readonly usePinia: UnwrapRef<typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
     readonly useProductionReports: UnwrapRef<typeof import('../../app/composables/useProductionReports')['useProductionReports']>
     readonly useProducts: UnwrapRef<typeof import('../../app/composables/useSupabase')['useProducts']>
@@ -437,7 +459,7 @@ declare module 'vue' {
     readonly useSuppliers: UnwrapRef<typeof import('../../app/composables/useSuppliers')['useSuppliers']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>
-    readonly useUserMenus: UnwrapRef<typeof import('../../app/composables/useUserMenus')['useUserMenus']>
+    readonly useUserStore: UnwrapRef<typeof import('../../app/stores/user')['useUserStore']>
     readonly useUsers: UnwrapRef<typeof import('../../app/composables/useUsers')['useUsers']>
     readonly useWorkshops: UnwrapRef<typeof import('../../app/composables/useWorkshops')['useWorkshops']>
     readonly valueUpdater: UnwrapRef<typeof import('../../app/utils/index')['valueUpdater']>
@@ -445,6 +467,7 @@ declare module 'vue' {
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>
     readonly watchSyncEffect: UnwrapRef<typeof import('vue')['watchSyncEffect']>
+    readonly withAuthErrorHandling: UnwrapRef<typeof import('../../app/utils/auth-handler')['withAuthErrorHandling']>
     readonly withCtx: UnwrapRef<typeof import('vue')['withCtx']>
     readonly withDirectives: UnwrapRef<typeof import('vue')['withDirectives']>
     readonly withKeys: UnwrapRef<typeof import('vue')['withKeys']>

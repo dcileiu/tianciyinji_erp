@@ -318,9 +318,12 @@ import {
 } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
 
-// 页面配置
+// 页面权限配置
 definePageMeta({
   layout: 'default',
+  requiresAuth: true
+  // 临时移除权限要求进行调试
+  // permission: 'system:users'
 })
 
 useHead({
@@ -784,4 +787,6 @@ onMounted(async () => {
   // 确保基础数据加载完成后再加载用户数据
   await loadUsers()
 })
+
+
 </script>
