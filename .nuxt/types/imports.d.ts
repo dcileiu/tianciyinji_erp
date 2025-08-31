@@ -117,6 +117,7 @@ declare global {
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useDbInit: typeof import('../../app/composables/useDbInit')['useDbInit']
+  const useDepartments: typeof import('../../app/composables/useDepartments')['useDepartments']
   const useError: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['useError']
   const useFetch: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/fetch')['useFetch']
   const useGlobalLoading: typeof import('../../app/composables/useGlobalLoading')['useGlobalLoading']
@@ -142,6 +143,7 @@ declare global {
   const useRequestHeaders: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/ssr')['useRequestHeaders']
   const useRequestURL: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/url')['useRequestURL']
   const useResponseHeader: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/ssr')['useResponseHeader']
+  const useRoles: typeof import('../../app/composables/useRoles')['useRoles']
   const useRoute: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['useRoute']
   const useRouteAnnouncer: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/route-announcer')['useRouteAnnouncer']
   const useRouter: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['useRouter']
@@ -188,7 +190,9 @@ declare global {
   const useSuppliers: typeof import('../../app/composables/useSuppliers')['useSuppliers']
   const useTemplateRef: typeof import('vue')['useTemplateRef']
   const useTransitionState: typeof import('vue')['useTransitionState']
+  const useUsers: typeof import('../../app/composables/useUsers')['useUsers']
   const useWorkshops: typeof import('../../app/composables/useWorkshops')['useWorkshops']
+  const valueUpdater: typeof import('../../app/utils/index')['valueUpdater']
   const watch: typeof import('vue')['watch']
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
@@ -209,8 +213,17 @@ declare global {
   export type { InitStep, InitLog, RetryConfig } from '../../app/composables/useDbInit'
   import('../../app/composables/useDbInit')
   // @ts-ignore
+  export type { DepartmentForm, DepartmentQuery } from '../../app/composables/useDepartments'
+  import('../../app/composables/useDepartments')
+  // @ts-ignore
   export type { Menu, MenuForm, MenuQuery } from '../../app/composables/useMenus'
   import('../../app/composables/useMenus')
+  // @ts-ignore
+  export type { RoleData, RoleForm } from '../../app/composables/useRoles'
+  import('../../app/composables/useRoles')
+  // @ts-ignore
+  export type { UserData, UserForm, UserQuery, UserStats } from '../../app/composables/useUsers'
+  import('../../app/composables/useUsers')
   // @ts-ignore
   export type { ErrorCode, AppError } from '../../app/utils/error-handler'
   import('../../app/utils/error-handler')
@@ -224,7 +237,7 @@ declare global {
   export type { DatabaseUser, Customer, Supplier, Product, Warehouse, Inventory, SalesOrder, SalesOrderItem, PurchaseOrder, PurchaseOrderItem, InventoryMovement, Transfer, TransferItem, Department, Role, Dictionary, SystemLog, PaginationParams, PaginationResponse, ApiResponse } from '../../app/types/database'
   import('../../app/types/database')
   // @ts-ignore
-  export type { UserRole, ProductionStatus, Database,  } from '../../app/types/database.types'
+  export type { UserRole, ProductionStatus, Json, Database,  } from '../../app/types/database.types'
   import('../../app/types/database.types')
 }
 // for vue template auto import
@@ -347,6 +360,7 @@ declare module 'vue' {
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useDbInit: UnwrapRef<typeof import('../../app/composables/useDbInit')['useDbInit']>
+    readonly useDepartments: UnwrapRef<typeof import('../../app/composables/useDepartments')['useDepartments']>
     readonly useError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['useError']>
     readonly useFetch: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/fetch')['useFetch']>
     readonly useGlobalLoading: UnwrapRef<typeof import('../../app/composables/useGlobalLoading')['useGlobalLoading']>
@@ -372,6 +386,7 @@ declare module 'vue' {
     readonly useRequestHeaders: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/ssr')['useRequestHeaders']>
     readonly useRequestURL: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/url')['useRequestURL']>
     readonly useResponseHeader: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/ssr')['useResponseHeader']>
+    readonly useRoles: UnwrapRef<typeof import('../../app/composables/useRoles')['useRoles']>
     readonly useRoute: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['useRoute']>
     readonly useRouteAnnouncer: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/route-announcer')['useRouteAnnouncer']>
     readonly useRouter: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['useRouter']>
@@ -418,7 +433,9 @@ declare module 'vue' {
     readonly useSuppliers: UnwrapRef<typeof import('../../app/composables/useSuppliers')['useSuppliers']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>
+    readonly useUsers: UnwrapRef<typeof import('../../app/composables/useUsers')['useUsers']>
     readonly useWorkshops: UnwrapRef<typeof import('../../app/composables/useWorkshops')['useWorkshops']>
+    readonly valueUpdater: UnwrapRef<typeof import('../../app/utils/index')['valueUpdater']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>

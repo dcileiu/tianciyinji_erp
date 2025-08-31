@@ -15,7 +15,7 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
    },
 
    supabase: {
-      serviceKey: any,
+      serviceKey: string,
    },
   }
   interface SharedPublicRuntimeConfig {

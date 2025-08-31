@@ -279,7 +279,7 @@ const baseData = {
           url: '/system/users',
         },
         {
-          title: '角色权限',
+          title: '角色管理',
           url: '/system/roles',
         },
         {

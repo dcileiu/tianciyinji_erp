@@ -1,17 +1,7 @@
 <template>
   <div>
     <!-- 当前行 -->
-    <div class="grid grid-cols-10 gap-4 hover:bg-gray-50 dark:hover:bg-gray-800/50">
-      <!-- 复选框 -->
-      <div class="p-3 text-center">
-        <input
-          type="checkbox"
-          class="rounded"
-          :checked="selectedIds.includes(menu.id)"
-          @change="(e) => $emit('select', menu.id, (e.target as HTMLInputElement).checked)"
-        />
-      </div>
-
+    <div class="grid grid-cols-9 gap-4 hover:bg-gray-50 dark:hover:bg-gray-800/50">
       <!-- 菜单名称 -->
       <div class="p-3 text-left col-span-2">
         <div class="flex items-center space-x-2">
@@ -145,9 +135,7 @@
       :key="child.id"
       :menu="child"
       :level="level + 1"
-      :selected-ids="selectedIds"
       :expanded-ids="expandedIds"
-      @select="(menuId, selected) => $emit('select', menuId, selected)"
       @edit="$emit('edit', $event)"
       @delete="$emit('delete', $event)"
       @add-child="$emit('add-child', $event)"
@@ -165,12 +153,10 @@ import type { Menu } from '~/composables/useMenus'
 interface MenuTableRowProps {
   menu: Menu
   level: number
-  selectedIds: string[]
   expandedIds: string[]
 }
 
 interface MenuTableRowEmits {
-  (e: 'select', menuId: string, selected: boolean): void
   (e: 'edit', menu: Menu): void
   (e: 'delete', menu: Menu): void
   (e: 'add-child', menu: Menu): void

@@ -197,7 +197,7 @@ const breadcrumbItems = computed(() => {
       config: '系统配置',
       users: '用户管理',
       login: '登录',
-      roles: '角色权限',
+      roles: '角色管理',
     }
 
     items.push({

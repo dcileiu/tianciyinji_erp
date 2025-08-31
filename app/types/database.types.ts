@@ -39,560 +39,268 @@ export type ProductionStatus =
 
 // 导出所有需要的类型
 export type { } from // 不再导出ProcessRoute和ProcessStep，因为它们未被使用
-  './production'
+    './production';
 
-// 数据库表结构类型定义
-export interface Database {
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
   public: {
     Tables: {
-      users: {
-        Row: {
-          id: string;
-          email: string;
-          name: string;
-          role: UserRole;
-          department_id?: string;
-          position_id?: string;
-          phone?: string;
-          avatar?: string;
-          status: 'active' | 'inactive';
-          last_login?: string;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          email: string;
-          name: string;
-          role?: UserRole;
-          department_id?: string;
-          position_id?: string;
-          phone?: string;
-          avatar?: string;
-          status?: 'active' | 'inactive';
-          last_login?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          email?: string;
-          name?: string;
-          role?: UserRole;
-          department_id?: string;
-          position_id?: string;
-          phone?: string;
-          avatar?: string;
-          status?: 'active' | 'inactive';
-          last_login?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
       menus: {
         Row: {
-          id: string;
-          name: string;
-          icon?: string | null;
-          path?: string | null;
-          parent_id: string; // '0' 表示根菜单
-          sort: number;
-          status: 'active' | 'inactive';
-          permission?: string | null;
-          type: 'directory' | 'menu' | 'permission';
-          created_at: string;
-          updated_at: string;
-        };
+          id: string
+          name: string
+          icon: string | null
+          path: string | null
+          parent_id: string | null
+          sort: number
+          status: string
+          permission: string | null
+          type: string
+          created_at: string
+          updated_at: string
+        }
         Insert: {
-          id?: string;
-          name: string;
-          icon?: string | null;
-          path?: string | null;
-          parent_id?: string; // 默认为 '0'
-          sort?: number;
-          status?: 'active' | 'inactive';
-          permission?: string | null;
-          type?: 'directory' | 'menu' | 'permission';
-          created_at?: string;
-          updated_at?: string;
-        };
+          id?: string
+          name: string
+          icon?: string | null
+          path?: string | null
+          parent_id?: string | null
+          sort?: number
+          status?: string
+          permission?: string | null
+          type?: string
+          created_at?: string
+          updated_at?: string
+        }
         Update: {
-          id?: string;
-          name?: string;
-          icon?: string | null;
-          path?: string | null;
-          parent_id?: string;
-          sort?: number;
-          status?: 'active' | 'inactive';
-          permission?: string | null;
-          type?: 'directory' | 'menu' | 'permission';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
+          id?: string
+          name?: string
+          icon?: string | null
+          path?: string | null
+          parent_id?: string | null
+          sort?: number
+          status?: string
+          permission?: string | null
+          type?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menus_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "menus"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       departments: {
         Row: {
-          id: string;
-          name: string;
-          code: string;
-          manager_id?: string;
-          parent_id?: string;
-          level: number;
-          description?: string;
-          status: 'active' | 'inactive';
-          created_at: string;
-          updated_at: string;
-        };
+          id: string
+          name: string
+          code: string
+          description: string | null
+          parent_id: string | null
+          manager_id: string | null
+          sort: number
+          status: number
+          created_at: string
+          updated_at: string
+        }
         Insert: {
-          id?: string;
-          name: string;
-          code: string;
-          manager_id?: string;
-          parent_id?: string;
-          level?: number;
-          description?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
+          id?: string
+          name: string
+          code: string
+          description?: string | null
+          parent_id?: string | null
+          manager_id?: string | null
+          sort?: number
+          status?: number
+          created_at?: string
+          updated_at?: string
+        }
         Update: {
-          id?: string;
-          name?: string;
-          code?: string;
-          manager_id?: string;
-          parent_id?: string;
-          level?: number;
-          description?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      positions: {
-        Row: {
-          id: string;
-          name: string;
-          code: string;
-          department_id: string;
-          level: number;
-          description?: string;
-          requirements?: string;
-          salary_range?: string;
-          status: 'active' | 'inactive';
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          code: string;
-          department_id: string;
-          level?: number;
-          description?: string;
-          requirements?: string;
-          salary_range?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          code?: string;
-          department_id?: string;
-          level?: number;
-          description?: string;
-          requirements?: string;
-          salary_range?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
+          id?: string
+          name?: string
+          code?: string
+          description?: string | null
+          parent_id?: string | null
+          manager_id?: string | null
+          sort?: number
+          status?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "departments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       roles: {
         Row: {
-          id: string;
-          name: string;
-          code: string;
-          description?: string;
-          permissions: string[];
-          status: 'active' | 'inactive';
-          created_at: string;
-          updated_at: string;
-        };
+          id: string
+          name: string
+          code: string
+          description: string | null
+          status: number
+          is_system: boolean
+          created_at: string
+          updated_at: string
+        }
         Insert: {
-          id?: string;
-          name: string;
-          code: string;
-          description?: string;
-          permissions?: string[];
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
+          id?: string
+          name: string
+          code: string
+          description?: string | null
+          status?: number
+          is_system?: boolean
+          created_at?: string
+          updated_at?: string
+        }
         Update: {
-          id?: string;
-          name?: string;
-          code?: string;
-          description?: string;
-          permissions?: string[];
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      permissions: {
+          id?: string
+          name?: string
+          code?: string
+          description?: string | null
+          status?: number
+          is_system?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      users_role: {
         Row: {
-          id: string;
-          name: string;
-          code: string;
-          resource: string;
-          action: string;
-          description?: string;
-          created_at: string;
-        };
+          user_id: string
+          role_id: string
+          assigned_at: string
+          assigned_by: string | null
+        }
         Insert: {
-          id?: string;
-          name: string;
-          code: string;
-          resource: string;
-          action: string;
-          description?: string;
-          created_at?: string;
-        };
+          user_id: string
+          role_id: string
+          assigned_at?: string
+          assigned_by?: string | null
+        }
         Update: {
-          id?: string;
-          name?: string;
-          code?: string;
-          resource?: string;
-          action?: string;
-          description?: string;
-          created_at?: string;
-        };
-      };
-
-      customers: {
+          user_id?: string
+          role_id?: string
+          assigned_at?: string
+          assigned_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_role_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "users_role_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      roles_menu: {
         Row: {
-          id: string;
-          customer_no: string;
-          name: string;
-          contact_person: string;
-          contact_phone: string;
-          email?: string;
-          address?: string;
-          customer_type: 'enterprise' | 'individual' | 'government' | 'other';
-          region: string;
-          credit_limit?: number;
-          payment_terms?: string;
-          status: 'active' | 'inactive';
-          created_at: string;
-          updated_at: string;
-        };
+          role_id: string
+          menu_id: string
+          granted_at: string
+          granted_by: string | null
+        }
         Insert: {
-          id?: string;
-          customer_no: string;
-          name: string;
-          contact_person: string;
-          contact_phone: string;
-          email?: string;
-          address?: string;
-          customer_type: 'enterprise' | 'individual' | 'government' | 'other';
-          region: string;
-          credit_limit?: number;
-          payment_terms?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
+          role_id: string
+          menu_id: string
+          granted_at?: string
+          granted_by?: string | null
+        }
         Update: {
-          id?: string;
-          customer_no?: string;
-          name?: string;
-          contact_person?: string;
-          contact_phone?: string;
-          email?: string;
-          address?: string;
-          customer_type?: 'enterprise' | 'individual' | 'government' | 'other';
-          region?: string;
-          credit_limit?: number;
-          payment_terms?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      suppliers: {
-        Row: {
-          id: string;
-          supplier_no: string;
-          name: string;
-          contact_person: string;
-          contact_phone: string;
-          email?: string;
-          address?: string;
-          supplier_type: 'manufacturer' | 'distributor' | 'service' | 'other';
-          rating?: 'A' | 'B' | 'C' | 'D';
-          payment_terms?: string;
-          status: 'active' | 'inactive';
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          supplier_no: string;
-          name: string;
-          contact_person: string;
-          contact_phone: string;
-          email?: string;
-          address?: string;
-          supplier_type: 'manufacturer' | 'distributor' | 'service' | 'other';
-          rating?: 'A' | 'B' | 'C' | 'D';
-          payment_terms?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          supplier_no?: string;
-          name?: string;
-          contact_person?: string;
-          contact_phone?: string;
-          email?: string;
-          address?: string;
-          supplier_type?: 'manufacturer' | 'distributor' | 'service' | 'other';
-          rating?: 'A' | 'B' | 'C' | 'D';
-          payment_terms?: string;
-          status?: 'active' | 'inactive';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      products: {
-        Row: {
-          id: string;
-          product_code: string;
-          name: string;
-          category: string;
-          specification?: string;
-          unit: string;
-          cost_price?: number;
-          selling_price?: number;
-          min_stock?: number;
-          max_stock?: number;
-          current_stock?: number;
-          status: 'active' | 'inactive' | 'discontinued';
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          product_code: string;
-          name: string;
-          category: string;
-          specification?: string;
-          unit: string;
-          cost_price?: number;
-          selling_price?: number;
-          min_stock?: number;
-          max_stock?: number;
-          current_stock?: number;
-          status?: 'active' | 'inactive' | 'discontinued';
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          product_code?: string;
-          name?: string;
-          category?: string;
-          specification?: string;
-          unit?: string;
-          cost_price?: number;
-          selling_price?: number;
-          min_stock?: number;
-          max_stock?: number;
-          current_stock?: number;
-          status?: 'active' | 'inactive' | 'discontinued';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      warehouses: {
-        Row: {
-          id: string;
-          name: string;
-          code: string;
-          type: WarehouseType;
-          location: string;
-          manager: string;
-          capacity?: number;
-          status: 'active' | 'inactive';
-          description?: string;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          code: string;
-          type: WarehouseType;
-          location: string;
-          manager: string;
-          capacity?: number;
-          status?: 'active' | 'inactive';
-          description?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          code?: string;
-          type?: WarehouseType;
-          location?: string;
-          manager?: string;
-          capacity?: number;
-          status?: 'active' | 'inactive';
-          description?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      inventory: {
-        Row: {
-          id: string;
-          product_id: string;
-          warehouse_id: string;
-          quantity: number;
-          reserved_quantity?: number;
-          available_quantity: number;
-          last_updated: string;
-          batch_no?: string;
-          expiry_date?: string;
-        };
-        Insert: {
-          id?: string;
-          product_id: string;
-          warehouse_id: string;
-          quantity: number;
-          reserved_quantity?: number;
-          available_quantity?: number;
-          last_updated?: string;
-          batch_no?: string;
-          expiry_date?: string;
-        };
-        Update: {
-          id?: string;
-          product_id?: string;
-          warehouse_id?: string;
-          quantity?: number;
-          reserved_quantity?: number;
-          available_quantity?: number;
-          last_updated?: string;
-          batch_no?: string;
-          expiry_date?: string;
-        };
-      };
-
-      system_logs: {
-        Row: {
-          id: string;
-          user_id: string;
-          action: string;
-          resource: string;
-          resource_id?: string;
-          details?: string;
-          ip_address?: string;
-          user_agent?: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          action: string;
-          resource: string;
-          resource_id?: string;
-          details?: string;
-          ip_address?: string;
-          user_agent?: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          action?: string;
-          resource?: string;
-          resource_id?: string;
-          details?: string;
-          ip_address?: string;
-          user_agent?: string;
-          created_at?: string;
-        };
-      };
-
-      workshops: {
-        Row: {
-          id: string;
-          code: string;
-          name: string;
-          type: string;
-          status: string;
-          manager: string;
-          equipment_count: number;
-          capacity: number;
-          utilization: number;
-          location: string;
-          description: string;
-        };
-        Insert: {
-          id?: string;
-          code: string;
-          name: string;
-          type: string;
-          status?: string;
-          manager: string;
-          equipment_count?: number;
-          capacity: number;
-          utilization?: number;
-          location: string;
-          description?: string;
-        };
-        Update: {
-          id?: string;
-          code?: string;
-          name?: string;
-          type?: string;
-          status?: string;
-          manager?: string;
-          equipment_count?: number;
-          capacity?: number;
-          utilization?: number;
-          location?: string;
-          description?: string;
-        };
-      };
-    };
+          role_id?: string
+          menu_id?: string
+          granted_at?: string
+          granted_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roles_menu_menu_id_fkey"
+            columns: ["menu_id"]
+            isOneToOne: false
+            referencedRelation: "menus"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roles_menu_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      user_menu_permissions: {
+        Row: {
+          user_id: string | null
+          menu_id: string | null
+          menu_name: string | null
+          menu_path: string | null
+          menu_permission: string | null
+          role_code: string | null
+          role_name: string | null
+        }
+        Relationships: []
+      }
+    }
     Functions: {
-      [_ in never]: never;
-    };
+      get_user_menu_tree: {
+        Args: {
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      check_user_menu_permission: {
+        Args: {
+          p_user_id: string
+          p_menu_path: string
+        }
+        Returns: boolean
+      }
+      get_user_roles: {
+        Args: {
+          p_user_id: string
+        }
+        Returns: {
+          role_id: string
+          role_code: string
+          role_name: string
+          role_description: string
+          assigned_at: string
+        }[]
+      }
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
+      [_ in never]: never
+    }
+  }
 }

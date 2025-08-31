@@ -18,6 +18,23 @@ export const useAuth = () => {
   const supabase = useSupabaseClient<Database>();
   const router = useRouter();
   const { $config } = useNuxtApp();
+  const user = useSupabaseUser()
+
+  // 检查权限
+  const checkPermission = (permission: string): boolean => {
+    // 简单的权限检查，实际项目中应该从用户角色和菜单权限中检查
+    if (!user.value) {
+      return false
+    }
+
+    // 如果是超级管理员，拥有所有权限
+    if (user.value.email === 'dianci.liu@gmail.com') {
+      return true
+    }
+
+    // 这里可以实现更复杂的权限检查逻辑
+    return true
+  }
 
   // 登录
   const login = async (credentials: LoginForm) => {
@@ -272,6 +289,7 @@ export const useAuth = () => {
     refreshSession,
     initAuth,
     watchAuthState,
+    checkPermission
   };
 };
 

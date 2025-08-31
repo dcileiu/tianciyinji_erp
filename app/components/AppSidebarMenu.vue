@@ -203,42 +203,42 @@ import {
   TrendingUp,
   Truck,
   Users,
-} from 'lucide-vue-next';
+} from 'lucide-vue-next'
 
 interface MenuItem {
-  label: string;
-  icon: string;
-  route: string;
-  badge?: string;
-  shortcut?: string;
+  label: string
+  icon: string
+  route: string
+  badge?: string
+  shortcut?: string
 }
 
 interface MenuGroup {
-  label?: string;
-  separator?: boolean;
-  items?: MenuItem[];
-  icon?: string;
-  route?: string;
-  badge?: string;
+  label?: string
+  separator?: boolean
+  items?: MenuItem[]
+  icon?: string
+  route?: string
+  badge?: string
 }
 
 // Props
 defineProps<{
-  sidebarCollapsed: boolean;
-}>();
+  sidebarCollapsed: boolean
+}>()
 
 // Emits
 const emit = defineEmits<{
-  toggleSidebar: [];
-}>();
+  toggleSidebar: []
+}>()
 
 // 获取用户信息
-const user = useSupabaseUser();
+const user = useSupabaseUser()
 
 // 图标映射函数
 const getIcon = (iconClass?: string) => {
   if (!iconClass) {
-    return Home;
+    return Home
   }
   const iconMap: Record<string, typeof Home> = {
     'pi pi-home': Home,
@@ -267,9 +267,9 @@ const getIcon = (iconClass?: string) => {
     'pi pi-database': Database,
     'pi pi-book': Book,
     'pi pi-file': FileCheck,
-  };
-  return iconMap[iconClass] || Home;
-};
+  }
+  return iconMap[iconClass] || Home
+}
 
 // 菜单项配置
 const items = ref<MenuGroup[]>([
@@ -450,7 +450,7 @@ const items = ref<MenuGroup[]>([
         route: '/system/users',
       },
       {
-        label: '角色权限',
+        label: '角色管理',
         icon: 'pi pi-shield',
         route: '/system/roles',
       },
@@ -489,22 +489,22 @@ const items = ref<MenuGroup[]>([
   {
     separator: true,
   },
-]);
+])
 
 // 方法
 const toggleSidebar = () => {
-  emit('toggleSidebar');
-};
+  emit('toggleSidebar')
+}
 
 const goToSettings = () => {
-  navigateTo('/system/config');
-};
+  navigateTo('/system/config')
+}
 
 const logout = async () => {
-  const { auth } = useSupabaseClient();
-  await auth.signOut();
-  await navigateTo('/login');
-};
+  const { auth } = useSupabaseClient()
+  await auth.signOut()
+  await navigateTo('/login')
+}
 </script>
 
 <style scoped>

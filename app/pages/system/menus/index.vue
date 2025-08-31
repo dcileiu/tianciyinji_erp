@@ -73,10 +73,15 @@
     <!-- 菜单列表 -->
     <Card>
       <CardHeader>
-        <CardTitle class="flex items-center gap-2">
-          <Menu class="w-5 h-5" />
-          菜单列表
-        </CardTitle>
+        <div class="flex items-center justify-between">
+          <div>
+            <CardTitle class="flex items-center gap-2">
+              <Menu class="w-5 h-5" />
+              菜单列表
+            </CardTitle>
+            <CardDescription>当前共有 {{ menus.length }} 个菜单</CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <MenuTableSkeleton v-if="loading && menus.length === 0" />
@@ -178,6 +183,8 @@ const typeOptions = [
 
 // 计算属性
 const parentMenuOptions = computed(() => getParentMenuOptions())
+
+// 菜单管理保持树形结构，不使用分页
 
 // 方法
 const loadMenus = async () => {
