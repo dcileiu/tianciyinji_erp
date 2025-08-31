@@ -190,6 +190,7 @@ declare global {
   const useSuppliers: typeof import('../../app/composables/useSuppliers')['useSuppliers']
   const useTemplateRef: typeof import('vue')['useTemplateRef']
   const useTransitionState: typeof import('vue')['useTransitionState']
+  const useUserMenus: typeof import('../../app/composables/useUserMenus')['useUserMenus']
   const useUsers: typeof import('../../app/composables/useUsers')['useUsers']
   const useWorkshops: typeof import('../../app/composables/useWorkshops')['useWorkshops']
   const valueUpdater: typeof import('../../app/utils/index')['valueUpdater']
@@ -221,6 +222,9 @@ declare global {
   // @ts-ignore
   export type { RoleData, RoleForm } from '../../app/composables/useRoles'
   import('../../app/composables/useRoles')
+  // @ts-ignore
+  export type { MenuItem, MenuGroup } from '../../app/composables/useUserMenus'
+  import('../../app/composables/useUserMenus')
   // @ts-ignore
   export type { UserData, UserForm, UserQuery, UserStats } from '../../app/composables/useUsers'
   import('../../app/composables/useUsers')
@@ -433,6 +437,7 @@ declare module 'vue' {
     readonly useSuppliers: UnwrapRef<typeof import('../../app/composables/useSuppliers')['useSuppliers']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>
+    readonly useUserMenus: UnwrapRef<typeof import('../../app/composables/useUserMenus')['useUserMenus']>
     readonly useUsers: UnwrapRef<typeof import('../../app/composables/useUsers')['useUsers']>
     readonly useWorkshops: UnwrapRef<typeof import('../../app/composables/useWorkshops')['useWorkshops']>
     readonly valueUpdater: UnwrapRef<typeof import('../../app/utils/index')['valueUpdater']>

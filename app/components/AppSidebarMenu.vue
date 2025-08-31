@@ -271,12 +271,80 @@ const getIcon = (iconClass?: string) => {
   return iconMap[iconClass] || Home
 }
 
-// 菜单项配置
-const items = ref<MenuGroup[]>([
+// 从 composable 获取菜单数据
+const { availableMenus } = useUserMenus()
+
+// 菜单项配置 - 从用户权限动态生成
+const items = computed<MenuGroup[]>(() => {
+  const userMenus = availableMenus.value
+  const dynamicItems: MenuGroup[] = []
+
+  // 添加分隔符
+  dynamicItems.push({ separator: true })
+
+  // 遍历用户菜单权限生成侧边栏菜单
+  userMenus.forEach(menuGroup => {
+    if (menuGroup.menu.length === 1) {
+      // 单个菜单项，直接添加
+      const menuItem = menuGroup.menu[0]
+      if (menuItem) {
+        dynamicItems.push({
+          label: menuItem.name,
+          icon: getIconClass(menuItem.icon),
+          route: menuItem.path,
+        })
+      }
+    } else if (menuGroup.menu.length > 1) {
+      // 多个菜单项，作为子菜单组
+      dynamicItems.push({
+        label: menuGroup.title,
+        items: menuGroup.menu.map(item => ({
+          label: item.name,
+          icon: getIconClass(item.icon),
+          route: item.path,
+        }))
+      })
+    }
+  })
+
+  // 如果没有动态菜单，则使用静态菜单作为备用
+  return dynamicItems.length > 1 ? dynamicItems : staticItems.value
+})
+
+// 图标映射函数
+const getIconClass = (iconName: string): string => {
+  const iconMap: Record<string, string> = {
+    'view': 'pi pi-eye',
+    'BarChart3': 'pi pi-chart-bar',
+    'FileText': 'pi pi-file',
+    'Users': 'pi pi-users',
+    'Building': 'pi pi-building',
+    'Package': 'pi pi-box',
+    'ArrowRightLeft': 'pi pi-arrows-h',
+    'Calendar': 'pi pi-calendar',
+    'List': 'pi pi-list',
+    'Factory': 'pi pi-cog',
+    'CreditCard': 'pi pi-credit-card',
+    'Wallet': 'pi pi-wallet',
+    'Banknote': 'pi pi-money-bill',
+    'Warehouse': 'pi pi-building',
+    'PieChart': 'pi pi-chart-pie',
+    'Map': 'pi pi-map',
+    'Shield': 'pi pi-shield',
+    'Menu': 'pi pi-bars',
+    'Building2': 'pi pi-building',
+    'UserCheck': 'pi pi-user-check',
+    'Book': 'pi pi-book',
+    'Settings': 'pi pi-cog',
+  }
+  return iconMap[iconName] || 'pi pi-circle'
+}
+
+// 备用静态菜单配置
+const staticItems = ref<MenuGroup[]>([
   {
     separator: true,
   },
-  // 仪表盘
   {
     label: '仪表盘',
     icon: 'pi pi-home',
@@ -285,165 +353,9 @@ const items = ref<MenuGroup[]>([
   {
     separator: true,
   },
-  // 销售管理
   {
-    label: '销售管理',
+    label: '系统管理',
     items: [
-      {
-        label: '销售订单',
-        icon: 'pi pi-shopping-cart',
-        route: '/sales/orders',
-        badge: '5',
-        shortcut: '⌘+S',
-      },
-      {
-        label: '客户管理',
-        icon: 'pi pi-users',
-        route: '/sales/customers',
-      },
-    ],
-  },
-  // 采购管理
-  {
-    label: '采购管理',
-    items: [
-      {
-        label: '采购订单',
-        icon: 'pi pi-shopping-bag',
-        route: '/purchase/orders',
-      },
-      {
-        label: '供应商管理',
-        icon: 'pi pi-truck',
-        route: '/purchase/suppliers',
-      },
-    ],
-  },
-  // 库存管理
-  {
-    label: '库存管理',
-    items: [
-      {
-        label: '库存管理',
-        icon: 'pi pi-box',
-        route: '/warehouse/inventory',
-      },
-      {
-        label: '仓库管理',
-        icon: 'pi pi-building',
-        route: '/warehouse/warehouses',
-      },
-      {
-        label: '库存调拨',
-        icon: 'pi pi-refresh',
-        route: '/warehouse/transfers',
-      },
-    ],
-  },
-  // 生产管理
-  {
-    label: '生产管理',
-    items: [
-      {
-        label: '生产订单',
-        icon: 'pi pi-cog',
-        route: '/production/orders',
-      },
-      {
-        label: '生产计划',
-        icon: 'pi pi-calendar',
-        route: '/production/plans',
-      },
-      {
-        label: '物料清单',
-        icon: 'pi pi-list',
-        route: '/production/bom',
-      },
-      {
-        label: '车间管理',
-        icon: 'pi pi-building',
-        route: '/production/workshops',
-      },
-    ],
-  },
-  // 财务管理
-  {
-    label: '财务管理',
-    items: [
-      {
-        label: '发票管理',
-        icon: 'pi pi-file-edit',
-        route: '/finance/invoices',
-        badge: '3',
-      },
-      {
-        label: '付款管理',
-        icon: 'pi pi-credit-card',
-        route: '/finance/payments',
-      },
-      {
-        label: '收款管理',
-        icon: 'pi pi-receipt',
-        route: '/finance/receipts',
-      },
-    ],
-  },
-  // 基础数据
-  {
-    label: '基础数据',
-    items: [
-      {
-        label: '产品管理',
-        icon: 'pi pi-tag',
-        route: '/master-data/products',
-      },
-      {
-        label: '客户管理',
-        icon: 'pi pi-users',
-        route: '/master-data/customers',
-      },
-      {
-        label: '供应商管理',
-        icon: 'pi pi-truck',
-        route: '/master-data/suppliers',
-      },
-    ],
-  },
-  // 报表分析
-  {
-    label: '报表分析',
-    items: [
-      {
-        label: '销售报表',
-        icon: 'pi pi-chart-line',
-        route: '/reports/sales',
-      },
-      {
-        label: '库存报表',
-        icon: 'pi pi-chart-bar',
-        route: '/reports/inventory',
-      },
-      {
-        label: '生产报表',
-        icon: 'pi pi-chart-pie',
-        route: '/reports/production',
-      },
-      {
-        label: '采购报表',
-        icon: 'pi pi-chart-bar',
-        route: '/reports/purchase',
-      },
-    ],
-  },
-  // 系统设置
-  {
-    label: '系统设置',
-    items: [
-      {
-        label: '系统配置',
-        icon: 'pi pi-cog',
-        route: '/system/config',
-      },
       {
         label: '用户管理',
         icon: 'pi pi-user',
@@ -455,39 +367,11 @@ const items = ref<MenuGroup[]>([
         route: '/system/roles',
       },
       {
-        label: '部门管理',
-        icon: 'pi pi-sitemap',
-        route: '/system/departments',
-      },
-      {
         label: '菜单管理',
         icon: 'pi pi-bars',
         route: '/system/menus',
       },
-      {
-        label: '岗位管理',
-        icon: 'pi pi-briefcase',
-        route: '/system/positions',
-      },
-      {
-        label: '资源管理',
-        icon: 'pi pi-database',
-        route: '/system/resources',
-      },
-      {
-        label: '数据字典',
-        icon: 'pi pi-book',
-        route: '/system/dictionaries',
-      },
-      {
-        label: '系统日志',
-        icon: 'pi pi-file',
-        route: '/system/logs',
-      },
     ],
-  },
-  {
-    separator: true,
   },
 ])
 

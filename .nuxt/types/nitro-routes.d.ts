@@ -9,6 +9,9 @@ declare module "nitropack/types" {
     '/api/roles': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/roles/index').default>>>>
     }
+    '/api/user/menus': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/menus.get').default>>>>
+    }
     '/api/users': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/index').default>>>>
     }

@@ -38,6 +38,7 @@ export { useProductionReports } from '../app/composables/useProductionReports';
 export { useRoles, RoleData, RoleForm } from '../app/composables/useRoles';
 export { useProducts, supabase } from '../app/composables/useSupabase';
 export { useSuppliers } from '../app/composables/useSuppliers';
+export { useUserMenus, MenuItem, MenuGroup } from '../app/composables/useUserMenus';
 export { useUsers, UserData, UserForm, UserQuery, UserStats } from '../app/composables/useUsers';
 export { useWorkshops } from '../app/composables/useWorkshops';
 export { ErrorCode, ErrorCode, createAppError, parseError, isAppError, handleError, handleAsyncError, getDisplayMessage, AppError } from '../app/utils/error-handler';

@@ -22,6 +22,7 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/plugins/auth-redirect.js")> &
   InjectionType<typeof import("../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/plugins/dev-server-logs.js")> &
   InjectionType<typeof import("../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/plugins/check-if-layout-used.js")> &
+  InjectionType<typeof import("../../app/plugins/auth-menu.client")> &
   InjectionType<typeof import("../../app/plugins/auth.client")> &
   InjectionType<typeof import("../../app/plugins/ssr-width")>
 

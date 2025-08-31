@@ -318,15 +318,16 @@ function transformUserData(rawUser: any): UserData {
     last_sign_in_at: rawUser.last_sign_in_at,
     created_at: rawUser.created_at,
     updated_at: rawUser.updated_at,
-    name: metadata.name || rawUser.email?.split('@')[0] || '',
-    username: metadata.username || rawUser.email?.split('@')[0] || '',
-    avatar: metadata.avatar,
-    department_id: metadata.department_id,
-    position_id: metadata.position_id,
-    remarks: metadata.remarks,
-    status: metadata.status || 'active',
-    is_online: false, // 这里需要实际的在线状态逻辑
-    login_count: 0, // 这里需要实际的登录次数统计
-    roles: rawUser.users_role?.map((ur: any) => ur.roles) || []
+    name: rawUser.name || metadata.name || rawUser.email?.split('@')[0] || '',
+    username: rawUser.username || metadata.username || rawUser.email?.split('@')[0] || '',
+    avatar: rawUser.avatar || metadata.avatar,
+    department_id: rawUser.department_id || metadata.department_id,
+    position_id: rawUser.position_id || metadata.position_id,
+    remarks: rawUser.remarks || metadata.remarks,
+    status: rawUser.status || metadata.status || 'active',
+    is_online: rawUser.is_online || false,
+    login_count: rawUser.login_count || 0,
+    // 修复角色数据映射 - 直接使用API返回的roles字段
+    roles: rawUser.roles || rawUser.users_role?.map((ur: any) => ur.roles) || []
   }
 }

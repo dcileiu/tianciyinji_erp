@@ -75,10 +75,10 @@
       <CardHeader>
         <div class="flex items-center justify-between">
           <div>
-            <CardTitle class="flex items-center gap-2">
-              <Menu class="w-5 h-5" />
-              菜单列表
-            </CardTitle>
+        <CardTitle class="flex items-center gap-2">
+          <Menu class="w-5 h-5" />
+          菜单列表
+        </CardTitle>
             <CardDescription>当前共有 {{ menus.length }} 个菜单</CardDescription>
           </div>
         </div>

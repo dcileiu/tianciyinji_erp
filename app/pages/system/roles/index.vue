@@ -220,37 +220,69 @@
                 </div>
               </div>
 
-              <div class="max-h-80 overflow-y-auto border rounded-lg p-4">
-                <div v-for="menu in menuPermissions" :key="menu.id" class="mb-4">
-                  <!-- 一级菜单 -->
-                  <div class="flex items-center space-x-2 py-2">
-                    <input
-                      type="checkbox"
-                      :id="menu.id"
-                      :checked="selectedMenuIds.includes(menu.id)"
-                      @change="handlePermissionChange(menu.id, ($event.target as HTMLInputElement).checked)"
-                      class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <label :for="menu.id" class="text-sm font-semibold cursor-pointer flex items-center">
-                      <span class="mr-2">📁</span>
-                      {{ menu.name }}
-                    </label>
-                  </div>
+                            <div class="max-h-80 overflow-y-auto border rounded-lg p-4">
+                <div v-if="menuLoading" class="text-center py-8">
+                  <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+                  <p class="text-sm text-muted-foreground mt-2">加载菜单数据...</p>
+                </div>
 
-                  <!-- 二级菜单 -->
-                  <div v-if="menu.children && menu.children.length > 0" class="ml-6 space-y-1 border-l-2 border-gray-100 pl-4">
-                    <div v-for="child in menu.children" :key="child.id" class="flex items-center space-x-2 py-1">
+                <div v-else-if="menuPermissions.length === 0" class="text-center py-8">
+                  <p class="text-sm text-muted-foreground">暂无菜单数据</p>
+                </div>
+
+                <div v-else>
+                  <div v-for="menu in menuPermissions" :key="menu.id" class="mb-3">
+                    <!-- 一级菜单 -->
+                    <div class="flex items-center space-x-2 py-2">
+                      <!-- 展开/折叠按钮 -->
+                      <button
+                        v-if="menu.children && menu.children.length > 0"
+                        @click="toggleMenuExpanded(menu.id)"
+                        class="flex items-center justify-center w-4 h-4 text-gray-500 hover:text-gray-700"
+                      >
+                        <span v-if="isMenuExpanded(menu.id)">▼</span>
+                        <span v-else>▶</span>
+                      </button>
+                      <div v-else class="w-4"></div>
+
+                      <!-- 复选框 -->
                       <input
                         type="checkbox"
-                        :id="child.id"
-                        :checked="selectedMenuIds.includes(child.id)"
-                        @change="handlePermissionChange(child.id, ($event.target as HTMLInputElement).checked)"
+                        :id="menu.id"
+                        :checked="selectedMenuIds.includes(menu.id)"
+                        @change="handlePermissionChange(menu.id, ($event.target as HTMLInputElement).checked)"
                         class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
-                      <label :for="child.id" class="text-sm cursor-pointer flex items-center">
-                        <span class="mr-2">📄</span>
-                        {{ child.name }}
+
+                      <!-- 菜单名称 -->
+                      <label :for="menu.id" class="text-sm font-semibold cursor-pointer flex items-center">
+                        <span class="mr-2">{{ menu.type === 'directory' ? '📁' : '📄' }}</span>
+                        {{ menu.name }}
+                        <span v-if="menu.children && menu.children.length > 0" class="ml-2 text-xs text-gray-500">
+                          ({{ menu.children.length }})
+                        </span>
                       </label>
+                    </div>
+
+                    <!-- 子菜单 -->
+                    <div
+                      v-if="menu.children && menu.children.length > 0 && isMenuExpanded(menu.id)"
+                      class="ml-6 space-y-1 border-l-2 border-gray-100 pl-4"
+                    >
+                      <div v-for="child in menu.children" :key="child.id" class="flex items-center space-x-2 py-1">
+                        <div class="w-4"></div>
+                        <input
+                          type="checkbox"
+                          :id="child.id"
+                          :checked="selectedMenuIds.includes(child.id)"
+                          @change="handlePermissionChange(child.id, ($event.target as HTMLInputElement).checked)"
+                          class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <label :for="child.id" class="text-sm cursor-pointer flex items-center">
+                          <span class="mr-2">{{ child.type === 'directory' ? '📁' : '📄' }}</span>
+                          {{ child.name }}
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -335,80 +367,9 @@ const currentPage = ref(1)
 const pageSize = 10
 
 // 菜单权限数据
-const menuPermissions = ref([
-  {
-    id: '1',
-    name: '系统管理',
-    children: [
-      { id: '11', name: '用户管理' },
-      { id: '12', name: '角色管理' },
-      { id: '13', name: '部门管理' },
-      { id: '14', name: '菜单管理' },
-      { id: '15', name: '系统配置' },
-      { id: '16', name: '操作日志' }
-    ]
-  },
-  {
-    id: '2',
-    name: '销售管理',
-    children: [
-      { id: '21', name: '客户管理' },
-      { id: '22', name: '销售订单' },
-      { id: '23', name: '销售发货' },
-      { id: '24', name: '销售退货' }
-    ]
-  },
-  {
-    id: '3',
-    name: '采购管理',
-    children: [
-      { id: '31', name: '供应商管理' },
-      { id: '32', name: '采购订单' },
-      { id: '33', name: '采购入库' },
-      { id: '34', name: '采购退货' }
-    ]
-  },
-  {
-    id: '4',
-    name: '库存管理',
-    children: [
-      { id: '41', name: '仓库管理' },
-      { id: '42', name: '库存查询' },
-      { id: '43', name: '库存调拨' },
-      { id: '44', name: '盘点管理' }
-    ]
-  },
-  {
-    id: '5',
-    name: '生产管理',
-    children: [
-      { id: '51', name: '生产计划' },
-      { id: '52', name: '生产订单' },
-      { id: '53', name: '工艺管理' },
-      { id: '54', name: 'BOM管理' }
-    ]
-  },
-  {
-    id: '6',
-    name: '财务管理',
-    children: [
-      { id: '61', name: '应收管理' },
-      { id: '62', name: '应付管理' },
-      { id: '63', name: '发票管理' },
-      { id: '64', name: '费用管理' }
-    ]
-  },
-  {
-    id: '7',
-    name: '报表中心',
-    children: [
-      { id: '71', name: '销售报表' },
-      { id: '72', name: '采购报表' },
-      { id: '73', name: '库存报表' },
-      { id: '74', name: '财务报表' }
-    ]
-  }
-])
+const menuPermissions = ref<any[]>([])
+const menuLoading = ref(false)
+const expandedMenus = ref<Set<string>>(new Set())
 
 // 表单数据
 const roleForm = ref<RoleForm>({
@@ -444,7 +405,7 @@ const refreshData = async () => {
   await fetchRoles()
 }
 
-const openRoleModal = () => {
+const openRoleModal = async () => {
   isEditMode.value = false
   editingRole.value = null
   selectedMenuIds.value = []
@@ -455,6 +416,9 @@ const openRoleModal = () => {
     type: 'custom',
     status: 'active'
   }
+
+  // 加载菜单权限数据
+  await fetchMenuPermissions()
   showModal.value = true
 }
 
@@ -475,6 +439,9 @@ const handleEditRole = async (role: RoleData) => {
     type: role.type,
     status: role.status
   }
+
+  // 加载菜单权限数据
+  await fetchMenuPermissions()
 
   // 获取角色权限
   selectedMenuIds.value = await getRoleMenuPermissions(role.id)
@@ -522,22 +489,125 @@ const handleDeleteRole = async (roleId: string) => {
   }
 }
 
+// 获取菜单数据
+const fetchMenuPermissions = async () => {
+  try {
+    menuLoading.value = true
+    const { data: menus } = await useSupabaseClient()
+      .from('menus')
+      .select('*')
+      .eq('status', 'active')
+      .order('sort', { ascending: true })
+
+    if (menus) {
+      menuPermissions.value = buildMenuTree(menus)
+      // 默认展开所有一级菜单
+      menuPermissions.value.forEach(menu => {
+        if (menu.children && menu.children.length > 0) {
+          expandedMenus.value.add(menu.id)
+        }
+      })
+    }
+  } catch (error) {
+    console.error('获取菜单数据失败:', error)
+  } finally {
+    menuLoading.value = false
+  }
+}
+
+// 构建菜单树
+const buildMenuTree = (menus: any[]) => {
+  const menuMap = new Map()
+  const rootMenus: any[] = []
+
+  // 创建菜单映射
+  menus.forEach(menu => {
+    menuMap.set(menu.id, { ...menu, children: [] })
+  })
+
+  // 构建树结构
+  menus.forEach(menu => {
+    const menuItem = menuMap.get(menu.id)
+    if (menu.parent_id && menuMap.has(menu.parent_id)) {
+      menuMap.get(menu.parent_id).children.push(menuItem)
+    } else {
+      rootMenus.push(menuItem)
+    }
+  })
+
+  return rootMenus
+}
+
 // 权限管理方法
 const handlePermissionChange = (menuId: string, checked: boolean) => {
   const newSelectedIds = [...selectedMenuIds.value]
 
   if (checked) {
-    if (!newSelectedIds.includes(menuId)) {
-      newSelectedIds.push(menuId)
-    }
+    // 选中时，同时选中所有子菜单
+    addMenuAndChildren(menuId, newSelectedIds)
   } else {
-    const index = newSelectedIds.indexOf(menuId)
-    if (index > -1) {
-      newSelectedIds.splice(index, 1)
-    }
+    // 取消选中时，同时取消所有子菜单和父菜单
+    removeMenuAndAffected(menuId, newSelectedIds)
   }
 
   selectedMenuIds.value = newSelectedIds
+}
+
+// 添加菜单及其所有子菜单
+const addMenuAndChildren = (menuId: string, selectedIds: string[]) => {
+  if (!selectedIds.includes(menuId)) {
+    selectedIds.push(menuId)
+  }
+
+  // 查找并添加所有子菜单
+  const addChildren = (menus: any[]) => {
+    menus.forEach(menu => {
+      if (menu.id === menuId && menu.children) {
+        menu.children.forEach((child: any) => {
+          if (!selectedIds.includes(child.id)) {
+            selectedIds.push(child.id)
+          }
+          if (child.children && child.children.length > 0) {
+            addChildren(child.children)
+          }
+        })
+      } else if (menu.children) {
+        addChildren(menu.children)
+      }
+    })
+  }
+
+  addChildren(menuPermissions.value)
+}
+
+// 移除菜单及相关菜单
+const removeMenuAndAffected = (menuId: string, selectedIds: string[]) => {
+  // 移除当前菜单
+  const index = selectedIds.indexOf(menuId)
+  if (index > -1) {
+    selectedIds.splice(index, 1)
+  }
+
+  // 移除所有子菜单
+  const removeChildren = (menus: any[]) => {
+    menus.forEach(menu => {
+      if (menu.id === menuId && menu.children) {
+        menu.children.forEach((child: any) => {
+          const childIndex = selectedIds.indexOf(child.id)
+          if (childIndex > -1) {
+            selectedIds.splice(childIndex, 1)
+          }
+          if (child.children && child.children.length > 0) {
+            removeChildren(child.children)
+          }
+        })
+      } else if (menu.children) {
+        removeChildren(menu.children)
+      }
+    })
+  }
+
+  removeChildren(menuPermissions.value)
 }
 
 const getAllMenuIds = (menuList: any[]): string[] => {
@@ -562,6 +632,19 @@ const selectAllPermissions = () => {
 
 const unselectAllPermissions = () => {
   selectedMenuIds.value = []
+}
+
+// 折叠展开功能
+const toggleMenuExpanded = (menuId: string) => {
+  if (expandedMenus.value.has(menuId)) {
+    expandedMenus.value.delete(menuId)
+  } else {
+    expandedMenus.value.add(menuId)
+  }
+}
+
+const isMenuExpanded = (menuId: string) => {
+  return expandedMenus.value.has(menuId)
 }
 
 // 监听搜索变化，重置页码

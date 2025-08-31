@@ -1,6 +1,6 @@
 import type { Database } from '~/types/database.types'
 
-// 部门类型定义
+// 部门数据类型定义（重命名避免冲突）
 export interface Department {
   id: string
   name: string
@@ -8,7 +8,7 @@ export interface Department {
   description?: string | null
   parent_id?: string | null
   manager_id?: string | null
-  sort: number
+  sort?: number
   status: 'active' | 'inactive'
   created_at: string
   updated_at: string
@@ -192,7 +192,7 @@ export const useDepartments = () => {
     const buildTree = (depts: Department[], parentId: string | null = null): Department[] => {
       return depts
         .filter(dept => dept.parent_id === parentId)
-        .sort((a, b) => a.sort - b.sort)
+        .sort((a, b) => (a.sort || 0) - (b.sort || 0))
         .map(dept => ({
           ...dept,
           children: buildTree(depts, dept.id)
@@ -205,11 +205,11 @@ export const useDepartments = () => {
     // 获取部门路径
   const getDepartmentPath = (departmentId: string): Department[] => {
     const path: Department[] = []
-    let current = departments.value.find(d => d.id === departmentId)
+    let current = departments.value.find((d: Department) => d.id === departmentId)
 
     while (current) {
       path.unshift(current)
-      current = current.parent_id ? departments.value.find(d => d.id === current!.parent_id) : undefined
+      current = current.parent_id ? departments.value.find((d: Department) => d.id === current!.parent_id) : undefined
     }
 
     return path
@@ -217,7 +217,7 @@ export const useDepartments = () => {
 
   // 检查是否可以删除部门（是否有子部门）
   const canDeleteDepartment = (departmentId: string): boolean => {
-    return !departments.value.some(d => d.parent_id === departmentId)
+    return !departments.value.some((d: Department) => d.parent_id === departmentId)
   }
 
   return {

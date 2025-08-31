@@ -14,6 +14,7 @@ type LazyComponent<T> = (T & DefineComponent<HydrationStrategies, {}, {}, {}, {}
 interface _GlobalComponents {
       'AppSideBar': typeof import("../app/components/AppSideBar.vue")['default']
     'AppSidebarMenu': typeof import("../app/components/AppSidebarMenu.vue")['default']
+    'ComingSoon': typeof import("../app/components/ComingSoon.vue")['default']
     'GlobalLoader': typeof import("../app/components/GlobalLoader.vue")['default']
     'IconPicker': typeof import("../app/components/IconPicker.vue")['default']
     'NavMain': typeof import("../app/components/NavMain.vue")['default']
@@ -41,9 +42,7 @@ interface _GlobalComponents {
     'AccordionContent': typeof import("../app/components/ui/accordion/index")['AccordionContent']
     'AccordionItem': typeof import("../app/components/ui/accordion/index")['AccordionItem']
     'AccordionTrigger': typeof import("../app/components/ui/accordion/index")['AccordionTrigger']
-    'Alert': typeof import("../app/components/ui/alert/index")['Alert']
-    'AlertDescription': typeof import("../app/components/ui/alert/index")['AlertDescription']
-    'AlertTitle': typeof import("../app/components/ui/alert/index")['AlertTitle']
+    'AspectRatio': typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']
     'AlertDialog': typeof import("../app/components/ui/alert-dialog/index")['AlertDialog']
     'AlertDialogAction': typeof import("../app/components/ui/alert-dialog/index")['AlertDialogAction']
     'AlertDialogCancel': typeof import("../app/components/ui/alert-dialog/index")['AlertDialogCancel']
@@ -53,7 +52,9 @@ interface _GlobalComponents {
     'AlertDialogHeader': typeof import("../app/components/ui/alert-dialog/index")['AlertDialogHeader']
     'AlertDialogTitle': typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTitle']
     'AlertDialogTrigger': typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTrigger']
-    'AspectRatio': typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']
+    'Alert': typeof import("../app/components/ui/alert/index")['Alert']
+    'AlertDescription': typeof import("../app/components/ui/alert/index")['AlertDescription']
+    'AlertTitle': typeof import("../app/components/ui/alert/index")['AlertTitle']
     'AutoForm': typeof import("../app/components/ui/auto-form/index")['AutoForm']
     'AutoFormField': typeof import("../app/components/ui/auto-form/index")['AutoFormField']
     'AutoFormFieldArray': typeof import("../app/components/ui/auto-form/index")['AutoFormFieldArray']
@@ -104,13 +105,13 @@ interface _GlobalComponents {
     'CarouselNext': typeof import("../app/components/ui/carousel/index")['CarouselNext']
     'CarouselPrevious': typeof import("../app/components/ui/carousel/index")['CarouselPrevious']
     'CarouselApi': typeof import("../app/components/ui/carousel/index")['CarouselApi']
+    'AreaChart': typeof import("../app/components/ui/chart-area/index")['AreaChart']
     'ChartCrosshair': typeof import("../app/components/ui/chart/index")['ChartCrosshair']
     'ChartLegend': typeof import("../app/components/ui/chart/index")['ChartLegend']
     'ChartSingleTooltip': typeof import("../app/components/ui/chart/index")['ChartSingleTooltip']
     'ChartTooltip': typeof import("../app/components/ui/chart/index")['ChartTooltip']
-    'AreaChart': typeof import("../app/components/ui/chart-area/index")['AreaChart']
-    'DonutChart': typeof import("../app/components/ui/chart-donut/index")['DonutChart']
     'BarChart': typeof import("../app/components/ui/chart-bar/index")['BarChart']
+    'DonutChart': typeof import("../app/components/ui/chart-donut/index")['DonutChart']
     'LineChart': typeof import("../app/components/ui/chart-line/index")['LineChart']
     'Checkbox': typeof import("../app/components/ui/checkbox/index")['Checkbox']
     'Collapsible': typeof import("../app/components/ui/collapsible/index")['Collapsible']
@@ -196,8 +197,8 @@ interface _GlobalComponents {
     'HoverCard': typeof import("../app/components/ui/hover-card/index")['HoverCard']
     'HoverCardContent': typeof import("../app/components/ui/hover-card/index")['HoverCardContent']
     'HoverCardTrigger': typeof import("../app/components/ui/hover-card/index")['HoverCardTrigger']
-    'Input': typeof import("../app/components/ui/input/index")['Input']
     'Label': typeof import("../app/components/ui/label/index")['Label']
+    'Input': typeof import("../app/components/ui/input/index")['Input']
     'Menubar': typeof import("../app/components/ui/menubar/index")['Menubar']
     'MenubarCheckboxItem': typeof import("../app/components/ui/menubar/index")['MenubarCheckboxItem']
     'MenubarContent': typeof import("../app/components/ui/menubar/index")['MenubarContent']
@@ -226,10 +227,6 @@ interface _GlobalComponents {
     'NavigationMenuList': typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuList']
     'NavigationMenuTrigger': typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuTrigger']
     'NavigationMenuViewport': typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuViewport']
-    'PinInput': typeof import("../app/components/ui/pin-input/index")['PinInput']
-    'PinInputGroup': typeof import("../app/components/ui/pin-input/index")['PinInputGroup']
-    'PinInputSeparator': typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']
-    'PinInputSlot': typeof import("../app/components/ui/pin-input/index")['PinInputSlot']
     'Pagination': typeof import("../app/components/ui/pagination/index")['Pagination']
     'PaginationContent': typeof import("../app/components/ui/pagination/index")['PaginationContent']
     'PaginationEllipsis': typeof import("../app/components/ui/pagination/index")['PaginationEllipsis']
@@ -242,6 +239,10 @@ interface _GlobalComponents {
     'Popover': typeof import("../app/components/ui/popover/index")['Popover']
     'PopoverContent': typeof import("../app/components/ui/popover/index")['PopoverContent']
     'PopoverTrigger': typeof import("../app/components/ui/popover/index")['PopoverTrigger']
+    'PinInput': typeof import("../app/components/ui/pin-input/index")['PinInput']
+    'PinInputGroup': typeof import("../app/components/ui/pin-input/index")['PinInputGroup']
+    'PinInputSeparator': typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']
+    'PinInputSlot': typeof import("../app/components/ui/pin-input/index")['PinInputSlot']
     'Progress': typeof import("../app/components/ui/progress/index")['Progress']
     'RadioGroup': typeof import("../app/components/ui/radio-group/index")['RadioGroup']
     'RadioGroupItem': typeof import("../app/components/ui/radio-group/index")['RadioGroupItem']
@@ -274,6 +275,14 @@ interface _GlobalComponents {
     'SelectTrigger': typeof import("../app/components/ui/select/index")['SelectTrigger']
     'SelectValue': typeof import("../app/components/ui/select/index")['SelectValue']
     'Separator': typeof import("../app/components/ui/separator/index")['Separator']
+    'Sheet': typeof import("../app/components/ui/sheet/index")['Sheet']
+    'SheetClose': typeof import("../app/components/ui/sheet/index")['SheetClose']
+    'SheetContent': typeof import("../app/components/ui/sheet/index")['SheetContent']
+    'SheetDescription': typeof import("../app/components/ui/sheet/index")['SheetDescription']
+    'SheetFooter': typeof import("../app/components/ui/sheet/index")['SheetFooter']
+    'SheetHeader': typeof import("../app/components/ui/sheet/index")['SheetHeader']
+    'SheetTitle': typeof import("../app/components/ui/sheet/index")['SheetTitle']
+    'SheetTrigger': typeof import("../app/components/ui/sheet/index")['SheetTrigger']
     'Sidebar': typeof import("../app/components/ui/sidebar/index")['Sidebar']
     'SidebarContent': typeof import("../app/components/ui/sidebar/index")['SidebarContent']
     'SidebarFooter': typeof import("../app/components/ui/sidebar/index")['SidebarFooter']
@@ -297,15 +306,9 @@ interface _GlobalComponents {
     'SidebarRail': typeof import("../app/components/ui/sidebar/index")['SidebarRail']
     'SidebarSeparator': typeof import("../app/components/ui/sidebar/index")['SidebarSeparator']
     'SidebarTrigger': typeof import("../app/components/ui/sidebar/index")['SidebarTrigger']
-    'Sheet': typeof import("../app/components/ui/sheet/index")['Sheet']
-    'SheetClose': typeof import("../app/components/ui/sheet/index")['SheetClose']
-    'SheetContent': typeof import("../app/components/ui/sheet/index")['SheetContent']
-    'SheetDescription': typeof import("../app/components/ui/sheet/index")['SheetDescription']
-    'SheetFooter': typeof import("../app/components/ui/sheet/index")['SheetFooter']
-    'SheetHeader': typeof import("../app/components/ui/sheet/index")['SheetHeader']
-    'SheetTitle': typeof import("../app/components/ui/sheet/index")['SheetTitle']
-    'SheetTrigger': typeof import("../app/components/ui/sheet/index")['SheetTrigger']
     'Skeleton': typeof import("../app/components/ui/skeleton/index")['Skeleton']
+    'Slider': typeof import("../app/components/ui/slider/index")['Slider']
+    'Toaster': typeof import("../app/components/ui/sonner/index")['Toaster']
     'Stepper': typeof import("../app/components/ui/stepper/index")['Stepper']
     'StepperDescription': typeof import("../app/components/ui/stepper/index")['StepperDescription']
     'StepperIndicator': typeof import("../app/components/ui/stepper/index")['StepperIndicator']
@@ -313,8 +316,6 @@ interface _GlobalComponents {
     'StepperSeparator': typeof import("../app/components/ui/stepper/index")['StepperSeparator']
     'StepperTitle': typeof import("../app/components/ui/stepper/index")['StepperTitle']
     'StepperTrigger': typeof import("../app/components/ui/stepper/index")['StepperTrigger']
-    'Toaster': typeof import("../app/components/ui/sonner/index")['Toaster']
-    'Slider': typeof import("../app/components/ui/slider/index")['Slider']
     'Switch': typeof import("../app/components/ui/switch/index")['Switch']
     'Table': typeof import("../app/components/ui/table/index")['Table']
     'TableBody': typeof import("../app/components/ui/table/index")['TableBody']
@@ -325,23 +326,23 @@ interface _GlobalComponents {
     'TableHead': typeof import("../app/components/ui/table/index")['TableHead']
     'TableHeader': typeof import("../app/components/ui/table/index")['TableHeader']
     'TableRow': typeof import("../app/components/ui/table/index")['TableRow']
-    'Tabs': typeof import("../app/components/ui/tabs/index")['Tabs']
-    'TabsContent': typeof import("../app/components/ui/tabs/index")['TabsContent']
-    'TabsList': typeof import("../app/components/ui/tabs/index")['TabsList']
-    'TabsTrigger': typeof import("../app/components/ui/tabs/index")['TabsTrigger']
     'TagsInput': typeof import("../app/components/ui/tags-input/index")['TagsInput']
     'TagsInputInput': typeof import("../app/components/ui/tags-input/index")['TagsInputInput']
     'TagsInputItem': typeof import("../app/components/ui/tags-input/index")['TagsInputItem']
     'TagsInputItemDelete': typeof import("../app/components/ui/tags-input/index")['TagsInputItemDelete']
     'TagsInputItemText': typeof import("../app/components/ui/tags-input/index")['TagsInputItemText']
+    'Tabs': typeof import("../app/components/ui/tabs/index")['Tabs']
+    'TabsContent': typeof import("../app/components/ui/tabs/index")['TabsContent']
+    'TabsList': typeof import("../app/components/ui/tabs/index")['TabsList']
+    'TabsTrigger': typeof import("../app/components/ui/tabs/index")['TabsTrigger']
     'Textarea': typeof import("../app/components/ui/textarea/index")['Textarea']
     'Toggle': typeof import("../app/components/ui/toggle/index")['Toggle']
-    'ToggleGroup': typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']
-    'ToggleGroupItem': typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']
     'Tooltip': typeof import("../app/components/ui/tooltip/index")['Tooltip']
     'TooltipContent': typeof import("../app/components/ui/tooltip/index")['TooltipContent']
     'TooltipProvider': typeof import("../app/components/ui/tooltip/index")['TooltipProvider']
     'TooltipTrigger': typeof import("../app/components/ui/tooltip/index")['TooltipTrigger']
+    'ToggleGroup': typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']
+    'ToggleGroupItem': typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']
     'NuxtPage': typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/pages/runtime/page")['default']
     'NoScript': typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['NoScript']
     'Link': typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['Link']
@@ -356,6 +357,7 @@ interface _GlobalComponents {
     'NuxtRouteAnnouncer': typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/components/server-placeholder")['default']
       'LazyAppSideBar': LazyComponent<typeof import("../app/components/AppSideBar.vue")['default']>
     'LazyAppSidebarMenu': LazyComponent<typeof import("../app/components/AppSidebarMenu.vue")['default']>
+    'LazyComingSoon': LazyComponent<typeof import("../app/components/ComingSoon.vue")['default']>
     'LazyGlobalLoader': LazyComponent<typeof import("../app/components/GlobalLoader.vue")['default']>
     'LazyIconPicker': LazyComponent<typeof import("../app/components/IconPicker.vue")['default']>
     'LazyNavMain': LazyComponent<typeof import("../app/components/NavMain.vue")['default']>
@@ -383,9 +385,7 @@ interface _GlobalComponents {
     'LazyAccordionContent': LazyComponent<typeof import("../app/components/ui/accordion/index")['AccordionContent']>
     'LazyAccordionItem': LazyComponent<typeof import("../app/components/ui/accordion/index")['AccordionItem']>
     'LazyAccordionTrigger': LazyComponent<typeof import("../app/components/ui/accordion/index")['AccordionTrigger']>
-    'LazyAlert': LazyComponent<typeof import("../app/components/ui/alert/index")['Alert']>
-    'LazyAlertDescription': LazyComponent<typeof import("../app/components/ui/alert/index")['AlertDescription']>
-    'LazyAlertTitle': LazyComponent<typeof import("../app/components/ui/alert/index")['AlertTitle']>
+    'LazyAspectRatio': LazyComponent<typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']>
     'LazyAlertDialog': LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialog']>
     'LazyAlertDialogAction': LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogAction']>
     'LazyAlertDialogCancel': LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogCancel']>
@@ -395,7 +395,9 @@ interface _GlobalComponents {
     'LazyAlertDialogHeader': LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogHeader']>
     'LazyAlertDialogTitle': LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTitle']>
     'LazyAlertDialogTrigger': LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTrigger']>
-    'LazyAspectRatio': LazyComponent<typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']>
+    'LazyAlert': LazyComponent<typeof import("../app/components/ui/alert/index")['Alert']>
+    'LazyAlertDescription': LazyComponent<typeof import("../app/components/ui/alert/index")['AlertDescription']>
+    'LazyAlertTitle': LazyComponent<typeof import("../app/components/ui/alert/index")['AlertTitle']>
     'LazyAutoForm': LazyComponent<typeof import("../app/components/ui/auto-form/index")['AutoForm']>
     'LazyAutoFormField': LazyComponent<typeof import("../app/components/ui/auto-form/index")['AutoFormField']>
     'LazyAutoFormFieldArray': LazyComponent<typeof import("../app/components/ui/auto-form/index")['AutoFormFieldArray']>
@@ -446,13 +448,13 @@ interface _GlobalComponents {
     'LazyCarouselNext': LazyComponent<typeof import("../app/components/ui/carousel/index")['CarouselNext']>
     'LazyCarouselPrevious': LazyComponent<typeof import("../app/components/ui/carousel/index")['CarouselPrevious']>
     'LazyCarouselApi': LazyComponent<typeof import("../app/components/ui/carousel/index")['CarouselApi']>
+    'LazyAreaChart': LazyComponent<typeof import("../app/components/ui/chart-area/index")['AreaChart']>
     'LazyChartCrosshair': LazyComponent<typeof import("../app/components/ui/chart/index")['ChartCrosshair']>
     'LazyChartLegend': LazyComponent<typeof import("../app/components/ui/chart/index")['ChartLegend']>
     'LazyChartSingleTooltip': LazyComponent<typeof import("../app/components/ui/chart/index")['ChartSingleTooltip']>
     'LazyChartTooltip': LazyComponent<typeof import("../app/components/ui/chart/index")['ChartTooltip']>
-    'LazyAreaChart': LazyComponent<typeof import("../app/components/ui/chart-area/index")['AreaChart']>
-    'LazyDonutChart': LazyComponent<typeof import("../app/components/ui/chart-donut/index")['DonutChart']>
     'LazyBarChart': LazyComponent<typeof import("../app/components/ui/chart-bar/index")['BarChart']>
+    'LazyDonutChart': LazyComponent<typeof import("../app/components/ui/chart-donut/index")['DonutChart']>
     'LazyLineChart': LazyComponent<typeof import("../app/components/ui/chart-line/index")['LineChart']>
     'LazyCheckbox': LazyComponent<typeof import("../app/components/ui/checkbox/index")['Checkbox']>
     'LazyCollapsible': LazyComponent<typeof import("../app/components/ui/collapsible/index")['Collapsible']>
@@ -538,8 +540,8 @@ interface _GlobalComponents {
     'LazyHoverCard': LazyComponent<typeof import("../app/components/ui/hover-card/index")['HoverCard']>
     'LazyHoverCardContent': LazyComponent<typeof import("../app/components/ui/hover-card/index")['HoverCardContent']>
     'LazyHoverCardTrigger': LazyComponent<typeof import("../app/components/ui/hover-card/index")['HoverCardTrigger']>
-    'LazyInput': LazyComponent<typeof import("../app/components/ui/input/index")['Input']>
     'LazyLabel': LazyComponent<typeof import("../app/components/ui/label/index")['Label']>
+    'LazyInput': LazyComponent<typeof import("../app/components/ui/input/index")['Input']>
     'LazyMenubar': LazyComponent<typeof import("../app/components/ui/menubar/index")['Menubar']>
     'LazyMenubarCheckboxItem': LazyComponent<typeof import("../app/components/ui/menubar/index")['MenubarCheckboxItem']>
     'LazyMenubarContent': LazyComponent<typeof import("../app/components/ui/menubar/index")['MenubarContent']>
@@ -568,10 +570,6 @@ interface _GlobalComponents {
     'LazyNavigationMenuList': LazyComponent<typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuList']>
     'LazyNavigationMenuTrigger': LazyComponent<typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuTrigger']>
     'LazyNavigationMenuViewport': LazyComponent<typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuViewport']>
-    'LazyPinInput': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInput']>
-    'LazyPinInputGroup': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputGroup']>
-    'LazyPinInputSeparator': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']>
-    'LazyPinInputSlot': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSlot']>
     'LazyPagination': LazyComponent<typeof import("../app/components/ui/pagination/index")['Pagination']>
     'LazyPaginationContent': LazyComponent<typeof import("../app/components/ui/pagination/index")['PaginationContent']>
     'LazyPaginationEllipsis': LazyComponent<typeof import("../app/components/ui/pagination/index")['PaginationEllipsis']>
@@ -584,6 +582,10 @@ interface _GlobalComponents {
     'LazyPopover': LazyComponent<typeof import("../app/components/ui/popover/index")['Popover']>
     'LazyPopoverContent': LazyComponent<typeof import("../app/components/ui/popover/index")['PopoverContent']>
     'LazyPopoverTrigger': LazyComponent<typeof import("../app/components/ui/popover/index")['PopoverTrigger']>
+    'LazyPinInput': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInput']>
+    'LazyPinInputGroup': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputGroup']>
+    'LazyPinInputSeparator': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']>
+    'LazyPinInputSlot': LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSlot']>
     'LazyProgress': LazyComponent<typeof import("../app/components/ui/progress/index")['Progress']>
     'LazyRadioGroup': LazyComponent<typeof import("../app/components/ui/radio-group/index")['RadioGroup']>
     'LazyRadioGroupItem': LazyComponent<typeof import("../app/components/ui/radio-group/index")['RadioGroupItem']>
@@ -616,6 +618,14 @@ interface _GlobalComponents {
     'LazySelectTrigger': LazyComponent<typeof import("../app/components/ui/select/index")['SelectTrigger']>
     'LazySelectValue': LazyComponent<typeof import("../app/components/ui/select/index")['SelectValue']>
     'LazySeparator': LazyComponent<typeof import("../app/components/ui/separator/index")['Separator']>
+    'LazySheet': LazyComponent<typeof import("../app/components/ui/sheet/index")['Sheet']>
+    'LazySheetClose': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetClose']>
+    'LazySheetContent': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetContent']>
+    'LazySheetDescription': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetDescription']>
+    'LazySheetFooter': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetFooter']>
+    'LazySheetHeader': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetHeader']>
+    'LazySheetTitle': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTitle']>
+    'LazySheetTrigger': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTrigger']>
     'LazySidebar': LazyComponent<typeof import("../app/components/ui/sidebar/index")['Sidebar']>
     'LazySidebarContent': LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarContent']>
     'LazySidebarFooter': LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarFooter']>
@@ -639,15 +649,9 @@ interface _GlobalComponents {
     'LazySidebarRail': LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarRail']>
     'LazySidebarSeparator': LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarSeparator']>
     'LazySidebarTrigger': LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarTrigger']>
-    'LazySheet': LazyComponent<typeof import("../app/components/ui/sheet/index")['Sheet']>
-    'LazySheetClose': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetClose']>
-    'LazySheetContent': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetContent']>
-    'LazySheetDescription': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetDescription']>
-    'LazySheetFooter': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetFooter']>
-    'LazySheetHeader': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetHeader']>
-    'LazySheetTitle': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTitle']>
-    'LazySheetTrigger': LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTrigger']>
     'LazySkeleton': LazyComponent<typeof import("../app/components/ui/skeleton/index")['Skeleton']>
+    'LazySlider': LazyComponent<typeof import("../app/components/ui/slider/index")['Slider']>
+    'LazyToaster': LazyComponent<typeof import("../app/components/ui/sonner/index")['Toaster']>
     'LazyStepper': LazyComponent<typeof import("../app/components/ui/stepper/index")['Stepper']>
     'LazyStepperDescription': LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperDescription']>
     'LazyStepperIndicator': LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperIndicator']>
@@ -655,8 +659,6 @@ interface _GlobalComponents {
     'LazyStepperSeparator': LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperSeparator']>
     'LazyStepperTitle': LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperTitle']>
     'LazyStepperTrigger': LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperTrigger']>
-    'LazyToaster': LazyComponent<typeof import("../app/components/ui/sonner/index")['Toaster']>
-    'LazySlider': LazyComponent<typeof import("../app/components/ui/slider/index")['Slider']>
     'LazySwitch': LazyComponent<typeof import("../app/components/ui/switch/index")['Switch']>
     'LazyTable': LazyComponent<typeof import("../app/components/ui/table/index")['Table']>
     'LazyTableBody': LazyComponent<typeof import("../app/components/ui/table/index")['TableBody']>
@@ -667,23 +669,23 @@ interface _GlobalComponents {
     'LazyTableHead': LazyComponent<typeof import("../app/components/ui/table/index")['TableHead']>
     'LazyTableHeader': LazyComponent<typeof import("../app/components/ui/table/index")['TableHeader']>
     'LazyTableRow': LazyComponent<typeof import("../app/components/ui/table/index")['TableRow']>
-    'LazyTabs': LazyComponent<typeof import("../app/components/ui/tabs/index")['Tabs']>
-    'LazyTabsContent': LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsContent']>
-    'LazyTabsList': LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsList']>
-    'LazyTabsTrigger': LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsTrigger']>
     'LazyTagsInput': LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInput']>
     'LazyTagsInputInput': LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputInput']>
     'LazyTagsInputItem': LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputItem']>
     'LazyTagsInputItemDelete': LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputItemDelete']>
     'LazyTagsInputItemText': LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputItemText']>
+    'LazyTabs': LazyComponent<typeof import("../app/components/ui/tabs/index")['Tabs']>
+    'LazyTabsContent': LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsContent']>
+    'LazyTabsList': LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsList']>
+    'LazyTabsTrigger': LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsTrigger']>
     'LazyTextarea': LazyComponent<typeof import("../app/components/ui/textarea/index")['Textarea']>
     'LazyToggle': LazyComponent<typeof import("../app/components/ui/toggle/index")['Toggle']>
-    'LazyToggleGroup': LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']>
-    'LazyToggleGroupItem': LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']>
     'LazyTooltip': LazyComponent<typeof import("../app/components/ui/tooltip/index")['Tooltip']>
     'LazyTooltipContent': LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipContent']>
     'LazyTooltipProvider': LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipProvider']>
     'LazyTooltipTrigger': LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipTrigger']>
+    'LazyToggleGroup': LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']>
+    'LazyToggleGroupItem': LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']>
     'LazyNuxtPage': LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/pages/runtime/page")['default']>
     'LazyNoScript': LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['NoScript']>
     'LazyLink': LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['Link']>
@@ -704,6 +706,7 @@ declare module 'vue' {
 
 export const AppSideBar: typeof import("../app/components/AppSideBar.vue")['default']
 export const AppSidebarMenu: typeof import("../app/components/AppSidebarMenu.vue")['default']
+export const ComingSoon: typeof import("../app/components/ComingSoon.vue")['default']
 export const GlobalLoader: typeof import("../app/components/GlobalLoader.vue")['default']
 export const IconPicker: typeof import("../app/components/IconPicker.vue")['default']
 export const NavMain: typeof import("../app/components/NavMain.vue")['default']
@@ -731,9 +734,7 @@ export const Accordion: typeof import("../app/components/ui/accordion/index")['A
 export const AccordionContent: typeof import("../app/components/ui/accordion/index")['AccordionContent']
 export const AccordionItem: typeof import("../app/components/ui/accordion/index")['AccordionItem']
 export const AccordionTrigger: typeof import("../app/components/ui/accordion/index")['AccordionTrigger']
-export const Alert: typeof import("../app/components/ui/alert/index")['Alert']
-export const AlertDescription: typeof import("../app/components/ui/alert/index")['AlertDescription']
-export const AlertTitle: typeof import("../app/components/ui/alert/index")['AlertTitle']
+export const AspectRatio: typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']
 export const AlertDialog: typeof import("../app/components/ui/alert-dialog/index")['AlertDialog']
 export const AlertDialogAction: typeof import("../app/components/ui/alert-dialog/index")['AlertDialogAction']
 export const AlertDialogCancel: typeof import("../app/components/ui/alert-dialog/index")['AlertDialogCancel']
@@ -743,7 +744,9 @@ export const AlertDialogFooter: typeof import("../app/components/ui/alert-dialog
 export const AlertDialogHeader: typeof import("../app/components/ui/alert-dialog/index")['AlertDialogHeader']
 export const AlertDialogTitle: typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTitle']
 export const AlertDialogTrigger: typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTrigger']
-export const AspectRatio: typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']
+export const Alert: typeof import("../app/components/ui/alert/index")['Alert']
+export const AlertDescription: typeof import("../app/components/ui/alert/index")['AlertDescription']
+export const AlertTitle: typeof import("../app/components/ui/alert/index")['AlertTitle']
 export const AutoForm: typeof import("../app/components/ui/auto-form/index")['AutoForm']
 export const AutoFormField: typeof import("../app/components/ui/auto-form/index")['AutoFormField']
 export const AutoFormFieldArray: typeof import("../app/components/ui/auto-form/index")['AutoFormFieldArray']
@@ -794,13 +797,13 @@ export const CarouselItem: typeof import("../app/components/ui/carousel/index")[
 export const CarouselNext: typeof import("../app/components/ui/carousel/index")['CarouselNext']
 export const CarouselPrevious: typeof import("../app/components/ui/carousel/index")['CarouselPrevious']
 export const CarouselApi: typeof import("../app/components/ui/carousel/index")['CarouselApi']
+export const AreaChart: typeof import("../app/components/ui/chart-area/index")['AreaChart']
 export const ChartCrosshair: typeof import("../app/components/ui/chart/index")['ChartCrosshair']
 export const ChartLegend: typeof import("../app/components/ui/chart/index")['ChartLegend']
 export const ChartSingleTooltip: typeof import("../app/components/ui/chart/index")['ChartSingleTooltip']
 export const ChartTooltip: typeof import("../app/components/ui/chart/index")['ChartTooltip']
-export const AreaChart: typeof import("../app/components/ui/chart-area/index")['AreaChart']
-export const DonutChart: typeof import("../app/components/ui/chart-donut/index")['DonutChart']
 export const BarChart: typeof import("../app/components/ui/chart-bar/index")['BarChart']
+export const DonutChart: typeof import("../app/components/ui/chart-donut/index")['DonutChart']
 export const LineChart: typeof import("../app/components/ui/chart-line/index")['LineChart']
 export const Checkbox: typeof import("../app/components/ui/checkbox/index")['Checkbox']
 export const Collapsible: typeof import("../app/components/ui/collapsible/index")['Collapsible']
@@ -886,8 +889,8 @@ export const FORMITEMINJECTIONKEY: typeof import("../app/components/ui/form/inde
 export const HoverCard: typeof import("../app/components/ui/hover-card/index")['HoverCard']
 export const HoverCardContent: typeof import("../app/components/ui/hover-card/index")['HoverCardContent']
 export const HoverCardTrigger: typeof import("../app/components/ui/hover-card/index")['HoverCardTrigger']
-export const Input: typeof import("../app/components/ui/input/index")['Input']
 export const Label: typeof import("../app/components/ui/label/index")['Label']
+export const Input: typeof import("../app/components/ui/input/index")['Input']
 export const Menubar: typeof import("../app/components/ui/menubar/index")['Menubar']
 export const MenubarCheckboxItem: typeof import("../app/components/ui/menubar/index")['MenubarCheckboxItem']
 export const MenubarContent: typeof import("../app/components/ui/menubar/index")['MenubarContent']
@@ -916,10 +919,6 @@ export const NavigationMenuLink: typeof import("../app/components/ui/navigation-
 export const NavigationMenuList: typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuList']
 export const NavigationMenuTrigger: typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuTrigger']
 export const NavigationMenuViewport: typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuViewport']
-export const PinInput: typeof import("../app/components/ui/pin-input/index")['PinInput']
-export const PinInputGroup: typeof import("../app/components/ui/pin-input/index")['PinInputGroup']
-export const PinInputSeparator: typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']
-export const PinInputSlot: typeof import("../app/components/ui/pin-input/index")['PinInputSlot']
 export const Pagination: typeof import("../app/components/ui/pagination/index")['Pagination']
 export const PaginationContent: typeof import("../app/components/ui/pagination/index")['PaginationContent']
 export const PaginationEllipsis: typeof import("../app/components/ui/pagination/index")['PaginationEllipsis']
@@ -932,6 +931,10 @@ export const PopoverAnchor: typeof import("../app/components/ui/popover/index")[
 export const Popover: typeof import("../app/components/ui/popover/index")['Popover']
 export const PopoverContent: typeof import("../app/components/ui/popover/index")['PopoverContent']
 export const PopoverTrigger: typeof import("../app/components/ui/popover/index")['PopoverTrigger']
+export const PinInput: typeof import("../app/components/ui/pin-input/index")['PinInput']
+export const PinInputGroup: typeof import("../app/components/ui/pin-input/index")['PinInputGroup']
+export const PinInputSeparator: typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']
+export const PinInputSlot: typeof import("../app/components/ui/pin-input/index")['PinInputSlot']
 export const Progress: typeof import("../app/components/ui/progress/index")['Progress']
 export const RadioGroup: typeof import("../app/components/ui/radio-group/index")['RadioGroup']
 export const RadioGroupItem: typeof import("../app/components/ui/radio-group/index")['RadioGroupItem']
@@ -964,6 +967,14 @@ export const SelectSeparator: typeof import("../app/components/ui/select/index")
 export const SelectTrigger: typeof import("../app/components/ui/select/index")['SelectTrigger']
 export const SelectValue: typeof import("../app/components/ui/select/index")['SelectValue']
 export const Separator: typeof import("../app/components/ui/separator/index")['Separator']
+export const Sheet: typeof import("../app/components/ui/sheet/index")['Sheet']
+export const SheetClose: typeof import("../app/components/ui/sheet/index")['SheetClose']
+export const SheetContent: typeof import("../app/components/ui/sheet/index")['SheetContent']
+export const SheetDescription: typeof import("../app/components/ui/sheet/index")['SheetDescription']
+export const SheetFooter: typeof import("../app/components/ui/sheet/index")['SheetFooter']
+export const SheetHeader: typeof import("../app/components/ui/sheet/index")['SheetHeader']
+export const SheetTitle: typeof import("../app/components/ui/sheet/index")['SheetTitle']
+export const SheetTrigger: typeof import("../app/components/ui/sheet/index")['SheetTrigger']
 export const Sidebar: typeof import("../app/components/ui/sidebar/index")['Sidebar']
 export const SidebarContent: typeof import("../app/components/ui/sidebar/index")['SidebarContent']
 export const SidebarFooter: typeof import("../app/components/ui/sidebar/index")['SidebarFooter']
@@ -987,15 +998,9 @@ export const SidebarProvider: typeof import("../app/components/ui/sidebar/index"
 export const SidebarRail: typeof import("../app/components/ui/sidebar/index")['SidebarRail']
 export const SidebarSeparator: typeof import("../app/components/ui/sidebar/index")['SidebarSeparator']
 export const SidebarTrigger: typeof import("../app/components/ui/sidebar/index")['SidebarTrigger']
-export const Sheet: typeof import("../app/components/ui/sheet/index")['Sheet']
-export const SheetClose: typeof import("../app/components/ui/sheet/index")['SheetClose']
-export const SheetContent: typeof import("../app/components/ui/sheet/index")['SheetContent']
-export const SheetDescription: typeof import("../app/components/ui/sheet/index")['SheetDescription']
-export const SheetFooter: typeof import("../app/components/ui/sheet/index")['SheetFooter']
-export const SheetHeader: typeof import("../app/components/ui/sheet/index")['SheetHeader']
-export const SheetTitle: typeof import("../app/components/ui/sheet/index")['SheetTitle']
-export const SheetTrigger: typeof import("../app/components/ui/sheet/index")['SheetTrigger']
 export const Skeleton: typeof import("../app/components/ui/skeleton/index")['Skeleton']
+export const Slider: typeof import("../app/components/ui/slider/index")['Slider']
+export const Toaster: typeof import("../app/components/ui/sonner/index")['Toaster']
 export const Stepper: typeof import("../app/components/ui/stepper/index")['Stepper']
 export const StepperDescription: typeof import("../app/components/ui/stepper/index")['StepperDescription']
 export const StepperIndicator: typeof import("../app/components/ui/stepper/index")['StepperIndicator']
@@ -1003,8 +1008,6 @@ export const StepperItem: typeof import("../app/components/ui/stepper/index")['S
 export const StepperSeparator: typeof import("../app/components/ui/stepper/index")['StepperSeparator']
 export const StepperTitle: typeof import("../app/components/ui/stepper/index")['StepperTitle']
 export const StepperTrigger: typeof import("../app/components/ui/stepper/index")['StepperTrigger']
-export const Toaster: typeof import("../app/components/ui/sonner/index")['Toaster']
-export const Slider: typeof import("../app/components/ui/slider/index")['Slider']
 export const Switch: typeof import("../app/components/ui/switch/index")['Switch']
 export const Table: typeof import("../app/components/ui/table/index")['Table']
 export const TableBody: typeof import("../app/components/ui/table/index")['TableBody']
@@ -1015,23 +1018,23 @@ export const TableFooter: typeof import("../app/components/ui/table/index")['Tab
 export const TableHead: typeof import("../app/components/ui/table/index")['TableHead']
 export const TableHeader: typeof import("../app/components/ui/table/index")['TableHeader']
 export const TableRow: typeof import("../app/components/ui/table/index")['TableRow']
-export const Tabs: typeof import("../app/components/ui/tabs/index")['Tabs']
-export const TabsContent: typeof import("../app/components/ui/tabs/index")['TabsContent']
-export const TabsList: typeof import("../app/components/ui/tabs/index")['TabsList']
-export const TabsTrigger: typeof import("../app/components/ui/tabs/index")['TabsTrigger']
 export const TagsInput: typeof import("../app/components/ui/tags-input/index")['TagsInput']
 export const TagsInputInput: typeof import("../app/components/ui/tags-input/index")['TagsInputInput']
 export const TagsInputItem: typeof import("../app/components/ui/tags-input/index")['TagsInputItem']
 export const TagsInputItemDelete: typeof import("../app/components/ui/tags-input/index")['TagsInputItemDelete']
 export const TagsInputItemText: typeof import("../app/components/ui/tags-input/index")['TagsInputItemText']
+export const Tabs: typeof import("../app/components/ui/tabs/index")['Tabs']
+export const TabsContent: typeof import("../app/components/ui/tabs/index")['TabsContent']
+export const TabsList: typeof import("../app/components/ui/tabs/index")['TabsList']
+export const TabsTrigger: typeof import("../app/components/ui/tabs/index")['TabsTrigger']
 export const Textarea: typeof import("../app/components/ui/textarea/index")['Textarea']
 export const Toggle: typeof import("../app/components/ui/toggle/index")['Toggle']
-export const ToggleGroup: typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']
-export const ToggleGroupItem: typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']
 export const Tooltip: typeof import("../app/components/ui/tooltip/index")['Tooltip']
 export const TooltipContent: typeof import("../app/components/ui/tooltip/index")['TooltipContent']
 export const TooltipProvider: typeof import("../app/components/ui/tooltip/index")['TooltipProvider']
 export const TooltipTrigger: typeof import("../app/components/ui/tooltip/index")['TooltipTrigger']
+export const ToggleGroup: typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']
+export const ToggleGroupItem: typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']
 export const NuxtPage: typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/pages/runtime/page")['default']
 export const NoScript: typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['NoScript']
 export const Link: typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['Link']
@@ -1046,6 +1049,7 @@ export const NuxtIsland: typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomej
 export const NuxtRouteAnnouncer: typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/components/server-placeholder")['default']
 export const LazyAppSideBar: LazyComponent<typeof import("../app/components/AppSideBar.vue")['default']>
 export const LazyAppSidebarMenu: LazyComponent<typeof import("../app/components/AppSidebarMenu.vue")['default']>
+export const LazyComingSoon: LazyComponent<typeof import("../app/components/ComingSoon.vue")['default']>
 export const LazyGlobalLoader: LazyComponent<typeof import("../app/components/GlobalLoader.vue")['default']>
 export const LazyIconPicker: LazyComponent<typeof import("../app/components/IconPicker.vue")['default']>
 export const LazyNavMain: LazyComponent<typeof import("../app/components/NavMain.vue")['default']>
@@ -1073,9 +1077,7 @@ export const LazyAccordion: LazyComponent<typeof import("../app/components/ui/ac
 export const LazyAccordionContent: LazyComponent<typeof import("../app/components/ui/accordion/index")['AccordionContent']>
 export const LazyAccordionItem: LazyComponent<typeof import("../app/components/ui/accordion/index")['AccordionItem']>
 export const LazyAccordionTrigger: LazyComponent<typeof import("../app/components/ui/accordion/index")['AccordionTrigger']>
-export const LazyAlert: LazyComponent<typeof import("../app/components/ui/alert/index")['Alert']>
-export const LazyAlertDescription: LazyComponent<typeof import("../app/components/ui/alert/index")['AlertDescription']>
-export const LazyAlertTitle: LazyComponent<typeof import("../app/components/ui/alert/index")['AlertTitle']>
+export const LazyAspectRatio: LazyComponent<typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']>
 export const LazyAlertDialog: LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialog']>
 export const LazyAlertDialogAction: LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogAction']>
 export const LazyAlertDialogCancel: LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogCancel']>
@@ -1085,7 +1087,9 @@ export const LazyAlertDialogFooter: LazyComponent<typeof import("../app/componen
 export const LazyAlertDialogHeader: LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogHeader']>
 export const LazyAlertDialogTitle: LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTitle']>
 export const LazyAlertDialogTrigger: LazyComponent<typeof import("../app/components/ui/alert-dialog/index")['AlertDialogTrigger']>
-export const LazyAspectRatio: LazyComponent<typeof import("../app/components/ui/aspect-ratio/index")['AspectRatio']>
+export const LazyAlert: LazyComponent<typeof import("../app/components/ui/alert/index")['Alert']>
+export const LazyAlertDescription: LazyComponent<typeof import("../app/components/ui/alert/index")['AlertDescription']>
+export const LazyAlertTitle: LazyComponent<typeof import("../app/components/ui/alert/index")['AlertTitle']>
 export const LazyAutoForm: LazyComponent<typeof import("../app/components/ui/auto-form/index")['AutoForm']>
 export const LazyAutoFormField: LazyComponent<typeof import("../app/components/ui/auto-form/index")['AutoFormField']>
 export const LazyAutoFormFieldArray: LazyComponent<typeof import("../app/components/ui/auto-form/index")['AutoFormFieldArray']>
@@ -1136,13 +1140,13 @@ export const LazyCarouselItem: LazyComponent<typeof import("../app/components/ui
 export const LazyCarouselNext: LazyComponent<typeof import("../app/components/ui/carousel/index")['CarouselNext']>
 export const LazyCarouselPrevious: LazyComponent<typeof import("../app/components/ui/carousel/index")['CarouselPrevious']>
 export const LazyCarouselApi: LazyComponent<typeof import("../app/components/ui/carousel/index")['CarouselApi']>
+export const LazyAreaChart: LazyComponent<typeof import("../app/components/ui/chart-area/index")['AreaChart']>
 export const LazyChartCrosshair: LazyComponent<typeof import("../app/components/ui/chart/index")['ChartCrosshair']>
 export const LazyChartLegend: LazyComponent<typeof import("../app/components/ui/chart/index")['ChartLegend']>
 export const LazyChartSingleTooltip: LazyComponent<typeof import("../app/components/ui/chart/index")['ChartSingleTooltip']>
 export const LazyChartTooltip: LazyComponent<typeof import("../app/components/ui/chart/index")['ChartTooltip']>
-export const LazyAreaChart: LazyComponent<typeof import("../app/components/ui/chart-area/index")['AreaChart']>
-export const LazyDonutChart: LazyComponent<typeof import("../app/components/ui/chart-donut/index")['DonutChart']>
 export const LazyBarChart: LazyComponent<typeof import("../app/components/ui/chart-bar/index")['BarChart']>
+export const LazyDonutChart: LazyComponent<typeof import("../app/components/ui/chart-donut/index")['DonutChart']>
 export const LazyLineChart: LazyComponent<typeof import("../app/components/ui/chart-line/index")['LineChart']>
 export const LazyCheckbox: LazyComponent<typeof import("../app/components/ui/checkbox/index")['Checkbox']>
 export const LazyCollapsible: LazyComponent<typeof import("../app/components/ui/collapsible/index")['Collapsible']>
@@ -1228,8 +1232,8 @@ export const LazyFORMITEMINJECTIONKEY: LazyComponent<typeof import("../app/compo
 export const LazyHoverCard: LazyComponent<typeof import("../app/components/ui/hover-card/index")['HoverCard']>
 export const LazyHoverCardContent: LazyComponent<typeof import("../app/components/ui/hover-card/index")['HoverCardContent']>
 export const LazyHoverCardTrigger: LazyComponent<typeof import("../app/components/ui/hover-card/index")['HoverCardTrigger']>
-export const LazyInput: LazyComponent<typeof import("../app/components/ui/input/index")['Input']>
 export const LazyLabel: LazyComponent<typeof import("../app/components/ui/label/index")['Label']>
+export const LazyInput: LazyComponent<typeof import("../app/components/ui/input/index")['Input']>
 export const LazyMenubar: LazyComponent<typeof import("../app/components/ui/menubar/index")['Menubar']>
 export const LazyMenubarCheckboxItem: LazyComponent<typeof import("../app/components/ui/menubar/index")['MenubarCheckboxItem']>
 export const LazyMenubarContent: LazyComponent<typeof import("../app/components/ui/menubar/index")['MenubarContent']>
@@ -1258,10 +1262,6 @@ export const LazyNavigationMenuLink: LazyComponent<typeof import("../app/compone
 export const LazyNavigationMenuList: LazyComponent<typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuList']>
 export const LazyNavigationMenuTrigger: LazyComponent<typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuTrigger']>
 export const LazyNavigationMenuViewport: LazyComponent<typeof import("../app/components/ui/navigation-menu/index")['NavigationMenuViewport']>
-export const LazyPinInput: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInput']>
-export const LazyPinInputGroup: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputGroup']>
-export const LazyPinInputSeparator: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']>
-export const LazyPinInputSlot: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSlot']>
 export const LazyPagination: LazyComponent<typeof import("../app/components/ui/pagination/index")['Pagination']>
 export const LazyPaginationContent: LazyComponent<typeof import("../app/components/ui/pagination/index")['PaginationContent']>
 export const LazyPaginationEllipsis: LazyComponent<typeof import("../app/components/ui/pagination/index")['PaginationEllipsis']>
@@ -1274,6 +1274,10 @@ export const LazyPopoverAnchor: LazyComponent<typeof import("../app/components/u
 export const LazyPopover: LazyComponent<typeof import("../app/components/ui/popover/index")['Popover']>
 export const LazyPopoverContent: LazyComponent<typeof import("../app/components/ui/popover/index")['PopoverContent']>
 export const LazyPopoverTrigger: LazyComponent<typeof import("../app/components/ui/popover/index")['PopoverTrigger']>
+export const LazyPinInput: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInput']>
+export const LazyPinInputGroup: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputGroup']>
+export const LazyPinInputSeparator: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSeparator']>
+export const LazyPinInputSlot: LazyComponent<typeof import("../app/components/ui/pin-input/index")['PinInputSlot']>
 export const LazyProgress: LazyComponent<typeof import("../app/components/ui/progress/index")['Progress']>
 export const LazyRadioGroup: LazyComponent<typeof import("../app/components/ui/radio-group/index")['RadioGroup']>
 export const LazyRadioGroupItem: LazyComponent<typeof import("../app/components/ui/radio-group/index")['RadioGroupItem']>
@@ -1306,6 +1310,14 @@ export const LazySelectSeparator: LazyComponent<typeof import("../app/components
 export const LazySelectTrigger: LazyComponent<typeof import("../app/components/ui/select/index")['SelectTrigger']>
 export const LazySelectValue: LazyComponent<typeof import("../app/components/ui/select/index")['SelectValue']>
 export const LazySeparator: LazyComponent<typeof import("../app/components/ui/separator/index")['Separator']>
+export const LazySheet: LazyComponent<typeof import("../app/components/ui/sheet/index")['Sheet']>
+export const LazySheetClose: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetClose']>
+export const LazySheetContent: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetContent']>
+export const LazySheetDescription: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetDescription']>
+export const LazySheetFooter: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetFooter']>
+export const LazySheetHeader: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetHeader']>
+export const LazySheetTitle: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTitle']>
+export const LazySheetTrigger: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTrigger']>
 export const LazySidebar: LazyComponent<typeof import("../app/components/ui/sidebar/index")['Sidebar']>
 export const LazySidebarContent: LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarContent']>
 export const LazySidebarFooter: LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarFooter']>
@@ -1329,15 +1341,9 @@ export const LazySidebarProvider: LazyComponent<typeof import("../app/components
 export const LazySidebarRail: LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarRail']>
 export const LazySidebarSeparator: LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarSeparator']>
 export const LazySidebarTrigger: LazyComponent<typeof import("../app/components/ui/sidebar/index")['SidebarTrigger']>
-export const LazySheet: LazyComponent<typeof import("../app/components/ui/sheet/index")['Sheet']>
-export const LazySheetClose: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetClose']>
-export const LazySheetContent: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetContent']>
-export const LazySheetDescription: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetDescription']>
-export const LazySheetFooter: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetFooter']>
-export const LazySheetHeader: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetHeader']>
-export const LazySheetTitle: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTitle']>
-export const LazySheetTrigger: LazyComponent<typeof import("../app/components/ui/sheet/index")['SheetTrigger']>
 export const LazySkeleton: LazyComponent<typeof import("../app/components/ui/skeleton/index")['Skeleton']>
+export const LazySlider: LazyComponent<typeof import("../app/components/ui/slider/index")['Slider']>
+export const LazyToaster: LazyComponent<typeof import("../app/components/ui/sonner/index")['Toaster']>
 export const LazyStepper: LazyComponent<typeof import("../app/components/ui/stepper/index")['Stepper']>
 export const LazyStepperDescription: LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperDescription']>
 export const LazyStepperIndicator: LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperIndicator']>
@@ -1345,8 +1351,6 @@ export const LazyStepperItem: LazyComponent<typeof import("../app/components/ui/
 export const LazyStepperSeparator: LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperSeparator']>
 export const LazyStepperTitle: LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperTitle']>
 export const LazyStepperTrigger: LazyComponent<typeof import("../app/components/ui/stepper/index")['StepperTrigger']>
-export const LazyToaster: LazyComponent<typeof import("../app/components/ui/sonner/index")['Toaster']>
-export const LazySlider: LazyComponent<typeof import("../app/components/ui/slider/index")['Slider']>
 export const LazySwitch: LazyComponent<typeof import("../app/components/ui/switch/index")['Switch']>
 export const LazyTable: LazyComponent<typeof import("../app/components/ui/table/index")['Table']>
 export const LazyTableBody: LazyComponent<typeof import("../app/components/ui/table/index")['TableBody']>
@@ -1357,23 +1361,23 @@ export const LazyTableFooter: LazyComponent<typeof import("../app/components/ui/
 export const LazyTableHead: LazyComponent<typeof import("../app/components/ui/table/index")['TableHead']>
 export const LazyTableHeader: LazyComponent<typeof import("../app/components/ui/table/index")['TableHeader']>
 export const LazyTableRow: LazyComponent<typeof import("../app/components/ui/table/index")['TableRow']>
-export const LazyTabs: LazyComponent<typeof import("../app/components/ui/tabs/index")['Tabs']>
-export const LazyTabsContent: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsContent']>
-export const LazyTabsList: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsList']>
-export const LazyTabsTrigger: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsTrigger']>
 export const LazyTagsInput: LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInput']>
 export const LazyTagsInputInput: LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputInput']>
 export const LazyTagsInputItem: LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputItem']>
 export const LazyTagsInputItemDelete: LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputItemDelete']>
 export const LazyTagsInputItemText: LazyComponent<typeof import("../app/components/ui/tags-input/index")['TagsInputItemText']>
+export const LazyTabs: LazyComponent<typeof import("../app/components/ui/tabs/index")['Tabs']>
+export const LazyTabsContent: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsContent']>
+export const LazyTabsList: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsList']>
+export const LazyTabsTrigger: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsTrigger']>
 export const LazyTextarea: LazyComponent<typeof import("../app/components/ui/textarea/index")['Textarea']>
 export const LazyToggle: LazyComponent<typeof import("../app/components/ui/toggle/index")['Toggle']>
-export const LazyToggleGroup: LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']>
-export const LazyToggleGroupItem: LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']>
 export const LazyTooltip: LazyComponent<typeof import("../app/components/ui/tooltip/index")['Tooltip']>
 export const LazyTooltipContent: LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipContent']>
 export const LazyTooltipProvider: LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipProvider']>
 export const LazyTooltipTrigger: LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipTrigger']>
+export const LazyToggleGroup: LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroup']>
+export const LazyToggleGroupItem: LazyComponent<typeof import("../app/components/ui/toggle-group/index")['ToggleGroupItem']>
 export const LazyNuxtPage: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/pages/runtime/page")['default']>
 export const LazyNoScript: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['NoScript']>
 export const LazyLink: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/head/runtime/components")['Link']>

@@ -27,7 +27,7 @@
     <!-- 数据表格 -->
     <div class="w-full">
       <div class="flex items-center py-4">
-        <Input
+              <Input
           class="max-w-sm"
           placeholder="搜索用户名、姓名、邮箱..."
           :model-value="table.getColumn('email')?.getFilterValue() as string"
@@ -37,7 +37,7 @@
           <DropdownMenuTrigger as-child>
             <Button variant="outline" class="ml-auto">
               显示列 <ChevronDown class="ml-2 h-4 w-4" />
-            </Button>
+          </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuCheckboxItem
@@ -53,7 +53,7 @@
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+            </div>
 
       <div class="rounded-md border">
         <Table>
@@ -79,55 +79,55 @@
 
             <TableRow v-else>
               <TableCell
-                :colspan="columns.length"
+                :colspan="getColumns().length"
                 class="h-24 text-center"
               >
                 <div v-if="loading" class="flex items-center justify-center">
                   <Loader2 class="h-6 w-6 animate-spin mr-2" />
                   加载中...
-                </div>
+            </div>
                 <div v-else>
-                  <Users class="mx-auto h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 class="text-xl font-semibold mb-4">暂无用户数据</h3>
-                  <p class="text-muted-foreground mb-6 max-w-md mx-auto">
-                    没有找到符合条件的用户记录。请检查筛选条件或添加新用户。
-                  </p>
-                  <Button @click="openUserModal">
-                    <Plus class="mr-2 h-4 w-4" />
-                    添加用户
-                  </Button>
-                </div>
+          <Users class="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+          <h3 class="text-xl font-semibold mb-4">暂无用户数据</h3>
+          <p class="text-muted-foreground mb-6 max-w-md mx-auto">
+            没有找到符合条件的用户记录。请检查筛选条件或添加新用户。
+          </p>
+          <Button @click="openUserModal">
+            <Plus class="mr-2 h-4 w-4" />
+            添加用户
+          </Button>
+        </div>
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
-      </div>
+            </div>
 
       <div class="flex items-center justify-end space-x-2 py-4">
         <div class="flex-1 text-sm text-muted-foreground">
           {{ table.getFilteredSelectedRowModel().rows.length }} of
           {{ table.getFilteredRowModel().rows.length }} row(s) selected.
-        </div>
+              </div>
         <div class="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
+              <Button
+                variant="outline"
+                size="sm"
             :disabled="!table.getCanPreviousPage()"
             @click="table.previousPage()"
-          >
+              >
             Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
             :disabled="!table.getCanNextPage()"
             @click="table.nextPage()"
-          >
+              >
             Next
-          </Button>
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
     <!-- 用户详情/编辑对话框 -->
     <Dialog v-model:open="showUserModal">
@@ -378,8 +378,8 @@ const columnFilters = ref<ColumnFiltersState>([])
 const columnVisibility = ref<VisibilityState>({})
 const rowSelection = ref({})
 
-// 表格列定义
-const columns: ColumnDef<UserData>[] = [
+// 表格列定义 - 使用函数形式以确保数据响应式
+const getColumns = (): ColumnDef<UserData>[] => [
   {
     id: "select",
     header: ({ table }) => h(Checkbox, {
@@ -406,19 +406,23 @@ const columns: ColumnDef<UserData>[] = [
     cell: ({ row }) => {
       const user = row.original
       return h("div", { class: "flex items-center space-x-4" }, [
-        h(Avatar, { class: "h-10 w-10" }, [
-          user.avatar ? h(AvatarImage, { src: user.avatar, alt: user.name }) : null,
-          h(AvatarFallback, { class: "bg-primary/10 text-primary" },
-            (user.name || user.email || 'U').charAt(0).toUpperCase()
-          )
-        ]),
+        h(Avatar, { class: "h-10 w-10" }, {
+          default: () => [
+            user.avatar ? h(AvatarImage, { src: user.avatar, alt: user.name }) : null,
+            h(AvatarFallback, { class: "bg-primary/10 text-primary" }, {
+              default: () => (user.name || user.email || 'U').charAt(0).toUpperCase()
+            })
+          ]
+        }),
         h("div", { class: "space-y-1" }, [
           h("div", { class: "flex items-center space-x-2" }, [
             h("h3", { class: "font-semibold" }, user.name || user.email),
             h(Badge, {
               variant: user.status === 'active' ? 'default' : 'destructive',
               class: "text-xs"
-            }, user.status === 'active' ? '活跃' : '停用')
+            }, {
+              default: () => user.status === 'active' ? '活跃' : '停用'
+            })
           ]),
           h("p", { class: "text-sm text-muted-foreground" },
             `@${user.username || user.email?.split('@')[0]}`
@@ -437,20 +441,41 @@ const columns: ColumnDef<UserData>[] = [
     accessorKey: "department_id",
     header: "部门",
     cell: ({ row }) => {
-      const departmentId = row.getValue("department_id") as string
+      const user = row.original
+      const departmentId = user.department_id
+
+      console.log('用户数据:', row.original)
+
+      // 检查是否为空字符串或null/undefined
+      if (!departmentId || departmentId.trim() === '') {
+        return h("div", { class: "text-muted-foreground" }, "未分配")
+      }
       const department = departments.value.find(d => d.id === departmentId)
-      return h("div", department?.name || '未分配')
+      if (department) {
+        return h("div", { class: "font-medium" }, department.name)
+      } else {
+        return h("div", { class: "text-orange-600" }, `部门不存在 (${departmentId.slice(0, 8)}...)`)
+      }
     },
   },
   {
     accessorKey: "roles",
     header: "角色",
     cell: ({ row }) => {
-      const userRoles = row.getValue("roles") as Array<{ name: string }>
+      const user = row.original
+      const userRoles = user.roles
+
+
       if (!userRoles || userRoles.length === 0) {
         return h("div", { class: "text-muted-foreground" }, "无角色")
       }
-      return h("div", userRoles.map(r => r.name).join(', '))
+      return h("div", { class: "flex flex-wrap gap-1" },
+        userRoles.map(role =>
+          h("span", {
+            class: "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+          }, role.name)
+        )
+      )
     },
   },
   {
@@ -523,7 +548,7 @@ const columns: ColumnDef<UserData>[] = [
 // 创建表格实例
 const table = useVueTable({
   get data() { return users.value },
-  columns,
+  get columns() { return getColumns() },
   getCoreRowModel: getCoreRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
   getSortedRowModel: getSortedRowModel(),
@@ -579,14 +604,26 @@ const loadRoles = async () => {
     }
   } catch (error) {
     console.error('获取角色列表失败:', error)
+    roles.value = []
   }
 }
 
 const loadDepartments = async () => {
   try {
-    departments.value = await getDepartments()
+    const result = await getDepartments()
+
+    // getDepartments 可能返回的是数组，也可能是 { data: [] } 这样的对象
+    if (Array.isArray(result)) {
+      departments.value = result
+    } else if (result && Array.isArray(result.data)) {
+      departments.value = result.data
+    } else {
+      departments.value = []
+    }
+
   } catch (error) {
     console.error('获取部门列表失败:', error)
+    departments.value = []
   }
 }
 
@@ -738,10 +775,13 @@ const exportUsers = () => {
 
 // 初始化
 onMounted(async () => {
+  // 先加载基础数据，再加载用户数据
   await Promise.all([
-    loadUsers(),
     loadRoles(),
     loadDepartments()
   ])
+
+  // 确保基础数据加载完成后再加载用户数据
+  await loadUsers()
 })
 </script>
