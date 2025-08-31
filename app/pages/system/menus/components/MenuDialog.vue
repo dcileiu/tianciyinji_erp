@@ -1,5 +1,6 @@
 <template>
-  <Dialog v-model:open="dialogVisible">
+  <Dialog :open="dialogVisible" @update:open="(value) => dialogVisible = value"
+    >
     <DialogContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>{{ editingMenu ? "编辑菜单" : "新增菜单" }}</DialogTitle>
@@ -11,7 +12,8 @@
             <Label for="menu-name">菜单名称 *</Label>
             <Input
               id="menu-name"
-              v-model="formData.name"
+              :model-value="formData.name"
+              @update:model-value="formData.name = $event as string"
               placeholder="请输入菜单名称"
               required
             />
@@ -155,7 +157,7 @@
         </Button>
       </DialogFooter>
     </DialogContent>
-  </Dialog>
+  </Dialog >
 </template>
 
 <script setup lang="ts">

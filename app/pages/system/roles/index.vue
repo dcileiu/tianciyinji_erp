@@ -92,9 +92,24 @@
             <template v-else>
               <TableRow>
                 <TableCell colspan="7" class="h-24 text-center">
-                  <div v-if="loading" class="flex items-center justify-center">
-                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-2"></div>
-                    加载中...
+                  <div v-if="loading" class="space-y-3">
+                    <!-- 骨架屏行 -->
+                    <div v-for="i in 3" :key="i" class="grid grid-cols-[150px_120px_100px_80px_200px_100px_60px] gap-4 p-4 items-center">
+                      <!-- 角色名称列 -->
+                      <div class="h-4 bg-muted animate-pulse rounded w-full"></div>
+                      <!-- 角色编码列 -->
+                      <div class="h-4 bg-muted animate-pulse rounded w-full"></div>
+                      <!-- 类型列 -->
+                      <div class="h-6 bg-muted animate-pulse rounded w-full"></div>
+                      <!-- 状态列 -->
+                      <div class="h-6 bg-muted animate-pulse rounded w-full"></div>
+                      <!-- 描述列 -->
+                      <div class="h-4 bg-muted animate-pulse rounded w-full"></div>
+                      <!-- 创建时间列 -->
+                      <div class="h-4 bg-muted animate-pulse rounded w-full"></div>
+                      <!-- 操作列 -->
+                      <div class="h-8 w-8 bg-muted animate-pulse rounded"></div>
+                    </div>
                   </div>
                   <div v-else>
                     暂无数据
