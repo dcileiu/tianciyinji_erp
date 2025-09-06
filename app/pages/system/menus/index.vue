@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div>
     <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>

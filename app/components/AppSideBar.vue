@@ -73,7 +73,7 @@
       </SidebarHeader>
       <SidebarContent>
         <AppSidebarMenu />
-        <NavProjects :projects="projects" />
+        <!-- <NavProjects :projects="projects" /> -->
       </SidebarContent>
       <SidebarFooter>
         <NavUser :user="currentUser" />

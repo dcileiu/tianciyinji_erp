@@ -11,7 +11,7 @@ defineProps<Props>()
 </script>
 
 <template>
-  <nav class="flex flex-col gap-1">
+  <nav class="flex flex-col gap-1 px-2">
     <template v-for="item in items" :key="item.id">
       <!-- 目录类型 - 可展开的菜单组 -->
       <Collapsible v-if="item.type === 'directory' && item.children?.length" class="group">
