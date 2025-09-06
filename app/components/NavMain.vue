@@ -7,14 +7,46 @@ interface Props {
   items: MenuPermission[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const route = useRoute()
+const openMap = reactive<Record<string, boolean>>({})
+
+const isDirectoryActive = (dir: MenuPermission) => {
+  return Array.isArray(dir.children) && dir.children.some((child) => {
+    if (!child?.path) return false
+    return route.path === child.path || route.path.startsWith(child.path + '/')
+  })
+}
+
+onMounted(() => {
+  // 初始化时展开包含当前激活项的父级
+  for (const dir of props.items) {
+    if (dir.type === 'directory' && Array.isArray(dir.children) && dir.children.length > 0) {
+      openMap[dir.id] = isDirectoryActive(dir)
+    }
+  }
+})
+
+watch(() => route.path, () => {
+  // 路由变化时，只展开包含新激活项的父级，收起其他父级
+  for (const dir of props.items) {
+    if (dir.type === 'directory' && Array.isArray(dir.children) && dir.children.length > 0) {
+      openMap[dir.id] = isDirectoryActive(dir)
+    }
+  }
+})
 </script>
 
 <template>
   <nav class="flex flex-col gap-1 px-2">
     <template v-for="item in items" :key="item.id">
       <!-- 目录类型 - 可展开的菜单组 -->
-      <Collapsible v-if="item.type === 'directory' && item.children?.length" class="group">
+      <Collapsible
+        v-if="item.type === 'directory' && item.children?.length"
+        class="group"
+        v-model:open="openMap[item.id]"
+      >
         <SidebarMenuButton as-child>
           <CollapsibleTrigger class="w-full">
             <component v-if="item.icon" :is="getIconByName(item.icon)" class="h-4 w-4" />

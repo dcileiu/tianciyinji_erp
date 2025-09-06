@@ -86,12 +86,24 @@ export const useAuth = () => {
     try {
       userStore.isLoading = true
 
-      const { error } = await supabase.auth.signOut()
+      // 尝试更新服务端用户元数据，标记为离线
+      try {
+        await $fetch('/api/auth/logout', { method: 'POST' })
+      } catch (_) {
+        // 忽略元数据更新失败，继续执行登出
+      }
+
+      // 全局登出，撤销当前用户的所有刷新令牌，确保彻底退出
+      const { error } = await supabase.auth.signOut({ scope: 'global' })
       if (error) {
         throw new Error(getAuthErrorMessage(error))
       }
 
+      // 清理本地用户与权限数据
+      const permissionsStore = usePermissionsStore()
+      permissionsStore.clearPermissions()
       userStore.logout()
+
       await router.push('/login')
 
       return { success: true }

@@ -6,6 +6,9 @@ declare module "nitropack/types" {
     '/api/admin/assign-permissions': {
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/admin/assign-permissions.post').default>>>>
     }
+    '/api/auth/logout': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/logout.post').default>>>>
+    }
     '/api/debug/user-data': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/debug/user-data.get').default>>>>
     }
