@@ -92,6 +92,7 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
     minify: true,
+    preset: 'vercel-edge', // 启用 Vercel Edge Runtime
   },
 
   supabase: {
