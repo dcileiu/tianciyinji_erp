@@ -74,10 +74,10 @@
             </div>
 
             <!-- 错误提示 -->
-            <Alert v-if="error" variant="destructive" class="flex items-center gap-2">
+            <Alert v-if="error" variant="destructive">
+              <AlertDescription class="flex items-center gap-2">
               <AlertCircle class="h-4 w-4" />
-              <AlertDescription class="leading-normal">
-                {{ error }}
+              {{ error }}
               </AlertDescription>
             </Alert>
 
