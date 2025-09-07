@@ -133,9 +133,9 @@ import {
   X,
   XCircle,
   Zap,
-} from "lucide-vue-next";
+} from 'lucide-vue-next';
 
-export * from "lucide-vue-next";
+export * from 'lucide-vue-next';
 
 // 导出所有图标通过直通 re-export，避免重复导出已导入的符号
 

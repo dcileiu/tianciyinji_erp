@@ -7,6 +7,8 @@ declare global {
   const OrderStatus: typeof import('../../app/types/common')['OrderStatus']
   const PaymentStatus: typeof import('../../app/types/common')['PaymentStatus']
   const Status: typeof import('../../app/types/common')['Status']
+  const StatusColors: typeof import('../../app/types/status')['StatusColors']
+  const StatusLabels: typeof import('../../app/types/status')['StatusLabels']
   const WarehouseType: typeof import('../../app/types/common')['WarehouseType']
   const abortNavigation: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['abortNavigation']
   const acceptHMRUpdate: typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['acceptHMRUpdate']
@@ -252,6 +254,9 @@ declare global {
   export type { UserRole, ProductionStatus, Json, Database } from '../../app/types/database.types'
   import('../../app/types/database.types')
   // @ts-ignore
+  export type { StatusType } from '../../app/types/status'
+  import('../../app/types/status')
+  // @ts-ignore
   export type { MenuPermission, UserRoleData } from '../../app/stores/permissions'
   import('../../app/stores/permissions')
   // @ts-ignore
@@ -268,6 +273,8 @@ declare module 'vue' {
     readonly OrderStatus: UnwrapRef<typeof import('../../app/types/common')['OrderStatus']>
     readonly PaymentStatus: UnwrapRef<typeof import('../../app/types/common')['PaymentStatus']>
     readonly Status: UnwrapRef<typeof import('../../app/types/common')['Status']>
+    readonly StatusColors: UnwrapRef<typeof import('../../app/types/status')['StatusColors']>
+    readonly StatusLabels: UnwrapRef<typeof import('../../app/types/status')['StatusLabels']>
     readonly WarehouseType: UnwrapRef<typeof import('../../app/types/common')['WarehouseType']>
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables')['acceptHMRUpdate']>

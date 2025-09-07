@@ -25,7 +25,7 @@
               <div
                 class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg"
               >
-                <Building2 class="h-6 w-6 text-primary-foreground" />
+                <AppLogo size="1.5rem" inverse />
               </div>
               <div>
                 <h1 class="text-xl font-bold text-foreground">ERP系统</h1>

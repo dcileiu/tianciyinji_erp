@@ -10,7 +10,12 @@
             <div
               class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
             >
-              <component :is="activeTeam.logo" class="size-4" />
+              <AppLogo 
+                v-if="activeTeam.logo === 'AppLogo'" 
+                size="1rem" 
+                inverse
+              />
+              <component v-else :is="activeTeam.logo" class="size-4" />
             </div>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-semibold">{{ activeTeam.name }}</span>
@@ -65,7 +70,7 @@ import { ChevronsUpDown, Plus } from 'lucide-vue-next';
 
 interface Team {
   name: string;
-  logo: LucideIcon;
+  logo: any; // 支持LucideIcon或字符串
   plan: string;
 }
 

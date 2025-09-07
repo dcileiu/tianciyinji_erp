@@ -49,6 +49,7 @@ export { UserMetadata, User, LoginForm, RegisterForm, UserState, AuthError, Logi
 export { Status, Status, OrderStatus, OrderStatus, PaymentStatus, PaymentStatus, WarehouseType, WarehouseType, ListResponse, FormState, BaseFilters, BaseEntity, UserInfo, Address, ContactInfo, AmountInfo, ValidationFunction, FormValidationRules, ValidationResult } from '../app/types/common';
 export { DatabaseUser, Customer, Supplier, Product, Warehouse, Inventory, SalesOrder, SalesOrderItem, PurchaseOrder, PurchaseOrderItem, InventoryMovement, Transfer, TransferItem, Department, Role, Dictionary, SystemLog, PaginationParams, PaginationResponse, ApiResponse } from '../app/types/database';
 export { UserRole, ProductionStatus, Json, Database } from '../app/types/database.types';
+export { StatusLabels, StatusColors, StatusType } from '../app/types/status';
 export { useSupabaseClient } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseClient';
 export { useSupabaseCookieRedirect } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseCookieRedirect';
 export { useSupabaseSession } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseSession';

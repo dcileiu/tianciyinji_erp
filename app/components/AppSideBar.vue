@@ -99,6 +99,12 @@ interface SidebarProps {
   collapsible?: 'icon' | 'offcanvas' | 'none';
 }
 
+interface Team {
+  name: string;
+  logo: any; // 支持LucideIcon或字符串
+  plan: string;
+}
+
 withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 });
@@ -111,10 +117,10 @@ const { user } = useAuth();
 const isLoading = computed(() => permissionLoading.value);
 
 // 团队数据
-const teams = ref([
+const teams = ref<Team[]>([
   {
     name: '智能ERP',
-    logo: GalleryVerticalEnd,
+    logo: 'AppLogo',
     plan: 'Enterprise',
   },
   {
