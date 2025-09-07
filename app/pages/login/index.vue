@@ -74,9 +74,9 @@
             </div>
 
             <!-- 错误提示 -->
-            <Alert v-if="error" variant="destructive">
+            <Alert v-if="error" variant="destructive" class="flex items-center gap-2">
               <AlertCircle class="h-4 w-4" />
-              <AlertDescription>
+              <AlertDescription class="leading-normal">
                 {{ error }}
               </AlertDescription>
             </Alert>
