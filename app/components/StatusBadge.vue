@@ -15,9 +15,9 @@ import {
   Loader2,
   Pause,
   Play,
-  XCircle,
   Wifi,
   WifiOff,
+  XCircle,
 } from 'lucide-vue-next';
 
 export type StatusType =

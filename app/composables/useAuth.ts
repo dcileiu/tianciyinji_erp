@@ -1,4 +1,4 @@
-import type { LoginForm } from "~/types/auth";
+import type { LoginForm } from '~/types/auth';
 
 /**
  * 认证管理 Composable - 使用 Pinia Store
@@ -37,7 +37,7 @@ export const useAuth = () => {
 
         // 更新用户在线状态
         try {
-          await $fetch("/api/auth/login", { method: "POST" });
+          await $fetch('/api/auth/login', { method: 'POST' });
         } catch (_) {
           // 忽略在线状态更新失败，继续执行登录流程
         }
@@ -47,13 +47,13 @@ export const useAuth = () => {
         return { success: true, user: data.user };
       }
 
-      throw new Error("登录失败");
+      throw new Error('登录失败');
     } catch (error: unknown) {
       const err = error as Error;
       return {
         success: false,
         error: {
-          message: err.message || "登录失败，请重试",
+          message: err.message || '登录失败，请重试',
         },
       };
     } finally {
@@ -84,7 +84,7 @@ export const useAuth = () => {
       return {
         success: false,
         error: {
-          message: err.message || "注册失败，请重试",
+          message: err.message || '注册失败，请重试',
         },
       };
     } finally {
@@ -99,13 +99,13 @@ export const useAuth = () => {
 
       // 尝试更新服务端用户元数据，标记为离线
       try {
-        await $fetch("/api/auth/logout", { method: "POST" });
+        await $fetch('/api/auth/logout', { method: 'POST' });
       } catch (_) {
         // 忽略元数据更新失败，继续执行登出
       }
 
       // 全局登出，撤销当前用户的所有刷新令牌，确保彻底退出
-      const { error } = await supabase.auth.signOut({ scope: "global" });
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
       if (error) {
         throw new Error(getAuthErrorMessage(error));
       }
@@ -115,7 +115,7 @@ export const useAuth = () => {
       permissionsStore.clearPermissions();
       userStore.logout();
 
-      await router.push("/login");
+      await router.push('/login');
 
       return { success: true };
     } catch (error: unknown) {
@@ -123,7 +123,7 @@ export const useAuth = () => {
       return {
         success: false,
         error: {
-          message: err.message || "登出失败",
+          message: err.message || '登出失败',
         },
       };
     } finally {
@@ -174,7 +174,7 @@ export const useAuth = () => {
       return {
         success: false,
         error: {
-          message: err.message || "重置密码失败",
+          message: err.message || '重置密码失败',
         },
       };
     }
@@ -195,7 +195,7 @@ export const useAuth = () => {
       return {
         success: false,
         error: {
-          message: err.message || "更新密码失败",
+          message: err.message || '更新密码失败',
         },
       };
     }
@@ -237,14 +237,14 @@ export const useAuth = () => {
 // 错误信息转换
 function getAuthErrorMessage(error: any): string {
   const errorMessages: Record<string, string> = {
-    "Invalid login credentials": "邮箱或密码错误",
-    "Email not confirmed": "邮箱未验证，请检查邮箱",
-    "Too many requests": "请求过于频繁，请稍后重试",
-    "User already registered": "用户已存在",
-    "Weak password": "密码强度不足",
-    "Invalid email": "邮箱格式无效",
+    'Invalid login credentials': '邮箱或密码错误',
+    'Email not confirmed': '邮箱未验证，请检查邮箱',
+    'Too many requests': '请求过于频繁，请稍后重试',
+    'User already registered': '用户已存在',
+    'Weak password': '密码强度不足',
+    'Invalid email': '邮箱格式无效',
   };
 
   const message = error?.message || error?.error_description || error;
-  return errorMessages[message] || message || "操作失败";
+  return errorMessages[message] || message || '操作失败';
 }

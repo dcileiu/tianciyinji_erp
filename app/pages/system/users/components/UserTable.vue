@@ -166,8 +166,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { valueUpdater } from '@/utils';
-import type { UserData } from '~/composables/useUsers';
 import StatusBadge from '~/components/StatusBadge.vue';
+import type { UserData } from '~/composables/useUsers';
 
 interface Props {
   users: UserData[];
@@ -322,12 +322,16 @@ const getColumns = (): ColumnDef<UserData>[] => [
     header: '账号状态',
     cell: ({ row }) => {
       const user = row.original;
-      return h('div', { class: 'cursor-pointer', onClick: () => emit('toggle-status', user) }, [
-                 h(StatusBadge, {
-           status: user.status === 'active' ? 'active' : 'inactive',
-           customLabel: user.status === 'active' ? '启用' : '禁用',
-         }),
-      ]);
+      return h(
+        'div',
+        { class: 'cursor-pointer', onClick: () => emit('toggle-status', user) },
+        [
+          h(StatusBadge, {
+            status: user.status === 'active' ? 'active' : 'inactive',
+            customLabel: user.status === 'active' ? '启用' : '禁用',
+          }),
+        ]
+      );
     },
   },
   {

@@ -39,6 +39,7 @@ export { useProductionReports } from '../app/composables/useProductionReports';
 export { useRoles, RoleData, RoleForm } from '../app/composables/useRoles';
 export { useProducts, supabase } from '../app/composables/useSupabase';
 export { useSuppliers } from '../app/composables/useSuppliers';
+export { useTheme } from '../app/composables/useTheme';
 export { useUsers, UserData, UserForm, UserQuery, UserStats } from '../app/composables/useUsers';
 export { useWorkshops } from '../app/composables/useWorkshops';
 export { isAuthError, handleAuthError, withAuthErrorHandling, checkSessionValidity } from '../app/utils/auth-handler';

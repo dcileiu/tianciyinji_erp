@@ -67,26 +67,10 @@
 import { Building2, Moon, Sun } from 'lucide-vue-next';
 
 // 主题管理
-const isDark = ref(false);
-
-// 切换主题
-const toggleTheme = () => {
-  isDark.value = !isDark.value;
-  // 这里可以实现主题切换逻辑
-  if (isDark.value) {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-};
+const { isDark, toggleTheme, initTheme } = useTheme();
 
 // 初始化主题
 onMounted(() => {
-  // 检查系统主题偏好
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  isDark.value = prefersDark;
-  if (prefersDark) {
-    document.documentElement.classList.add('dark');
-  }
+  initTheme();
 });
 </script>

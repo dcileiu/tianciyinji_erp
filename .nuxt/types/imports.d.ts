@@ -201,6 +201,7 @@ declare global {
   const useSupabaseUser: typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser')['useSupabaseUser']
   const useSuppliers: typeof import('../../app/composables/useSuppliers')['useSuppliers']
   const useTemplateRef: typeof import('vue')['useTemplateRef']
+  const useTheme: typeof import('../../app/composables/useTheme')['useTheme']
   const useTransitionState: typeof import('vue')['useTransitionState']
   const useUserStore: typeof import('../../app/stores/user')['useUserStore']
   const useUsers: typeof import('../../app/composables/useUsers')['useUsers']
@@ -467,6 +468,7 @@ declare module 'vue' {
     readonly useSupabaseUser: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser')['useSupabaseUser']>
     readonly useSuppliers: UnwrapRef<typeof import('../../app/composables/useSuppliers')['useSuppliers']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
+    readonly useTheme: UnwrapRef<typeof import('../../app/composables/useTheme')['useTheme']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>
     readonly useUserStore: UnwrapRef<typeof import('../../app/stores/user')['useUserStore']>
     readonly useUsers: UnwrapRef<typeof import('../../app/composables/useUsers')['useUsers']>

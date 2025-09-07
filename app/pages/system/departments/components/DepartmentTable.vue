@@ -172,8 +172,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { valueUpdater } from '@/utils';
-import type { DepartmentData } from '~/composables/useDepartments';
 import StatusBadge from '~/components/StatusBadge.vue';
+import type { DepartmentData } from '~/composables/useDepartments';
 
 interface Props {
   departments: DepartmentData[];
@@ -281,10 +281,10 @@ const columns: ColumnDef<DepartmentData>[] = [
     header: '状态',
     cell: ({ row }) => {
       const status = row.getValue('status') as string;
-             return h(StatusBadge, {
-         status: status === 'active' ? 'active' : 'inactive',
-         customLabel: status === 'active' ? '启用' : '停用',
-       });
+      return h(StatusBadge, {
+        status: status === 'active' ? 'active' : 'inactive',
+        customLabel: status === 'active' ? '启用' : '停用',
+      });
     },
   },
   {

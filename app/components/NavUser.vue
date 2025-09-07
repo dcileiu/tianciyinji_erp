@@ -20,35 +20,7 @@ defineProps<{
 const { isMobile } = useSidebar();
 
 // 主题切换功能
-const isDark = ref(false);
-
-// 切换主题
-const toggleTheme = () => {
-  isDark.value = !isDark.value;
-  if (isDark.value) {
-    document.documentElement.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
-  }
-};
-
-// 页面加载时恢复主题
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    isDark.value = true;
-    document.documentElement.classList.add('dark');
-  } else {
-    // 默认为明亮主题
-    isDark.value = false;
-    document.documentElement.classList.remove('dark');
-    if (!savedTheme) {
-      localStorage.setItem('theme', 'light');
-    }
-  }
-});
+const { isDark, toggleTheme } = useTheme();
 const { logout } = useAuth();
 const handleLogout = async () => {
   await logout();

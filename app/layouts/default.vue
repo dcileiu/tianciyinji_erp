@@ -158,8 +158,10 @@ import { Bell, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next';
 // 获取路由信息
 const route = useRoute();
 
+// 主题管理
+const { isDark, toggleTheme, initTheme } = useTheme();
+
 // 状态管理
-const isDark = ref(false);
 const isFullscreen = ref(false);
 const globalSearch = ref('');
 
@@ -209,11 +211,6 @@ const breadcrumbItems = computed(() => {
   return items;
 });
 
-// 方法
-const toggleTheme = () => {
-  isDark.value = !isDark.value;
-};
-
 const toggleFullscreen = () => {
   if (document.fullscreenElement) {
     document.exitFullscreen();
@@ -231,5 +228,8 @@ onMounted(() => {
   document.addEventListener('fullscreenchange', () => {
     isFullscreen.value = !!document.fullscreenElement;
   });
+
+  // 初始化主题
+  initTheme();
 });
 </script>
