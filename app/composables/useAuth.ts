@@ -37,13 +37,20 @@ export const useAuth = () => {
 
         // 更新用户在线状态
         try {
-          await $fetch('/api/auth/login', { method: 'POST' });
-        } catch (_) {
+          await $fetch<{
+            code: number;
+            message: string;
+            data: any;
+          }>('/api/auth/login', {
+            method: 'POST',
+          });
+        } catch (error: any) {
+          // 记录错误但不阻塞登录流程
           // 忽略在线状态更新失败，继续执行登录流程
         }
 
-        // 登录成功后初始化用户数据
-        await userStore.initializeUserData();
+        // 登录成功后强制刷新用户数据（避免缓存问题）
+        await userStore.refreshUserData();
         return { success: true, user: data.user };
       }
 

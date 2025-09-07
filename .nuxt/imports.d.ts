@@ -58,4 +58,5 @@ export { useSupabaseUser } from '../node_modules/.pnpm/@nuxtjs+supabase@1.6.1/no
 export { usePermissionsStore, MenuPermission, UserRoleData } from '../app/stores/permissions';
 export { useUserStore, UserProfile } from '../app/stores/user';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/.pnpm/@pinia+nuxt@0.11.2_magicast_24a13949f513a4d0b9bfbd0ba5a9b7f7/node_modules/@pinia/nuxt/dist/runtime/composables';
+export { useNuxtDevTools } from '../node_modules/.pnpm/@nuxt+devtools@2.6.3_vite@7_ac5ad1aed12f9445be87a3379f21bc23/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
 export { definePageMeta } from '../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/pages/runtime/composables';

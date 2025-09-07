@@ -49,6 +49,14 @@
 </template>
 
 <script setup lang="ts">
+// 页面权限配置 - 必须放在最前面
+definePageMeta({
+  layout: 'default',
+  requiresAuth: true,
+  // 临时移除权限要求进行调试
+  // permission: 'system:users'
+});
+
 import { Download, Plus, Upload } from 'lucide-vue-next';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
@@ -56,14 +64,6 @@ import type { RoleData } from '~/composables/useRoles';
 import type { UserData, UserForm } from '~/composables/useUsers';
 import UserModal from './components/UserModal.vue';
 import UserTable from './components/UserTable.vue';
-
-// 页面权限配置
-definePageMeta({
-  layout: 'default',
-  requiresAuth: true,
-  // 临时移除权限要求进行调试
-  // permission: 'system:users'
-});
 
 useHead({
   title: '用户管理 - 智能ERP管理系统',

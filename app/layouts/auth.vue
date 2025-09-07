@@ -64,7 +64,8 @@
 </template>
 
 <script setup lang="ts">
-import { Building2, Moon, Sun } from 'lucide-vue-next';
+import { Moon, Sun } from 'lucide-vue-next';
+import AppLogo from '~/components/AppLogo.vue';
 
 // 主题管理
 const { isDark, toggleTheme, initTheme } = useTheme();

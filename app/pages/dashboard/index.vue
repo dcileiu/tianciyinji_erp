@@ -12,14 +12,14 @@
 </template>
 
 <script setup lang="ts">
-const { permissions, menus } = usePermissions();
-
-// 页面权限配置
+// 页面权限配置 - 必须放在最前面
 definePageMeta({
   layout: 'default',
   requiresAuth: true,
   // dashboard 页面不需要特定权限，所有登录用户都可以访问
 });
+
+const { permissions, menus } = usePermissions();
 
 useHead({
   title: '仪表盘 - 智能ERP管理系统',

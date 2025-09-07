@@ -16,13 +16,25 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // 更新用户元数据，设置为在线状态
+    // 获取当前用户元数据
+    const { data: currentUser, error: fetchError } =
+      await supabase.auth.admin.getUserById(user.id);
+
+    if (fetchError) {
+      throw new Error(`获取用户信息失败: ${fetchError.message}`);
+    }
+
+    // 合并现有元数据，更新在线状态
+    const updatedMetadata = {
+      ...currentUser.user?.user_metadata,
+      is_online: true,
+      last_login_at: new Date().toISOString(),
+      login_count: (currentUser.user?.user_metadata?.login_count || 0) + 1,
+    };
+
+    // 更新用户元数据
     const { error } = await supabase.auth.admin.updateUserById(user.id, {
-      user_metadata: {
-        is_online: true,
-        last_login_at: new Date().toISOString(),
-        login_count: (user.user_metadata?.login_count || 0) + 1,
-      },
+      user_metadata: updatedMetadata,
     });
 
     if (error) {

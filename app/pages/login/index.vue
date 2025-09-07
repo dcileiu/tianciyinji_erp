@@ -8,9 +8,9 @@
         <CardContent class="p-6">
           <div class="text-center mb-6">
             <div
-              class="w-16 h-16 bg-primary -2xl flex items-center justify-center mx-auto mb-4"
+              class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4"
             >
-              <Building2 class="w-8 h-8 text-primary-foreground" />
+              <AppLogo size="2rem" inverse />
             </div>
             <h1 class="text-2xl font-bold text-foreground mb-2">欢迎回来</h1>
             <p class="text-muted-foreground">请登录您的账户</p>
@@ -138,10 +138,15 @@
 </template>
 
 <script setup lang="ts">
+// 页面配置 - 必须放在最前面
+definePageMeta({
+  layout: false,
+  requiresAuth: false,
+});
+
 // 手动导入 Lucide 图标
 import {
   AlertCircle,
-  Building2,
   Eye,
   EyeOff,
   HelpCircle,
@@ -150,15 +155,11 @@ import {
   LogIn,
   Mail,
 } from 'lucide-vue-next';
+// 导入组件
+import AppLogo from '~/components/AppLogo.vue';
 
 import { useAuth } from '~/composables/useAuth';
 import type { LoginForm } from '~/types/auth';
-
-// 页面配置 - 禁用布局，登录页面不需要认证
-definePageMeta({
-  layout: false,
-  requiresAuth: false,
-});
 
 // 组合式函数
 const { login } = useAuth();

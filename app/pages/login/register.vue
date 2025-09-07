@@ -148,15 +148,15 @@
 </template>
 
 <script setup lang="ts">
+// 页面配置 - 必须放在最前面
+definePageMeta({
+  layout: false,
+});
+
 // 手动导入 Lucide 图标
 import { Loader2 } from 'lucide-vue-next';
 import { useAuth } from '~/composables/useAuth';
 import type { RegisterForm } from '~/types/auth';
-
-// 页面配置 - 禁用布局，让注册页面全屏显示
-definePageMeta({
-  layout: false,
-});
 
 // 组合式函数
 const { register } = useAuth();
