@@ -1,28 +1,28 @@
-import { serverSupabaseServiceRole } from "#supabase/server";
+import { serverSupabaseServiceRole } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
 
   try {
     switch (method) {
-      case "GET":
+      case 'GET':
         return await getUsers(event);
-      case "POST":
+      case 'POST':
         return await createUser(event);
-      case "PUT":
+      case 'PUT':
         return await updateUser(event);
-      case "DELETE":
+      case 'DELETE':
         return await deleteUser(event);
       default:
         throw createError({
           statusCode: 405,
-          statusMessage: "Method Not Allowed",
+          statusMessage: 'Method Not Allowed',
         });
     }
   } catch (error: any) {
     return {
       code: -1,
-      message: error.message || "操作失败",
+      message: error.message || '操作失败',
       data: null,
     };
   }
@@ -58,7 +58,7 @@ async function getUsers(event: any) {
   if (!authUsers?.users || authUsers.users.length === 0) {
     return {
       code: 0,
-      message: "暂无用户数据",
+      message: '暂无用户数据',
       data: [],
       total: 0,
     };
@@ -68,7 +68,7 @@ async function getUsers(event: any) {
 
   // 获取用户角色信息
   const { data: userRoles, error: roleError } = await client
-    .from("users_role")
+    .from('users_role')
     .select(
       `
       user_id,
@@ -79,7 +79,7 @@ async function getUsers(event: any) {
       )
     `
     )
-    .in("user_id", userIds);
+    .in('user_id', userIds);
 
   if (roleError) {
   }
@@ -95,11 +95,11 @@ async function getUsers(event: any) {
 
     return {
       id: user.id,
-      email: user.email || "",
-      name: metadata.name || user.email?.split("@")[0] || "",
-      username: metadata.username || user.email?.split("@")[0] || "",
-      status: metadata.status || "active",
-      department_id: metadata.department_id || "",
+      email: user.email || '',
+      name: metadata.name || user.email?.split('@')[0] || '',
+      username: metadata.username || user.email?.split('@')[0] || '',
+      status: metadata.status || 'active',
+      department_id: metadata.department_id || '',
       created_at: user.created_at,
       last_sign_in_at: user.last_sign_in_at,
       login_count: metadata.login_count || 0, // 从用户元数据获取实际值
@@ -122,25 +122,25 @@ async function getUsers(event: any) {
     });
   }
 
-  if (role_id && role_id !== "all") {
+  if (role_id && role_id !== 'all') {
     filteredUsers = filteredUsers.filter((user: any) =>
       user.roles?.some((role: any) => role.id === role_id)
     );
   }
 
-  if (department_id && department_id !== "all") {
+  if (department_id && department_id !== 'all') {
     filteredUsers = filteredUsers.filter(
       (user: any) => user.department_id === department_id
     );
   }
 
-  if (status && status !== "all") {
+  if (status && status !== 'all') {
     filteredUsers = filteredUsers.filter((user: any) => user.status === status);
   }
 
   return {
     code: 0,
-    message: "获取成功",
+    message: '获取成功',
     data: filteredUsers,
     total: filteredUsers.length,
   };
@@ -166,7 +166,7 @@ async function createUser(event: any) {
 
   // 验证必填字段
   if (!(email && password && name && username)) {
-    throw new Error("邮箱、密码、姓名和用户名为必填字段");
+    throw new Error('邮箱、密码、姓名和用户名为必填字段');
   }
 
   // 创建用户
@@ -178,10 +178,10 @@ async function createUser(event: any) {
       user_metadata: {
         name,
         username,
-        phone: phone || "",
-        department_id: department_id || "",
-        remarks: remarks || "",
-        status: status || "active",
+        phone: phone || '',
+        department_id: department_id || '',
+        remarks: remarks || '',
+        status: status || 'active',
       },
     });
 
@@ -190,7 +190,7 @@ async function createUser(event: any) {
   }
 
   if (!newUser.user) {
-    throw new Error("创建用户失败：未返回用户数据");
+    throw new Error('创建用户失败：未返回用户数据');
   }
 
   // 分配角色
@@ -202,7 +202,7 @@ async function createUser(event: any) {
     }));
 
     const { error: roleError } = await client
-      .from("users_role")
+      .from('users_role')
       .insert(roleAssignments);
 
     if (roleError) {
@@ -211,7 +211,7 @@ async function createUser(event: any) {
 
   return {
     code: 0,
-    message: "创建用户成功",
+    message: '创建用户成功',
     data: {
       id: newUser.user.id,
       email: newUser.user.email,
@@ -244,7 +244,7 @@ async function updateUser(event: any) {
   } = body;
 
   if (!id) {
-    throw new Error("用户ID不能为空");
+    throw new Error('用户ID不能为空');
   }
 
   // 更新用户元数据
@@ -296,9 +296,9 @@ async function updateUser(event: any) {
   if (role_ids && Array.isArray(role_ids)) {
     // 删除现有角色
     const { error: deleteRoleError } = await client
-      .from("users_role")
+      .from('users_role')
       .delete()
-      .eq("user_id", id);
+      .eq('user_id', id);
 
     if (deleteRoleError) {
       throw new Error(`删除现有角色失败: ${deleteRoleError.message}`);
@@ -313,7 +313,7 @@ async function updateUser(event: any) {
       }));
 
       const { error: roleError } = await client
-        .from("users_role")
+        .from('users_role')
         .insert(roleAssignments);
 
       if (roleError) {
@@ -324,7 +324,7 @@ async function updateUser(event: any) {
 
   return {
     code: 0,
-    message: "更新用户成功",
+    message: '更新用户成功',
     data: {
       id,
       ...updateData,
@@ -341,14 +341,14 @@ async function deleteUser(event: any) {
   const { id } = body;
 
   if (!id) {
-    throw new Error("用户ID不能为空");
+    throw new Error('用户ID不能为空');
   }
 
   // 删除用户角色关联
   const { error: deleteRoleError } = await client
-    .from("users_role")
+    .from('users_role')
     .delete()
-    .eq("user_id", id);
+    .eq('user_id', id);
 
   if (deleteRoleError) {
     throw new Error(`删除用户角色关联失败: ${deleteRoleError.message}`);
@@ -363,7 +363,7 @@ async function deleteUser(event: any) {
 
   return {
     code: 0,
-    message: "删除用户成功",
+    message: '删除用户成功',
     data: { id },
   };
 }
