@@ -16,7 +16,7 @@
 definePageMeta({
   layout: 'default',
   requiresAuth: true,
-  // dashboard 页面不需要特定权限，所有登录用户都可以访问
+  permission: 'dashboard:view',
 });
 
 const { permissions, menus } = usePermissions();

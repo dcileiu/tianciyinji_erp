@@ -488,5 +488,7 @@ watch(selectedPeriod, (_newPeriod) => {
 // 页面元信息
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'dashboard:stats',
 });
 </script>

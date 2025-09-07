@@ -375,6 +375,13 @@
 </template>
 
 <script setup lang="ts">
+// 页面配置
+definePageMeta({
+  layout: 'default',
+  requiresAuth: true,
+  permission: 'payment:view',
+});
+
 // 手动导入 Lucide 图标
 import {
   Clock,

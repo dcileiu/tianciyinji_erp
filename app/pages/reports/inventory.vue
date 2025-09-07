@@ -368,6 +368,8 @@ import {
 // 页面配置
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'reports:inventory',
 });
 
 useHead({

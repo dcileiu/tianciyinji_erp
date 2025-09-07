@@ -135,6 +135,8 @@ import MenuTableSkeleton from './components/MenuTableSkeleton.vue';
 definePageMeta({
   layout: 'default',
   ssr: false, // 使用客户端渲染
+  requiresAuth: true,
+  permission: 'system:menus',
 });
 
 useHead({

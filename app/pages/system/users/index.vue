@@ -53,8 +53,7 @@
 definePageMeta({
   layout: 'default',
   requiresAuth: true,
-  // 临时移除权限要求进行调试
-  // permission: 'system:users'
+  permission: 'system:users',
 });
 
 import { Download, Plus, Upload } from 'lucide-vue-next';

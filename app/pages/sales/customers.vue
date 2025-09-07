@@ -1,3 +1,12 @@
+<script setup lang="ts">
+// 页面权限
+definePageMeta({
+  layout: 'default',
+  requiresAuth: true,
+  permission: 'customer:view',
+});
+</script>
+
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">

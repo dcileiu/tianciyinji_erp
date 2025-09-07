@@ -79,14 +79,16 @@ async function getUserProfile(supabase: any, user: any) {
     // 查询用户角色
     const { data: userRoles } = await supabase
       .from('users_role')
-      .select(`
+      .select(
+        `
         roles (
           id,
           name,
           code,
           description
         )
-      `)
+      `
+      )
       .eq('user_id', user.id);
 
     // 构建用户信息
@@ -133,14 +135,16 @@ async function getUserPermissions(supabase: any, user: any) {
     // 查询用户所有权限
     const { data: userMenus, error } = await supabase
       .from('menus')
-      .select(`
+      .select(
+        `
         permission,
         roles_menu!inner(
           roles!inner(
             users_role!inner(user_id)
           )
         )
-      `)
+      `
+      )
       .eq('roles_menu.roles.users_role.user_id', user.id)
       .eq('roles_menu.roles.status', 'active')
       .eq('status', 'active')
@@ -179,7 +183,8 @@ async function getUserMenus(supabase: any, user: any) {
     // 查询用户有权限的菜单
     const { data: userMenus, error } = await supabase
       .from('menus')
-      .select(`
+      .select(
+        `
         id,
         name,
         icon,
@@ -193,7 +198,8 @@ async function getUserMenus(supabase: any, user: any) {
             users_role!inner(user_id)
           )
         )
-      `)
+      `
+      )
       .eq('roles_menu.roles.users_role.user_id', user.id)
       .eq('roles_menu.roles.status', 'active')
       .eq('status', 'active')

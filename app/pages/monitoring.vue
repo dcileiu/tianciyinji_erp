@@ -156,6 +156,8 @@ import {
 
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'monitoring:view',
 });
 
 useHead({

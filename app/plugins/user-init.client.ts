@@ -12,11 +12,16 @@ export default defineNuxtPlugin(async () => {
         userStore.setAuthUser(newUser);
 
         try {
-          // 并行初始化用户数据和权限数据
-          await Promise.all([
+          // 并行初始化用户数据和权限数据（权限仅在未加载时获取）
+          const tasks: Promise<unknown>[] = [
             userStore.initializeUserData().catch((_err) => {}),
-            permissionsStore.fetchUserPermissions().catch((_err) => {}),
-          ]);
+          ];
+          if (!permissionsStore.loaded) {
+            tasks.push(
+              permissionsStore.fetchUserPermissions().catch((_err) => {})
+            );
+          }
+          await Promise.all(tasks);
         } catch (error) {}
       } else if (!newUser && oldUser) {
         // 用户退出，清空所有数据
@@ -32,12 +37,12 @@ export default defineNuxtPlugin(async () => {
     userStore.setAuthUser(user.value);
 
     try {
-      // 只有在数据为空时才重新加载
-      const promises = [];
+      // 只有在数据为空或未加载时才重新加载
+      const promises = [] as Promise<unknown>[];
       if (!userStore.profile) {
         promises.push(userStore.initializeUserData().catch((_err) => {}));
       }
-      if (permissionsStore.permissions.length === 0) {
+      if (!permissionsStore.loaded) {
         promises.push(
           permissionsStore.fetchUserPermissions().catch((_err) => {})
         );

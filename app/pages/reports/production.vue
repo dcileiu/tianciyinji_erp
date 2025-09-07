@@ -336,6 +336,8 @@ import {
 // 页面配置
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'reports:production',
 });
 
 useHead({
@@ -357,7 +359,7 @@ const workshopFilter = ref('all');
 // 车间选项
 const workshopOptions = computed(() => [
   { label: '全部车间', value: 'all' },
-  ...workshops.value.map((workshop) => ({
+  ...workshops.value.map((workshop: any) => ({
     label: workshop.name,
     value: workshop.id,
   })),

@@ -456,6 +456,8 @@ import {
 definePageMeta({
   title: '发票管理',
   layout: 'default',
+  requiresAuth: true,
+  permission: 'invoice:view',
 });
 
 useHead({

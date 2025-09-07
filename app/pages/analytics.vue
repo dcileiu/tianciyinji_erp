@@ -261,6 +261,8 @@ import {
 
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'analytics:view',
 });
 
 // 数据状态

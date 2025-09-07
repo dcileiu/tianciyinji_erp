@@ -12,5 +12,7 @@ definePageMeta({
   title: '应付管理',
   description: '管理供应商应付账款和付款记录',
   layout: 'default',
+  requiresAuth: true,
+  permission: 'finance:payables',
 });
 </script>

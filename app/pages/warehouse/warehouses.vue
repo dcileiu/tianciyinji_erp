@@ -335,6 +335,8 @@ import type { Warehouse as WarehouseType } from '~/types/database';
 // 页面配置
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'warehouse:settings',
 });
 
 useHead({

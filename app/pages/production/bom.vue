@@ -505,5 +505,7 @@ useHead({
 // 页面元数据
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'bom:view',
 });
 </script>

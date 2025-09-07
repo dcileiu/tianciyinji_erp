@@ -1,4 +1,5 @@
 import { serverSupabaseServiceRole } from '#supabase/server';
+import { assertPermission } from '../_utils/permissions';
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
@@ -7,6 +8,7 @@ export default defineEventHandler(async (event) => {
   try {
     switch (method) {
       case 'GET': {
+        await assertPermission(event, 'system:roles');
         // 获取角色列表
         const { data: roles, error: fetchError } = await supabase
           .from('roles')
@@ -25,6 +27,7 @@ export default defineEventHandler(async (event) => {
       }
 
       case 'POST': {
+        await assertPermission(event, 'system:roles');
         // 创建角色
         const createData = await readBody(event);
 
@@ -54,6 +57,7 @@ export default defineEventHandler(async (event) => {
       }
 
       case 'PUT': {
+        await assertPermission(event, 'system:roles');
         // 更新角色
         const updateData = await readBody(event);
 
@@ -83,6 +87,7 @@ export default defineEventHandler(async (event) => {
       }
 
       case 'DELETE': {
+        await assertPermission(event, 'system:roles');
         // 删除角色
         const deleteData = await readBody(event);
 

@@ -1,4 +1,5 @@
 import { serverSupabaseServiceRole } from '#supabase/server';
+import { assertPermission } from '../_utils/permissions';
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
@@ -6,12 +7,16 @@ export default defineEventHandler(async (event) => {
   try {
     switch (method) {
       case 'GET':
+        await assertPermission(event, 'system:departments');
         return await getDepartments(event);
       case 'POST':
+        await assertPermission(event, 'system:departments');
         return await createDepartment(event);
       case 'PUT':
+        await assertPermission(event, 'system:departments');
         return await updateDepartment(event);
       case 'DELETE':
+        await assertPermission(event, 'system:departments');
         return await deleteDepartment(event);
       default:
         throw createError({
@@ -20,6 +25,9 @@ export default defineEventHandler(async (event) => {
         });
     }
   } catch (error: any) {
+    if (error.statusCode === 403) {
+      throw createError({ statusCode: 403, statusMessage: 'Forbidden' });
+    }
     return {
       code: -1,
       message: error.message || '操作失败',

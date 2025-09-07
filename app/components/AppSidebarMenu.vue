@@ -38,9 +38,15 @@ const {
   fetchUserPermissions,
 } = usePermissions();
 
+const permissionsStore = usePermissionsStore();
+
 // 组件挂载时获取权限数据
 onMounted(async () => {
-  if (authorizedMenus.value.length === 0 && !loading.value) {
+  if (
+    authorizedMenus.value.length === 0 &&
+    !loading.value &&
+    !permissionsStore.loaded
+  ) {
     await fetchUserPermissions();
   }
 });

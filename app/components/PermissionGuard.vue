@@ -40,11 +40,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { hasPermission, hasAnyPermission, hasAllPermissions, roles } =
   usePermissions();
+const permissionsStore = usePermissionsStore();
 
 /**
  * 检查权限访问
  */
 const hasAccess = computed(() => {
+  // 如果声明了权限或角色，但权限还未加载完成，则暂不展示内容
+  const needsCheck = !!props.permission || !!props.role;
+  if (needsCheck && !permissionsStore.loaded) {
+    return false;
+  }
   // 检查权限
   if (props.permission) {
     if (typeof props.permission === 'string') {

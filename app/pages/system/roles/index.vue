@@ -325,6 +325,13 @@
 </template>
 
 <script setup lang="ts">
+// 页面权限配置 - 必须放在最前面
+definePageMeta({
+  layout: 'default',
+  requiresAuth: true,
+  permission: 'system:roles',
+});
+
 import { MoreHorizontal, RefreshCw, Shield } from 'lucide-vue-next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

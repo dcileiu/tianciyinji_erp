@@ -26,6 +26,8 @@ interface PermissionsState {
   roles: UserRoleData[];
   loading: boolean;
   error: string | null;
+  // 标记是否已加载过（即使结果为空也视为已加载）
+  loaded: boolean;
 }
 
 export const usePermissionsStore = defineStore('permissions', {
@@ -35,6 +37,7 @@ export const usePermissionsStore = defineStore('permissions', {
     roles: [],
     loading: false,
     error: null,
+    loaded: false,
   }),
 
   getters: {
@@ -117,12 +120,7 @@ export const usePermissionsStore = defineStore('permissions', {
      */
     async fetchUserPermissions(): Promise<void> {
       // 防止重复请求
-      if (this.loading) {
-        return;
-      }
-
-      // 如果已有权限数据，不重复加载
-      if (this.permissions.length > 0) {
+      if (this.loading || this.loaded) {
         return;
       }
 
@@ -159,6 +157,7 @@ export const usePermissionsStore = defineStore('permissions', {
         this.menus = [];
       } finally {
         this.loading = false;
+        this.loaded = true;
       }
     },
 
@@ -222,6 +221,7 @@ export const usePermissionsStore = defineStore('permissions', {
       this.menus = [];
       this.roles = [];
       this.error = null;
+      this.loaded = false;
     },
 
     /**
@@ -231,6 +231,7 @@ export const usePermissionsStore = defineStore('permissions', {
       // 清空现有数据，强制重新加载
       this.permissions = [];
       this.menus = [];
+      this.loaded = false;
       await this.fetchUserPermissions();
     },
   },

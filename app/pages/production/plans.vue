@@ -462,6 +462,8 @@ import { CheckCircle, Clock, Plus, Trash2 } from 'lucide-vue-next';
 // 页面配置
 definePageMeta({
   layout: 'default',
+  requiresAuth: true,
+  permission: 'production-plan:view',
 });
 
 useHead({

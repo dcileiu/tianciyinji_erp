@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   // 跳过服务端渲染
   if (process.server) {
     return;
@@ -14,7 +14,8 @@ export default defineNuxtRouteMiddleware((to) => {
     return;
   }
 
-  const { hasPermission, hasAnyPermission, permissions } = usePermissions();
+  const permissionsStore = usePermissionsStore();
+  const { hasPermission, hasAnyPermission } = usePermissions();
 
   // 获取路由权限要求
   const requiredPermission = to.meta.permission;
@@ -26,10 +27,20 @@ export default defineNuxtRouteMiddleware((to) => {
     hasAccess = hasAnyPermission(requiredPermission);
   }
 
-  // 如果权限检查失败且权限数据为空，可能是权限未加载
-  if (!hasAccess && permissions.value.length === 0) {
-    // 暂时允许访问，避免用户无法使用系统
-    return;
+  // 如果检查失败且权限未加载过，则尝试加载一次再判断
+  if (!hasAccess) {
+    const notLoaded = !permissionsStore.loaded;
+    const notLoading = !permissionsStore.loading;
+    if (notLoaded && notLoading) {
+      await permissionsStore.fetchUserPermissions();
+      if (typeof requiredPermission === 'string') {
+        hasAccess = permissionsStore.permissions.includes(requiredPermission);
+      } else if (Array.isArray(requiredPermission)) {
+        hasAccess = requiredPermission.some((p) =>
+          permissionsStore.permissions.includes(p)
+        );
+      }
+    }
   }
 
   if (!hasAccess) {
