@@ -69,10 +69,8 @@
 </template>
 
 <script setup lang="ts">
-import { Building, Loader2, RefreshCw } from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
-import type { DepartmentData, DepartmentForm } from '~/composables/useDepartments'
-
+import { Building, Loader2, RefreshCw } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,19 +80,23 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import DepartmentModal from './components/DepartmentModal.vue'
-import DepartmentTable from './components/DepartmentTable.vue'
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import type {
+  DepartmentData,
+  DepartmentForm,
+} from '~/composables/useDepartments';
+import DepartmentModal from './components/DepartmentModal.vue';
+import DepartmentTable from './components/DepartmentTable.vue';
 
 // 页面配置
 definePageMeta({
   layout: 'default',
-})
+});
 
 useHead({
   title: '部门管理 - 智能ERP管理系统',
-})
+});
 
 // Composables
 const {
@@ -104,65 +106,65 @@ const {
   createDepartment,
   updateDepartment,
   deleteDepartment: deleteDept,
-  canDeleteDepartment
-} = useDepartments()
+  canDeleteDepartment,
+} = useDepartments();
 
 // 状态管理
-const saving = ref(false)
-const deleting = ref(false)
-const showDepartmentModal = ref(false)
-const showDeleteDialog = ref(false)
-const currentDepartment = ref<DepartmentData | null>(null)
-const deletingDepartment = ref<DepartmentData | null>(null)
+const saving = ref(false);
+const deleting = ref(false);
+const showDepartmentModal = ref(false);
+const showDeleteDialog = ref(false);
+const currentDepartment = ref<DepartmentData | null>(null);
+const deletingDepartment = ref<DepartmentData | null>(null);
 
 // 方法
 const loadDepartments = async () => {
   try {
-    const result = await getDepartments()
+    const result = await getDepartments();
     if (result.code !== 0) {
       toast.error('获取部门列表失败', {
-        description: result.message
-      })
+        description: result.message,
+      });
     }
   } catch (error: any) {
     toast.error('获取部门列表失败', {
-      description: error.message || '网络错误'
-    })
+      description: error.message || '网络错误',
+    });
   }
-}
+};
 
 const refreshData = () => {
-  loadDepartments()
-}
+  loadDepartments();
+};
 
 // 部门操作方法
 const openDepartmentModal = () => {
-  currentDepartment.value = null
-  showDepartmentModal.value = true
-}
+  currentDepartment.value = null;
+  showDepartmentModal.value = true;
+};
 
 const editDepartment = (department: DepartmentData) => {
-  currentDepartment.value = department
-  showDepartmentModal.value = true
-}
+  currentDepartment.value = department;
+  showDepartmentModal.value = true;
+};
 
 const addSubDepartment = (parentDepartment: DepartmentData) => {
   // 创建一个临时对象，设置parent_id为上级部门
   currentDepartment.value = {
     ...({} as DepartmentData),
-    parent_id: parentDepartment.id
-  }
-  showDepartmentModal.value = true
-}
+    parent_id: parentDepartment.id,
+  };
+  showDepartmentModal.value = true;
+};
 
 const closeDepartmentModal = () => {
-  showDepartmentModal.value = false
-  currentDepartment.value = null
-}
+  showDepartmentModal.value = false;
+  currentDepartment.value = null;
+};
 
 const saveDepartment = async (formData: any) => {
   try {
-    saving.value = true
+    saving.value = true;
 
     const departmentData: DepartmentForm = {
       name: formData.name,
@@ -170,75 +172,77 @@ const saveDepartment = async (formData: any) => {
       description: formData.description || '',
       parent_id: formData.parent_id || undefined,
       sort: formData.sort || 1,
-      status: formData.status || 'active'
-    }
+      status: formData.status || 'active',
+    };
 
-    let result
+    let result: { code: number; message?: string };
     if (formData.id) {
-      result = await updateDepartment(formData.id, departmentData)
+      result = await updateDepartment(formData.id, departmentData);
     } else {
-      result = await createDepartment(departmentData)
+      result = await createDepartment(departmentData);
     }
 
     if (result.code === 0) {
-      toast.success(formData.id ? '更新部门成功' : '创建部门成功')
-      closeDepartmentModal()
-      loadDepartments()
+      toast.success(formData.id ? '更新部门成功' : '创建部门成功');
+      closeDepartmentModal();
+      loadDepartments();
     } else {
       toast.error(formData.id ? '更新部门失败' : '创建部门失败', {
-        description: (result as any).message || '操作失败'
-      })
+        description: (result as any).message || '操作失败',
+      });
     }
   } catch (error: any) {
     toast.error('操作失败', {
-      description: error.message || '网络错误'
-    })
+      description: error.message || '网络错误',
+    });
   } finally {
-    saving.value = false
+    saving.value = false;
   }
-}
+};
 
 const confirmDelete = (department: DepartmentData) => {
   if (!canDeleteDepartment(department.id)) {
     toast.error('无法删除', {
-      description: '该部门下还有子部门，请先删除子部门'
-    })
-    return
+      description: '该部门下还有子部门，请先删除子部门',
+    });
+    return;
   }
 
-  deletingDepartment.value = department
-  showDeleteDialog.value = true
-}
+  deletingDepartment.value = department;
+  showDeleteDialog.value = true;
+};
 
 const handleDelete = async () => {
-  if (!deletingDepartment.value) return
+  if (!deletingDepartment.value) {
+    return;
+  }
 
   try {
-    deleting.value = true
+    deleting.value = true;
 
-    const result = await deleteDept(deletingDepartment.value.id)
+    const result = await deleteDept(deletingDepartment.value.id);
 
     if (result.code === 0) {
-      toast.success('删除部门成功')
-      showDeleteDialog.value = false
-      deletingDepartment.value = null
-      loadDepartments()
+      toast.success('删除部门成功');
+      showDeleteDialog.value = false;
+      deletingDepartment.value = null;
+      loadDepartments();
     } else {
       toast.error('删除部门失败', {
-        description: (result as any).message || '删除失败'
-      })
+        description: (result as any).message || '删除失败',
+      });
     }
   } catch (error: any) {
     toast.error('删除部门失败', {
-      description: error.message || '网络错误'
-    })
+      description: error.message || '网络错误',
+    });
   } finally {
-    deleting.value = false
+    deleting.value = false;
   }
-}
+};
 
 // 初始化
 onMounted(() => {
-  loadDepartments()
-})
+  loadDepartments();
+});
 </script>

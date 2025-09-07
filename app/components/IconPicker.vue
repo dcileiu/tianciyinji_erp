@@ -66,54 +66,55 @@
 </template>
 
 <script setup lang="ts">
-import { Search } from 'lucide-vue-next'
-import { getIconByName, iconNames } from '~/components/icons'
+import { Search } from 'lucide-vue-next';
+import { getIconByName, iconNames } from '~/components/icons';
 
 interface IconPickerProps {
-  modelValue?: string | null
+  modelValue?: string | null;
 }
 
-interface IconPickerEmits {
-  (e: 'update:modelValue', value: string | null): void
-}
+type IconPickerEmits = (e: 'update:modelValue', value: string | null) => void;
 
 const props = withDefaults(defineProps<IconPickerProps>(), {
-  modelValue: null
-})
+  modelValue: null,
+});
 
-const emit = defineEmits<IconPickerEmits>()
+const emit = defineEmits<IconPickerEmits>();
 
 // 响应式数据
-const searchQuery = ref('')
-const selectedIcon = ref<string | null>(props.modelValue)
+const searchQuery = ref('');
+const selectedIcon = ref<string | null>(props.modelValue);
 
 // 监听 props 变化
-watch(() => props.modelValue, (newValue) => {
-  selectedIcon.value = newValue
-})
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    selectedIcon.value = newValue;
+  }
+);
 
 // 监听 selectedIcon 变化，向父组件发送事件
 watch(selectedIcon, (newValue) => {
-  emit('update:modelValue', newValue)
-})
+  emit('update:modelValue', newValue);
+});
 
 // 过滤图标
 const filteredIcons = computed(() => {
   if (!searchQuery.value) {
-    return iconNames
+    return iconNames;
   }
 
-  return iconNames.filter(iconName =>
+  return iconNames.filter((iconName) =>
     iconName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
+  );
+});
 
 // 方法
 const selectIcon = (iconName: string) => {
-  selectedIcon.value = iconName
-}
+  selectedIcon.value = iconName;
+};
 
 const clearSelection = () => {
-  selectedIcon.value = null
-}
+  selectedIcon.value = null;
+};
 </script>

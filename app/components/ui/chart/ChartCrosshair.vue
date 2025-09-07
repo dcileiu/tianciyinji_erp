@@ -41,7 +41,7 @@ function template(d: any) {
   return componentDiv.innerHTML;
 }
 
-function color(d: unknown, i: number) {
+function color(_d: unknown, i: number) {
   return props.colors[i] ?? 'transparent';
 }
 </script>

@@ -28,20 +28,20 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, Loader2 } from 'lucide-vue-next'
+import { AlertCircle, Loader2 } from 'lucide-vue-next';
 
 const {
   authorizedMenus,
   loading,
   error,
   refreshPermissions,
-  fetchUserPermissions
-} = usePermissions()
+  fetchUserPermissions,
+} = usePermissions();
 
 // 组件挂载时获取权限数据
 onMounted(async () => {
   if (authorizedMenus.value.length === 0 && !loading.value) {
-    await fetchUserPermissions()
+    await fetchUserPermissions();
   }
-})
+});
 </script>

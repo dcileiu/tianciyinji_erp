@@ -146,53 +146,52 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDown, Edit, Plus, Trash2 } from 'lucide-vue-next'
-import { getIconByName } from '~/components/icons'
-import type { Menu } from '~/composables/useMenus'
+import { ChevronDown, Edit, Plus, Trash2 } from 'lucide-vue-next';
+import { getIconByName } from '~/components/icons';
+import type { Menu } from '~/composables/useMenus';
 
 interface MenuTableRowProps {
-  menu: Menu
-  level: number
-  expandedIds: string[]
+  menu: Menu;
+  level: number;
+  expandedIds: string[];
 }
 
 interface MenuTableRowEmits {
-  (e: 'edit', menu: Menu): void
-  (e: 'delete', menu: Menu): void
-  (e: 'add-child', menu: Menu): void
-  (e: 'toggle-status', menu: Menu): void
-  (e: 'toggle-expand', menuId: string): void
+  (e: 'toggle-status' | 'add-child' | 'delete' | 'edit', menu: Menu): void;
+  (e: 'toggle-expand', menuId: string): void;
 }
 
-const props = defineProps<MenuTableRowProps>()
-const emit = defineEmits<MenuTableRowEmits>()
+const props = defineProps<MenuTableRowProps>();
+const emit = defineEmits<MenuTableRowEmits>();
 
 // 方法
 const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('zh-CN')
-}
+  return new Date(date).toLocaleDateString('zh-CN');
+};
 
 const getTypeLabel = (type: string) => {
   const typeMap = {
     directory: '目录',
     menu: '菜单',
     permission: '权限',
-  }
-  return typeMap[type as keyof typeof typeMap] || type
-}
+  };
+  return typeMap[type as keyof typeof typeMap] || type;
+};
 
 const getTypeVariant = (type: string) => {
   const variantMap = {
     directory: 'secondary',
     menu: 'default',
     permission: 'outline',
-  }
-  return variantMap[type as keyof typeof variantMap] || 'default'
-}
+  };
+  return variantMap[type as keyof typeof variantMap] || 'default';
+};
 
 const getMenuIcon = (iconName?: string | null) => {
-  if (!iconName) return getIconByName('HelpCircle')
+  if (!iconName) {
+    return getIconByName('HelpCircle');
+  }
 
-  return getIconByName(iconName)
-}
+  return getIconByName(iconName);
+};
 </script>

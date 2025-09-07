@@ -324,8 +324,9 @@
 </template>
 
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { MoreHorizontal, RefreshCw, Shield } from 'lucide-vue-next';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -333,7 +334,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -341,16 +342,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -358,33 +359,37 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
-import { Textarea } from '@/components/ui/textarea'
-import { useRoles, type RoleData, type RoleForm } from '@/composables/useRoles'
-import { MoreHorizontal, RefreshCw, Shield } from 'lucide-vue-next'
+} from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { type RoleData, type RoleForm, useRoles } from '@/composables/useRoles';
 
 // 使用 composables
-const { roles, loading, error, fetchRoles, createRole, updateRole, deleteRole, getRoleMenuPermissions, updateRoleMenuPermissions } = useRoles()
+const {
+  roles,
+  loading,
+  error,
+  fetchRoles,
+  createRole,
+  updateRole,
+  deleteRole,
+  getRoleMenuPermissions,
+  updateRoleMenuPermissions,
+} = useRoles();
 
 // 响应式数据
-const showModal = ref(false)
-const isEditMode = ref(false)
-const editingRole = ref<RoleData | null>(null)
-const selectedMenuIds = ref<string[]>([])
-const searchValue = ref('')
-const currentPage = ref(1)
-const pageSize = 10
+const showModal = ref(false);
+const isEditMode = ref(false);
+const editingRole = ref<RoleData | null>(null);
+const selectedMenuIds = ref<string[]>([]);
+const searchValue = ref('');
+const currentPage = ref(1);
+const pageSize = 10;
 
 // 菜单权限数据
-const menuPermissions = ref<any[]>([])
-const menuLoading = ref(false)
-const expandedMenus = ref<Set<string>>(new Set())
+const menuPermissions = ref<any[]>([]);
+const menuLoading = ref(false);
+const expandedMenus = ref<Set<string>>(new Set());
 
 // 表单数据
 const roleForm = ref<RoleForm>({
@@ -392,283 +397,284 @@ const roleForm = ref<RoleForm>({
   code: '',
   description: '',
   type: 'custom',
-  status: 'active'
-})
+  status: 'active',
+});
 
 // 计算属性
 const filteredRoles = computed(() => {
-  if (!searchValue.value) return roles.value
-  const search = searchValue.value.toLowerCase()
-  return roles.value.filter(role =>
-    role.name.toLowerCase().includes(search) ||
-    role.code.toLowerCase().includes(search)
-  )
-})
+  if (!searchValue.value) {
+    return roles.value;
+  }
+  const search = searchValue.value.toLowerCase();
+  return roles.value.filter(
+    (role) =>
+      role.name.toLowerCase().includes(search) ||
+      role.code.toLowerCase().includes(search)
+  );
+});
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredRoles.value.length / pageSize)
-})
+  return Math.ceil(filteredRoles.value.length / pageSize);
+});
 
 const paginatedRoles = computed(() => {
-  const start = (currentPage.value - 1) * pageSize
-  const end = start + pageSize
-  return filteredRoles.value.slice(start, end)
-})
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return filteredRoles.value.slice(start, end);
+});
 
 // 方法
 const refreshData = async () => {
-  await fetchRoles()
-}
+  await fetchRoles();
+};
 
 const openRoleModal = async () => {
-  isEditMode.value = false
-  editingRole.value = null
-  selectedMenuIds.value = []
+  isEditMode.value = false;
+  editingRole.value = null;
+  selectedMenuIds.value = [];
   roleForm.value = {
     name: '',
     code: '',
     description: '',
     type: 'custom',
-    status: 'active'
-  }
+    status: 'active',
+  };
 
   // 加载菜单权限数据
-  await fetchMenuPermissions()
-  showModal.value = true
-}
+  await fetchMenuPermissions();
+  showModal.value = true;
+};
 
 const closeRoleModal = () => {
-  showModal.value = false
-  isEditMode.value = false
-  editingRole.value = null
-  selectedMenuIds.value = []
-}
+  showModal.value = false;
+  isEditMode.value = false;
+  editingRole.value = null;
+  selectedMenuIds.value = [];
+};
 
 const handleEditRole = async (role: RoleData) => {
-  isEditMode.value = true
-  editingRole.value = role
+  isEditMode.value = true;
+  editingRole.value = role;
   roleForm.value = {
     name: role.name,
     code: role.code,
     description: role.description || '',
     type: role.type,
-    status: role.status
-  }
+    status: role.status,
+  };
 
   // 加载菜单权限数据
-  await fetchMenuPermissions()
+  await fetchMenuPermissions();
 
   // 获取角色权限
-  selectedMenuIds.value = await getRoleMenuPermissions(role.id)
-  showModal.value = true
-}
+  selectedMenuIds.value = await getRoleMenuPermissions(role.id);
+  showModal.value = true;
+};
 
 const handleSaveRole = async () => {
   try {
-    let result: any
+    let result: any;
 
     if (isEditMode.value && editingRole.value) {
-      result = await updateRole(editingRole.value.id, roleForm.value)
+      result = await updateRole(editingRole.value.id, roleForm.value);
     } else {
-      result = await createRole(roleForm.value)
+      result = await createRole(roleForm.value);
     }
 
     if (result?.code === 0) {
       // 更新权限
       if (isEditMode.value && editingRole.value) {
-        await updateRoleMenuPermissions(editingRole.value.id, selectedMenuIds.value)
+        await updateRoleMenuPermissions(
+          editingRole.value.id,
+          selectedMenuIds.value
+        );
       }
 
-      await refreshData()
-      closeRoleModal()
+      await refreshData();
+      closeRoleModal();
 
       // 显示成功消息
-      alert(isEditMode.value ? '角色更新成功' : '角色创建成功')
+      alert(isEditMode.value ? '角色更新成功' : '角色创建成功');
     } else {
-      console.error('操作失败')
     }
-  } catch (error) {
-    console.error('保存失败:', error)
-  }
-}
+  } catch (error) {}
+};
 
 const handleDeleteRole = async (roleId: string) => {
   if (confirm('确定要删除这个角色吗？此操作不可恢复。')) {
-    const result = await deleteRole(roleId)
+    const result = await deleteRole(roleId);
     if (result?.code === 0) {
-      await refreshData()
-      alert('角色删除成功')
+      await refreshData();
+      alert('角色删除成功');
     } else {
-      console.error('删除失败')
     }
   }
-}
+};
 
 // 获取菜单数据
 const fetchMenuPermissions = async () => {
   try {
-    menuLoading.value = true
+    menuLoading.value = true;
     const { data: menus } = await useSupabaseClient()
       .from('menus')
       .select('*')
       .eq('status', 'active')
-      .order('sort', { ascending: true })
+      .order('sort', { ascending: true });
 
     if (menus) {
-      menuPermissions.value = buildMenuTree(menus)
+      menuPermissions.value = buildMenuTree(menus);
       // 默认展开所有一级菜单
-      menuPermissions.value.forEach(menu => {
+      menuPermissions.value.forEach((menu) => {
         if (menu.children && menu.children.length > 0) {
-          expandedMenus.value.add(menu.id)
+          expandedMenus.value.add(menu.id);
         }
-      })
+      });
     }
   } catch (error) {
-    console.error('获取菜单数据失败:', error)
   } finally {
-    menuLoading.value = false
+    menuLoading.value = false;
   }
-}
+};
 
 // 构建菜单树
 const buildMenuTree = (menus: any[]) => {
-  const menuMap = new Map()
-  const rootMenus: any[] = []
+  const menuMap = new Map();
+  const rootMenus: any[] = [];
 
   // 创建菜单映射
-  menus.forEach(menu => {
-    menuMap.set(menu.id, { ...menu, children: [] })
-  })
+  menus.forEach((menu) => {
+    menuMap.set(menu.id, { ...menu, children: [] });
+  });
 
   // 构建树结构
-  menus.forEach(menu => {
-    const menuItem = menuMap.get(menu.id)
+  menus.forEach((menu) => {
+    const menuItem = menuMap.get(menu.id);
     if (menu.parent_id && menuMap.has(menu.parent_id)) {
-      menuMap.get(menu.parent_id).children.push(menuItem)
+      menuMap.get(menu.parent_id).children.push(menuItem);
     } else {
-      rootMenus.push(menuItem)
+      rootMenus.push(menuItem);
     }
-  })
+  });
 
-  return rootMenus
-}
+  return rootMenus;
+};
 
 // 权限管理方法
 const handlePermissionChange = (menuId: string, checked: boolean) => {
-  const newSelectedIds = [...selectedMenuIds.value]
+  const newSelectedIds = [...selectedMenuIds.value];
 
   if (checked) {
     // 选中时，同时选中所有子菜单
-    addMenuAndChildren(menuId, newSelectedIds)
+    addMenuAndChildren(menuId, newSelectedIds);
   } else {
     // 取消选中时，同时取消所有子菜单和父菜单
-    removeMenuAndAffected(menuId, newSelectedIds)
+    removeMenuAndAffected(menuId, newSelectedIds);
   }
 
-  selectedMenuIds.value = newSelectedIds
-}
+  selectedMenuIds.value = newSelectedIds;
+};
 
 // 添加菜单及其所有子菜单
 const addMenuAndChildren = (menuId: string, selectedIds: string[]) => {
   if (!selectedIds.includes(menuId)) {
-    selectedIds.push(menuId)
+    selectedIds.push(menuId);
   }
 
   // 查找并添加所有子菜单
   const addChildren = (menus: any[]) => {
-    menus.forEach(menu => {
+    menus.forEach((menu) => {
       if (menu.id === menuId && menu.children) {
         menu.children.forEach((child: any) => {
           if (!selectedIds.includes(child.id)) {
-            selectedIds.push(child.id)
+            selectedIds.push(child.id);
           }
           if (child.children && child.children.length > 0) {
-            addChildren(child.children)
+            addChildren(child.children);
           }
-        })
+        });
       } else if (menu.children) {
-        addChildren(menu.children)
+        addChildren(menu.children);
       }
-    })
-  }
+    });
+  };
 
-  addChildren(menuPermissions.value)
-}
+  addChildren(menuPermissions.value);
+};
 
 // 移除菜单及相关菜单
 const removeMenuAndAffected = (menuId: string, selectedIds: string[]) => {
   // 移除当前菜单
-  const index = selectedIds.indexOf(menuId)
+  const index = selectedIds.indexOf(menuId);
   if (index > -1) {
-    selectedIds.splice(index, 1)
+    selectedIds.splice(index, 1);
   }
 
   // 移除所有子菜单
   const removeChildren = (menus: any[]) => {
-    menus.forEach(menu => {
+    menus.forEach((menu) => {
       if (menu.id === menuId && menu.children) {
         menu.children.forEach((child: any) => {
-          const childIndex = selectedIds.indexOf(child.id)
+          const childIndex = selectedIds.indexOf(child.id);
           if (childIndex > -1) {
-            selectedIds.splice(childIndex, 1)
+            selectedIds.splice(childIndex, 1);
           }
           if (child.children && child.children.length > 0) {
-            removeChildren(child.children)
+            removeChildren(child.children);
           }
-        })
+        });
       } else if (menu.children) {
-        removeChildren(menu.children)
+        removeChildren(menu.children);
       }
-    })
-  }
+    });
+  };
 
-  removeChildren(menuPermissions.value)
-}
+  removeChildren(menuPermissions.value);
+};
 
 const getAllMenuIds = (menuList: any[]): string[] => {
-  const ids: string[] = []
+  const ids: string[] = [];
 
   const traverse = (menus: any[]) => {
-    menus.forEach(menu => {
-      ids.push(menu.id)
+    menus.forEach((menu) => {
+      ids.push(menu.id);
       if (menu.children && menu.children.length > 0) {
-        traverse(menu.children)
+        traverse(menu.children);
       }
-    })
-  }
+    });
+  };
 
-  traverse(menuList)
-  return ids
-}
+  traverse(menuList);
+  return ids;
+};
 
 const selectAllPermissions = () => {
-  selectedMenuIds.value = getAllMenuIds(menuPermissions.value)
-}
+  selectedMenuIds.value = getAllMenuIds(menuPermissions.value);
+};
 
 const unselectAllPermissions = () => {
-  selectedMenuIds.value = []
-}
+  selectedMenuIds.value = [];
+};
 
 // 折叠展开功能
 const toggleMenuExpanded = (menuId: string) => {
   if (expandedMenus.value.has(menuId)) {
-    expandedMenus.value.delete(menuId)
+    expandedMenus.value.delete(menuId);
   } else {
-    expandedMenus.value.add(menuId)
+    expandedMenus.value.add(menuId);
   }
-}
+};
 
 const isMenuExpanded = (menuId: string) => {
-  return expandedMenus.value.has(menuId)
-}
+  return expandedMenus.value.has(menuId);
+};
 
 // 监听搜索变化，重置页码
 watch(searchValue, () => {
-  currentPage.value = 1
-})
+  currentPage.value = 1;
+});
 
 // 生命周期
 onMounted(() => {
-  refreshData()
-})
+  refreshData();
+});
 </script>

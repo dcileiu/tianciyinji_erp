@@ -92,23 +92,23 @@ import {
   GalleryVerticalEnd,
   Map,
   PieChart,
-} from 'lucide-vue-next'
+} from 'lucide-vue-next';
 
 // shadcn-nuxt 会自动导入 Sidebar 相关组件
 interface SidebarProps {
-  collapsible?: 'icon' | 'offcanvas' | 'none'
+  collapsible?: 'icon' | 'offcanvas' | 'none';
 }
 
 withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
-})
+});
 
 // 使用权限系统
-const { loading: permissionLoading } = usePermissions()
-const { user } = useAuth()
+const { loading: permissionLoading } = usePermissions();
+const { user } = useAuth();
 
 // 加载状态
-const isLoading = computed(() => permissionLoading.value)
+const isLoading = computed(() => permissionLoading.value);
 
 // 团队数据
 const teams = ref([
@@ -127,7 +127,7 @@ const teams = ref([
     logo: Command,
     plan: 'Standard',
   },
-])
+]);
 
 // 项目数据
 const projects = ref([
@@ -146,7 +146,7 @@ const projects = ref([
     url: '/monitoring',
     icon: Map,
   },
-])
+]);
 
 // 当前用户信息
 const currentUser = computed(() => {
@@ -155,13 +155,16 @@ const currentUser = computed(() => {
       name: 'User',
       email: 'user@example.com',
       avatar: '',
-    }
+    };
   }
 
   return {
-    name: (user.value.user_metadata?.name as string) || user.value.email?.split('@')[0] || 'User',
+    name:
+      (user.value.user_metadata?.name as string) ||
+      user.value.email?.split('@')[0] ||
+      'User',
     email: user.value.email || 'user@example.com',
     avatar: user.value.user_metadata?.avatar_url || '',
-  }
-})
+  };
+});
 </script>

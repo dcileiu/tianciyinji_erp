@@ -82,50 +82,55 @@
 // 页面配置
 definePageMeta({
   requiresAuth: false, // 调试页面允许访问
-  layout: 'default'
-})
+  layout: 'default',
+});
 
-const { user } = useAuth()
-const { permissions, authorizedMenus, loading, error, refreshPermissions } = usePermissions()
+const { user } = useAuth();
+const { permissions, authorizedMenus, loading, error, refreshPermissions } =
+  usePermissions();
 
-const apiResult = ref('')
+const apiResult = ref('');
 
 // 测试API调用
 const testAPI = async () => {
   try {
-    apiResult.value = '正在测试API...'
+    apiResult.value = '正在测试API...';
 
     const [permissionsRes, menusRes] = await Promise.all([
       $fetch('/api/user', { query: { action: 'permissions' } }),
-      $fetch('/api/user', { query: { action: 'menus' } })
-    ])
+      $fetch('/api/user', { query: { action: 'menus' } }),
+    ]);
 
-    apiResult.value = JSON.stringify({
-      permissions: permissionsRes,
-      menus: menusRes
-    }, null, 2)
+    apiResult.value = JSON.stringify(
+      {
+        permissions: permissionsRes,
+        menus: menusRes,
+      },
+      null,
+      2
+    );
   } catch (err: any) {
-    apiResult.value = `API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`
+    apiResult.value = `API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`;
   }
-}
+};
 
 // 深度调试用户数据
 const debugUserData = async () => {
   try {
-    apiResult.value = '正在深度调试...'
+    apiResult.value = '正在深度调试...';
 
-    const debugRes = await $fetch('/api/debug/user-data')
+    const debugRes = await $fetch('/api/debug/user-data');
 
-    apiResult.value = JSON.stringify(debugRes, null, 2)
+    apiResult.value = JSON.stringify(debugRes, null, 2);
   } catch (err: any) {
-    apiResult.value = `调试API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`
+    apiResult.value = `调试API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`;
   }
-}
+};
 
 // 页面加载时获取权限
 onMounted(async () => {
   if (user.value && permissions.value.length === 0) {
-    await refreshPermissions()
+    await refreshPermissions();
   }
-})
+});
 </script>

@@ -161,35 +161,35 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDown } from 'lucide-vue-next'
-import IconPicker from '~/components/IconPicker.vue'
-import { getIconByName } from '~/components/icons'
-import type { Menu, MenuForm } from '~/composables/useMenus'
+import { ChevronDown } from 'lucide-vue-next';
+import IconPicker from '~/components/IconPicker.vue';
+import { getIconByName } from '~/components/icons';
+import type { Menu, MenuForm } from '~/composables/useMenus';
 
 interface MenuDialogProps {
-  open: boolean
-  editingMenu?: Menu | null
-  parentMenuOptions: Array<{ label: string; value: string }>
-  saving?: boolean
+  open: boolean;
+  editingMenu?: Menu | null;
+  parentMenuOptions: Array<{ label: string; value: string }>;
+  saving?: boolean;
 }
 
 interface MenuDialogEmits {
-  (e: 'update:open', value: boolean): void
-  (e: 'save', data: MenuForm): void
+  (e: 'update:open', value: boolean): void;
+  (e: 'save', data: MenuForm): void;
 }
 
 const props = withDefaults(defineProps<MenuDialogProps>(), {
   editingMenu: null,
   saving: false,
-})
+});
 
-const emit = defineEmits<MenuDialogEmits>()
+const emit = defineEmits<MenuDialogEmits>();
 
 // 双向绑定对话框显示状态
 const dialogVisible = computed({
   get: () => props.open,
   set: (value) => emit('update:open', value),
-})
+});
 
 // 表单数据
 const formData = ref<MenuForm>({
@@ -201,95 +201,101 @@ const formData = ref<MenuForm>({
   status: 'active',
   permission: null,
   type: 'menu',
-})
+});
 
 // 用于处理 null 和 string 之间的转换的计算属性
 const parentIdString = computed({
   get: () => formData.value.parent_id || '0',
   set: (value: string) => {
-    formData.value.parent_id = value || '0'
-  }
-})
+    formData.value.parent_id = value || '0';
+  },
+});
 
 const pathString = computed({
   get: () => formData.value.path || '',
   set: (value: string) => {
-    formData.value.path = value === '' ? null : value
-  }
-})
+    formData.value.path = value === '' ? null : value;
+  },
+});
 
 const iconString = computed({
   get: () => formData.value.icon || '',
   set: (value: string) => {
-    formData.value.icon = value === '' ? null : value
-  }
-})
+    formData.value.icon = value === '' ? null : value;
+  },
+});
 
 const permissionString = computed({
   get: () => formData.value.permission || '',
   set: (value: string) => {
-    formData.value.permission = value === '' ? null : value
-  }
-})
+    formData.value.permission = value === '' ? null : value;
+  },
+});
 
 // 选项数据
 const statusOptions = [
   { label: '启用', value: 'active' },
   { label: '禁用', value: 'inactive' },
-]
+];
 
 const typeOptions = [
   { label: '目录', value: 'directory' },
   { label: '菜单', value: 'menu' },
   { label: '权限', value: 'permission' },
-]
+];
 
 // 监听编辑菜单变化，更新表单数据
-watch(() => props.editingMenu, (menu) => {
-  if (menu) {
-    Object.assign(formData.value, {
-      name: menu.name,
-      parent_id: menu.parent_id || '0',
-      path: menu.path || null,
-      icon: menu.icon || null,
-      sort: menu.sort,
-      status: menu.status,
-      permission: menu.permission || null,
-      type: menu.type,
-    })
-  } else {
-    // 重置表单
-    Object.assign(formData.value, {
-      name: '',
-      parent_id: '0',
-      path: null,
-      icon: null,
-      sort: 0,
-      status: 'active',
-      permission: null,
-      type: 'menu',
-    })
-  }
-}, { immediate: true })
+watch(
+  () => props.editingMenu,
+  (menu) => {
+    if (menu) {
+      Object.assign(formData.value, {
+        name: menu.name,
+        parent_id: menu.parent_id || '0',
+        path: menu.path || null,
+        icon: menu.icon || null,
+        sort: menu.sort,
+        status: menu.status,
+        permission: menu.permission || null,
+        type: menu.type,
+      });
+    } else {
+      // 重置表单
+      Object.assign(formData.value, {
+        name: '',
+        parent_id: '0',
+        path: null,
+        icon: null,
+        sort: 0,
+        status: 'active',
+        permission: null,
+        type: 'menu',
+      });
+    }
+  },
+  { immediate: true }
+);
 
 // 获取菜单图标
 const getMenuIcon = (iconName?: string | null) => {
-  if (!iconName) return getIconByName('HelpCircle')
+  if (!iconName) {
+    return getIconByName('HelpCircle');
+  }
 
-  return getIconByName(iconName)
-}
+  return getIconByName(iconName);
+};
 
 // 事件处理
 const handleSave = () => {
   if (!formData.value.name.trim()) {
     // 可以在这里添加验证逻辑
-    return
+    return;
   }
 
-  emit('save', { ...formData.value })
-}
+  emit('save', { ...formData.value });
+};
 
 const handleCancel = () => {
-  emit('update:open', false)
-}
+  emit('update:open', false);
+};
 </script>

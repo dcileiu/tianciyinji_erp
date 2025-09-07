@@ -30,46 +30,48 @@
 </template>
 
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 interface Menu {
-  id: string
-  name: string
-  type: 'directory' | 'menu' | 'permission'
-  children?: Menu[]
+  id: string;
+  name: string;
+  type: 'directory' | 'menu' | 'permission';
+  children?: Menu[];
 }
 
 interface Props {
-  menu: Menu
-  selectedPermissions: string[]
+  menu: Menu;
+  selectedPermissions: string[];
 }
 
-interface Emits {
-  (event: 'update-permission', menuId: string, checked: boolean): void
-}
+type Emits = (
+  event: 'update-permission',
+  menuId: string,
+  checked: boolean
+) => void;
 
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 // 检查是否选中
 const isChecked = computed(() => {
-  return props.selectedPermissions.includes(props.menu.id)
-})
+  return props.selectedPermissions.includes(props.menu.id);
+});
 
 // 处理选择变化
 const handleCheck = (checked: boolean) => {
-  emit('update-permission', props.menu.id, checked)
-}
+  emit('update-permission', props.menu.id, checked);
+};
 
 // 获取类型标签
 const getTypeLabel = (type: string) => {
   const typeMap: Record<string, string> = {
     directory: '目录',
     menu: '菜单',
-    permission: '权限'
-  }
-  return typeMap[type] || '未知'
-}
+    permission: '权限',
+  };
+  return typeMap[type] || '未知';
+};
 </script>

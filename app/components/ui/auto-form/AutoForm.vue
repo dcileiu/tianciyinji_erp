@@ -41,8 +41,9 @@ const shapes = computed(() => {
       baseItem && 'values' in baseItem._def
         ? (baseItem._def.values as string[])
         : undefined;
-    if (!Array.isArray(options) && typeof options === 'object')
+    if (!Array.isArray(options) && typeof options === 'object') {
       options = Object.values(options);
+    }
 
     val[name as keyof T] = {
       type: getBaseType(item),
@@ -65,12 +66,14 @@ const fields = computed(() => {
     };
   } = {};
   for (const key in shapes.value) {
-    const shape = shapes.value[key];
-    val[key as keyof z.infer<T>] = {
-      shape,
-      config: props.fieldConfig?.[key] as ConfigItem,
-      fieldName: key,
-    };
+    if (Object.hasOwn(shapes.value, key)) {
+      const shape = shapes.value[key];
+      val[key as keyof z.infer<T>] = {
+        shape,
+        config: props.fieldConfig?.[key] as ConfigItem,
+        fieldName: key,
+      };
+    }
   }
   return val;
 });

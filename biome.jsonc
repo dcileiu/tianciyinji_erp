@@ -26,6 +26,28 @@
       "toast"
     ]
   },
+  "overrides": [
+    {
+      "includes": ["**/*.vue"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["app/plugins/permission-directive.client.ts"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "noUnnecessaryConditions": "off"
+          }
+        }
+      }
+    }
+  ],
   "linter": {
     "rules": {
       "correctness": {

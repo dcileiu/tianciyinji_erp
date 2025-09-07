@@ -66,42 +66,44 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 
 interface Props {
-  roleId?: string
-  selectedMenuIds?: string[]
+  roleId?: string;
+  selectedMenuIds?: string[];
 }
 
-interface Emits {
-  (event: 'update:selectedMenuIds', value: string[]): void
-}
+type Emits = (event: 'update:selectedMenuIds', value: string[]) => void;
 
 const props = withDefaults(defineProps<Props>(), {
-  selectedMenuIds: () => []
-})
+  selectedMenuIds: () => [],
+});
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
 // 状态
-const menus = ref<any[]>([])
-const loading = ref(false)
-const selectedIds = ref<string[]>([])
+const menus = ref<any[]>([]);
+const loading = ref(false);
+const selectedIds = ref<string[]>([]);
 
 // 初始化选中的菜单
-watch(() => props.selectedMenuIds, (newValue) => {
-  selectedIds.value = [...(newValue || [])]
-}, { immediate: true })
+watch(
+  () => props.selectedMenuIds,
+  (newValue) => {
+    selectedIds.value = [...(newValue || [])];
+  },
+  { immediate: true }
+);
 
 // 监听选中变化并向外emit（简化处理）
 watchEffect(() => {
-  emit('update:selectedMenuIds', selectedIds.value)
-})
+  emit('update:selectedMenuIds', selectedIds.value);
+});
 
 // 获取菜单数据
 const fetchMenus = async () => {
   try {
-    loading.value = true
+    loading.value = true;
     // 使用模拟数据 - 完整的ERP菜单结构
     menus.value = [
       {
@@ -114,8 +116,8 @@ const fetchMenus = async () => {
           { id: '13', name: '部门管理', type: 'menu' },
           { id: '14', name: '菜单管理', type: 'menu' },
           { id: '15', name: '系统配置', type: 'menu' },
-          { id: '16', name: '操作日志', type: 'menu' }
-        ]
+          { id: '16', name: '操作日志', type: 'menu' },
+        ],
       },
       {
         id: '2',
@@ -125,8 +127,8 @@ const fetchMenus = async () => {
           { id: '21', name: '客户管理', type: 'menu' },
           { id: '22', name: '销售订单', type: 'menu' },
           { id: '23', name: '销售发货', type: 'menu' },
-          { id: '24', name: '销售退货', type: 'menu' }
-        ]
+          { id: '24', name: '销售退货', type: 'menu' },
+        ],
       },
       {
         id: '3',
@@ -136,8 +138,8 @@ const fetchMenus = async () => {
           { id: '31', name: '供应商管理', type: 'menu' },
           { id: '32', name: '采购订单', type: 'menu' },
           { id: '33', name: '采购入库', type: 'menu' },
-          { id: '34', name: '采购退货', type: 'menu' }
-        ]
+          { id: '34', name: '采购退货', type: 'menu' },
+        ],
       },
       {
         id: '4',
@@ -147,8 +149,8 @@ const fetchMenus = async () => {
           { id: '41', name: '仓库管理', type: 'menu' },
           { id: '42', name: '库存查询', type: 'menu' },
           { id: '43', name: '库存调拨', type: 'menu' },
-          { id: '44', name: '盘点管理', type: 'menu' }
-        ]
+          { id: '44', name: '盘点管理', type: 'menu' },
+        ],
       },
       {
         id: '5',
@@ -158,8 +160,8 @@ const fetchMenus = async () => {
           { id: '51', name: '生产计划', type: 'menu' },
           { id: '52', name: '生产订单', type: 'menu' },
           { id: '53', name: '工艺管理', type: 'menu' },
-          { id: '54', name: 'BOM管理', type: 'menu' }
-        ]
+          { id: '54', name: 'BOM管理', type: 'menu' },
+        ],
       },
       {
         id: '6',
@@ -169,8 +171,8 @@ const fetchMenus = async () => {
           { id: '61', name: '应收管理', type: 'menu' },
           { id: '62', name: '应付管理', type: 'menu' },
           { id: '63', name: '发票管理', type: 'menu' },
-          { id: '64', name: '费用管理', type: 'menu' }
-        ]
+          { id: '64', name: '费用管理', type: 'menu' },
+        ],
       },
       {
         id: '7',
@@ -180,64 +182,63 @@ const fetchMenus = async () => {
           { id: '71', name: '销售报表', type: 'menu' },
           { id: '72', name: '采购报表', type: 'menu' },
           { id: '73', name: '库存报表', type: 'menu' },
-          { id: '74', name: '财务报表', type: 'menu' }
-        ]
-      }
-    ]
+          { id: '74', name: '财务报表', type: 'menu' },
+        ],
+      },
+    ];
   } catch (error) {
-    console.error('获取菜单失败:', error)
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 // 处理权限更新
 const handlePermissionUpdate = (menuId: string, checked: boolean) => {
-  const newSelectedIds = [...selectedIds.value]
+  const newSelectedIds = [...selectedIds.value];
 
   if (checked) {
     if (!newSelectedIds.includes(menuId)) {
-      newSelectedIds.push(menuId)
+      newSelectedIds.push(menuId);
     }
   } else {
-    const index = newSelectedIds.indexOf(menuId)
+    const index = newSelectedIds.indexOf(menuId);
     if (index > -1) {
-      newSelectedIds.splice(index, 1)
+      newSelectedIds.splice(index, 1);
     }
   }
 
-  selectedIds.value = newSelectedIds
-}
+  selectedIds.value = newSelectedIds;
+};
 
 // 获取所有菜单ID
 const getAllMenuIds = (menuList: any[]): string[] => {
-  const ids: string[] = []
+  const ids: string[] = [];
 
   const traverse = (menus: any[]) => {
-    menus.forEach(menu => {
-      ids.push(menu.id)
+    menus.forEach((menu) => {
+      ids.push(menu.id);
       if (menu.children && menu.children.length > 0) {
-        traverse(menu.children)
+        traverse(menu.children);
       }
-    })
-  }
+    });
+  };
 
-  traverse(menuList)
-  return ids
-}
+  traverse(menuList);
+  return ids;
+};
 
 // 全选
 const selectAll = () => {
-  selectedIds.value = getAllMenuIds(menus.value)
-}
+  selectedIds.value = getAllMenuIds(menus.value);
+};
 
 // 取消全选
 const unselectAll = () => {
-  selectedIds.value = []
-}
+  selectedIds.value = [];
+};
 
 // 初始化
 onMounted(() => {
-  fetchMenus()
-})
+  fetchMenus();
+});
 </script>

@@ -11,6 +11,6 @@
 definePageMeta({
   title: '应收管理',
   description: '管理客户应收账款和收款记录',
-  layout: 'default'
-})
+  layout: 'default',
+});
 </script>

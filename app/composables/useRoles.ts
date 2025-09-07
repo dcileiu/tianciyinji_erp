@@ -1,38 +1,38 @@
 export interface RoleData {
-  id: string
-  name: string
-  code: string
-  description: string | null
-  status: 'active' | 'inactive'
-  type: 'system' | 'custom'
-  created_at: string
-  updated_at: string
+  id: string;
+  name: string;
+  code: string;
+  description: string | null;
+  status: 'active' | 'inactive';
+  type: 'system' | 'custom';
+  created_at: string;
+  updated_at: string;
 }
 
 export interface RoleForm {
-  name: string
-  code: string
-  description?: string
-  type: 'system' | 'custom'
-  status: 'active' | 'inactive'
+  name: string;
+  code: string;
+  description?: string;
+  type: 'system' | 'custom';
+  status: 'active' | 'inactive';
 }
 
 export const useRoles = () => {
-  const supabase = useSupabaseClient()
+  const supabase = useSupabaseClient();
 
   // 响应式状态
-  const roles = ref<RoleData[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+  const roles = ref<RoleData[]>([]);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
 
   // 获取角色列表
   const fetchRoles = async () => {
     try {
-      loading.value = true
-      error.value = null
+      loading.value = true;
+      error.value = null;
 
       // 调用API获取角色数据
-      const result = await $fetch('/api/roles') as any
+      const result = (await $fetch('/api/roles')) as any;
 
       if (result.code === 0) {
         roles.value = result.data.map((role: any) => ({
@@ -43,21 +43,20 @@ export const useRoles = () => {
           status: role.status,
           type: role.is_system ? 'system' : 'custom',
           created_at: role.created_at,
-          updated_at: role.updated_at
-        }))
+          updated_at: role.updated_at,
+        }));
       }
     } catch (err: any) {
-      error.value = err.message || '获取角色列表失败'
-      console.error('获取角色列表失败:', err)
+      error.value = err.message || '获取角色列表失败';
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 创建角色
   const createRole = async (roleData: RoleForm) => {
     try {
-      loading.value = true
+      loading.value = true;
 
       const result = await $fetch('/api/roles', {
         method: 'POST',
@@ -66,25 +65,25 @@ export const useRoles = () => {
           code: roleData.code,
           description: roleData.description,
           status: roleData.status,
-          is_system: roleData.type === 'system'
-        }
-      })
+          is_system: roleData.type === 'system',
+        },
+      });
 
-      return result
+      return result;
     } catch (err: any) {
       return {
         code: -1,
-        message: err.message || '创建角色失败'
-      }
+        message: err.message || '创建角色失败',
+      };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 更新角色
   const updateRole = async (id: string, roleData: RoleForm) => {
     try {
-      loading.value = true
+      loading.value = true;
 
       const result = await $fetch('/api/roles', {
         method: 'PUT',
@@ -94,41 +93,41 @@ export const useRoles = () => {
           code: roleData.code,
           description: roleData.description,
           status: roleData.status,
-          is_system: roleData.type === 'system'
-        }
-      })
+          is_system: roleData.type === 'system',
+        },
+      });
 
-      return result
+      return result;
     } catch (err: any) {
       return {
         code: -1,
-        message: err.message || '更新角色失败'
-      }
+        message: err.message || '更新角色失败',
+      };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 删除角色
   const deleteRole = async (id: string) => {
     try {
-      loading.value = true
+      loading.value = true;
 
       const result = await $fetch('/api/roles', {
         method: 'DELETE',
-        body: { id }
-      })
+        body: { id },
+      });
 
-      return result
+      return result;
     } catch (err: any) {
       return {
         code: -1,
-        message: err.message || '删除角色失败'
-      }
+        message: err.message || '删除角色失败',
+      };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 获取角色菜单权限
   const getRoleMenuPermissions = async (roleId: string): Promise<string[]> => {
@@ -136,48 +135,48 @@ export const useRoles = () => {
       const { data, error } = await supabase
         .from('roles_menu')
         .select('menu_id')
-        .eq('role_id', roleId)
+        .eq('role_id', roleId);
 
-      if (error) throw error
-      return data?.map(item => item.menu_id) || []
+      if (error) {
+        throw error;
+      }
+      return data?.map((item) => item.menu_id) || [];
     } catch (err: any) {
-      console.error('获取角色权限失败:', err)
-      return []
+      return [];
     }
-  }
+  };
 
   // 更新角色菜单权限
-  const updateRoleMenuPermissions = async (roleId: string, menuIds: string[]) => {
+  const updateRoleMenuPermissions = async (
+    roleId: string,
+    menuIds: string[]
+  ) => {
     try {
       // 先删除现有权限
-      await supabase
-        .from('roles_menu')
-        .delete()
-        .eq('role_id', roleId)
+      await supabase.from('roles_menu').delete().eq('role_id', roleId);
 
       // 添加新权限
       if (menuIds.length > 0) {
-        const permissions = menuIds.map(menuId => ({
+        const permissions = menuIds.map((menuId) => ({
           role_id: roleId,
-          menu_id: menuId
-        }))
+          menu_id: menuId,
+        }));
 
-        const { error } = await supabase
-          .from('roles_menu')
-          .insert(permissions)
+        const { error } = await supabase.from('roles_menu').insert(permissions);
 
-        if (error) throw error
+        if (error) {
+          throw error;
+        }
       }
 
-      return { code: 0, message: '权限更新成功' }
+      return { code: 0, message: '权限更新成功' };
     } catch (err: any) {
-      console.error('更新角色权限失败:', err)
       return {
         code: -1,
-        message: err.message || '更新权限失败'
-      }
+        message: err.message || '更新权限失败',
+      };
     }
-  }
+  };
 
   return {
     // 状态
@@ -191,6 +190,6 @@ export const useRoles = () => {
     updateRole,
     deleteRole,
     getRoleMenuPermissions,
-    updateRoleMenuPermissions
-  }
-}
+    updateRoleMenuPermissions,
+  };
+};

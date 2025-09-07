@@ -11,6 +11,6 @@
 definePageMeta({
   title: '仓库管理',
   description: '管理仓库信息、存储区域和库位设置',
-  layout: 'default'
-})
+  layout: 'default',
+});
 </script>

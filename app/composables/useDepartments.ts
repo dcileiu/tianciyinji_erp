@@ -1,85 +1,84 @@
 // 部门数据类型定义
 export interface DepartmentData {
-  id: string
-  name: string
-  code: string
-  description?: string | null
-  parent_id?: string | null
-  manager_id?: string | null
-  sort?: number
-  status: 'active' | 'inactive'
-  created_at: string
-  updated_at: string
+  id: string;
+  name: string;
+  code: string;
+  description?: string | null;
+  parent_id?: string | null;
+  manager_id?: string | null;
+  sort?: number;
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
   // 扩展字段
-  children?: DepartmentData[]
-  parent?: DepartmentData | null
+  children?: DepartmentData[];
+  parent?: DepartmentData | null;
   manager?: {
-    id: string
-    name: string
-    email: string
-  } | null
-  employee_count?: number
+    id: string;
+    name: string;
+    email: string;
+  } | null;
+  employee_count?: number;
 }
 
 // 部门表单类型
 export interface DepartmentForm {
-  name: string
-  code: string
-  description?: string
-  parent_id?: string
-  manager_id?: string
-  sort: number
-  status: 'active' | 'inactive'
+  name: string;
+  code: string;
+  description?: string;
+  parent_id?: string;
+  manager_id?: string;
+  sort: number;
+  status: 'active' | 'inactive';
 }
 
 // 部门查询类型
 export interface DepartmentQuery {
-  name?: string
-  status?: 'active' | 'inactive' | 'all'
-  parent_id?: string
-  manager_id?: string
+  name?: string;
+  status?: 'active' | 'inactive' | 'all';
+  parent_id?: string;
+  manager_id?: string;
 }
 
 export const useDepartments = () => {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<Database>();
 
   // 状态
-  const departments = ref<DepartmentData[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+  const departments = ref<DepartmentData[]>([]);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
 
   // 获取部门列表
   const getDepartments = async (query: DepartmentQuery = {}) => {
     try {
-      loading.value = true
-      error.value = null
+      loading.value = true;
+      error.value = null;
 
       // 调用服务端 API
-      const result = await $fetch('/api/departments', {
-        query: query
-      }) as any
+      const result = (await $fetch('/api/departments', {
+        query,
+      })) as any;
 
       if (result.code === 0) {
-        departments.value = result.data
+        departments.value = result.data;
         return {
           code: 0,
           message: result.message,
-          data: result.data
-        }
-      } else {
-        return result
+          data: result.data,
+        };
       }
+      return result;
     } catch (err: any) {
-      error.value = err.message || '获取部门列表失败'
+      error.value = err.message || '获取部门列表失败';
       return {
         code: -1,
         message: err.message || '获取部门列表失败',
-        data: []
-      }
+        data: [],
+      };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 获取单个部门
   const getDepartment = async (id: string) => {
@@ -88,134 +87,150 @@ export const useDepartments = () => {
         .from('departments')
         .select('*')
         .eq('id', id)
-        .single()
+        .single();
 
-      if (error) throw error
+      if (error) {
+        throw error;
+      }
 
       return {
         code: 0,
         message: '获取成功',
-        data
-      }
+        data,
+      };
     } catch (err: any) {
       return {
         code: -1,
         message: err.message || '获取部门失败',
-        data: null
-      }
+        data: null,
+      };
     }
-  }
+  };
 
   // 创建部门
   const createDepartment = async (departmentData: DepartmentForm) => {
     try {
-      loading.value = true
-      error.value = null
+      loading.value = true;
+      error.value = null;
 
       // 调用服务端 API 创建部门
       const result = await $fetch('/api/departments', {
         method: 'POST',
-        body: departmentData
-      })
+        body: departmentData,
+      });
 
-      return result
+      return result;
     } catch (err: any) {
-      error.value = err.message || '创建部门失败'
+      error.value = err.message || '创建部门失败';
       return {
         code: -1,
         message: err.message || '创建部门失败',
-        data: null
-      }
+        data: null,
+      };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 更新部门
-  const updateDepartment = async (id: string, departmentData: Partial<DepartmentForm>) => {
+  const updateDepartment = async (
+    id: string,
+    departmentData: Partial<DepartmentForm>
+  ) => {
     try {
-      loading.value = true
-      error.value = null
+      loading.value = true;
+      error.value = null;
 
       // 调用服务端 API 更新部门
       const result = await $fetch('/api/departments', {
         method: 'PUT',
         body: {
           id,
-          ...departmentData
-        }
-      })
+          ...departmentData,
+        },
+      });
 
-      return result
+      return result;
     } catch (err: any) {
-      error.value = err.message || '更新部门失败'
+      error.value = err.message || '更新部门失败';
       return {
         code: -1,
         message: err.message || '更新部门失败',
-        data: null
-      }
+        data: null,
+      };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 删除部门
   const deleteDepartment = async (id: string) => {
     try {
-      loading.value = true
-      error.value = null
+      loading.value = true;
+      error.value = null;
 
       // 调用服务端 API 删除部门
       const result = await $fetch('/api/departments', {
         method: 'DELETE',
-        body: { id }
-      })
+        body: { id },
+      });
 
-      return result
+      return result;
     } catch (err: any) {
-      error.value = err.message || '删除部门失败'
+      error.value = err.message || '删除部门失败';
       return {
         code: -1,
         message: err.message || '删除部门失败',
-        data: null
-      }
+        data: null,
+      };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   // 获取部门树结构
   const getDepartmentTree = () => {
-    const buildTree = (depts: DepartmentData[], parentId: string | null = null): DepartmentData[] => {
+    const buildTree = (
+      depts: DepartmentData[],
+      parentId: string | null = null
+    ): DepartmentData[] => {
       return depts
-        .filter(dept => dept.parent_id === parentId)
+        .filter((dept) => dept.parent_id === parentId)
         .sort((a, b) => (a.sort || 0) - (b.sort || 0))
-        .map(dept => ({
+        .map((dept) => ({
           ...dept,
-          children: buildTree(depts, dept.id)
-        }))
-    }
+          children: buildTree(depts, dept.id),
+        }));
+    };
 
-    return computed(() => buildTree(departments.value))
-  }
+    return computed(() => buildTree(departments.value));
+  };
 
-    // 获取部门路径
+  // 获取部门路径
   const getDepartmentPath = (departmentId: string): DepartmentData[] => {
-    const path: DepartmentData[] = []
-    let current = departments.value.find((d: DepartmentData) => d.id === departmentId)
+    const path: DepartmentData[] = [];
+    let current = departments.value.find(
+      (d: DepartmentData) => d.id === departmentId
+    );
 
     while (current) {
-      path.unshift(current)
-      current = current.parent_id ? departments.value.find((d: DepartmentData) => d.id === current!.parent_id) : undefined
+      path.unshift(current);
+      current = current.parent_id
+        ? departments.value.find(
+            (d: DepartmentData) => d.id === current!.parent_id
+          )
+        : undefined;
     }
 
-    return path
-  }
+    return path;
+  };
 
   // 检查是否可以删除部门（是否有子部门）
   const canDeleteDepartment = (departmentId: string): boolean => {
-    return !departments.value.some((d: DepartmentData) => d.parent_id === departmentId)
-  }
+    return !departments.value.some(
+      (d: DepartmentData) => d.parent_id === departmentId
+    );
+  };
 
   return {
     // 状态
@@ -231,6 +246,6 @@ export const useDepartments = () => {
     deleteDepartment,
     getDepartmentTree,
     getDepartmentPath,
-    canDeleteDepartment
-  }
-}
+    canDeleteDepartment,
+  };
+};

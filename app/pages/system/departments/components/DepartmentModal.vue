@@ -104,11 +104,9 @@
 </template>
 
 <script setup lang="ts">
-import { Building, Loader2 } from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
-import type { DepartmentData } from '~/composables/useDepartments'
-
-import { Button } from '@/components/ui/button'
+import { Building, Loader2 } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -116,44 +114,45 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import type { DepartmentData } from '~/composables/useDepartments';
 
 interface Props {
-  open: boolean
-  department?: DepartmentData | null
-  departments: DepartmentData[]
-  saving: boolean
+  open: boolean;
+  department?: DepartmentData | null;
+  departments: DepartmentData[];
+  saving: boolean;
 }
 
 interface FormData {
-  id?: string
-  name: string
-  code: string
-  description: string
-  parent_id: string
-  sort: number
-  status: 'active' | 'inactive'
+  id?: string;
+  name: string;
+  code: string;
+  description: string;
+  parent_id: string;
+  sort: number;
+  status: 'active' | 'inactive';
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  close: []
-  save: [data: FormData]
-}>()
+  close: [];
+  save: [data: FormData];
+}>();
 
-const isEditing = computed(() => !!props.department)
-const modalTitle = computed(() => isEditing.value ? '编辑部门' : '新增部门')
+const isEditing = computed(() => !!props.department);
+const modalTitle = computed(() => (isEditing.value ? '编辑部门' : '新增部门'));
 
 const formData = reactive<FormData>({
   name: '',
@@ -161,52 +160,59 @@ const formData = reactive<FormData>({
   description: '',
   parent_id: '',
   sort: 1,
-  status: 'active'
-})
+  status: 'active',
+});
 
 // 可选的上级部门（排除自己和自己的子部门）
 const availableParentDepartments = computed(() => {
-  return props.departments.filter(dept => {
+  return props.departments.filter((dept) => {
     if (isEditing.value && props.department) {
-      return dept.id !== props.department.id && dept.parent_id !== props.department.id
+      return (
+        dept.id !== props.department.id &&
+        dept.parent_id !== props.department.id
+      );
     }
-    return true
-  })
-})
+    return true;
+  });
+});
 
 // 监听部门变化，初始化表单数据
-watch(() => props.department, (department) => {
-  if (department) {
-    Object.assign(formData, {
-      id: department.id,
-      name: department.name,
-      code: department.code,
-      description: department.description || '',
-      parent_id: department.parent_id || '',
-      sort: department.sort || 1,
-      status: department.status
-    })
-  } else {
-    // 重置表单
-    Object.assign(formData, {
-      id: undefined,
-      name: '',
-      code: '',
-      description: '',
-      parent_id: '',
-      sort: 1,
-      status: 'active'
-    })
-  }
-}, { immediate: true })
+watch(
+  () => props.department,
+  (department) => {
+    if (department) {
+      Object.assign(formData, {
+        id: department.id,
+        name: department.name,
+        code: department.code,
+        description: department.description || '',
+        parent_id: department.parent_id || '',
+        sort: department.sort || 1,
+        status: department.status,
+      });
+    } else {
+      // 重置表单
+      Object.assign(formData, {
+        id: undefined,
+        name: '',
+        code: '',
+        description: '',
+        parent_id: '',
+        sort: 1,
+        status: 'active',
+      });
+    }
+  },
+  { immediate: true }
+);
 
 const handleSave = () => {
   // 验证必填字段
-  if (!formData.name || !formData.code) {
-    toast.error('请填写必填字段')
-    return
+  if (!(formData.name && formData.code)) {
+    toast.error('请填写必填字段');
+    return;
   }
 
-  emit('save', { ...formData })
-}
+  emit('save', { ...formData });
+};
 </script>

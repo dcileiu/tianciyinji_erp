@@ -2,7 +2,7 @@
 import { PlusIcon, TrashIcon } from 'lucide-vue-next';
 import { FieldArray, FieldContextKey, useField } from 'vee-validate';
 import { computed, provide } from 'vue';
-import * as z from 'zod';
+import { type ZodAny, ZodArray, ZodDefault, type z } from 'zod';
 import {
   Accordion,
   AccordionContent,
@@ -21,26 +21,28 @@ const props = defineProps<{
   fieldName: string;
   required?: boolean;
   config?: Config<T>;
-  schema?: z.ZodArray<T>;
+  schema?: ZodArray<T>;
   disabled?: boolean;
 }>();
 
 function isZodArray(
-  item: z.ZodArray<any> | z.ZodDefault<any>
-): item is z.ZodArray<any> {
-  return item instanceof z.ZodArray;
+  item: ZodArray<any> | ZodDefault<any>
+): item is ZodArray<any> {
+  return item instanceof ZodArray;
 }
 
 function isZodDefault(
-  item: z.ZodArray<any> | z.ZodDefault<any>
-): item is z.ZodDefault<any> {
-  return item instanceof z.ZodDefault;
+  item: ZodArray<any> | ZodDefault<any>
+): item is ZodDefault<any> {
+  return item instanceof ZodDefault;
 }
 
 const itemShape = computed(() => {
-  if (!props.schema) return;
+  if (!props.schema) {
+    return;
+  }
 
-  const schema: z.ZodAny = isZodArray(props.schema)
+  const schema: ZodAny = isZodArray(props.schema)
     ? props.schema._def.type
     : isZodDefault(props.schema)
       ? // @ts-expect-error missing schema

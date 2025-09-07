@@ -9,8 +9,8 @@
     "preview": "nuxt preview --port 3000",
     "postinstall": "nuxt prepare",
     "lint": "npx ultracite lint",
-    "lint:fix": "npx ultracite format",
-    "format": "npx ultracite format",
+    "lint:fix": "npx ultracite fix",
+    "format": "npx ultracite fix",
     "format:check": "npx ultracite lint",
     "type-check": "nuxt typecheck",
     "clean": "nuxt cleanup",
@@ -62,7 +62,8 @@
   },
   "lint-staged": {
     "*.{js,ts,vue}": [
-      "npx ultracite format && npx ultracite lint:fix"
+      "npx ultracite fix",
+      "npx ultracite lint"
     ]
   }
 }

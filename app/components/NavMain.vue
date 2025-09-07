@@ -1,41 +1,59 @@
 <script setup lang="ts">
-import { ChevronRight } from 'lucide-vue-next'
-import { getIconByName } from '~/components/icons'
-import type { MenuPermission } from '~/stores/permissions'
+import { ChevronRight } from 'lucide-vue-next';
+import { getIconByName } from '~/components/icons';
+import type { MenuPermission } from '~/stores/permissions';
 
 interface Props {
-  items: MenuPermission[]
+  items: MenuPermission[];
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
-const route = useRoute()
-const openMap = reactive<Record<string, boolean>>({})
+const route = useRoute();
+const openMap = reactive<Record<string, boolean>>({});
 
 const isDirectoryActive = (dir: MenuPermission) => {
-  return Array.isArray(dir.children) && dir.children.some((child) => {
-    if (!child?.path) return false
-    return route.path === child.path || route.path.startsWith(child.path + '/')
-  })
-}
+  return (
+    Array.isArray(dir.children) &&
+    dir.children.some((child) => {
+      if (!child?.path) {
+        return false;
+      }
+      return (
+        route.path === child.path || route.path.startsWith(`${child.path}/`)
+      );
+    })
+  );
+};
 
 onMounted(() => {
   // 初始化时展开包含当前激活项的父级
   for (const dir of props.items) {
-    if (dir.type === 'directory' && Array.isArray(dir.children) && dir.children.length > 0) {
-      openMap[dir.id] = isDirectoryActive(dir)
+    if (
+      dir.type === 'directory' &&
+      Array.isArray(dir.children) &&
+      dir.children.length > 0
+    ) {
+      openMap[dir.id] = isDirectoryActive(dir);
     }
   }
-})
+});
 
-watch(() => route.path, () => {
-  // 路由变化时，只展开包含新激活项的父级，收起其他父级
-  for (const dir of props.items) {
-    if (dir.type === 'directory' && Array.isArray(dir.children) && dir.children.length > 0) {
-      openMap[dir.id] = isDirectoryActive(dir)
+watch(
+  () => route.path,
+  () => {
+    // 路由变化时，只展开包含新激活项的父级，收起其他父级
+    for (const dir of props.items) {
+      if (
+        dir.type === 'directory' &&
+        Array.isArray(dir.children) &&
+        dir.children.length > 0
+      ) {
+        openMap[dir.id] = isDirectoryActive(dir);
+      }
     }
   }
-})
+);
 </script>
 
 <template>

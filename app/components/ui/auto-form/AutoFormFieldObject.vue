@@ -31,9 +31,13 @@ const shapes = computed(() => {
   // @ts-expect-error ignore {} not assignable to object
   const val: { [key in keyof T]: Shape } = {};
 
-  if (!props.schema) return;
+  if (!props.schema) {
+    return;
+  }
   const shape = getBaseSchema(props.schema)?.shape;
-  if (!shape) return;
+  if (!shape) {
+    return;
+  }
   Object.keys(shape).forEach((name) => {
     const item = shape[name] as ZodAny;
     const baseItem = getBaseSchema(item) as ZodAny;
@@ -41,8 +45,9 @@ const shapes = computed(() => {
       baseItem && 'values' in baseItem._def
         ? (baseItem._def.values as string[])
         : undefined;
-    if (!Array.isArray(options) && typeof options === 'object')
+    if (!Array.isArray(options) && typeof options === 'object') {
       options = Object.values(options);
+    }
 
     val[name as keyof T] = {
       type: getBaseType(item),

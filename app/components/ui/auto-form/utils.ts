@@ -27,7 +27,7 @@ export function getIndexIfArray(string: string) {
   // Match the index
   const match = string.match(indexRegex);
   // Extract the index (number)
-  const index = match ? Number.parseInt(match[1]) : undefined;
+  const index = match ? Number.parseInt(match[1], 10) : undefined;
   return index;
 }
 
@@ -38,12 +38,16 @@ export function getIndexIfArray(string: string) {
 export function getBaseSchema<
   ChildType extends z.ZodAny | z.AnyZodObject = z.ZodAny,
 >(schema: ChildType | z.ZodEffects<ChildType>): ChildType | null {
-  if (!schema) return null;
-  if ('innerType' in schema._def)
+  if (!schema) {
+    return null;
+  }
+  if ('innerType' in schema._def) {
     return getBaseSchema(schema._def.innerType as ChildType);
+  }
 
-  if ('schema' in schema._def)
+  if ('schema' in schema._def) {
     return getBaseSchema(schema._def.schema as ChildType);
+  }
 
   return schema as ChildType;
 }
@@ -65,8 +69,9 @@ export function getDefaultValueInZodStack(schema: z.ZodAny): any {
     z.ZodNumber | z.ZodString
   >;
 
-  if (typedSchema._def.typeName === 'ZodDefault')
+  if (typedSchema._def.typeName === 'ZodDefault') {
     return typedSchema._def.defaultValue();
+  }
 
   if ('innerType' in typedSchema._def) {
     return getDefaultValueInZodStack(
@@ -100,7 +105,9 @@ function isIndex(value: unknown): value is number {
  */
 export function normalizeFormPath(path: string): string {
   const pathArr = path.split('.');
-  if (!pathArr.length) return '';
+  if (!pathArr.length) {
+    return '';
+  }
 
   let fullPath = String(pathArr[0]);
   for (let i = 1; i < pathArr.length; i++) {
@@ -131,7 +138,9 @@ function isContainerValue(value: unknown): value is Record<string, unknown> {
   return isObject(value) || Array.isArray(value);
 }
 function cleanupNonNestedPath(path: string) {
-  if (isNotNestedPath(path)) return path.replace(/\[|\]/g, '');
+  if (isNotNestedPath(path)) {
+    return path.replace(/\[|\]/g, '');
+  }
 
   return path;
 }
@@ -153,16 +162,21 @@ export function getFromPath<TValue = unknown, TFallback = TValue>(
   path: string,
   fallback?: TFallback
 ): TValue | TFallback | undefined {
-  if (!object) return fallback;
+  if (!object) {
+    return fallback;
+  }
 
-  if (isNotNestedPath(path))
+  if (isNotNestedPath(path)) {
     return object[cleanupNonNestedPath(path)] as TValue | undefined;
+  }
 
   const resolvedValue = (path || '')
     .split(/\.|\[(\d+)\]/)
     .filter(Boolean)
     .reduce((acc, propKey) => {
-      if (isContainerValue(acc) && propKey in acc) return acc[propKey];
+      if (isContainerValue(acc) && propKey in acc) {
+        return acc[propKey];
+      }
 
       return fallback;
     }, object as unknown);

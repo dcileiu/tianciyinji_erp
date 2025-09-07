@@ -11,6 +11,6 @@
 definePageMeta({
   title: '客户管理',
   description: '管理客户信息、联系方式和业务关系',
-  layout: 'default'
-})
+  layout: 'default',
+});
 </script>

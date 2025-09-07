@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useSidebar } from '@/components/ui/sidebar'
 import {
   BadgeCheck,
   Bell,
@@ -7,52 +6,53 @@ import {
   LogOut,
   Moon,
   Sun,
-} from 'lucide-vue-next'
+} from 'lucide-vue-next';
+import { useSidebar } from '@/components/ui/sidebar';
 
 defineProps<{
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}>()
+    name: string;
+    email: string;
+    avatar: string;
+  };
+}>();
 
-const { isMobile } = useSidebar()
+const { isMobile } = useSidebar();
 
 // 主题切换功能
-const isDark = ref(false)
+const isDark = ref(false);
 
 // 切换主题
 const toggleTheme = () => {
-  isDark.value = !isDark.value
+  isDark.value = !isDark.value;
   if (isDark.value) {
-    document.documentElement.classList.add('dark')
-    localStorage.setItem('theme', 'dark')
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
   } else {
-    document.documentElement.classList.remove('dark')
-    localStorage.setItem('theme', 'light')
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
   }
-}
+};
 
 // 页面加载时恢复主题
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
+  const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
+    isDark.value = true;
+    document.documentElement.classList.add('dark');
   } else {
     // 默认为明亮主题
-    isDark.value = false
-    document.documentElement.classList.remove('dark')
+    isDark.value = false;
+    document.documentElement.classList.remove('dark');
     if (!savedTheme) {
-      localStorage.setItem('theme', 'light')
+      localStorage.setItem('theme', 'light');
     }
   }
-})
-const { logout } = useAuth()
+});
+const { logout } = useAuth();
 const handleLogout = async () => {
-  await logout()
-}
+  await logout();
+};
 </script>
 
 <template>

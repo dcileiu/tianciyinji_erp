@@ -24,17 +24,17 @@ useHead({
   htmlAttrs: {
     lang: 'zh-CN',
   },
-})
+});
 
 // 确保默认为明亮主题
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
+  const savedTheme = localStorage.getItem('theme');
   if (!savedTheme || savedTheme === 'light') {
-    document.documentElement.classList.remove('dark')
+    document.documentElement.classList.remove('dark');
   } else if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark')
+    document.documentElement.classList.add('dark');
   }
-})
+});
 </script>
 
 <style>

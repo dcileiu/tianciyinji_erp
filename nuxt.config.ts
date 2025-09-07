@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/supabase', '@nuxtjs/tailwindcss', 'shadcn-nuxt', '@pinia/nuxt'],
+  modules: [
+    '@nuxtjs/supabase',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
+    '@pinia/nuxt',
+  ],
 
   // shadcn-nuxt 配置
   shadcn: {
@@ -24,6 +29,7 @@ export default defineNuxtConfig({
       'composables/**',
       // 自动导入utils
       'utils/**',
+      'lib/**',
       // 自动导入types
       'types/**',
     ],
@@ -77,8 +83,6 @@ export default defineNuxtConfig({
     appManifest: false,
     payloadExtraction: false,
   },
-
-
 
   compatibilityDate: '2025-08-20',
 

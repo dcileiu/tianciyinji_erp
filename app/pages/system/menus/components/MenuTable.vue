@@ -38,34 +38,30 @@
 </template>
 
 <script setup lang="ts">
-import type { Menu } from '~/composables/useMenus'
-import MenuTableRow from '~/pages/system/menus/components/MenuTableRow.vue'
+import type { Menu } from '~/composables/useMenus';
+import MenuTableRow from '~/pages/system/menus/components/MenuTableRow.vue';
 
 interface MenuTableProps {
-  menus: Menu[]
+  menus: Menu[];
 }
 
-interface MenuTableEmits {
-  (e: 'edit', menu: Menu): void
-  (e: 'delete', menu: Menu): void
-  (e: 'add-child', menu: Menu): void
-  (e: 'toggle-status', menu: Menu): void
-}
+type MenuTableEmits = (
+  e: 'toggle-status' | 'add-child' | 'delete' | 'edit',
+  menu: Menu
+) => void;
 
-const props = defineProps<MenuTableProps>()
-const emit = defineEmits<MenuTableEmits>()
+const props = defineProps<MenuTableProps>();
+const emit = defineEmits<MenuTableEmits>();
 
 // 展开状态管理
-const expandedIds = ref<string[]>([])
-
-
+const expandedIds = ref<string[]>([]);
 
 const toggleExpand = (menuId: string) => {
-  const index = expandedIds.value.indexOf(menuId)
+  const index = expandedIds.value.indexOf(menuId);
   if (index > -1) {
-    expandedIds.value.splice(index, 1)
+    expandedIds.value.splice(index, 1);
   } else {
-    expandedIds.value.push(menuId)
+    expandedIds.value.push(menuId);
   }
-}
+};
 </script>

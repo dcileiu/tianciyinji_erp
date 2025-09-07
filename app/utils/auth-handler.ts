@@ -4,7 +4,9 @@
 
 // 检查是否为认证相关错误
 export function isAuthError(error: any): boolean {
-  if (!error) return false;
+  if (!error) {
+    return false;
+  }
 
   // 检查错误消息
   const message = error.message || error.error_description || '';
@@ -15,10 +17,10 @@ export function isAuthError(error: any): boolean {
     'User not authenticated',
     'Token expired',
     'Unauthorized',
-    'Authentication required'
+    'Authentication required',
   ];
 
-  return authErrorMessages.some(msg =>
+  return authErrorMessages.some((msg) =>
     message.toLowerCase().includes(msg.toLowerCase())
   );
 }
@@ -29,8 +31,6 @@ export async function handleAuthError(error: any): Promise<void> {
     return;
   }
 
-  console.log('Authentication error detected:', error.message);
-
   const { logout } = useAuth();
   const router = useRouter();
 
@@ -38,8 +38,6 @@ export async function handleAuthError(error: any): Promise<void> {
     // 清除认证状态
     await logout();
   } catch (logoutError) {
-    console.warn('Logout failed:', logoutError);
-
     // 强制重定向到登录页
     await router.push('/login');
   }
@@ -73,14 +71,12 @@ export async function checkSessionValidity(): Promise<boolean> {
       const now = new Date();
 
       if (expiresAt <= now) {
-        console.log('Session expired');
         return false;
       }
     }
 
     return true;
   } catch (error) {
-    console.warn('Session validation failed:', error);
     return false;
   }
 }

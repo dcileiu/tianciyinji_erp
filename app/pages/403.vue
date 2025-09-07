@@ -31,15 +31,15 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, Home, ShieldX } from 'lucide-vue-next'
+import { ArrowLeft, Home, ShieldX } from 'lucide-vue-next';
 
 // 页面权限配置 - 403页面不需要认证
 definePageMeta({
-  requiresAuth: false
-})
+  requiresAuth: false,
+});
 
 // 页面标题
 useHead({
   title: '403 - 访问被拒绝',
-})
+});
 </script>

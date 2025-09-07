@@ -17,6 +17,7 @@ declare global {
   const clearError: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['clearError']
   const clearNuxtData: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['clearNuxtData']
   const clearNuxtState: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/state')['clearNuxtState']
+  const cn: typeof import('../../app/lib/utils')['cn']
   const computed: typeof import('vue')['computed']
   const createAppError: typeof import('../../app/utils/error-handler')['createAppError']
   const createError: typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['createError']
@@ -248,7 +249,7 @@ declare global {
   export type { DatabaseUser, Customer, Supplier, Product, Warehouse, Inventory, SalesOrder, SalesOrderItem, PurchaseOrder, PurchaseOrderItem, InventoryMovement, Transfer, TransferItem, Department, Role, Dictionary, SystemLog, PaginationParams, PaginationResponse, ApiResponse } from '../../app/types/database'
   import('../../app/types/database')
   // @ts-ignore
-  export type { UserRole, ProductionStatus, Json, Database,  } from '../../app/types/database.types'
+  export type { UserRole, ProductionStatus, Json, Database } from '../../app/types/database.types'
   import('../../app/types/database.types')
   // @ts-ignore
   export type { MenuPermission, UserRoleData } from '../../app/stores/permissions'
@@ -277,6 +278,7 @@ declare module 'vue' {
     readonly clearError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['clearError']>
     readonly clearNuxtData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/asyncData')['clearNuxtData']>
     readonly clearNuxtState: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/state')['clearNuxtState']>
+    readonly cn: UnwrapRef<typeof import('../../app/lib/utils')['cn']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createAppError: UnwrapRef<typeof import('../../app/utils/error-handler')['createAppError']>
     readonly createError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.0.3_@biomejs+biome@2_1195d3e1d68dcb784ba7e9c0a05dd375/node_modules/nuxt/dist/app/composables/error')['createError']>

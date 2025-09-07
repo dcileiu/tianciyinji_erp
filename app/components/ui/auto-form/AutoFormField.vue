@@ -16,8 +16,9 @@ function isValidConfig(config: any): config is ConfigItem {
 }
 
 const delegatedProps = computed(() => {
-  if (['ZodObject', 'ZodArray'].includes(props.shape?.type))
+  if (['ZodObject', 'ZodArray'].includes(props.shape?.type)) {
     return { schema: props.shape?.schema };
+  }
   return;
 });
 

@@ -131,11 +131,9 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, Users } from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
-import type { UserData } from '~/composables/useUsers'
-
-import { Button } from '@/components/ui/button'
+import { Loader2, Users } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -143,49 +141,50 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import type { UserData } from '~/composables/useUsers';
 
 interface Props {
-  open: boolean
-  user?: UserData | null
-  departments: any[]
-  roles: any[]
-  saving: boolean
+  open: boolean;
+  user?: UserData | null;
+  departments: any[];
+  roles: any[];
+  saving: boolean;
 }
 
 interface FormData {
-  id: string
-  username: string
-  name: string
-  email: string
-  phone: string
-  department_id: string
-  role_id: string
-  password: string
-  confirmPassword: string
-  remarks: string
-  status: 'active' | 'inactive'
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  phone: string;
+  department_id: string;
+  role_id: string;
+  password: string;
+  confirmPassword: string;
+  remarks: string;
+  status: 'active' | 'inactive';
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  close: []
-  save: [data: FormData]
-}>()
+  close: [];
+  save: [data: FormData];
+}>();
 
-const isEditing = computed(() => !!props.user)
-const modalTitle = computed(() => isEditing.value ? '编辑用户' : '新增用户')
+const isEditing = computed(() => !!props.user);
+const modalTitle = computed(() => (isEditing.value ? '编辑用户' : '新增用户'));
 
 const formData = reactive<FormData>({
   id: '',
@@ -198,60 +197,64 @@ const formData = reactive<FormData>({
   password: '',
   confirmPassword: '',
   remarks: '',
-  status: 'active'
-})
+  status: 'active',
+});
 
 // 监听用户变化，初始化表单数据
-watch(() => props.user, (user) => {
-  if (user) {
-    Object.assign(formData, {
-      id: user.id,
-      username: user.username || '',
-      name: user.name || '',
-      email: user.email,
-      phone: user.phone || '',
-      department_id: user.department_id || '',
-      role_id: user.roles?.[0]?.id || '',
-      password: '',
-      confirmPassword: '',
-      remarks: user.remarks || '',
-      status: user.status
-    })
-  } else {
-    // 重置表单
-    Object.assign(formData, {
-      id: '',
-      username: '',
-      name: '',
-      email: '',
-      phone: '',
-      department_id: '',
-      role_id: '',
-      password: '',
-      confirmPassword: '',
-      remarks: '',
-      status: 'active'
-    })
-  }
-}, { immediate: true })
+watch(
+  () => props.user,
+  (user) => {
+    if (user) {
+      Object.assign(formData, {
+        id: user.id,
+        username: user.username || '',
+        name: user.name || '',
+        email: user.email,
+        phone: user.phone || '',
+        department_id: user.department_id || '',
+        role_id: user.roles?.[0]?.id || '',
+        password: '',
+        confirmPassword: '',
+        remarks: user.remarks || '',
+        status: user.status,
+      });
+    } else {
+      // 重置表单
+      Object.assign(formData, {
+        id: '',
+        username: '',
+        name: '',
+        email: '',
+        phone: '',
+        department_id: '',
+        role_id: '',
+        password: '',
+        confirmPassword: '',
+        remarks: '',
+        status: 'active',
+      });
+    }
+  },
+  { immediate: true }
+);
 
 const handleSave = () => {
   // 验证必填字段
-  if (!formData.username || !formData.name || !formData.email) {
-    toast.error('请填写必填字段')
-    return
+  if (!(formData.username && formData.name && formData.email)) {
+    toast.error('请填写必填字段');
+    return;
   }
 
   if (!isEditing.value && formData.password !== formData.confirmPassword) {
-    toast.error('两次输入的密码不一致')
-    return
+    toast.error('两次输入的密码不一致');
+    return;
   }
 
   if (!formData.role_id) {
-    toast.error('请选择用户角色')
-    return
+    toast.error('请选择用户角色');
+    return;
   }
 
-  emit('save', { ...formData })
-}
+  emit('save', { ...formData });
+};
 </script>

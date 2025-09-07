@@ -1,17 +1,18 @@
-
 /**
  * 权限管理 Composable - 现在使用 Pinia Store
  */
 export const usePermissions = () => {
-  const userStore = useUserStore()
-  const permissionsStore = usePermissionsStore()
+  const userStore = useUserStore();
+  const permissionsStore = usePermissionsStore();
 
   return {
     // 状态
     permissions: readonly(computed(() => userStore.permissions)),
     menus: readonly(computed(() => permissionsStore.menus)),
     roles: readonly(computed(() => userStore.roles)),
-    loading: readonly(computed(() => userStore.permissionsLoading || permissionsStore.loading)),
+    loading: readonly(
+      computed(() => userStore.permissionsLoading || permissionsStore.loading)
+    ),
     error: readonly(computed(() => userStore.error || permissionsStore.error)),
     authorizedMenus: computed(() => permissionsStore.authorizedMenus),
 
@@ -19,26 +20,26 @@ export const usePermissions = () => {
     fetchUserPermissions: async () => {
       await Promise.all([
         userStore.fetchUserPermissions(),
-        permissionsStore.fetchUserPermissions()
-      ])
+        permissionsStore.fetchUserPermissions(),
+      ]);
     },
     hasPermission: userStore.hasPermission,
     hasAnyPermission: userStore.hasAnyPermission,
     hasAllPermissions: userStore.hasAllPermissions,
     hasRoutePermission: userStore.hasPermission, // 简化路由权限检查
     clearPermissions: () => {
-      userStore.clearUserData()
-      permissionsStore.clearPermissions()
+      userStore.clearUserData();
+      permissionsStore.clearPermissions();
     },
     refreshPermissions: async () => {
       await Promise.all([
         userStore.refreshUserData(),
-        permissionsStore.refreshPermissions()
-      ])
+        permissionsStore.refreshPermissions(),
+      ]);
     },
 
     // 工具方法
     buildMenuTree: permissionsStore.buildMenuTree,
-    filterAuthorizedMenus: () => permissionsStore.authorizedMenus
-  }
-}
+    filterAuthorizedMenus: () => permissionsStore.authorizedMenus,
+  };
+};

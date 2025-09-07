@@ -84,7 +84,7 @@
 <script setup lang="ts">
 // UI组件现在自动导入，无需手动导入
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue';
 
 // Props
 const props = defineProps({
@@ -104,40 +104,40 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
 // Emits
-const emit = defineEmits(['update:selectedIds'])
+const emit = defineEmits(['update:selectedIds']);
 
 // 状态
-const searchQuery = ref('')
-const expandedIds = ref(new Set())
+const searchQuery = ref('');
+const expandedIds = ref(new Set());
 
 // 计算属性
-const selectedCount = computed(() => props.selectedIds.length)
+const selectedCount = computed(() => props.selectedIds.length);
 
 const totalCount = computed(() => {
   const countItems = (items: any) => {
-    let count = 0
+    let count = 0;
     for (const item of items) {
-      count++
+      count++;
       if (item.children && item.children.length > 0) {
-        count += countItems(item.children)
+        count += countItems(item.children);
       }
     }
-    return count
-  }
-  return countItems(props.treeData)
-})
+    return count;
+  };
+  return countItems(props.treeData);
+});
 
 // 过滤后的树形数据
 const filteredTreeData = computed(() => {
   if (!searchQuery.value.trim()) {
-    return props.treeData
+    return props.treeData;
   }
 
   const filterItems = (items: any[]): any[] => {
-    const filtered: any[] = []
+    const filtered: any[] = [];
 
     for (const item of items) {
       const matchesSearch =
@@ -145,11 +145,11 @@ const filteredTreeData = computed(() => {
         item.key?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         item.description
           ?.toLowerCase()
-          .includes(searchQuery.value.toLowerCase())
+          .includes(searchQuery.value.toLowerCase());
 
-      let filteredChildren: any[] = []
+      let filteredChildren: any[] = [];
       if (item.children && item.children.length > 0) {
-        filteredChildren = filterItems(item.children)
+        filteredChildren = filterItems(item.children);
       }
 
       // 如果当前项匹配或有匹配的子项，则包含此项
@@ -157,151 +157,151 @@ const filteredTreeData = computed(() => {
         filtered.push({
           ...item,
           children: filteredChildren,
-        })
+        });
 
         // 自动展开包含搜索结果的节点
         if (filteredChildren.length > 0) {
-          expandedIds.value.add(item.id)
+          expandedIds.value.add(item.id);
         }
       }
     }
 
-    return filtered
-  }
+    return filtered;
+  };
 
-  return filterItems(props.treeData)
-})
+  return filterItems(props.treeData);
+});
 
 // 方法
 const handleToggleSelection = (id: any, selected: boolean) => {
   if (props.disabled) {
-    return
+    return;
   }
 
-  const newSelectedIds = [...props.selectedIds]
+  const newSelectedIds = [...props.selectedIds];
 
   if (selected) {
     // 添加选中项及其所有子项
     const addItemAndChildren = (items: any[]) => {
       for (const item of items) {
         if (!newSelectedIds.includes(item.id)) {
-          newSelectedIds.push(item.id)
+          newSelectedIds.push(item.id);
         }
         if (item.children && item.children.length > 0) {
-          addItemAndChildren(item.children)
+          addItemAndChildren(item.children);
         }
       }
-    }
+    };
 
     const findItem = (items: any[], targetId: any): any => {
       for (const item of items) {
         if (item.id === targetId) {
-          return item
+          return item;
         }
         if (item.children && item.children.length > 0) {
-          const found: any = findItem(item.children, targetId)
+          const found: any = findItem(item.children, targetId);
           if (found) {
-            return found
+            return found;
           }
         }
       }
-      return null
-    }
+      return null;
+    };
 
-    const targetItem = findItem(props.treeData, id)
+    const targetItem = findItem(props.treeData, id);
     if (targetItem) {
-      addItemAndChildren([targetItem])
+      addItemAndChildren([targetItem]);
     }
   } else {
     // 移除选中项及其所有子项
     const removeItemAndChildren = (items: any[]) => {
       for (const item of items) {
-        const index = newSelectedIds.indexOf(item.id)
+        const index = newSelectedIds.indexOf(item.id);
         if (index > -1) {
-          newSelectedIds.splice(index, 1)
+          newSelectedIds.splice(index, 1);
         }
         if (item.children && item.children.length > 0) {
-          removeItemAndChildren(item.children)
+          removeItemAndChildren(item.children);
         }
       }
-    }
+    };
 
     const findItem = (items: any[], targetId: any): any => {
       for (const item of items) {
         if (item.id === targetId) {
-          return item
+          return item;
         }
         if (item.children && item.children.length > 0) {
-          const found: any = findItem(item.children, targetId)
+          const found: any = findItem(item.children, targetId);
           if (found) {
-            return found
+            return found;
           }
         }
       }
-      return null
-    }
+      return null;
+    };
 
-    const targetItem = findItem(props.treeData, id)
+    const targetItem = findItem(props.treeData, id);
     if (targetItem) {
-      removeItemAndChildren([targetItem])
+      removeItemAndChildren([targetItem]);
     }
   }
 
-  emit('update:selectedIds', newSelectedIds)
-}
+  emit('update:selectedIds', newSelectedIds);
+};
 
 const handleToggleExpand = (id: any) => {
   if (expandedIds.value.has(id)) {
-    expandedIds.value.delete(id)
+    expandedIds.value.delete(id);
   } else {
-    expandedIds.value.add(id)
+    expandedIds.value.add(id);
   }
-}
+};
 
 const expandAll = () => {
   const getAllIds = (items: any[]): any[] => {
-    const ids: any[] = []
+    const ids: any[] = [];
     for (const item of items) {
-      ids.push(item.id)
+      ids.push(item.id);
       if (item.children && item.children.length > 0) {
-        ids.push(...getAllIds(item.children))
+        ids.push(...getAllIds(item.children));
       }
     }
-    return ids
-  }
+    return ids;
+  };
 
-  expandedIds.value = new Set(getAllIds(props.treeData))
-}
+  expandedIds.value = new Set(getAllIds(props.treeData));
+};
 
 const collapseAll = () => {
-  expandedIds.value.clear()
-}
+  expandedIds.value.clear();
+};
 
 const selectAll = () => {
   if (props.disabled) {
-    return
+    return;
   }
 
   const getAllIds = (items: any[]): any[] => {
-    const ids: any[] = []
+    const ids: any[] = [];
     for (const item of items) {
-      ids.push(item.id)
+      ids.push(item.id);
       if (item.children && item.children.length > 0) {
-        ids.push(...getAllIds(item.children))
+        ids.push(...getAllIds(item.children));
       }
     }
-    return ids
-  }
+    return ids;
+  };
 
-  emit('update:selectedIds', getAllIds(props.treeData))
-}
+  emit('update:selectedIds', getAllIds(props.treeData));
+};
 
 const clearAll = () => {
   if (props.disabled) {
-    return
+    return;
   }
-  emit('update:selectedIds', [])
-}
+  emit('update:selectedIds', []);
+};
 
 // 监听搜索变化，自动展开相关节点
 watch(searchQuery, (newQuery) => {
@@ -309,24 +309,24 @@ watch(searchQuery, (newQuery) => {
     // 搜索时自动展开所有匹配的父节点
     // 这个逻辑已经在 filteredTreeData 中处理了
   }
-})
+});
 
 // 初始化时展开第一级节点
 const initializeExpanded = () => {
-  const firstLevelIds = props.treeData.map((item: any) => item.id)
-  expandedIds.value = new Set(firstLevelIds)
-}
+  const firstLevelIds = props.treeData.map((item: any) => item.id);
+  expandedIds.value = new Set(firstLevelIds);
+};
 
 // 监听数据变化
 watch(
   () => props.treeData,
   () => {
     if (props.treeData.length > 0 && expandedIds.value.size === 0) {
-      initializeExpanded()
+      initializeExpanded();
     }
   },
   { immediate: true }
-)
+);
 </script>
 
 <style scoped>

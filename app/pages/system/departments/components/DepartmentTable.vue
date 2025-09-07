@@ -126,13 +126,12 @@
 </template>
 
 <script setup lang="ts">
-import { valueUpdater } from '@/utils'
 import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-} from '@tanstack/vue-table'
+} from '@tanstack/vue-table';
 import {
   FlexRender,
   getCoreRowModel,
@@ -140,7 +139,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useVueTable,
-} from '@tanstack/vue-table'
+} from '@tanstack/vue-table';
 import {
   ArrowUpDown,
   Building,
@@ -149,13 +148,11 @@ import {
   MoreHorizontal,
   Plus,
   Trash2,
-} from 'lucide-vue-next'
-import { h } from 'vue'
-import type { DepartmentData } from '~/composables/useDepartments'
-
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+} from 'lucide-vue-next';
+import { h } from 'vue';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -164,8 +161,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -173,191 +170,259 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/ui/table';
+import { valueUpdater } from '@/utils';
+import type { DepartmentData } from '~/composables/useDepartments';
 
 interface Props {
-  departments: DepartmentData[]
-  loading: boolean
-  canDeleteDepartment: (id: string) => boolean
+  departments: DepartmentData[];
+  loading: boolean;
+  canDeleteDepartment: (id: string) => boolean;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  'edit-department': [department: DepartmentData]
-  'add-sub-department': [department: DepartmentData]
-  'delete-department': [department: DepartmentData]
-  'create-department': []
-}>()
+  'edit-department': [department: DepartmentData];
+  'add-sub-department': [department: DepartmentData];
+  'delete-department': [department: DepartmentData];
+  'create-department': [];
+}>();
 
 // Table 相关状态
-const sorting = ref<SortingState>([])
-const columnFilters = ref<ColumnFiltersState>([])
-const columnVisibility = ref<VisibilityState>({})
-const rowSelection = ref({})
+const sorting = ref<SortingState>([]);
+const columnFilters = ref<ColumnFiltersState>([]);
+const columnVisibility = ref<VisibilityState>({});
+const rowSelection = ref({});
 
 // 表格列定义
 const columns: ColumnDef<DepartmentData>[] = [
   {
-    id: "select",
-    header: ({ table }) => h(Checkbox, {
-      "modelValue": table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate"),
-      "onUpdate:modelValue": (value: any) => table.toggleAllPageRowsSelected(!!value),
-      "ariaLabel": "Select all",
-    }),
-    cell: ({ row }) => h(Checkbox, {
-      "modelValue": row.getIsSelected(),
-      "onUpdate:modelValue": (value: any) => row.toggleSelected(!!value),
-      "ariaLabel": "Select row",
-    }),
+    id: 'select',
+    header: ({ table }) =>
+      h(Checkbox, {
+        modelValue:
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate'),
+        'onUpdate:modelValue': (value: any) =>
+          table.toggleAllPageRowsSelected(!!value),
+        ariaLabel: 'Select all',
+      }),
+    cell: ({ row }) =>
+      h(Checkbox, {
+        modelValue: row.getIsSelected(),
+        'onUpdate:modelValue': (value: any) => row.toggleSelected(!!value),
+        ariaLabel: 'Select row',
+      }),
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: 'name',
     header: ({ column }) => {
-      return h(Button, {
-        variant: "ghost",
-        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
-      }, () => ["部门信息", h(ArrowUpDown, { class: "ml-2 h-4 w-4" })])
+      return h(
+        Button,
+        {
+          variant: 'ghost',
+          onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+        },
+        () => ['部门信息', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })]
+      );
     },
     cell: ({ row }) => {
-      const department = row.original
-      return h("div", { class: "flex items-center space-x-4" }, [
-        h("div", { class: "w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center" }, [
-          h(Building, { class: "w-6 h-6 text-primary" })
-        ]),
-        h("div", { class: "space-y-1" }, [
-          h("div", { class: "flex items-center space-x-2" }, [
-            h("h3", { class: "font-semibold" }, department.name),
-            h(Badge, { variant: "outline", class: "text-xs" }, department.code)
+      const department = row.original;
+      return h('div', { class: 'flex items-center space-x-4' }, [
+        h(
+          'div',
+          {
+            class:
+              'w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center',
+          },
+          [h(Building, { class: 'w-6 h-6 text-primary' })]
+        ),
+        h('div', { class: 'space-y-1' }, [
+          h('div', { class: 'flex items-center space-x-2' }, [
+            h('h3', { class: 'font-semibold' }, department.name),
+            h(Badge, { variant: 'outline', class: 'text-xs' }, department.code),
           ]),
-          h("p", { class: "text-sm text-muted-foreground" },
+          h(
+            'p',
+            { class: 'text-sm text-muted-foreground' },
             department.description || '暂无描述'
-          )
-        ])
-      ])
+          ),
+        ]),
+      ]);
     },
   },
   {
-    accessorKey: "parent_id",
-    header: "上级部门",
+    accessorKey: 'parent_id',
+    header: '上级部门',
     cell: ({ row }) => {
-      const parentId = row.getValue("parent_id") as string
+      const parentId = row.getValue('parent_id') as string;
       if (parentId) {
-        const parent = props.departments.find(d => d.id === parentId)
-        return h("span", { class: "text-muted-foreground" }, parent?.name || '未知部门')
+        const parent = props.departments.find((d) => d.id === parentId);
+        return h(
+          'span',
+          { class: 'text-muted-foreground' },
+          parent?.name || '未知部门'
+        );
       }
-      return h(Badge, { variant: "secondary" }, "顶级部门")
+      return h(Badge, { variant: 'secondary' }, '顶级部门');
     },
   },
   {
-    accessorKey: "sort",
-    header: "排序",
-    cell: ({ row }) => h(Badge, { variant: "outline" }, row.getValue("sort")),
+    accessorKey: 'sort',
+    header: '排序',
+    cell: ({ row }) => h(Badge, { variant: 'outline' }, row.getValue('sort')),
   },
   {
-    accessorKey: "status",
-    header: "状态",
+    accessorKey: 'status',
+    header: '状态',
     cell: ({ row }) => {
-      const status = row.getValue("status") as string
-      return h(Badge, {
-        variant: status === 'active' ? 'default' : 'destructive'
-      }, status === 'active' ? '启用' : '停用')
+      const status = row.getValue('status') as string;
+      return h(
+        Badge,
+        {
+          variant: status === 'active' ? 'default' : 'destructive',
+        },
+        status === 'active' ? '启用' : '停用'
+      );
     },
   },
   {
-    accessorKey: "created_at",
-    header: "创建时间",
+    accessorKey: 'created_at',
+    header: '创建时间',
     cell: ({ row }) => {
-      const date = new Date(row.getValue("created_at"))
-      return h("div", { class: "text-sm" }, date.toLocaleDateString('zh-CN'))
+      const date = new Date(row.getValue('created_at'));
+      return h('div', { class: 'text-sm' }, date.toLocaleDateString('zh-CN'));
     },
   },
   {
-    id: "actions",
+    id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const department = row.original
-      return h(DropdownMenu, {}, {
-        default: () => [
-          h(DropdownMenuTrigger, {
-            asChild: true
-          }, {
-            default: () => h(Button, {
-              variant: "ghost",
-              class: "h-8 w-8 p-0"
-            }, {
-              default: () => [
-                h("span", { class: "sr-only" }, "Open menu"),
-                h(MoreHorizontal, { class: "h-4 w-4" })
-              ]
-            })
-          }),
-          h(DropdownMenuContent, {
-            align: "end"
-          }, {
-            default: () => [
-              h(DropdownMenuLabel, {}, "操作"),
-              h(DropdownMenuItem, {
-                onClick: () => emit('edit-department', department)
-              }, {
+      const department = row.original;
+      return h(
+        DropdownMenu,
+        {},
+        {
+          default: () => [
+            h(
+              DropdownMenuTrigger,
+              {
+                asChild: true,
+              },
+              {
+                default: () =>
+                  h(
+                    Button,
+                    {
+                      variant: 'ghost',
+                      class: 'h-8 w-8 p-0',
+                    },
+                    {
+                      default: () => [
+                        h('span', { class: 'sr-only' }, 'Open menu'),
+                        h(MoreHorizontal, { class: 'h-4 w-4' }),
+                      ],
+                    }
+                  ),
+              }
+            ),
+            h(
+              DropdownMenuContent,
+              {
+                align: 'end',
+              },
+              {
                 default: () => [
-                  h(Edit, { class: "mr-2 h-4 w-4" }),
-                  "编辑部门"
-                ]
-              }),
-              h(DropdownMenuItem, {
-                onClick: () => emit('add-sub-department', department)
-              }, {
-                default: () => [
-                  h(Plus, { class: "mr-2 h-4 w-4" }),
-                  "添加子部门"
-                ]
-              }),
-              h(DropdownMenuSeparator),
-              h(DropdownMenuItem, {
-                onClick: () => emit('delete-department', department),
-                disabled: !props.canDeleteDepartment(department.id),
-                class: "text-red-600"
-              }, {
-                default: () => [
-                  h(Trash2, { class: "mr-2 h-4 w-4" }),
-                  "删除部门"
-                ]
-              })
-            ]
-          })
-        ]
-      })
+                  h(DropdownMenuLabel, {}, '操作'),
+                  h(
+                    DropdownMenuItem,
+                    {
+                      onClick: () => emit('edit-department', department),
+                    },
+                    {
+                      default: () => [
+                        h(Edit, { class: 'mr-2 h-4 w-4' }),
+                        '编辑部门',
+                      ],
+                    }
+                  ),
+                  h(
+                    DropdownMenuItem,
+                    {
+                      onClick: () => emit('add-sub-department', department),
+                    },
+                    {
+                      default: () => [
+                        h(Plus, { class: 'mr-2 h-4 w-4' }),
+                        '添加子部门',
+                      ],
+                    }
+                  ),
+                  h(DropdownMenuSeparator),
+                  h(
+                    DropdownMenuItem,
+                    {
+                      onClick: () => emit('delete-department', department),
+                      disabled: !props.canDeleteDepartment(department.id),
+                      class: 'text-red-600',
+                    },
+                    {
+                      default: () => [
+                        h(Trash2, { class: 'mr-2 h-4 w-4' }),
+                        '删除部门',
+                      ],
+                    }
+                  ),
+                ],
+              }
+            ),
+          ],
+        }
+      );
     },
   },
-]
+];
 
 // 创建表格实例
 const table = useVueTable({
-  get data() { return props.departments },
+  get data() {
+    return props.departments;
+  },
   columns,
   getCoreRowModel: getCoreRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
   getSortedRowModel: getSortedRowModel(),
   getFilteredRowModel: getFilteredRowModel(),
-  onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
-  onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
-  onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
-  onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
+  onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
+  onColumnFiltersChange: (updaterOrValue) =>
+    valueUpdater(updaterOrValue, columnFilters),
+  onColumnVisibilityChange: (updaterOrValue) =>
+    valueUpdater(updaterOrValue, columnVisibility),
+  onRowSelectionChange: (updaterOrValue) =>
+    valueUpdater(updaterOrValue, rowSelection),
   state: {
-    get sorting() { return sorting.value },
-    get columnFilters() { return columnFilters.value },
-    get columnVisibility() { return columnVisibility.value },
-    get rowSelection() { return rowSelection.value },
+    get sorting() {
+      return sorting.value;
+    },
+    get columnFilters() {
+      return columnFilters.value;
+    },
+    get columnVisibility() {
+      return columnVisibility.value;
+    },
+    get rowSelection() {
+      return rowSelection.value;
+    },
   },
   initialState: {
     pagination: {
       pageSize: 10,
     },
   },
-})
+});
 
 const getColumnDisplayName = (columnId: string) => {
   const nameMap: Record<string, string> = {
@@ -365,8 +430,8 @@ const getColumnDisplayName = (columnId: string) => {
     parent_id: '上级部门',
     sort: '排序',
     status: '状态',
-    created_at: '创建时间'
-  }
-  return nameMap[columnId] || columnId
-}
+    created_at: '创建时间',
+  };
+  return nameMap[columnId] || columnId;
+};
 </script>

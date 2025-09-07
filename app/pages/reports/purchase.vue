@@ -490,9 +490,9 @@ const refreshData = () => {
   }, 1000);
 };
 
-const viewDetail = (order: any) => {};
+const viewDetail = (_order: any) => {};
 
-const printOrder = (order: any) => {};
+const printOrder = (_order: any) => {};
 
 // 初始化
 onMounted(() => {

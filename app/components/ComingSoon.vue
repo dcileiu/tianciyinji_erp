@@ -21,26 +21,26 @@
 
 <script setup lang="ts">
 interface Props {
-  title: string
-  subtitle: string
-  icon?: string
+  title: string;
+  subtitle: string;
+  icon?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  icon: 'Package'
-})
+  icon: 'Package',
+});
 
 // 图标映射
 const iconMap = {
-  'Package': 'svg',
-  'ShoppingBag': 'svg',
-  'Users': 'svg',
-  'FileText': 'svg',
-  'Building': 'svg',
-  'Calendar': 'svg',
-  'BarChart3': 'svg',
-  'Settings': 'svg'
-}
+  Package: 'svg',
+  ShoppingBag: 'svg',
+  Users: 'svg',
+  FileText: 'svg',
+  Building: 'svg',
+  Calendar: 'svg',
+  BarChart3: 'svg',
+  Settings: 'svg',
+};
 
 const iconComponent = computed(() => {
   // 返回默认的 SVG 图标
@@ -49,15 +49,15 @@ const iconComponent = computed(() => {
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
       </svg>
-    `
-  }
-})
+    `,
+  };
+});
 
 const goBack = () => {
   if (history.length > 1) {
-    history.back()
+    history.back();
   } else {
-    navigateTo('/dashboard')
+    navigateTo('/dashboard');
   }
-}
+};
 </script>
