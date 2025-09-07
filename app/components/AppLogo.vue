@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<LogoProps>(), {
   size: '2rem',
   className: '',
   alt: 'ERP系统Logo',
-  inverse: false
+  inverse: false,
 });
 
 // 根据inverse属性决定logo颜色

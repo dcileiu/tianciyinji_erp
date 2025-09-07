@@ -86,14 +86,15 @@
 
       <!-- 状态 -->
       <div class="p-3 text-center">
-        <Badge
-          :variant="menu.status === 'active' ? 'default' : 'destructive'"
-          :class="menu.status === 'active' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-red-500 hover:bg-red-600 text-white'"
-          class="cursor-pointer text-xs"
+        <div 
+          class="cursor-pointer inline-block"
           @click="$emit('toggle-status', menu)"
         >
-          {{ menu.status === "active" ? "启用" : "禁用" }}
-        </Badge>
+                    <StatusBadge 
+            :status="getMenuStatusType(menu.status)" 
+            :customLabel="menu.status === 'active' ? '启用' : '禁用'"
+          />
+        </div>
       </div>
 
       <!-- 操作 -->
@@ -149,6 +150,7 @@
 import { ChevronDown, Edit, Plus, Trash2 } from 'lucide-vue-next';
 import { getIconByName } from '~/components/icons';
 import type { Menu } from '~/composables/useMenus';
+import type { StatusType } from '~/components/StatusBadge.vue';
 
 interface MenuTableRowProps {
   menu: Menu;
@@ -193,5 +195,14 @@ const getMenuIcon = (iconName?: string | null) => {
   }
 
   return getIconByName(iconName);
+};
+
+// 菜单状态映射到StatusBadge状态类型
+const getMenuStatusType = (status: 'active' | 'inactive'): StatusType => {
+  const statusMap: Record<'active' | 'inactive', StatusType> = {
+    active: 'active',
+    inactive: 'inactive',
+  };
+  return statusMap[status];
 };
 </script>
