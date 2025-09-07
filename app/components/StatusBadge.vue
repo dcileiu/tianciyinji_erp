@@ -16,11 +16,15 @@ import {
   Pause,
   Play,
   XCircle,
+  Wifi,
+  WifiOff,
 } from 'lucide-vue-next';
 
 export type StatusType =
   | 'active'
   | 'inactive'
+  | 'online'
+  | 'offline'
   | 'success'
   | 'error'
   | 'warning'
@@ -68,6 +72,22 @@ const statusConfigs: Record<StatusType, StatusConfig> = {
     borderClass: 'border-gray-200',
     textClass: 'text-foreground',
     iconClass: 'text-red-500',
+  },
+  online: {
+    defaultLabel: '在线',
+    icon: Wifi,
+    colorClass: 'border-gray-200 bg-transparent',
+    borderClass: 'border-gray-200',
+    textClass: 'text-foreground',
+    iconClass: 'text-green-500',
+  },
+  offline: {
+    defaultLabel: '离线',
+    icon: WifiOff,
+    colorClass: 'border-gray-200 bg-transparent',
+    borderClass: 'border-gray-200',
+    textClass: 'text-foreground',
+    iconClass: 'text-gray-500',
   },
   success: {
     defaultLabel: '成功',
@@ -157,7 +177,8 @@ const currentLabel = computed(
   () => props.customLabel || statusConfig.value.defaultLabel
 );
 
-const sizeClasses = 'px-1.5 py-1 text-[10px] gap-1.5 flex items-center leading-none';
+const sizeClasses =
+  'px-1.5 py-1 text-[10px] gap-1.5 flex items-center leading-none';
 const iconSizes = 'w-[11px] h-[11px]';
 
 const badgeClasses = computed(() =>

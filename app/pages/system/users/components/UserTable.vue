@@ -51,13 +51,13 @@
             </TableRow>
           </template>
 
-          <TableRow v-else>
+                      <TableRow v-else>
             <TableCell
-              :colspan="getColumns().length"
+              :colspan="7"
               class="h-24 text-center"
             >
-                <!-- 骨架屏行 -->
-                <div v-for="i in 2" :key="i" class="grid grid-cols-[auto_1fr_200px_120px_150px_100px_60px] gap-4 p-4 items-center">
+                                    <!-- 骨架屏行 -->
+                <div v-for="i in 2" :key="i" class="grid grid-cols-[auto_1fr_200px_120px_150px_80px_100px_60px] gap-4 p-4 items-center">
                   <!-- 复选框列 -->
                   <div class="h-4 w-4 bg-muted animate-pulse rounded"></div>
                   <!-- 用户信息列 (最宽) -->
@@ -78,6 +78,8 @@
                     <div class="h-6 bg-muted animate-pulse rounded w-16"></div>
                     <div class="h-6 bg-muted animate-pulse rounded w-12"></div>
                   </div>
+                  <!-- 账号状态列 -->
+                  <div class="h-6 bg-muted animate-pulse rounded w-full"></div>
                   <!-- 创建时间列 -->
                   <div class="h-4 bg-muted animate-pulse rounded w-full"></div>
                   <!-- 操作列 -->
@@ -165,6 +167,7 @@ import {
 } from '@/components/ui/table';
 import { valueUpdater } from '@/utils';
 import type { UserData } from '~/composables/useUsers';
+import StatusBadge from '~/components/StatusBadge.vue';
 
 interface Props {
   users: UserData[];
@@ -246,16 +249,11 @@ const getColumns = (): ColumnDef<UserData>[] => [
         h('div', { class: 'space-y-1' }, [
           h('div', { class: 'flex items-center space-x-2' }, [
             h('h3', { class: 'font-semibold' }, user.name || user.email),
-            h(
-              Badge,
-              {
-                variant: user.status === 'active' ? 'default' : 'destructive',
-                class: 'text-xs',
-              },
-              {
-                default: () => (user.status === 'active' ? '活跃' : '停用'),
-              }
-            ),
+            // 在线状态显示
+            h(StatusBadge, {
+              status: user.is_online ? 'online' : 'offline',
+              customLabel: user.is_online ? '在线' : '离线',
+            }),
           ]),
           h(
             'p',
@@ -317,6 +315,19 @@ const getColumns = (): ColumnDef<UserData>[] => [
           )
         )
       );
+    },
+  },
+  {
+    accessorKey: 'status',
+    header: '账号状态',
+    cell: ({ row }) => {
+      const user = row.original;
+      return h('div', { class: 'cursor-pointer', onClick: () => emit('toggle-status', user) }, [
+                 h(StatusBadge, {
+           status: user.status === 'active' ? 'active' : 'inactive',
+           customLabel: user.status === 'active' ? '启用' : '禁用',
+         }),
+      ]);
     },
   },
   {
@@ -464,6 +475,7 @@ const getColumnDisplayName = (columnId: string) => {
     email: '邮箱',
     department_id: '部门',
     roles: '角色',
+    status: '账号状态',
     created_at: '创建时间',
   };
   return nameMap[columnId] || columnId;

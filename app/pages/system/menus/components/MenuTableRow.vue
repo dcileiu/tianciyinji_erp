@@ -149,8 +149,8 @@
 <script setup lang="ts">
 import { ChevronDown, Edit, Plus, Trash2 } from 'lucide-vue-next';
 import { getIconByName } from '~/components/icons';
-import type { Menu } from '~/composables/useMenus';
 import type { StatusType } from '~/components/StatusBadge.vue';
+import type { Menu } from '~/composables/useMenus';
 
 interface MenuTableRowProps {
   menu: Menu;

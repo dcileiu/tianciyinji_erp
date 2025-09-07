@@ -54,9 +54,10 @@
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge :variant="role.status === 'active' ? 'default' : 'secondary'">
-                    {{ role.status === 'active' ? '启用' : '禁用' }}
-                  </Badge>
+                  <StatusBadge 
+                    :status="role.status === 'active' ? 'active' : 'inactive'"
+                    :customLabel="role.status === 'active' ? '启用' : '禁用'"
+                  />
                 </TableCell>
                 <TableCell>
                   <div class="max-w-[200px] truncate text-sm text-muted-foreground">
