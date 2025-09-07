@@ -106,6 +106,7 @@
             <!-- 其他操作 -->
             <div class="flex flex-col gap-3">
               <Button
+                type="button"
                 variant="ghost"
                 class="w-full"
                 @click="$router.push('/login/forgot-password')"
@@ -117,6 +118,7 @@
               <div class="text-center text-sm text-muted-foreground">
                 还没有账户？
                 <Button
+                  type="button"
                   variant="link"
                   class="p-0 h-auto font-normal"
                   @click="$router.push('/login/register')"

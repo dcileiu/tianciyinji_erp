@@ -127,6 +127,7 @@
               <p class="text-sm text-gray-600">
                 已有账户？
                 <Button
+                  type="button"
                   variant="link"
                   class="p-0 h-auto text-blue-600 hover:text-blue-800"
                   @click="$router.push('/login')"
