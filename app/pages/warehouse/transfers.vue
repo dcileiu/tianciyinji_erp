@@ -66,9 +66,9 @@
                 class="absolute left-3 top-3 h-4 w-4 text-muted-foreground"
               />
               <Input
-                v-model="filters.search"
-                placeholder="搜索调拨单号、商品..."
                 class="pl-9"
+                placeholder="搜索调拨单号、商品..."
+                v-model="filters.search"
               />
             </div>
           </div>
@@ -100,11 +100,11 @@
         </div>
       </CardHeader>
       <CardContent>
-        <div v-if="loading" class="space-y-4">
+        <div class="space-y-4" v-if="loading">
           <div
+            class="flex items-center space-x-4 p-4 border rounded-lg"
             v-for="i in 10"
             :key="i"
-            class="flex items-center space-x-4 p-4 border rounded-lg"
           >
             <Skeleton class="h-12 w-12 rounded" />
             <div class="space-y-2 flex-1">
@@ -117,8 +117,8 @@
         </div>
 
         <div
-          v-else-if="filteredTransfers.length === 0"
           class="text-center py-16"
+          v-else-if="filteredTransfers.length === 0"
         >
           <ArrowRightLeft
             class="mx-auto h-16 w-16 text-muted-foreground mb-4"
@@ -133,11 +133,11 @@
           </Button>
         </div>
 
-        <div v-else class="space-y-4">
+        <div class="space-y-4" v-else>
           <div
+            class="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             v-for="transfer in filteredTransfers"
             :key="transfer.id"
-            class="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
           >
             <div class="flex items-center space-x-4">
               <div
@@ -151,8 +151,8 @@
                     {{ transfer.transfer_no }}
                   </code>
                   <Badge
-                    :variant="getStatusSeverity(transfer.status)"
                     class="text-xs"
+                    :variant="getStatusSeverity(transfer.status)"
                   >
                     {{ getStatusDisplayName(transfer.status) }}
                   </Badge>
@@ -182,29 +182,29 @@
             </div>
 
             <div class="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" @click="viewTransfer(transfer)">
+              <Button size="sm" variant="ghost" @click="viewTransfer(transfer)">
                 <Eye class="h-4 w-4" />
               </Button>
               <Button
-                v-if="transfer.status === 'draft'"
-                variant="ghost"
                 size="sm"
+                variant="ghost"
+                v-if="transfer.status === 'draft'"
                 @click="editTransfer(transfer)"
               >
                 <Edit class="h-4 w-4" />
               </Button>
               <Button
-                v-if="transfer.status === 'pending'"
-                variant="ghost"
                 size="sm"
+                variant="ghost"
+                v-if="transfer.status === 'pending'"
                 @click="approveTransfer(transfer)"
               >
                 <CheckCircle class="h-4 w-4" />
               </Button>
               <Button
-                v-if="transfer.status === 'draft'"
-                variant="ghost"
                 size="sm"
+                variant="ghost"
+                v-if="transfer.status === 'draft'"
                 @click="confirmDeleteTransfer(transfer)"
               >
                 <Trash2 class="h-4 w-4 text-destructive" />
@@ -231,9 +231,9 @@
             <div class="space-y-2">
               <Label>调拨单号</Label>
               <Input
+                placeholder="系统自动生成"
                 v-model="transferForm.transfer_no"
                 :disabled="true"
-                placeholder="系统自动生成"
               />
             </div>
 
@@ -306,10 +306,10 @@
           <div class="space-y-2">
             <Label>备注</Label>
             <Textarea
-              v-model="transferForm.remark"
               placeholder="请输入备注信息"
-              :rows="3"
+              v-model="transferForm.remark"
               :disabled="dialogMode === 'view'"
+              :rows="3"
             />
           </div>
 
@@ -318,9 +318,9 @@
             <div class="flex items-center justify-between">
               <Label>调拨商品</Label>
               <Button
-                v-if="dialogMode !== 'view'"
-                variant="outline"
                 size="sm"
+                variant="outline"
+                v-if="dialogMode !== 'view'"
                 @click="addTransferItem"
               >
                 <Plus class="mr-2 h-4 w-4" />
@@ -329,18 +329,18 @@
             </div>
 
             <div
-              v-if="transferForm.items.length === 0"
               class="text-center py-8 border rounded-lg"
+              v-if="transferForm.items.length === 0"
             >
               <Package class="mx-auto h-12 w-12 text-muted-foreground mb-2" />
               <p class="text-muted-foreground">暂无调拨商品</p>
             </div>
 
-            <div v-else class="space-y-2">
+            <div class="space-y-2" v-else>
               <div
+                class="flex items-center justify-between p-3 border rounded-lg"
                 v-for="(item, index) in transferForm.items"
                 :key="index"
-                class="flex items-center justify-between p-3 border rounded-lg"
               >
                 <div class="flex items-center space-x-4">
                   <Package class="h-8 w-8 text-primary" />
@@ -358,12 +358,12 @@
                       <span>{{ item.transfer_quantity }} {{ item.unit }}</span>
                     </div>
                     <Input
+                      class="w-24"
+                      type="number"
                       v-else
                       v-model="item.transfer_quantity"
-                      type="number"
-                      :min="1"
                       :max="item.current_stock"
-                      class="w-24"
+                      :min="1"
                     />
                   </div>
                   <div class="text-center">
@@ -371,9 +371,9 @@
                     <p class="text-sm text-muted-foreground">{{ item.unit }}</p>
                   </div>
                   <Button
-                    v-if="dialogMode !== 'view'"
-                    variant="ghost"
                     size="sm"
+                    variant="ghost"
+                    v-if="dialogMode !== 'view'"
                     @click="removeTransferItem(index)"
                   >
                     <Trash2 class="h-4 w-4 text-destructive" />
@@ -388,7 +388,8 @@
             <div class="flex justify-between items-center">
               <span class="text-lg font-medium">总数量：</span>
               <span class="text-xl font-bold text-primary"
-                >{{ totalQuantity }} 件</span
+                >{{ totalQuantity }}
+                件</span
               >
             </div>
           </div>
@@ -401,7 +402,7 @@
             :disabled="saving"
             @click="saveTransfer"
           >
-            <Loader2 v-if="saving" class="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 class="mr-2 h-4 w-4 animate-spin" v-if="saving" />
             确认保存
           </Button>
         </DialogFooter>
@@ -410,212 +411,241 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import {
-  ArrowRight,
-  ArrowRightLeft,
-  CheckCircle,
-  Download,
-  Edit,
-  Eye,
-  Loader2,
-  Package,
-  Plus,
-  RefreshCw,
-  Search,
-  Trash2,
-  Warehouse,
-} from 'lucide-vue-next';
-import type { Transfer } from '~/types/database';
+<script lang="ts" setup>
+  import {
+    ArrowRight,
+    ArrowRightLeft,
+    CheckCircle,
+    Download,
+    Edit,
+    Eye,
+    Loader2,
+    Package,
+    Plus,
+    RefreshCw,
+    Search,
+    Trash2,
+    Warehouse,
+  } from "lucide-vue-next";
+  import type { Transfer } from "~/types/database";
 
-// 页面配置
-definePageMeta({
-  layout: 'default',
-  requiresAuth: true,
-  permission: 'warehouse:transfers',
-});
+  // 页面配置
+  definePageMeta({
+    layout: "default",
+    requiresAuth: true,
+    permission: "warehouse:transfers",
+  });
 
-useHead({
-  title: '库存调拨 - ERP 管理系统',
-});
+  useHead({
+    title: "库存调拨 - ERP 管理系统",
+  });
 
-// 状态管理
-const loading = ref(false);
-const saving = ref(false);
-const showDialog = ref(false);
-const dialogMode = ref<'view' | 'create' | 'edit'>('view');
-const editingTransfer = ref<Transfer | null>(null);
+  // 状态管理
+  const loading = ref(false);
+  const saving = ref(false);
+  const showDialog = ref(false);
+  const dialogMode = ref<"view" | "create" | "edit">("view");
+  const editingTransfer = ref<Transfer | null>(null);
 
-// 筛选条件
-const filters = ref({
-  status: 'all',
-  from_warehouse: 'all',
-  search: '',
-});
+  // 筛选条件
+  const filters = ref({
+    status: "all",
+    from_warehouse: "all",
+    search: "",
+  });
 
-// 表单数据
-const transferForm = ref({
-  transfer_no: '',
-  from_warehouse_id: '',
-  to_warehouse_id: '',
-  status: 'draft',
-  remark: '',
-  items: [] as any[],
-});
+  // 表单数据
+  const transferForm = ref({
+    transfer_no: "",
+    from_warehouse_id: "",
+    to_warehouse_id: "",
+    status: "draft",
+    remark: "",
+    items: [] as any[],
+  });
 
-// 选项数据
-const statusOptions = ref([
-  { label: '草稿', value: 'draft' },
-  { label: '待审核', value: 'pending' },
-  { label: '已批准', value: 'approved' },
-  { label: '运输中', value: 'in_transit' },
-  { label: '已完成', value: 'completed' },
-  { label: '已取消', value: 'cancelled' },
-]);
+  // 选项数据
+  const statusOptions = ref([
+    { label: "草稿", value: "draft" },
+    { label: "待审核", value: "pending" },
+    { label: "已批准", value: "approved" },
+    { label: "运输中", value: "in_transit" },
+    { label: "已完成", value: "completed" },
+    { label: "已取消", value: "cancelled" },
+  ]);
 
-const warehouses = ref([
-  { id: 'WH001', name: '主仓库' },
-  { id: 'WH002', name: '原料仓库' },
-  { id: 'WH003', name: '成品仓库' },
-]);
+  const warehouses = ref([
+    { id: "WH001", name: "主仓库" },
+    { id: "WH002", name: "原料仓库" },
+    { id: "WH003", name: "成品仓库" },
+  ]);
 
-// 模拟数据
-const mockTransfers = ref([
-  {
-    id: '1',
-    transfer_no: 'TF202401001',
-    from_warehouse_id: 'WH001',
-    from_warehouse_name: '主仓库',
-    to_warehouse_id: 'WH002',
-    to_warehouse_name: '原料仓库',
-    status: 'pending',
-    operator_name: '张三',
-    total_quantity: 200,
-    created_at: new Date('2024-01-15'),
-    remark: '紧急调拨',
-    items: [
-      {
-        product_name: '商品A',
-        current_stock: 500,
-        transfer_quantity: 100,
-        unit: '个',
-      },
-      {
-        product_name: '商品B',
-        current_stock: 300,
-        transfer_quantity: 100,
-        unit: '个',
-      },
-    ],
-  },
-  {
-    id: '2',
-    transfer_no: 'TF202401002',
-    from_warehouse_id: 'WH002',
-    from_warehouse_name: '原料仓库',
-    to_warehouse_id: 'WH003',
-    to_warehouse_name: '成品仓库',
-    status: 'completed',
-    operator_name: '李四',
-    total_quantity: 150,
-    created_at: new Date('2024-01-14'),
-    remark: '常规调拨',
-    items: [
-      {
-        product_name: '商品C',
-        current_stock: 200,
-        transfer_quantity: 150,
-        unit: '箱',
-      },
-    ],
-  },
-]);
+  // 模拟数据
+  const mockTransfers = ref([
+    {
+      id: "1",
+      transfer_no: "TF202401001",
+      from_warehouse_id: "WH001",
+      from_warehouse_name: "主仓库",
+      to_warehouse_id: "WH002",
+      to_warehouse_name: "原料仓库",
+      status: "pending",
+      operator_name: "张三",
+      total_quantity: 200,
+      created_at: new Date("2024-01-15"),
+      remark: "紧急调拨",
+      items: [
+        {
+          product_name: "商品A",
+          current_stock: 500,
+          transfer_quantity: 100,
+          unit: "个",
+        },
+        {
+          product_name: "商品B",
+          current_stock: 300,
+          transfer_quantity: 100,
+          unit: "个",
+        },
+      ],
+    },
+    {
+      id: "2",
+      transfer_no: "TF202401002",
+      from_warehouse_id: "WH002",
+      from_warehouse_name: "原料仓库",
+      to_warehouse_id: "WH003",
+      to_warehouse_name: "成品仓库",
+      status: "completed",
+      operator_name: "李四",
+      total_quantity: 150,
+      created_at: new Date("2024-01-14"),
+      remark: "常规调拨",
+      items: [
+        {
+          product_name: "商品C",
+          current_stock: 200,
+          transfer_quantity: 150,
+          unit: "箱",
+        },
+      ],
+    },
+  ]);
 
-// 计算属性
-const filteredTransfers = computed(() => {
-  let result = mockTransfers.value;
+  // 计算属性
+  const filteredTransfers = computed(() => {
+    let result = mockTransfers.value;
 
-  if (filters.value.search) {
-    const query = filters.value.search.toLowerCase();
-    result = result.filter(
-      (transfer) =>
-        transfer.transfer_no.toLowerCase().includes(query) ||
-        transfer.items.some((item) =>
-          item.product_name.toLowerCase().includes(query)
-        )
-    );
-  }
+    if (filters.value.search) {
+      const query = filters.value.search.toLowerCase();
+      result = result.filter(
+        (transfer) =>
+          transfer.transfer_no.toLowerCase().includes(query) ||
+          transfer.items.some((item) =>
+            item.product_name.toLowerCase().includes(query)
+          )
+      );
+    }
 
-  if (filters.value.status && filters.value.status !== 'all') {
-    result = result.filter(
-      (transfer) => transfer.status === filters.value.status
-    );
-  }
+    if (filters.value.status && filters.value.status !== "all") {
+      result = result.filter(
+        (transfer) => transfer.status === filters.value.status
+      );
+    }
 
-  if (filters.value.from_warehouse && filters.value.from_warehouse !== 'all') {
-    result = result.filter(
-      (transfer) => transfer.from_warehouse_id === filters.value.from_warehouse
-    );
-  }
+    if (
+      filters.value.from_warehouse &&
+      filters.value.from_warehouse !== "all"
+    ) {
+      result = result.filter(
+        (transfer) =>
+          transfer.from_warehouse_id === filters.value.from_warehouse
+      );
+    }
 
-  return result;
-});
+    return result;
+  });
 
-const totalCount = computed(() => mockTransfers.value.length);
+  const totalCount = computed(() => mockTransfers.value.length);
 
-const totalQuantity = computed(() => {
-  return transferForm.value.items.reduce((sum: number, item: any) => {
-    return sum + (item.transfer_quantity || 0);
-  }, 0);
-});
+  const totalQuantity = computed(() =>
+    transferForm.value.items.reduce(
+      (sum: number, item: any) => sum + (item.transfer_quantity || 0),
+      0
+    )
+  );
 
-// 状态映射
-const statusMap: Record<string, string> = {
-  draft: '草稿',
-  pending: '待审核',
-  approved: '已批准',
-  in_transit: '运输中',
-  completed: '已完成',
-  cancelled: '已取消',
-};
+  // 状态映射
+  const statusMap: Record<string, string> = {
+    draft: "草稿",
+    pending: "待审核",
+    approved: "已批准",
+    in_transit: "运输中",
+    completed: "已完成",
+    cancelled: "已取消",
+  };
 
-const statusSeverityMap: Record<
-  string,
-  'default' | 'destructive' | 'outline' | 'secondary'
-> = {
-  draft: 'secondary',
-  pending: 'outline',
-  approved: 'secondary',
-  in_transit: 'default',
-  completed: 'default',
-  cancelled: 'destructive',
-};
+  const statusSeverityMap: Record<
+    string,
+    "default" | "destructive" | "outline" | "secondary"
+  > = {
+    draft: "secondary",
+    pending: "outline",
+    approved: "secondary",
+    in_transit: "default",
+    completed: "default",
+    cancelled: "destructive",
+  };
 
-// 方法
-const getStatusDisplayName = (status: string) => statusMap[status] || status;
+  // 方法
+  const getStatusDisplayName = (status: string) => statusMap[status] || status;
 
-const getStatusSeverity = (status: string) =>
-  statusSeverityMap[status] || 'secondary';
+  const getStatusSeverity = (status: string) =>
+    statusSeverityMap[status] || "secondary";
 
-const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString('zh-CN');
-};
+  const formatDate = (date: Date) => new Date(date).toLocaleDateString("zh-CN");
 
-// 加载调拨单数据
-const loadTransfers = async () => {
-  loading.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  } catch (_error) {
-  } finally {
-    loading.value = false;
-  }
-};
+  // 加载调拨单数据
+  const loadTransfers = async () => {
+    loading.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } catch (_error) {
+    } finally {
+      loading.value = false;
+    }
+  };
 
-const openTransferDialog = (transfer: any = null) => {
-  if (transfer) {
+  const openTransferDialog = (transfer: any = null) => {
+    if (transfer) {
+      editingTransfer.value = transfer;
+      dialogMode.value = "edit";
+      Object.assign(transferForm.value, {
+        transfer_no: transfer.transfer_no,
+        from_warehouse_id: transfer.from_warehouse_id,
+        to_warehouse_id: transfer.to_warehouse_id,
+        status: transfer.status,
+        remark: transfer.remark,
+        items: [...transfer.items],
+      });
+    } else {
+      editingTransfer.value = null;
+      dialogMode.value = "create";
+      transferForm.value = {
+        transfer_no: `TF${Date.now()}`,
+        from_warehouse_id: "",
+        to_warehouse_id: "",
+        status: "draft",
+        remark: "",
+        items: [],
+      };
+    }
+    showDialog.value = true;
+  };
+
+  const viewTransfer = (transfer: any) => {
     editingTransfer.value = transfer;
-    dialogMode.value = 'edit';
+    dialogMode.value = "view";
     Object.assign(transferForm.value, {
       transfer_no: transfer.transfer_no,
       from_warehouse_id: transfer.from_warehouse_id,
@@ -624,95 +654,69 @@ const openTransferDialog = (transfer: any = null) => {
       remark: transfer.remark,
       items: [...transfer.items],
     });
-  } else {
+    showDialog.value = true;
+  };
+
+  const editTransfer = (transfer: any) => {
+    openTransferDialog(transfer);
+  };
+
+  const approveTransfer = async (_transfer: any) => {
+    // TODO: 需要重新实现确认对话框
+  };
+
+  const confirmDeleteTransfer = (_transfer: any) => {
+    // TODO: 需要重新实现确认对话框
+  };
+
+  const closeTransferDialog = () => {
+    showDialog.value = false;
     editingTransfer.value = null;
-    dialogMode.value = 'create';
-    transferForm.value = {
-      transfer_no: `TF${Date.now()}`,
-      from_warehouse_id: '',
-      to_warehouse_id: '',
-      status: 'draft',
-      remark: '',
-      items: [],
-    };
-  }
-  showDialog.value = true;
-};
+  };
 
-const viewTransfer = (transfer: any) => {
-  editingTransfer.value = transfer;
-  dialogMode.value = 'view';
-  Object.assign(transferForm.value, {
-    transfer_no: transfer.transfer_no,
-    from_warehouse_id: transfer.from_warehouse_id,
-    to_warehouse_id: transfer.to_warehouse_id,
-    status: transfer.status,
-    remark: transfer.remark,
-    items: [...transfer.items],
-  });
-  showDialog.value = true;
-};
-
-const editTransfer = (transfer: any) => {
-  openTransferDialog(transfer);
-};
-
-const approveTransfer = async (_transfer: any) => {
-  // TODO: 需要重新实现确认对话框
-};
-
-const confirmDeleteTransfer = (_transfer: any) => {
-  // TODO: 需要重新实现确认对话框
-};
-
-const closeTransferDialog = () => {
-  showDialog.value = false;
-  editingTransfer.value = null;
-};
-
-const saveTransfer = () => {
-  if (editingTransfer.value?.id) {
-    // 编辑模式
-    const index = mockTransfers.value.findIndex(
-      (t) => t.id === editingTransfer.value?.id
-    );
-    if (index !== -1 && mockTransfers.value[index]) {
-      mockTransfers.value[index] = {
+  const saveTransfer = () => {
+    if (editingTransfer.value?.id) {
+      // 编辑模式
+      const index = mockTransfers.value.findIndex(
+        (t) => t.id === editingTransfer.value?.id
+      );
+      if (index !== -1 && mockTransfers.value[index]) {
+        mockTransfers.value[index] = {
+          ...transferForm.value,
+          id: editingTransfer.value.id,
+          created_at: mockTransfers.value[index].created_at,
+        } as Transfer;
+      }
+    } else {
+      // 新增模式
+      const newTransfer: Transfer = {
         ...transferForm.value,
-        id: editingTransfer.value.id,
-        created_at: mockTransfers.value[index].created_at,
+        id: Date.now().toString(),
+        created_at: new Date(),
       } as Transfer;
+      mockTransfers.value.unshift(newTransfer);
     }
-  } else {
-    // 新增模式
-    const newTransfer: Transfer = {
-      ...transferForm.value,
-      id: Date.now().toString(),
-      created_at: new Date(),
-    } as Transfer;
-    mockTransfers.value.unshift(newTransfer);
-  }
 
-  closeTransferDialog();
-};
+    closeTransferDialog();
+  };
 
-const addTransferItem = () => {
-  transferForm.value.items.push({
-    product_name: '新商品',
-    current_stock: 100,
-    transfer_quantity: 1,
-    unit: '个',
+  const addTransferItem = () => {
+    transferForm.value.items.push({
+      product_name: "新商品",
+      current_stock: 100,
+      transfer_quantity: 1,
+      unit: "个",
+    });
+  };
+
+  const removeTransferItem = (index: number) => {
+    transferForm.value.items.splice(index, 1);
+  };
+
+  const exportTransfers = () => {};
+
+  // 初始化
+  onMounted(() => {
+    loadTransfers();
   });
-};
-
-const removeTransferItem = (index: number) => {
-  transferForm.value.items.splice(index, 1);
-};
-
-const exportTransfers = () => {};
-
-// 初始化
-onMounted(() => {
-  loadTransfers();
-});
 </script>

@@ -8,7 +8,9 @@
         <CardTitle>当前用户信息</CardTitle>
       </CardHeader>
       <CardContent>
-        <pre class="bg-gray-100 p-4 rounded text-sm overflow-auto">{{ JSON.stringify(user, null, 2) }}</pre>
+        <pre
+          class="bg-gray-100 p-4 rounded text-sm overflow-auto"
+        >{{ JSON.stringify(user, null, 2) }}</pre>
       </CardContent>
     </Card>
 
@@ -34,12 +36,16 @@
       <CardContent>
         <div v-if="permissions.length > 0">
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            <Badge v-for="permission in permissions" :key="permission" variant="secondary">
+            <Badge
+              variant="secondary"
+              v-for="permission in permissions"
+              :key="permission"
+            >
               {{ permission }}
             </Badge>
           </div>
         </div>
-        <p v-else class="text-gray-500">暂无权限数据</p>
+        <p class="text-gray-500" v-else>暂无权限数据</p>
       </CardContent>
     </Card>
 
@@ -49,88 +55,89 @@
         <CardTitle>菜单数据</CardTitle>
       </CardHeader>
       <CardContent>
-        <pre class="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96">{{ JSON.stringify(authorizedMenus, null, 2) }}</pre>
+        <pre
+          class="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96"
+        >{{ JSON.stringify(authorizedMenus, null, 2) }}</pre>
       </CardContent>
     </Card>
 
     <!-- 操作按钮 -->
     <div class="flex gap-4">
-      <Button @click="refreshPermissions" :disabled="loading">
+      <Button :disabled="loading" @click="refreshPermissions">
         {{ loading ? '加载中...' : '刷新权限' }}
       </Button>
-      <Button @click="testAPI" variant="outline">
-        测试API
-      </Button>
-      <Button @click="debugUserData" variant="destructive">
-        深度调试
-      </Button>
+      <Button variant="outline" @click="testAPI"> 测试API </Button>
+      <Button variant="destructive" @click="debugUserData"> 深度调试 </Button>
     </div>
 
     <!-- API测试结果 -->
-    <Card v-if="apiResult" class="mt-6">
+    <Card class="mt-6" v-if="apiResult">
       <CardHeader>
         <CardTitle>API测试结果</CardTitle>
       </CardHeader>
       <CardContent>
-        <pre class="bg-gray-100 p-4 rounded text-sm overflow-auto">{{ apiResult }}</pre>
+        <pre
+          class="bg-gray-100 p-4 rounded text-sm overflow-auto"
+        >{{ apiResult }}</pre>
       </CardContent>
     </Card>
   </div>
 </template>
 
-<script setup lang="ts">
-// 页面配置
-definePageMeta({
-  requiresAuth: false, // 调试页面允许访问
-  layout: 'default',
-});
+<script lang="ts" setup>
+  // 页面配置
+  definePageMeta({
+    requiresAuth: true,
+    permission: "system:roles",
+    layout: "default",
+  });
 
-const { user } = useAuth();
-const { permissions, authorizedMenus, loading, error, refreshPermissions } =
-  usePermissions();
+  const { user } = useAuth();
+  const { permissions, authorizedMenus, loading, error, refreshPermissions } =
+    usePermissions();
 
-const apiResult = ref('');
+  const apiResult = ref("");
 
-// 测试API调用
-const testAPI = async () => {
-  try {
-    apiResult.value = '正在测试API...';
+  // 测试API调用
+  const testAPI = async () => {
+    try {
+      apiResult.value = "正在测试API...";
 
-    const [permissionsRes, menusRes] = await Promise.all([
-      $fetch('/api/user', { query: { action: 'permissions' } }),
-      $fetch('/api/user', { query: { action: 'menus' } }),
-    ]);
+      const [permissionsRes, menusRes] = await Promise.all([
+        $fetch("/api/user", { query: { action: "permissions" } }),
+        $fetch("/api/user", { query: { action: "menus" } }),
+      ]);
 
-    apiResult.value = JSON.stringify(
-      {
-        permissions: permissionsRes,
-        menus: menusRes,
-      },
-      null,
-      2
-    );
-  } catch (err: any) {
-    apiResult.value = `API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`;
-  }
-};
+      apiResult.value = JSON.stringify(
+        {
+          permissions: permissionsRes,
+          menus: menusRes,
+        },
+        null,
+        2
+      );
+    } catch (err: any) {
+      apiResult.value = `API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`;
+    }
+  };
 
-// 深度调试用户数据
-const debugUserData = async () => {
-  try {
-    apiResult.value = '正在深度调试...';
+  // 深度调试用户数据
+  const debugUserData = async () => {
+    try {
+      apiResult.value = "正在深度调试...";
 
-    const debugRes = await $fetch('/api/debug/user-data');
+      const debugRes = await $fetch("/api/debug/user-data");
 
-    apiResult.value = JSON.stringify(debugRes, null, 2);
-  } catch (err: any) {
-    apiResult.value = `调试API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`;
-  }
-};
+      apiResult.value = JSON.stringify(debugRes, null, 2);
+    } catch (err: any) {
+      apiResult.value = `调试API错误: ${err.message}\n${JSON.stringify(err, null, 2)}`;
+    }
+  };
 
-// 页面加载时获取权限
-onMounted(async () => {
-  if (user.value && permissions.value.length === 0) {
-    await refreshPermissions();
-  }
-});
+  // 页面加载时获取权限
+  onMounted(async () => {
+    if (user.value && permissions.value.length === 0) {
+      await refreshPermissions();
+    }
+  });
 </script>

@@ -98,69 +98,68 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '~/composables/useAuth';
+  import { useAuth } from "~/composables/useAuth";
 
-// 页面配置 - 禁用布局，让忘记密码页面全屏显示
-definePageMeta({
-  layout: false,
-});
+  // 页面配置 - 禁用布局，让忘记密码页面全屏显示
+  definePageMeta({
+    layout: false,
+  });
 
-// 组合式函数
-const { resetPassword } = useAuth();
-const router = useRouter();
+  // 组合式函数
+  const { resetPassword } = useAuth();
+  const router = useRouter();
 
-// 响应式数据
-const loading = ref(false);
-const error = ref('');
-const success = ref('');
-const form = ref({
-  email: '',
-});
+  // 响应式数据
+  const loading = ref(false);
+  const error = ref("");
+  const success = ref("");
+  const form = ref({
+    email: "",
+  });
 
-// 表单验证
-const emailError = computed(() => {
-  if (!form.value.email) {
-    return '';
-  }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(form.value.email) ? '' : '请输入有效的邮箱地址';
-});
-
-const isFormValid = computed(() => {
-  return form.value.email && !emailError.value;
-});
-
-// 处理忘记密码
-const handleForgotPassword = async () => {
-  if (!isFormValid.value) {
-    return;
-  }
-
-  try {
-    loading.value = true;
-    error.value = '';
-    success.value = '';
-
-    const result = await resetPassword(form.value.email);
-
-    if (result.success) {
-      success.value = '重置密码邮件已发送！请检查您的邮箱并按照说明重置密码。';
-      // 可以选择在一段时间后跳转回登录页面
-      setTimeout(() => {
-        router.push('/login');
-      }, 5000);
-    } else {
-      error.value = result.error?.message || '发送重置邮件失败，请重试';
+  // 表单验证
+  const emailError = computed(() => {
+    if (!form.value.email) {
+      return "";
     }
-  } catch (_err) {
-    error.value = '发送重置邮件过程中发生错误，请重试';
-  } finally {
-    loading.value = false;
-  }
-};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(form.value.email) ? "" : "请输入有效的邮箱地址";
+  });
 
-// 页面标题
-useHead({
-  title: '忘记密码 - ERP管理系统',
-});
+  const isFormValid = computed(() => form.value.email && !emailError.value);
+
+  // 处理忘记密码
+  const handleForgotPassword = async () => {
+    if (!isFormValid.value) {
+      return;
+    }
+
+    try {
+      loading.value = true;
+      error.value = "";
+      success.value = "";
+
+      const result = await resetPassword(form.value.email);
+
+      if (result.success) {
+        success.value =
+          "重置密码邮件已发送！请检查您的邮箱并按照说明重置密码。";
+        // 可以选择在一段时间后跳转回登录页面
+        setTimeout(() => {
+          router.push("/login");
+        }, 5000);
+      } else {
+        error.value = result.error?.message || "发送重置邮件失败，请重试";
+      }
+    } catch (_err) {
+      error.value = "发送重置邮件过程中发生错误，请重试";
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 页面标题
+  useHead({
+    title: "忘记密码 - ERP管理系统",
+  });
 </script>

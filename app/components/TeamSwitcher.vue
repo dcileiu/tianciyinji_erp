@@ -4,18 +4,18 @@
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <SidebarMenuButton
-            size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            size="lg"
           >
             <div
               class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
             >
-              <AppLogo 
-                v-if="activeTeam.logo === 'AppLogo'" 
-                size="1rem" 
+              <AppLogo
                 inverse
+                size="1rem"
+                v-if="activeTeam.logo === 'AppLogo'"
               />
-              <component v-else :is="activeTeam.logo" class="size-4" />
+              <component class="size-4" :is="activeTeam.logo" v-else />
             </div>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-semibold">{{ activeTeam.name }}</span>
@@ -25,8 +25,8 @@
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
           align="start"
+          class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
           side="bottom"
           :side-offset="4"
         >
@@ -41,7 +41,7 @@
               <div
                 class="flex size-6 items-center justify-center rounded-sm border"
               >
-                <component :is="team.logo" class="size-4 shrink-0" />
+                <component class="size-4 shrink-0" :is="team.logo" />
               </div>
               {{ team.name }}
               <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut>
@@ -62,23 +62,23 @@
   </SidebarMenu>
 </template>
 
-<script setup lang="ts">
-import type { LucideIcon } from 'lucide-vue-next';
-import { ChevronsUpDown, Plus } from 'lucide-vue-next';
+<script lang="ts" setup>
+  import type { LucideIcon } from "lucide-vue-next";
+  import { ChevronsUpDown, Plus } from "lucide-vue-next";
 
-// shadcn-nuxt 会自动导入所有 UI 组件
+  // shadcn-nuxt 会自动导入所有 UI 组件
 
-interface Team {
-  name: string;
-  logo: any; // 支持LucideIcon或字符串
-  plan: string;
-}
+  interface Team {
+    logo: any; // 支持LucideIcon或字符串
+    name: string;
+    plan: string;
+  }
 
-const props = defineProps<{
-  teams: Team[];
-}>();
+  const props = defineProps<{
+    teams: Team[];
+  }>();
 
-const activeTeam = ref(
-  props.teams?.[0] || { name: '默认团队', logo: Plus, plan: '免费版' }
-);
+  const activeTeam = ref(
+    props.teams?.[0] || { name: "默认团队", logo: Plus, plan: "免费版" }
+  );
 </script>

@@ -1,36 +1,36 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
 export interface MenuPermission {
+  children?: MenuPermission[];
+  icon: string | null;
   id: string;
   name: string;
-  icon: string | null;
-  path: string | null;
   parent_id: string | null;
+  path: string | null;
+  permission: string | null;
   sort: number;
   status: string;
-  permission: string | null;
   type: string;
-  children?: MenuPermission[];
 }
 
 export interface UserRoleData {
-  id: string;
-  name: string;
   code: string;
   description?: string;
+  id: string;
+  name: string;
 }
 
 interface PermissionsState {
-  permissions: string[];
-  menus: MenuPermission[];
-  roles: UserRoleData[];
-  loading: boolean;
   error: string | null;
   // 标记是否已加载过（即使结果为空也视为已加载）
   loaded: boolean;
+  loading: boolean;
+  menus: MenuPermission[];
+  permissions: string[];
+  roles: UserRoleData[];
 }
 
-export const usePermissionsStore = defineStore('permissions', {
+export const usePermissionsStore = defineStore("permissions", {
   state: (): PermissionsState => ({
     permissions: [],
     menus: [],
@@ -131,15 +131,15 @@ export const usePermissionsStore = defineStore('permissions', {
         // 并行获取权限和菜单数据
         const [permissionsRes, menusRes] = await Promise.all([
           $fetch<{ code: number; data: string[]; message: string }>(
-            '/api/user',
+            "/api/user",
             {
-              query: { action: 'permissions' },
+              query: { action: "permissions" },
             }
           ),
           $fetch<{ code: number; data: MenuPermission[]; message: string }>(
-            '/api/user',
+            "/api/user",
             {
-              query: { action: 'menus' },
+              query: { action: "menus" },
             }
           ),
         ]);
@@ -152,7 +152,7 @@ export const usePermissionsStore = defineStore('permissions', {
           this.menus = this.buildMenuTree(menusRes.data || []);
         }
       } catch (err: any) {
-        this.error = err.message || '获取用户权限失败';
+        this.error = err.message || "获取用户权限失败";
         this.permissions = [];
         this.menus = [];
       } finally {
@@ -193,7 +193,7 @@ export const usePermissionsStore = defineStore('permissions', {
     hasRoutePermission(
       route: string | { meta?: { permission?: string | string[] } }
     ): boolean {
-      if (typeof route === 'string') {
+      if (typeof route === "string") {
         return this.hasPermission(route);
       }
 
@@ -202,7 +202,7 @@ export const usePermissionsStore = defineStore('permissions', {
         return true;
       }
 
-      if (typeof permission === 'string') {
+      if (typeof permission === "string") {
         return this.hasPermission(permission);
       }
 

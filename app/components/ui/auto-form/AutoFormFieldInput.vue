@@ -1,22 +1,22 @@
-<script setup lang="ts">
-import { computed } from 'vue';
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import AutoFormLabel from './AutoFormLabel.vue';
-import type { FieldProps } from './interface';
-import { beautifyObjectName } from './utils';
+<script lang="ts" setup>
+  import { computed } from "vue";
+  import {
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormMessage,
+  } from "@/components/ui/form";
+  import { Input } from "@/components/ui/input";
+  import { Textarea } from "@/components/ui/textarea";
+  import AutoFormLabel from "./AutoFormLabel.vue";
+  import type { FieldProps } from "./interface";
+  import { beautifyObjectName } from "./utils";
 
-const props = defineProps<FieldProps>();
-const inputComponent = computed(() =>
-  props.config?.component === 'textarea' ? Textarea : Input
-);
+  const props = defineProps<FieldProps>();
+  const inputComponent = computed(() =>
+    props.config?.component === "textarea" ? Textarea : Input
+  );
 </script>
 
 <template>
@@ -28,8 +28,8 @@ const inputComponent = computed(() =>
       <FormControl>
         <slot v-bind="slotProps">
           <component
-            :is="inputComponent"
             type="text"
+            :is="inputComponent"
             v-bind="{ ...slotProps.componentField, ...config?.inputProps }"
             :disabled="config?.inputProps?.disabled ?? disabled"
           />

@@ -1,7 +1,7 @@
 <template>
   <div
-    v-if="isLoading"
     class="fixed inset-0 z-[9999] flex items-center justify-center"
+    v-if="isLoading"
   >
     <div
       class="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center"
@@ -16,8 +16,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { Loader2 } from 'lucide-vue-next';
+<script lang="ts" setup>
+  import { Loader2 } from "lucide-vue-next";
 
-const { isLoading } = useGlobalLoading();
+  const { isLoading } = useGlobalLoading();
 </script>

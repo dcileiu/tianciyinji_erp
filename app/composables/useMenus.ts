@@ -1,288 +1,254 @@
-import type { Database } from '~/types/database.types';
-
 // 菜单类型定义
 export interface Menu {
+  children?: Menu[];
+  created_at?: string;
+  icon?: string | null;
   id: string;
   name: string;
-  icon?: string | null;
-  path?: string | null;
   parent_id: string; // '0' 表示根菜单
-  sort: number;
-  status: 'active' | 'inactive';
+  path?: string | null;
   permission?: string | null;
-  type: 'directory' | 'menu' | 'permission';
-  created_at?: string;
+  sort: number;
+  status: "active" | "inactive";
+  type: "directory" | "menu" | "permission";
   updated_at?: string;
-  children?: Menu[];
 }
 
 // 菜单表单类型
 export interface MenuForm {
-  name: string;
   icon?: string | null;
+  name: string;
+  parent_id: string;
   path?: string | null;
-  parent_id: string; // '0' 表示根菜单
-  sort: number;
-  status: 'active' | 'inactive';
   permission?: string | null;
-  type: 'directory' | 'menu' | 'permission';
+  sort: number;
+  status: "active" | "inactive";
+  type: "directory" | "menu" | "permission";
 }
 
 // 菜单查询参数
 export interface MenuQuery {
+  parent_id?: string | null;
   search?: string;
   status?: string;
   type?: string;
-  parent_id?: string | null;
 }
 
-export const useMenus = () => {
-  const supabase = useSupabaseClient<Database>();
+type ApiResult<T> = {
+  code: number;
+  message: string;
+  data: T;
+};
 
-  // 状态
+export const useMenus = () => {
   const menus = ref<Menu[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  // 获取菜单树结构
   const fetchMenus = async (query?: MenuQuery) => {
     try {
       loading.value = true;
       error.value = null;
 
-      let dbQuery = supabase
-        .from('menus')
-        .select('*')
-        .order('sort', { ascending: true })
-        .order('created_at', { ascending: true });
+      const result = await $fetch<ApiResult<Menu[]>>("/api/menus", {
+        query: {
+          search: query?.search,
+          status: query?.status,
+          type: query?.type,
+        },
+      });
 
-      // 添加筛选条件
-      if (query?.search) {
-        dbQuery = dbQuery.or(
-          `name.ilike.%${query.search}%,path.ilike.%${query.search}%`
-        );
+      if (result.code !== 0) {
+        throw new Error(result.message || "获取菜单失败");
       }
 
-      if (query?.status && query.status !== 'all') {
-        dbQuery = dbQuery.eq('status', query.status);
-      }
-
-      if (query?.type && query.type !== 'all') {
-        dbQuery = dbQuery.eq('type', query.type);
-      }
-
-      const { data, error: fetchError } = await dbQuery;
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      // 构建树结构
-      const menuTree = buildMenuTree(data || []);
+      const menuTree = buildMenuTree(result.data || []);
       menus.value = menuTree;
 
       return { data: menuTree, error: null };
-    } catch (err: any) {
-      error.value = err.message || '获取菜单失败';
-      return { data: null, error: err.message };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "获取菜单失败";
+      error.value = message;
+      return { data: null, error: message };
     } finally {
       loading.value = false;
     }
   };
 
-  // 获取单个菜单
   const fetchMenu = async (id: string) => {
     try {
-      const { data, error: fetchError } = await supabase
-        .from('menus')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (fetchError) {
-        throw fetchError;
+      const result = await $fetch<ApiResult<Menu[]>>("/api/menus");
+      if (result.code !== 0) {
+        throw new Error(result.message || "获取菜单失败");
       }
-      return { data, error: null };
-    } catch (err: any) {
-      return { data: null, error: err.message };
+      const found = (result.data || []).find((item) => item.id === id) || null;
+      return { data: found, error: null };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "获取菜单失败";
+      return { data: null, error: message };
     }
   };
 
-  // 创建菜单
   const createMenu = async (menuData: MenuForm) => {
     try {
       loading.value = true;
       error.value = null;
 
-      // 处理数据，保持 parent_id 为字符串类型
       const processedData = {
         ...menuData,
-        parent_id: menuData.parent_id || '0',
+        parent_id: menuData.parent_id || "0",
         icon: menuData.icon || null,
         path: menuData.path || null,
         permission: menuData.permission || null,
       };
 
-      const { data, error: createError } = await (supabase as any)
-        .from('menus')
-        .insert([processedData])
-        .select()
-        .single();
+      const result = await $fetch<ApiResult<Menu>>("/api/menus", {
+        method: "POST",
+        body: processedData,
+      });
 
-      if (createError) {
-        throw createError;
+      if (result.code !== 0) {
+        throw new Error(result.message || "创建菜单失败");
       }
 
-      // 重新获取菜单列表
       await fetchMenus();
-
-      return { data, error: null };
-    } catch (err: any) {
-      error.value = err.message || '创建菜单失败';
-      return { data: null, error: err.message };
+      return { data: result.data, error: null };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "创建菜单失败";
+      error.value = message;
+      return { data: null, error: message };
     } finally {
       loading.value = false;
     }
   };
 
-  // 更新菜单
   const updateMenu = async (id: string, menuData: Partial<MenuForm>) => {
     try {
       loading.value = true;
       error.value = null;
 
-      // 处理数据，保持 parent_id 为字符串类型
-      const processedData = {
+      const processedData: Record<string, unknown> = {
+        id,
         ...menuData,
-        parent_id: menuData.parent_id || '0',
-        icon: menuData.icon || null,
-        path: menuData.path || null,
-        permission: menuData.permission || null,
-        updated_at: new Date().toISOString(),
       };
 
-      const { data, error: updateError } = await (supabase as any)
-        .from('menus')
-        .update(processedData)
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (updateError) {
-        throw updateError;
+      if (menuData.parent_id !== undefined) {
+        processedData.parent_id = menuData.parent_id || "0";
+      }
+      if (menuData.icon !== undefined) {
+        processedData.icon = menuData.icon || null;
+      }
+      if (menuData.path !== undefined) {
+        processedData.path = menuData.path || null;
+      }
+      if (menuData.permission !== undefined) {
+        processedData.permission = menuData.permission || null;
       }
 
-      // 重新获取菜单列表
-      await fetchMenus();
+      const result = await $fetch<ApiResult<Menu>>("/api/menus", {
+        method: "PUT",
+        body: processedData,
+      });
 
-      return { data, error: null };
-    } catch (err: any) {
-      error.value = err.message || '更新菜单失败';
-      return { data: null, error: err.message };
+      if (result.code !== 0) {
+        throw new Error(result.message || "更新菜单失败");
+      }
+
+      await fetchMenus();
+      return { data: result.data, error: null };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "更新菜单失败";
+      error.value = message;
+      return { data: null, error: message };
     } finally {
       loading.value = false;
     }
   };
 
-  // 删除菜单
   const deleteMenu = async (id: string) => {
     try {
       loading.value = true;
       error.value = null;
 
-      // 检查是否有子菜单
-      const { data: children } = await supabase
-        .from('menus')
-        .select('id')
-        .eq('parent_id', id);
+      const result = await $fetch<{ code: number; message: string }>(
+        "/api/menus",
+        {
+          method: "DELETE",
+          body: { id },
+        }
+      );
 
-      if (children && children.length > 0) {
-        throw new Error('无法删除有子菜单的菜单，请先删除子菜单');
+      if (result.code !== 0) {
+        throw new Error(result.message || "删除菜单失败");
       }
 
-      const { error: deleteError } = await supabase
-        .from('menus')
-        .delete()
-        .eq('id', id);
-
-      if (deleteError) {
-        throw deleteError;
-      }
-
-      // 重新获取菜单列表
       await fetchMenus();
-
       return { error: null };
-    } catch (err: any) {
-      error.value = err.message || '删除菜单失败';
-      return { error: err.message };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "删除菜单失败";
+      error.value = message;
+      return { error: message };
     } finally {
       loading.value = false;
     }
   };
 
-  // 批量删除菜单
   const deleteMenus = async (ids: string[]) => {
     try {
       loading.value = true;
       error.value = null;
 
-      const { error: deleteError } = await supabase
-        .from('menus')
-        .delete()
-        .in('id', ids);
+      const result = await $fetch<{ code: number; message: string }>(
+        "/api/menus",
+        {
+          method: "DELETE",
+          body: { ids },
+        }
+      );
 
-      if (deleteError) {
-        throw deleteError;
+      if (result.code !== 0) {
+        throw new Error(result.message || "批量删除菜单失败");
       }
 
-      // 重新获取菜单列表
       await fetchMenus();
-
       return { error: null };
-    } catch (err: any) {
-      error.value = err.message || '批量删除菜单失败';
-      return { error: err.message };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "批量删除菜单失败";
+      error.value = message;
+      return { error: message };
     } finally {
       loading.value = false;
     }
   };
 
-  // 更新菜单状态
   const updateMenuStatus = async (
     id: string,
-    status: 'active' | 'inactive'
+    status: "active" | "inactive"
   ) => {
     try {
-      // @ts-expect-error
-      const { error: updateError } = await (supabase as any)
-        .from('menus')
-        .update({
-          status,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', id);
+      const result = await $fetch<ApiResult<Menu>>("/api/menus", {
+        method: "PUT",
+        body: { id, status },
+      });
 
-      if (updateError) {
-        throw updateError;
+      if (result.code !== 0) {
+        throw new Error(result.message || "更新状态失败");
       }
 
-      // 重新获取菜单列表
       await fetchMenus();
-
       return { error: null };
-    } catch (err: any) {
-      return { error: err.message };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "更新状态失败";
+      return { error: message };
     }
   };
 
-  // 获取父级菜单选项（用于下拉选择）
   const getParentMenuOptions = () => {
     const options: Array<{ label: string; value: string }> = [];
 
-    const addMenuOptions = (menuList: Menu[], prefix = '') => {
-      menuList.forEach((menu) => {
-        if (menu.type === 'directory' || menu.type === 'menu') {
+    const addMenuOptions = (menuList: Menu[], prefix = "") => {
+      for (const menu of menuList) {
+        if (menu.type === "directory" || menu.type === "menu") {
           options.push({
             label: `${prefix}${menu.name}`,
             value: menu.id,
@@ -292,7 +258,7 @@ export const useMenus = () => {
             addMenuOptions(menu.children, `${prefix}${menu.name} / `);
           }
         }
-      });
+      }
     };
 
     addMenuOptions(menus.value);
@@ -300,12 +266,9 @@ export const useMenus = () => {
   };
 
   return {
-    // 状态
     menus: readonly(menus),
     loading: readonly(loading),
     error: readonly(error),
-
-    // 方法
     fetchMenus,
     fetchMenu,
     createMenu,
@@ -317,35 +280,33 @@ export const useMenus = () => {
   };
 };
 
-// 构建菜单树结构的辅助函数
-function buildMenuTree(flatMenus: any[]): Menu[] {
+function buildMenuTree(flatMenus: Menu[]): Menu[] {
   const menuMap = new Map<string, Menu>();
   const rootMenus: Menu[] = [];
 
-  // 首先创建所有菜单对象
-  flatMenus.forEach((menu) => {
+  for (const menu of flatMenus) {
     menuMap.set(menu.id, {
       ...menu,
       children: [],
     });
-  });
+  }
 
-  // 然后构建父子关系
-  flatMenus.forEach((menu) => {
-    const menuNode = menuMap.get(menu.id)!;
+  for (const menu of flatMenus) {
+    const menuNode = menuMap.get(menu.id);
+    if (!menuNode) {
+      continue;
+    }
 
-    if (!menu.parent_id || menu.parent_id === '0') {
-      // 根菜单
+    if (!menu.parent_id || menu.parent_id === "0") {
       rootMenus.push(menuNode);
     } else {
-      // 子菜单
       const parentNode = menuMap.get(menu.parent_id);
       if (parentNode) {
         parentNode.children = parentNode.children || [];
         parentNode.children.push(menuNode);
       }
     }
-  });
+  }
 
   return rootMenus;
 }

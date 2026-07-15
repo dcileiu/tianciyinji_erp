@@ -1,7 +1,7 @@
 import {
   serverSupabaseServiceRole,
   serverSupabaseUser,
-} from '#supabase/server';
+} from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -9,34 +9,55 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
 
     if (!user) {
-      return {
-        code: 401,
-        message: '未登录',
-        data: null,
-      };
+      throw createError({ statusCode: 401, statusMessage: "未登录" });
     }
 
+    const { data: currentUser, error: fetchError } =
+      await supabase.auth.admin.getUserById(user.id);
+
+    if (fetchError) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: "获取用户信息失败",
+      });
+    }
+
+    // 合并现有元数据，避免覆盖 name / department_id 等字段
+    const updatedMetadata = {
+      ...currentUser.user?.user_metadata,
+      is_online: false,
+      last_logout_at: new Date().toISOString(),
+    };
+
     const { error } = await supabase.auth.admin.updateUserById(user.id, {
-      user_metadata: {
-        is_online: false,
-        last_logout_at: new Date().toISOString(),
-      },
+      user_metadata: updatedMetadata,
     });
 
     if (error) {
-      throw new Error(error.message);
+      throw createError({
+        statusCode: 500,
+        statusMessage: "登出状态更新失败",
+      });
     }
 
     return {
       code: 0,
-      message: '登出状态已更新',
+      message: "登出状态已更新",
       data: true,
     };
-  } catch (err: any) {
-    return {
-      code: -1,
-      message: err?.message || '登出状态更新失败',
-      data: null,
-    };
+  } catch (err: unknown) {
+    if (
+      err &&
+      typeof err === "object" &&
+      "statusCode" in err &&
+      typeof (err as { statusCode: unknown }).statusCode === "number"
+    ) {
+      throw err;
+    }
+
+    throw createError({
+      statusCode: 500,
+      statusMessage: "登出状态更新失败",
+    });
   }
 });

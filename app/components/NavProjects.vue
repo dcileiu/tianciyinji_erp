@@ -17,9 +17,9 @@
             </SidebarMenuAction>
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            align="end"
             class="w-48 rounded-lg"
             side="bottom"
-            align="end"
           >
             <DropdownMenuItem>
               <Folder class="text-muted-foreground" />
@@ -47,15 +47,15 @@
   </SidebarGroup>
 </template>
 
-<script setup lang="ts">
-import type { LucideIcon } from 'lucide-vue-next';
-import { Folder, Forward, MoreHorizontal, Trash2 } from 'lucide-vue-next';
+<script lang="ts" setup>
+  import type { LucideIcon } from "lucide-vue-next";
+  import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-vue-next";
 
-defineProps<{
-  projects: {
-    name: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
-}>();
+  defineProps<{
+    projects: {
+      name: string;
+      url: string;
+      icon: LucideIcon;
+    }[];
+  }>();
 </script>

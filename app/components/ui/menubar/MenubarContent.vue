@@ -1,22 +1,22 @@
-<script setup lang="ts">
-import { reactiveOmit } from '@vueuse/core';
-import type { MenubarContentProps } from 'reka-ui';
-import { MenubarContent, MenubarPortal, useForwardProps } from 'reka-ui';
-import type { HTMLAttributes } from 'vue';
-import { cn } from '@/lib/utils';
+<script lang="ts" setup>
+  import { reactiveOmit } from "@vueuse/core";
+  import type { MenubarContentProps } from "reka-ui";
+  import { MenubarContent, MenubarPortal, useForwardProps } from "reka-ui";
+  import type { HTMLAttributes } from "vue";
+  import { cn } from "@/lib/utils";
 
-const props = withDefaults(
-  defineProps<MenubarContentProps & { class?: HTMLAttributes['class'] }>(),
-  {
-    align: 'start',
-    alignOffset: -4,
-    sideOffset: 8,
-  }
-);
+  const props = withDefaults(
+    defineProps<MenubarContentProps & { class?: HTMLAttributes["class"] }>(),
+    {
+      align: "start",
+      alignOffset: -4,
+      sideOffset: 8,
+    }
+  );
 
-const delegatedProps = reactiveOmit(props, 'class');
+  const delegatedProps = reactiveOmit(props, "class");
 
-const forwardedProps = useForwardProps(delegatedProps);
+  const forwardedProps = useForwardProps(delegatedProps);
 </script>
 
 <template>

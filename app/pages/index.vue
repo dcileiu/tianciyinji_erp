@@ -3,7 +3,7 @@
     class="min-h-screen flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8"
   >
     <!-- 加载状态 -->
-    <div v-if="isLoading" class="text-center">
+    <div class="text-center" v-if="isLoading">
       <div class="flex flex-col items-center gap-3">
         <div class="w-12 h-12 -full bg-muted animate-pulse"></div>
         <div class="w-48 h-4 bg-muted animate-pulse"></div>
@@ -12,7 +12,7 @@
     </div>
 
     <!-- 未登录用户显示欢迎页面 -->
-    <div v-else-if="!isAuthenticated" class="text-center max-w-4xl mx-auto">
+    <div class="text-center max-w-4xl mx-auto" v-else-if="!isAuthenticated">
       <div class="mb-8">
         <div
           class="w-16 h-16 bg-primary -2xl flex items-center justify-center mx-auto mb-4"
@@ -93,9 +93,9 @@
           立即登录
         </Button>
         <Button
-          variant="outline"
           class="w-full sm:w-auto"
           size="lg"
+          variant="outline"
           @click="navigateTo('/getting-started')"
         >
           <Info class="w-4 h-4 mr-2" />
@@ -106,53 +106,53 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// UI组件现在自动导入，无需手动导入
-// 但需要手动导入 Lucide 图标
-import {
-  Building2,
-  Calculator,
-  Factory,
-  Info,
-  LogIn,
-  ShoppingCart,
-  Warehouse,
-} from 'lucide-vue-next';
+<script lang="ts" setup>
+  // UI组件现在自动导入，无需手动导入
+  // 但需要手动导入 Lucide 图标
+  import {
+    Building2,
+    Calculator,
+    Factory,
+    Info,
+    LogIn,
+    ShoppingCart,
+    Warehouse,
+  } from "lucide-vue-next";
 
-import { useAuth } from '~/composables/useAuth';
+  import { useAuth } from "~/composables/useAuth";
 
-// 页面元数据
-definePageMeta({
-  layout: 'auth',
-  middleware: [],
-});
+  // 页面元数据
+  definePageMeta({
+    layout: "auth",
+    middleware: [],
+  });
 
-useHead({
-  title: 'ERP 管理系统',
-});
+  useHead({
+    title: "ERP 管理系统",
+  });
 
-// 获取认证状态
-const { isAuthenticated } = useAuth();
+  // 获取认证状态
+  const { isAuthenticated } = useAuth();
 
-// 页面加载状态
-const isLoading = ref(true);
+  // 页面加载状态
+  const isLoading = ref(true);
 
-onMounted(async () => {
-  // 模拟初始化加载
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  onMounted(async () => {
+    // 模拟初始化加载
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  isLoading.value = false;
+    isLoading.value = false;
 
-  // 如果已登录，跳转到仪表盘
-  if (isAuthenticated.value) {
-    await navigateTo('/dashboard');
-  }
-});
+    // 如果已登录，跳转到仪表盘
+    if (isAuthenticated.value) {
+      await navigateTo("/dashboard");
+    }
+  });
 
-// 如果已登录，重定向到仪表板
-watchEffect(() => {
-  if (!isLoading.value && isAuthenticated.value) {
-    navigateTo('/dashboard');
-  }
-});
+  // 如果已登录，重定向到仪表板
+  watchEffect(() => {
+    if (!isLoading.value && isAuthenticated.value) {
+      navigateTo("/dashboard");
+    }
+  });
 </script>

@@ -91,7 +91,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-muted-foreground">数据库状态</span>
-              <Badge variant="default" class="text-xs">
+              <Badge class="text-xs" variant="default">
                 <CheckCircle class="mr-1 h-3 w-3" />
                 正常
               </Badge>
@@ -127,7 +127,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-muted-foreground">连接状态</span>
-              <Badge variant="default" class="text-xs">
+              <Badge class="text-xs" variant="default">
                 <Wifi class="mr-1 h-3 w-3" />
                 稳定
               </Badge>
@@ -139,32 +139,32 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 手动导入 Lucide 图标
-import {
-  Activity,
-  CheckCircle,
-  Clock,
-  Cpu,
-  MemoryStick,
-  Monitor,
-  Network,
-  RefreshCw,
-  Server,
-  Wifi,
-} from 'lucide-vue-next';
+<script lang="ts" setup>
+  // 手动导入 Lucide 图标
+  import {
+    Activity,
+    CheckCircle,
+    Clock,
+    Cpu,
+    MemoryStick,
+    Monitor,
+    Network,
+    RefreshCw,
+    Server,
+    Wifi,
+  } from "lucide-vue-next";
 
-definePageMeta({
-  layout: 'default',
-  requiresAuth: true,
-  permission: 'monitoring:view',
-});
+  definePageMeta({
+    layout: "default",
+    requiresAuth: true,
+    permission: "monitoring:view",
+  });
 
-useHead({
-  title: '系统监控 - ERP 管理系统',
-});
+  useHead({
+    title: "系统监控 - ERP 管理系统",
+  });
 
-const refreshData = () => {
-  // 刷新监控数据的逻辑
-};
+  const refreshData = () => {
+    // 刷新监控数据的逻辑
+  };
 </script>

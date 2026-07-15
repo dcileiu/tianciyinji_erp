@@ -1,63 +1,86 @@
+import type { H3Event } from "h3";
 import {
   serverSupabaseServiceRole,
   serverSupabaseUser,
-} from '#supabase/server';
+} from "#supabase/server";
+
+/** roles.status 兼容历史数字与当前字符串 */
+export function isRoleActive(status: unknown): boolean {
+  return status === "active" || status === 1 || status === "1";
+}
+
+export const RESERVED_ROLE_CODES = ["super_admin"] as const;
+
+/**
+ * 若为 H3/HTTP 错误则原样抛出（避免被 catch 成 HTTP 200）
+ */
+export function rethrowIfHttpError(error: unknown): void {
+  if (
+    error &&
+    typeof error === "object" &&
+    "statusCode" in error &&
+    typeof (error as { statusCode: unknown }).statusCode === "number"
+  ) {
+    throw error;
+  }
+}
 
 /**
  * 检查当前请求用户是否拥有指定权限
- * - 没有登录 -> 401
+ * - 未登录 -> 401
  * - 已登录但无权限 -> 403
- * - 返回 true 表示拥有权限
  */
-export async function assertPermission(event: any, requiredPermission: string) {
+export async function assertPermission(
+  event: H3Event,
+  requiredPermission: string
+) {
   const supabase = serverSupabaseServiceRole(event);
   const user = await serverSupabaseUser(event);
 
   if (!user) {
-    throw createError({ statusCode: 401, statusMessage: '未认证' });
+    throw createError({ statusCode: 401, statusMessage: "未认证" });
   }
 
-  // 超级管理员放行（角色代码 super_admin）
   const { data: roles } = await supabase
-    .from('users_role')
-    .select('roles!inner(code, status)')
-    .eq('user_id', user.id);
-  const isSuperAdmin = (roles || []).some(
-    (r: any) => r.roles?.code === 'super_admin' && r.roles?.status === 1
-  );
+    .from("users_role")
+    .select("roles!inner(code, status)")
+    .eq("user_id", user.id);
+
+  const isSuperAdmin = (roles || []).some((row) => {
+    const role = row.roles as unknown as {
+      code?: string;
+      status?: string | number;
+    } | null;
+    return role?.code === "super_admin" && isRoleActive(role?.status);
+  });
+
   if (isSuperAdmin) {
     return true;
   }
 
-  // 从菜单权限中判断
   const { data: userPerms } = await supabase
-    .from('menus')
+    .from("menus")
     .select(
-      'permission, roles_menu!inner(roles!inner(users_role!inner(user_id)))'
+      "permission, roles_menu!inner(roles!inner(users_role!inner(user_id)))"
     )
-    .eq('roles_menu.roles.users_role.user_id', user.id)
-    .eq('roles_menu.roles.status', 'active')
-    .eq('status', 'active')
-    .not('permission', 'is', null);
+    .eq("roles_menu.roles.users_role.user_id", user.id)
+    .eq("roles_menu.roles.status", "active")
+    .eq("status", "active")
+    .not("permission", "is", null);
 
   const has = new Set(
-    (userPerms || []).map((p: any) => p.permission).filter(Boolean)
+    (userPerms || [])
+      .map((p) => p.permission)
+      .filter((p): p is string => Boolean(p))
   ).has(requiredPermission);
 
   if (!has) {
-    throw createError({ statusCode: 403, statusMessage: 'Forbidden' });
+    throw createError({ statusCode: 403, statusMessage: "Forbidden" });
   }
 
   return true;
 }
 
-/**
- * 辅助：包装返回体，统一 403 时返回空数据
- */
-export function ok<T>(data: T, message = 'ok') {
+export function ok<T>(data: T, message = "ok") {
   return { code: 0, message, data };
-}
-
-export function forbiddenEmpty(message = '无权限') {
-  return { code: 0, message, data: Array.isArray([]) ? [] : null } as any;
 }

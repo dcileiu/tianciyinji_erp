@@ -24,26 +24,26 @@
               <Label for="password">新密码</Label>
               <div class="relative mt-1">
                 <Input
-                  id="password"
-                  v-model="form.password"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="请输入新密码"
                   class="pr-10"
+                  id="password"
+                  placeholder="请输入新密码"
+                  v-model="form.password"
                   :class="{ 'border-red-500': passwordError }"
+                  :type="showPassword ? 'text' : 'password'"
                 />
                 <button
-                  type="button"
                   class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  type="button"
                   @click="showPassword = !showPassword"
                 >
                   <Eye
-                    v-if="!showPassword"
                     class="w-4 h-4 text-muted-foreground"
+                    v-if="!showPassword"
                   />
-                  <EyeOff v-else class="w-4 h-4 text-muted-foreground" />
+                  <EyeOff class="w-4 h-4 text-muted-foreground" v-else />
                 </button>
               </div>
-              <p v-if="passwordError" class="text-sm text-red-500 mt-1">
+              <p class="text-sm text-red-500 mt-1" v-if="passwordError">
                 {{ passwordError }}
               </p>
             </div>
@@ -53,32 +53,32 @@
               <Label for="confirmPassword">确认新密码</Label>
               <div class="relative mt-1">
                 <Input
-                  id="confirmPassword"
-                  v-model="form.confirmPassword"
-                  :type="showConfirmPassword ? 'text' : 'password'"
-                  placeholder="请再次输入新密码"
                   class="pr-10"
+                  id="confirmPassword"
+                  placeholder="请再次输入新密码"
+                  v-model="form.confirmPassword"
                   :class="{ 'border-red-500': confirmPasswordError }"
+                  :type="showConfirmPassword ? 'text' : 'password'"
                 />
                 <button
-                  type="button"
                   class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  type="button"
                   @click="showConfirmPassword = !showConfirmPassword"
                 >
                   <Eye
-                    v-if="!showConfirmPassword"
                     class="w-4 h-4 text-muted-foreground"
+                    v-if="!showConfirmPassword"
                   />
-                  <EyeOff v-else class="w-4 h-4 text-muted-foreground" />
+                  <EyeOff class="w-4 h-4 text-muted-foreground" v-else />
                 </button>
               </div>
-              <p v-if="confirmPasswordError" class="text-sm text-red-500 mt-1">
+              <p class="text-sm text-red-500 mt-1" v-if="confirmPasswordError">
                 {{ confirmPasswordError }}
               </p>
             </div>
 
             <!-- 错误提示 -->
-            <Alert v-if="error" variant="destructive" class="mb-6">
+            <Alert class="mb-6" variant="destructive" v-if="error">
               <AlertCircle class="h-4 w-4" />
               <AlertDescription>
                 {{ error }}
@@ -86,7 +86,7 @@
             </Alert>
 
             <!-- 成功提示 -->
-            <Alert v-if="success" class="mb-6 border-green-200 bg-green-50">
+            <Alert class="mb-6 border-green-200 bg-green-50" v-if="success">
               <CheckCircle class="h-4 w-4 text-green-600" />
               <AlertDescription class="text-green-700">
                 {{ success }}
@@ -95,11 +95,11 @@
 
             <!-- 更新密码按钮 -->
             <Button
-              type="submit"
               class="w-full mb-6"
+              type="submit"
               :disabled="!isFormValid || loading"
             >
-              <Loader2 v-if="loading" class="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="loading" />
               更新密码
             </Button>
 
@@ -116,8 +116,8 @@
             <!-- 其他操作 -->
             <div class="space-y-3">
               <Button
-                variant="ghost"
                 class="w-full"
+                variant="ghost"
                 @click="$router.push('/login')"
               >
                 返回登录
@@ -135,154 +135,153 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 手动导入 Lucide 图标
-import {
-  AlertCircle,
-  CheckCircle,
-  Eye,
-  EyeOff,
-  Loader2,
-  Lock,
-} from 'lucide-vue-next';
+<script lang="ts" setup>
+  // 手动导入 Lucide 图标
+  import {
+    AlertCircle,
+    CheckCircle,
+    Eye,
+    EyeOff,
+    Loader2,
+    Lock,
+  } from "lucide-vue-next";
 
-import { useAuth } from '~/composables/useAuth';
+  import { useAuth } from "~/composables/useAuth";
 
-// 页面配置 - 禁用布局，让密码重置页面全屏显示
-definePageMeta({
-  layout: false,
-});
+  // 页面配置 - 禁用布局，让密码重置页面全屏显示
+  definePageMeta({
+    layout: false,
+  });
 
-// 组合式函数
-const { updatePassword } = useAuth();
-const router = useRouter();
-const route = useRoute();
+  // 组合式函数
+  const { updatePassword } = useAuth();
+  const router = useRouter();
+  const route = useRoute();
 
-// 响应式数据
-const loading = ref(false);
-const error = ref('');
-const success = ref('');
-const form = ref({
-  password: '',
-  confirmPassword: '',
-});
+  // 响应式数据
+  const loading = ref(false);
+  const error = ref("");
+  const success = ref("");
+  const form = ref({
+    password: "",
+    confirmPassword: "",
+  });
 
-const showPassword = ref(false);
-const showConfirmPassword = ref(false);
+  const showPassword = ref(false);
+  const showConfirmPassword = ref(false);
 
-// 表单验证
-const passwordError = computed(() => {
-  if (!form.value.password) {
-    return '';
-  }
-  return form.value.password.length < 6 ? '密码至少需要6个字符' : '';
-});
-
-const confirmPasswordError = computed(() => {
-  if (!form.value.confirmPassword) {
-    return '';
-  }
-  return form.value.password !== form.value.confirmPassword
-    ? '两次输入的密码不一致'
-    : '';
-});
-
-const isFormValid = computed(() => {
-  return (
-    form.value.password &&
-    form.value.confirmPassword &&
-    !passwordError.value &&
-    !confirmPasswordError.value
-  );
-});
-
-// 处理密码重置
-const handleResetPassword = async () => {
-  if (!isFormValid.value) {
-    return;
-  }
-
-  try {
-    loading.value = true;
-    error.value = '';
-    success.value = '';
-
-    const result = await updatePassword(form.value.password);
-
-    if (result.success) {
-      success.value = '密码更新成功！即将跳转到登录页面...';
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
-    } else {
-      error.value = result.error?.message || '密码更新失败，请重试';
+  // 表单验证
+  const passwordError = computed(() => {
+    if (!form.value.password) {
+      return "";
     }
-  } catch (_err) {
-    error.value = '密码更新过程中发生错误，请重试';
-  } finally {
-    loading.value = false;
-  }
-};
+    return form.value.password.length < 6 ? "密码至少需要6个字符" : "";
+  });
 
-// 检查是否有有效的重置 token
-onMounted(() => {
-  const token = route.query.token || route.hash;
-  if (!token) {
-    error.value = '无效的密码重置链接，请重新申请';
-  }
-});
+  const confirmPasswordError = computed(() => {
+    if (!form.value.confirmPassword) {
+      return "";
+    }
+    return form.value.password === form.value.confirmPassword
+      ? ""
+      : "两次输入的密码不一致";
+  });
 
-// 页面标题
-useHead({
-  title: '重置密码 - ERP管理系统',
-});
+  const isFormValid = computed(
+    () =>
+      form.value.password &&
+      form.value.confirmPassword &&
+      !passwordError.value &&
+      !confirmPasswordError.value
+  );
+
+  // 处理密码重置
+  const handleResetPassword = async () => {
+    if (!isFormValid.value) {
+      return;
+    }
+
+    try {
+      loading.value = true;
+      error.value = "";
+      success.value = "";
+
+      const result = await updatePassword(form.value.password);
+
+      if (result.success) {
+        success.value = "密码更新成功！即将跳转到登录页面...";
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
+      } else {
+        error.value = result.error?.message || "密码更新失败，请重试";
+      }
+    } catch (_err) {
+      error.value = "密码更新过程中发生错误，请重试";
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 检查是否有有效的重置 token
+  onMounted(() => {
+    const token = route.query.token || route.hash;
+    if (!token) {
+      error.value = "无效的密码重置链接，请重新申请";
+    }
+  });
+
+  // 页面标题
+  useHead({
+    title: "重置密码 - ERP管理系统",
+  });
 </script>
 
 <style scoped>
-/* 自定义样式 */
-.reset-password-container {
-  animation: fadeIn 0.5s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  width: 100%;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  /* 自定义样式 */
+  .reset-password-container {
+    animation: fadeIn 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-}
 
-/* PrimeVue 组件自定义样式 */
-:deep(.p-card) {
-  border-radius: 16px;
-  transition: all 0.3s ease;
-}
+  /* PrimeVue 组件自定义样式 */
+  :deep(.p-card) {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
 
-:deep(.p-card:hover) {
-  transform: translateY(-2px);
-}
+  :deep(.p-card:hover) {
+    transform: translateY(-2px);
+  }
 
-:deep(.p-button) {
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
+  :deep(.p-button) {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
 
-:deep(.p-inputtext),
-:deep(.p-password input) {
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
+  :deep(.p-inputtext),
+  :deep(.p-password input) {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
 
-:deep(.p-inputtext:focus),
-:deep(.p-password input:focus) {
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-}
+  :deep(.p-inputtext:focus),
+  :deep(.p-password input:focus) {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  }
 </style>

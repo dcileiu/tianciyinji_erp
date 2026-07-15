@@ -311,7 +311,7 @@
           <Database class="mr-2 h-4 w-4" />
           初始化数据库
         </Button>
-        <Button @click="navigateTo('/dashboard')" variant="outline">
+        <Button variant="outline" @click="navigateTo('/dashboard')">
           <LayoutDashboard class="mr-2 h-4 w-4" />
           进入仪表盘
         </Button>
@@ -320,30 +320,30 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 手动导入 Lucide 图标
-import {
-  AlertTriangle,
-  Check,
-  CheckCircle,
-  Clock,
-  Code,
-  Database,
-  Info,
-  LayoutDashboard,
-  Package,
-  Settings,
-  ShoppingBag,
-  ShoppingCart,
-  TrendingUp,
-} from 'lucide-vue-next';
+<script lang="ts" setup>
+  // 手动导入 Lucide 图标
+  import {
+    AlertTriangle,
+    Check,
+    CheckCircle,
+    Clock,
+    Code,
+    Database,
+    Info,
+    LayoutDashboard,
+    Package,
+    Settings,
+    ShoppingBag,
+    ShoppingCart,
+    TrendingUp,
+  } from "lucide-vue-next";
 
-// 页面配置
-definePageMeta({
-  layout: 'default',
-});
+  // 页面配置
+  definePageMeta({
+    layout: "default",
+  });
 
-useHead({
-  title: '快速入门 - ERP 管理系统',
-});
+  useHead({
+    title: "快速入门 - ERP 管理系统",
+  });
 </script>

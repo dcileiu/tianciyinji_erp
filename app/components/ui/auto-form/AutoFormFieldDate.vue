@@ -1,30 +1,30 @@
-<script setup lang="ts">
-import { DateFormatter, getLocalTimeZone } from '@internationalized/date';
-import { CalendarIcon } from 'lucide-vue-next';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import AutoFormLabel from './AutoFormLabel.vue';
-import type { FieldProps } from './interface';
-import { beautifyObjectName, maybeBooleanishToBoolean } from './utils';
+<script lang="ts" setup>
+  import { DateFormatter, getLocalTimeZone } from "@internationalized/date";
+  import { CalendarIcon } from "lucide-vue-next";
+  import { Button } from "@/components/ui/button";
+  import { Calendar } from "@/components/ui/calendar";
+  import {
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormMessage,
+  } from "@/components/ui/form";
+  import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from "@/components/ui/popover";
+  import { cn } from "@/lib/utils";
+  import AutoFormLabel from "./AutoFormLabel.vue";
+  import type { FieldProps } from "./interface";
+  import { beautifyObjectName, maybeBooleanishToBoolean } from "./utils";
 
-defineProps<FieldProps>();
+  defineProps<FieldProps>();
 
-const df = new DateFormatter('en-US', {
-  dateStyle: 'long',
-});
+  const df = new DateFormatter("en-US", {
+    dateStyle: "long",
+  });
 </script>
 
 <template>
@@ -37,7 +37,10 @@ const df = new DateFormatter('en-US', {
         <slot v-bind="slotProps">
           <div>
             <Popover>
-              <PopoverTrigger as-child :disabled="maybeBooleanishToBoolean(config?.inputProps?.disabled) ?? disabled">
+              <PopoverTrigger
+                as-child
+                :disabled="maybeBooleanishToBoolean(config?.inputProps?.disabled) ?? disabled"
+              >
                 <Button
                   variant="outline"
                   :class="cn(

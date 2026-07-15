@@ -25,7 +25,7 @@
               <div
                 class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg"
               >
-                <AppLogo size="1.5rem" inverse />
+                <AppLogo inverse size="1.5rem" />
               </div>
               <div>
                 <h1 class="text-xl font-bold text-foreground">ERP系统</h1>
@@ -36,9 +36,9 @@
 
           <!-- 主题切换按钮 -->
           <div class="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" @click="toggleTheme">
-              <Sun v-if="isDark" class="h-4 w-4" />
-              <Moon v-else class="h-4 w-4" />
+            <Button size="icon" variant="ghost" @click="toggleTheme">
+              <Sun class="h-4 w-4" v-if="isDark" />
+              <Moon class="h-4 w-4" v-else />
             </Button>
           </div>
         </div>
@@ -63,15 +63,15 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { Moon, Sun } from 'lucide-vue-next';
-import AppLogo from '~/components/AppLogo.vue';
+<script lang="ts" setup>
+  import { Moon, Sun } from "lucide-vue-next";
+  import AppLogo from "~/components/AppLogo.vue";
 
-// 主题管理
-const { isDark, toggleTheme, initTheme } = useTheme();
+  // 主题管理
+  const { isDark, toggleTheme, initTheme } = useTheme();
 
-// 初始化主题
-onMounted(() => {
-  initTheme();
-});
+  // 初始化主题
+  onMounted(() => {
+    initTheme();
+  });
 </script>

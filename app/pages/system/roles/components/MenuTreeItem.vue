@@ -2,22 +2,25 @@
   <div class="space-y-1">
     <div class="flex items-center space-x-2 py-1">
       <Checkbox
-        :id="menu.id"
         :checked="isChecked"
+        :id="menu.id"
         @update:checked="handleCheck"
       />
       <Label
-        :for="menu.id"
         class="text-sm font-medium flex items-center space-x-2 cursor-pointer"
+        :for="menu.id"
       >
         <span>{{ menu.name }}</span>
-        <Badge variant="outline" class="text-xs">
+        <Badge class="text-xs" variant="outline">
           {{ getTypeLabel(menu.type) }}
         </Badge>
       </Label>
     </div>
 
-    <div v-if="menu.children && menu.children.length > 0" class="ml-6 space-y-1">
+    <div
+      class="ml-6 space-y-1"
+      v-if="menu.children && menu.children.length > 0"
+    >
       <MenuTreeItem
         v-for="child in menu.children"
         :key="child.id"
@@ -29,49 +32,49 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
+<script lang="ts" setup>
+  import { Badge } from "@/components/ui/badge";
+  import { Checkbox } from "@/components/ui/checkbox";
+  import { Label } from "@/components/ui/label";
 
-interface Menu {
-  id: string;
-  name: string;
-  type: 'directory' | 'menu' | 'permission';
-  children?: Menu[];
-}
+  interface Menu {
+    children?: Menu[];
+    id: string;
+    name: string;
+    type: "directory" | "menu" | "permission";
+  }
 
-interface Props {
-  menu: Menu;
-  selectedPermissions: string[];
-}
+  interface Props {
+    menu: Menu;
+    selectedPermissions: string[];
+  }
 
-type Emits = (
-  event: 'update-permission',
-  menuId: string,
-  checked: boolean
-) => void;
+  type Emits = (
+    event: "update-permission",
+    menuId: string,
+    checked: boolean
+  ) => void;
 
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+  const props = defineProps<Props>();
+  const emit = defineEmits<Emits>();
 
-// 检查是否选中
-const isChecked = computed(() => {
-  return props.selectedPermissions.includes(props.menu.id);
-});
+  // 检查是否选中
+  const isChecked = computed(() =>
+    props.selectedPermissions.includes(props.menu.id)
+  );
 
-// 处理选择变化
-const handleCheck = (checked: boolean) => {
-  emit('update-permission', props.menu.id, checked);
-};
-
-// 获取类型标签
-const getTypeLabel = (type: string) => {
-  const typeMap: Record<string, string> = {
-    directory: '目录',
-    menu: '菜单',
-    permission: '权限',
+  // 处理选择变化
+  const handleCheck = (checked: boolean) => {
+    emit("update-permission", props.menu.id, checked);
   };
-  return typeMap[type] || '未知';
-};
+
+  // 获取类型标签
+  const getTypeLabel = (type: string) => {
+    const typeMap: Record<string, string> = {
+      directory: "目录",
+      menu: "菜单",
+      permission: "权限",
+    };
+    return typeMap[type] || "未知";
+  };
 </script>

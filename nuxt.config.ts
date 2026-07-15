@@ -1,24 +1,24 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxtjs/supabase',
-    '@nuxtjs/tailwindcss',
-    'shadcn-nuxt',
-    '@pinia/nuxt',
+    "@nuxtjs/supabase",
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
+    "@pinia/nuxt",
   ],
 
   // shadcn-nuxt 配置
   shadcn: {
-    prefix: '',
-    componentDir: './app/components/ui',
+    prefix: "",
+    componentDir: "./app/components/ui",
   },
 
   // 组件自动导入配置（shadcn-nuxt会自动处理ui组件）
   components: [
     {
-      path: '~/components',
+      path: "~/components",
       pathPrefix: false,
-      ignore: ['**/ui/**'], // 由shadcn-nuxt处理
+      ignore: ["**/ui/**"], // 由shadcn-nuxt处理
     },
   ],
 
@@ -26,37 +26,53 @@ export default defineNuxtConfig({
   imports: {
     dirs: [
       // 自动导入composables
-      'composables/**',
+      "composables/**",
       // 自动导入utils
-      'utils/**',
-      'lib/**',
+      "utils/**",
+      "lib/**",
       // 自动导入types
-      'types/**',
+      "types/**",
     ],
   },
 
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== "production" },
+
+  // 生产环境屏蔽调试/初始化入口；关闭公开注册入口
+  routeRules: {
+    "/login/register": { redirect: "/login" },
+    ...(process.env.NODE_ENV === "production"
+      ? {
+          "/db-init": { redirect: "/" },
+          "/debug-permissions": { redirect: "/" },
+          "/auth-test": { redirect: "/" },
+          "/status-test": { redirect: "/" },
+          "/status-badge-demo": { redirect: "/" },
+          "/components-demo/**": { redirect: "/" },
+          "/api/debug/**": { headers: { "x-robots-tag": "noindex" } },
+        }
+      : {}),
+  },
 
   app: {
     head: {
-      title: 'ERP管理系统',
+      title: "ERP管理系统",
       meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: '现代化企业资源规划系统' },
+        { charset: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "description", content: "现代化企业资源规划系统" },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/logo-favicon.svg' },
+        { rel: "icon", type: "image/svg+xml", href: "/logo-favicon.svg" },
         {
-          rel: 'apple-touch-icon',
-          sizes: '180x180',
-          href: '/logo-favicon.svg',
+          rel: "apple-touch-icon",
+          sizes: "180x180",
+          href: "/logo-favicon.svg",
         },
       ],
     },
   },
 
-  css: ['~/assets/css/tailwind.css'],
+  css: ["~/assets/css/tailwind.css"],
 
   // PostCSS 配置
   postcss: {
@@ -72,15 +88,18 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
-      supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+      // v2 推荐 KEY；保留 ANON_KEY 兼容旧 .env
+      supabaseAnonKey:
+        process.env.NUXT_PUBLIC_SUPABASE_KEY ||
+        process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || "http://localhost:3000",
     },
   },
 
   // 开发服务器配置
   devServer: {
     port: 3000,
-    host: 'localhost',
+    host: "localhost",
   },
 
   future: {
@@ -92,34 +111,44 @@ export default defineNuxtConfig({
     payloadExtraction: false,
   },
 
-  compatibilityDate: '2025-08-20',
+  compatibilityDate: "2025-08-20",
 
   vite: {
     optimizeDeps: {
-      include: ['vue', 'vue-router', '@vueuse/core', 'lucide-vue-next'],
+      include: ["vue", "vue-router", "@vueuse/core", "lucide-vue-next"],
     },
   },
 
-  // Nitro 配置用于生产优化
   nitro: {
     compressPublicAssets: true,
     minify: true,
-    preset: 'vercel-edge', // 启用 Vercel Edge Runtime
+    preset: "vercel-edge",
+    routeRules: {
+      "/**": {
+        headers: {
+          "X-Content-Type-Options": "nosniff",
+          "X-Frame-Options": "DENY",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        },
+      },
+    },
   },
 
   supabase: {
     url: process.env.NUXT_PUBLIC_SUPABASE_URL,
-    key: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
+    key:
+      process.env.NUXT_PUBLIC_SUPABASE_KEY ||
+      process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
     redirectOptions: {
-      login: '/login',
-      callback: '/auth/callback',
+      login: "/login",
+      callback: "/auth/callback",
       exclude: [
-        '/login/register',
-        '/login/forgot-password',
-        '/login/reset-password',
-        '/getting-started',
-        '/components-demo',
-        '/db-init',
+        "/login/forgot-password",
+        "/login/reset-password",
+        "/getting-started",
+        "/components-demo",
+        "/db-init",
       ],
     },
   },

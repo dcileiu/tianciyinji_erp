@@ -10,7 +10,7 @@
             <div
               class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4"
             >
-              <AppLogo size="2rem" inverse />
+              <AppLogo inverse size="2rem" />
             </div>
             <h1 class="text-2xl font-bold text-foreground mb-2">欢迎回来</h1>
             <p class="text-muted-foreground">请登录您的账户</p>
@@ -25,17 +25,17 @@
                   class="absolute left-3 top-3 h-4 w-4 text-muted-foreground"
                 />
                 <Input
-                  id="email"
-                  v-model="form.email"
-                  type="email"
-                  placeholder="请输入邮箱地址"
                   class="pl-10"
+                  id="email"
+                  placeholder="请输入邮箱地址"
+                  required
+                  type="email"
+                  v-model="form.email"
                   :class="{ 'border-destructive': emailError }"
                   :disabled="loading"
-                  required
                 />
               </div>
-              <p v-if="emailError" class="text-sm text-destructive">
+              <p class="text-sm text-destructive" v-if="emailError">
                 {{ emailError }}
               </p>
             </div>
@@ -48,48 +48,48 @@
                   class="absolute left-3 top-3 h-4 w-4 text-muted-foreground"
                 />
                 <Input
-                  id="password"
-                  v-model="form.password"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="请输入密码"
                   class="pl-10 pr-10"
+                  id="password"
+                  placeholder="请输入密码"
+                  required
+                  v-model="form.password"
                   :class="{ 'border-destructive': passwordError }"
                   :disabled="loading"
-                  required
+                  :type="showPassword ? 'text' : 'password'"
                 />
                 <Button
+                  class="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  size="sm"
                   type="button"
                   variant="ghost"
-                  size="sm"
-                  class="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                   @click="showPassword = !showPassword"
                 >
-                  <Eye v-if="!showPassword" class="h-4 w-4" />
-                  <EyeOff v-else class="h-4 w-4" />
+                  <Eye class="h-4 w-4" v-if="!showPassword" />
+                  <EyeOff class="h-4 w-4" v-else />
                 </Button>
               </div>
-              <p v-if="passwordError" class="text-sm text-destructive">
+              <p class="text-sm text-destructive" v-if="passwordError">
                 {{ passwordError }}
               </p>
             </div>
 
             <!-- 错误提示 -->
-            <Alert v-if="error" variant="destructive">
+            <Alert variant="destructive" v-if="error">
               <AlertDescription class="flex items-center gap-2">
-              <AlertCircle class="h-4 w-4" />
-              {{ error }}
+                <AlertCircle class="h-4 w-4" />
+                {{ error }}
               </AlertDescription>
             </Alert>
 
             <!-- 登录按钮 -->
             <Button
-              type="submit"
               class="w-full"
-              :disabled="!isFormValid || loading"
               size="lg"
+              type="submit"
+              :disabled="!isFormValid || loading"
             >
-              <Loader2 v-if="loading" class="mr-2 h-4 w-4 animate-spin" />
-              <LogIn v-else class="mr-2 h-4 w-4" />
+              <Loader2 class="mr-2 h-4 w-4 animate-spin" v-if="loading" />
+              <LogIn class="mr-2 h-4 w-4" v-else />
               {{ loading ? "登录中..." : "登录" }}
             </Button>
 
@@ -106,9 +106,9 @@
             <!-- 其他操作 -->
             <div class="flex flex-col gap-3">
               <Button
+                class="w-full"
                 type="button"
                 variant="ghost"
-                class="w-full"
                 @click="$router.push('/login/forgot-password')"
               >
                 <HelpCircle class="mr-2 h-4 w-4" />
@@ -116,15 +116,7 @@
               </Button>
 
               <div class="text-center text-sm text-muted-foreground">
-                还没有账户？
-                <Button
-                  type="button"
-                  variant="link"
-                  class="p-0 h-auto font-normal"
-                  @click="$router.push('/login/register')"
-                >
-                  立即注册
-                </Button>
+                如需账号，请联系系统管理员开通
               </div>
             </div>
           </form>
@@ -139,96 +131,95 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 页面配置 - 必须放在最前面
-definePageMeta({
-  layout: false,
-  requiresAuth: false,
-});
+<script lang="ts" setup>
+  // 页面配置 - 必须放在最前面
+  definePageMeta({
+    layout: false,
+    requiresAuth: false,
+  });
 
-// 手动导入 Lucide 图标
-import {
-  AlertCircle,
-  Eye,
-  EyeOff,
-  HelpCircle,
-  Loader2,
-  Lock,
-  LogIn,
-  Mail,
-} from 'lucide-vue-next';
-// 导入组件
-import AppLogo from '~/components/AppLogo.vue';
+  // 手动导入 Lucide 图标
+  import {
+    AlertCircle,
+    Eye,
+    EyeOff,
+    HelpCircle,
+    Loader2,
+    Lock,
+    LogIn,
+    Mail,
+  } from "lucide-vue-next";
+  // 导入组件
+  import AppLogo from "~/components/AppLogo.vue";
 
-import { useAuth } from '~/composables/useAuth';
-import type { LoginForm } from '~/types/auth';
+  import { useAuth } from "~/composables/useAuth";
+  import type { LoginForm } from "~/types/auth";
 
-// 组合式函数
-const { login } = useAuth();
-const router = useRouter();
+  // 组合式函数
+  const { login } = useAuth();
+  const router = useRouter();
 
-// 响应式数据
-const loading = ref(false);
-const error = ref('');
-const showPassword = ref(false);
-const form = ref<LoginForm>({
-  email: '',
-  password: '',
-});
+  // 响应式数据
+  const loading = ref(false);
+  const error = ref("");
+  const showPassword = ref(false);
+  const form = ref<LoginForm>({
+    email: "",
+    password: "",
+  });
 
-// 表单验证
-const emailError = computed(() => {
-  if (!form.value.email) {
-    return '';
-  }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(form.value.email) ? '' : '请输入有效的邮箱地址';
-});
-
-const passwordError = computed(() => {
-  if (!form.value.password) {
-    return '';
-  }
-  return form.value.password.length < 6 ? '密码至少需要6个字符' : '';
-});
-
-const isFormValid = computed(() => {
-  return (
-    form.value.email &&
-    form.value.password &&
-    !emailError.value &&
-    !passwordError.value
-  );
-});
-
-// 登录处理
-const handleLogin = async () => {
-  if (!isFormValid.value) {
-    return;
-  }
-
-  try {
-    loading.value = true;
-    error.value = '';
-
-    const result = await login(form.value);
-
-    if (result.success) {
-      // 登录成功，跳转到仪表盘
-      await router.push('/dashboard');
-    } else {
-      // 显示错误信息
-      error.value = result.error?.message || '登录失败，请重试';
+  // 表单验证
+  const emailError = computed(() => {
+    if (!form.value.email) {
+      return "";
     }
-  } catch (_err) {
-    error.value = '登录过程中发生错误，请重试';
-  } finally {
-    loading.value = false;
-  }
-};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(form.value.email) ? "" : "请输入有效的邮箱地址";
+  });
 
-// 页面标题
-useHead({
-  title: '登录 - ERP管理系统',
-});
+  const passwordError = computed(() => {
+    if (!form.value.password) {
+      return "";
+    }
+    return form.value.password.length < 6 ? "密码至少需要6个字符" : "";
+  });
+
+  const isFormValid = computed(
+    () =>
+      form.value.email &&
+      form.value.password &&
+      !emailError.value &&
+      !passwordError.value
+  );
+
+  // 登录处理
+  const handleLogin = async () => {
+    if (!isFormValid.value) {
+      return;
+    }
+
+    try {
+      loading.value = true;
+      error.value = "";
+
+      const result = await login(form.value);
+
+      if (result.success) {
+        // 登录成功，跳转到仪表盘
+        await router.push("/dashboard");
+      } else {
+        // 显示错误信息
+        error.value = result.error?.message || "登录失败，请重试";
+      }
+    } catch (_err) {
+      error.value = "登录过程中发生错误，请重试";
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 页面标题
+  useHead({
+    title: "登录 - ERP管理系统",
+  });
 </script>

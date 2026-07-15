@@ -33,21 +33,19 @@
     <Card>
       <CardHeader>
         <CardTitle>不同尺寸</CardTitle>
-        <CardDescription>
-          支持小、中、大三种尺寸
-        </CardDescription>
+        <CardDescription> 支持小、中、大三种尺寸 </CardDescription>
       </CardHeader>
       <CardContent>
         <div class="space-y-4">
           <div class="space-y-2">
             <h4 class="text-sm font-medium">小尺寸 (sm)</h4>
             <div class="flex flex-wrap gap-2">
-              <StatusBadge status="in-process" size="sm" />
-              <StatusBadge status="done" size="sm" />
-              <StatusBadge status="failed" size="sm" />
+              <StatusBadge size="sm" status="in-process" />
+              <StatusBadge size="sm" status="done" />
+              <StatusBadge size="sm" status="failed" />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <h4 class="text-sm font-medium">中等尺寸 (md) - 默认</h4>
             <div class="flex flex-wrap gap-2">
@@ -56,13 +54,13 @@
               <StatusBadge status="failed" />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <h4 class="text-sm font-medium">大尺寸 (lg)</h4>
             <div class="flex flex-wrap gap-2">
-              <StatusBadge status="in-process" size="lg" />
-              <StatusBadge status="done" size="lg" />
-              <StatusBadge status="failed" size="lg" />
+              <StatusBadge size="lg" status="in-process" />
+              <StatusBadge size="lg" status="done" />
+              <StatusBadge size="lg" status="failed" />
             </div>
           </div>
         </div>
@@ -73,17 +71,15 @@
     <Card>
       <CardHeader>
         <CardTitle>自定义标签</CardTitle>
-        <CardDescription>
-          使用 customLabel 属性自定义显示文本
-        </CardDescription>
+        <CardDescription> 使用 customLabel 属性自定义显示文本 </CardDescription>
       </CardHeader>
       <CardContent>
         <div class="flex flex-wrap gap-3">
-          <StatusBadge status="in-process" customLabel="进行中" />
-          <StatusBadge status="done" customLabel="已完成" />
-          <StatusBadge status="failed" customLabel="失败" />
-          <StatusBadge status="pending" customLabel="等待中" />
-          <StatusBadge status="running" customLabel="运行中" />
+          <StatusBadge customLabel="进行中" status="in-process" />
+          <StatusBadge customLabel="已完成" status="done" />
+          <StatusBadge customLabel="失败" status="failed" />
+          <StatusBadge customLabel="等待中" status="pending" />
+          <StatusBadge customLabel="运行中" status="running" />
         </div>
       </CardContent>
     </Card>
@@ -92,9 +88,7 @@
     <Card>
       <CardHeader>
         <CardTitle>仅图标模式</CardTitle>
-        <CardDescription>
-          设置 showLabel 为 false，只显示图标
-        </CardDescription>
+        <CardDescription> 设置 showLabel 为 false，只显示图标 </CardDescription>
       </CardHeader>
       <CardContent>
         <div class="flex flex-wrap gap-3">
@@ -113,9 +107,7 @@
     <Card>
       <CardHeader>
         <CardTitle>实际应用示例</CardTitle>
-        <CardDescription>
-          在表格或列表中的典型使用场景
-        </CardDescription>
+        <CardDescription> 在表格或列表中的典型使用场景 </CardDescription>
       </CardHeader>
       <CardContent>
         <div class="space-y-4">
@@ -123,21 +115,33 @@
           <div>
             <h4 class="text-sm font-medium mb-3">任务列表</h4>
             <div class="space-y-2">
-              <div class="flex items-center justify-between p-3 border rounded-lg">
+              <div
+                class="flex items-center justify-between p-3 border rounded-lg"
+              >
                 <span class="font-medium">数据库迁移</span>
-                <StatusBadge status="done" customLabel="已完成" size="sm" />
+                <StatusBadge customLabel="已完成" size="sm" status="done" />
               </div>
-              <div class="flex items-center justify-between p-3 border rounded-lg">
+              <div
+                class="flex items-center justify-between p-3 border rounded-lg"
+              >
                 <span class="font-medium">API接口开发</span>
-                <StatusBadge status="in-process" customLabel="开发中" size="sm" />
+                <StatusBadge
+                  customLabel="开发中"
+                  size="sm"
+                  status="in-process"
+                />
               </div>
-              <div class="flex items-center justify-between p-3 border rounded-lg">
+              <div
+                class="flex items-center justify-between p-3 border rounded-lg"
+              >
                 <span class="font-medium">前端页面制作</span>
-                <StatusBadge status="pending" customLabel="待开始" size="sm" />
+                <StatusBadge customLabel="待开始" size="sm" status="pending" />
               </div>
-              <div class="flex items-center justify-between p-3 border rounded-lg">
+              <div
+                class="flex items-center justify-between p-3 border rounded-lg"
+              >
                 <span class="font-medium">单元测试</span>
-                <StatusBadge status="failed" customLabel="测试失败" size="sm" />
+                <StatusBadge customLabel="测试失败" size="sm" status="failed" />
               </div>
             </div>
           </div>
@@ -146,19 +150,23 @@
           <div>
             <h4 class="text-sm font-medium mb-3">订单状态</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div class="flex items-center justify-between p-3 border rounded-lg">
+              <div
+                class="flex items-center justify-between p-3 border rounded-lg"
+              >
                 <div>
                   <p class="font-medium">#12345</p>
                   <p class="text-sm text-muted-foreground">用户订单</p>
                 </div>
-                <StatusBadge status="running" customLabel="处理中" />
+                <StatusBadge customLabel="处理中" status="running" />
               </div>
-              <div class="flex items-center justify-between p-3 border rounded-lg">
+              <div
+                class="flex items-center justify-between p-3 border rounded-lg"
+              >
                 <div>
                   <p class="font-medium">#12346</p>
                   <p class="text-sm text-muted-foreground">批量订单</p>
                 </div>
-                <StatusBadge status="done" customLabel="已发货" />
+                <StatusBadge customLabel="已发货" status="done" />
               </div>
             </div>
           </div>
@@ -179,14 +187,15 @@
               &lt;StatusBadge status="done" /&gt;
             </div>
           </div>
-          
+
           <div>
             <h4 class="text-sm font-medium mb-2">自定义标签和尺寸</h4>
             <div class="bg-muted p-3 rounded-md font-mono text-sm">
-              &lt;StatusBadge status="in-process" customLabel="处理中" size="lg" /&gt;
+              &lt;StatusBadge status="in-process" customLabel="处理中" size="lg"
+              /&gt;
             </div>
           </div>
-          
+
           <div>
             <h4 class="text-sm font-medium mb-2">仅图标</h4>
             <div class="bg-muted p-3 rounded-md font-mono text-sm">
@@ -199,12 +208,12 @@
   </div>
 </template>
 
-<script setup lang="ts">
-definePageMeta({
-  layout: 'default',
-});
+<script lang="ts" setup>
+  definePageMeta({
+    layout: "default",
+  });
 
-useHead({
-  title: '状态徽章组件演示',
-});
-</script> 
+  useHead({
+    title: "状态徽章组件演示",
+  });
+</script>

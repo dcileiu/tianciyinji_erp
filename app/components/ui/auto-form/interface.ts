@@ -1,47 +1,47 @@
-import type { Component, InputHTMLAttributes } from 'vue';
-import type { ZodAny, z } from 'zod';
-import type { INPUT_COMPONENTS } from './constant';
+import type { Component, InputHTMLAttributes } from "vue";
+import type { ZodAny, z } from "zod";
+import type { INPUT_COMPONENTS } from "./constant";
 
 export interface FieldProps {
+  config?: ConfigItem;
+  disabled?: boolean;
   fieldName: string;
   label?: string;
   required?: boolean;
-  config?: ConfigItem;
-  disabled?: boolean;
 }
 
 export interface Shape {
-  type: string;
   default?: any;
-  required?: boolean;
   options?: string[];
+  required?: boolean;
   schema?: ZodAny;
+  type: string;
 }
 
 export interface InputComponents {
-  date: Component;
-  select: Component;
-  radio: Component;
+  array: Component;
   checkbox: Component;
+  date: Component;
+  file: Component;
+  number: Component;
+  object: Component;
+  radio: Component;
+  select: Component;
+  string: Component;
   switch: Component;
   textarea: Component;
-  number: Component;
-  string: Component;
-  file: Component;
-  array: Component;
-  object: Component;
 }
 
 export interface ConfigItem {
-  /** Value for the `FormLabel` */
-  label?: string;
-  /** Value for the `FormDescription` */
-  description?: string;
   /** Pick which component to be rendered. */
   component?: keyof typeof INPUT_COMPONENTS | Component;
+  /** Value for the `FormDescription` */
+  description?: string;
   /** Hide `FormLabel`. */
   hideLabel?: boolean;
   inputProps?: InputHTMLAttributes;
+  /** Value for the `FormLabel` */
+  label?: string;
 }
 
 // Define a type to unwrap an array
@@ -65,8 +65,8 @@ export enum DependencyType {
 
 interface BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> {
   sourceField: keyof SchemaType;
-  type: DependencyType;
   targetField: keyof SchemaType;
+  type: DependencyType;
   when: (sourceFieldValue: any, targetFieldValue: any) => boolean;
 }
 

@@ -1,52 +1,43 @@
-import { serverSupabaseServiceRole } from '#supabase/server';
-import { assertPermission } from '../_utils/permissions';
+import { serverSupabaseServiceRole } from "#supabase/server";
+import { handleApiError, normalizeEntityStatus } from "../_utils/crud";
+import { assertPermission } from "../_utils/permissions";
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
+  const client = serverSupabaseServiceRole(event);
 
   try {
+    await assertPermission(event, "system:departments");
+
     switch (method) {
-      case 'GET':
-        await assertPermission(event, 'system:departments');
-        return await getDepartments(event);
-      case 'POST':
-        await assertPermission(event, 'system:departments');
-        return await createDepartment(event);
-      case 'PUT':
-        await assertPermission(event, 'system:departments');
-        return await updateDepartment(event);
-      case 'DELETE':
-        await assertPermission(event, 'system:departments');
-        return await deleteDepartment(event);
+      case "GET":
+        return await getDepartments(client);
+      case "POST":
+        return await createDepartment(client, event);
+      case "PUT":
+        return await updateDepartment(client, event);
+      case "DELETE":
+        return await deleteDepartment(client, event);
       default:
         throw createError({
           statusCode: 405,
-          statusMessage: 'Method Not Allowed',
+          statusMessage: "Method Not Allowed",
         });
     }
-  } catch (error: any) {
-    if (error.statusCode === 403) {
-      throw createError({ statusCode: 403, statusMessage: 'Forbidden' });
-    }
-    return {
-      code: -1,
-      message: error.message || '操作失败',
-      data: null,
-    };
+  } catch (error: unknown) {
+    return handleApiError(error);
   }
 });
 
-// 获取部门列表
-async function getDepartments(event: any) {
-  const client = serverSupabaseServiceRole(event);
-
-  // 查询部门列表 (包含所有状态的部门)
-  const { data: departments, error } = await (client as any)
-    .from('departments')
+async function getDepartments(
+  client: ReturnType<typeof serverSupabaseServiceRole>
+) {
+  const { data: departments, error } = await client
+    .from("departments")
     .select(
-      'id, name, code, description, status, parent_id, sort, manager_id, created_at, updated_at'
+      "id, name, code, description, status, parent_id, sort, manager_id, created_at, updated_at"
     )
-    .order('sort', { ascending: true });
+    .order("sort", { ascending: true });
 
   if (error) {
     throw new Error(`获取部门列表失败: ${error.message}`);
@@ -54,63 +45,78 @@ async function getDepartments(event: any) {
 
   return {
     code: 0,
-    message: '获取成功',
-    data: departments || [],
+    message: "获取成功",
+    data: (departments || []).map((dept) => ({
+      ...dept,
+      status: normalizeEntityStatus(dept.status),
+    })),
   };
 }
 
-// 创建部门
-async function createDepartment(event: any) {
-  const client = serverSupabaseServiceRole(event);
+async function createDepartment(
+  client: ReturnType<typeof serverSupabaseServiceRole>,
+  event: Parameters<typeof readBody>[0]
+) {
   const body = await readBody(event);
   const { name, code, description, parent_id, manager_id, sort, status } = body;
 
-  // 验证必填字段
   if (!(name && code)) {
-    throw new Error('部门名称和编码为必填字段');
+    throw createError({
+      statusCode: 400,
+      statusMessage: "部门名称和编码为必填字段",
+    });
   }
 
-  // 插入新部门
-  const { data, error } = await (client as any)
-    .from('departments')
+  const { data, error } = await client
+    .from("departments")
     .insert({
       name,
       code,
-      description: description || '',
+      description: description || "",
       parent_id: parent_id || null,
       manager_id: manager_id || null,
       sort: sort || 0,
-      status: status || 'active',
+      status: normalizeEntityStatus(status),
     })
     .select();
 
   if (error) {
-    if (error.code === '23505') {
-      throw new Error('部门编码已存在');
+    if (error.code === "23505") {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "部门编码已存在",
+      });
     }
     throw new Error(`创建部门失败: ${error.message}`);
   }
 
   return {
     code: 0,
-    message: '创建部门成功',
-    data: data?.[0] || null,
+    message: "创建部门成功",
+    data: data?.[0]
+      ? { ...data[0], status: normalizeEntityStatus(data[0].status) }
+      : null,
   };
 }
 
-// 更新部门
-async function updateDepartment(event: any) {
-  const client = serverSupabaseServiceRole(event);
+async function updateDepartment(
+  client: ReturnType<typeof serverSupabaseServiceRole>,
+  event: Parameters<typeof readBody>[0]
+) {
   const body = await readBody(event);
   const { id, name, code, description, parent_id, manager_id, sort, status } =
     body;
 
   if (!id) {
-    throw new Error('部门ID不能为空');
+    throw createError({
+      statusCode: 400,
+      statusMessage: "部门ID不能为空",
+    });
   }
 
-  // 更新部门信息
-  const updateData: any = {};
+  const updateData: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
   if (name !== undefined) {
     updateData.name = name;
   }
@@ -130,58 +136,65 @@ async function updateDepartment(event: any) {
     updateData.sort = sort;
   }
   if (status !== undefined) {
-    updateData.status = status;
+    updateData.status = normalizeEntityStatus(status);
   }
 
-  const { data, error } = await (client as any)
-    .from('departments')
+  const { data, error } = await client
+    .from("departments")
     .update(updateData)
-    .eq('id', id)
+    .eq("id", id)
     .select();
 
   if (error) {
-    if (error.code === '23505') {
-      throw new Error('部门编码已存在');
+    if (error.code === "23505") {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "部门编码已存在",
+      });
     }
     throw new Error(`更新部门失败: ${error.message}`);
   }
 
   return {
     code: 0,
-    message: '更新部门成功',
-    data: data?.[0] || null,
+    message: "更新部门成功",
+    data: data?.[0]
+      ? { ...data[0], status: normalizeEntityStatus(data[0].status) }
+      : null,
   };
 }
 
-// 删除部门
-async function deleteDepartment(event: any) {
-  const client = serverSupabaseServiceRole(event);
+async function deleteDepartment(
+  client: ReturnType<typeof serverSupabaseServiceRole>,
+  event: Parameters<typeof readBody>[0]
+) {
   const body = await readBody(event);
   const { id } = body;
 
   if (!id) {
-    throw new Error('部门ID不能为空');
+    throw createError({
+      statusCode: 400,
+      statusMessage: "部门ID不能为空",
+    });
   }
 
-  // 检查是否有子部门
-  const { data: children, error: checkError } = await (client as any)
-    .from('departments')
-    .select('id')
-    .eq('parent_id', id);
+  const { data: children, error: checkError } = await client
+    .from("departments")
+    .select("id")
+    .eq("parent_id", id);
 
   if (checkError) {
     throw new Error(`检查子部门失败: ${checkError.message}`);
   }
 
   if (children && children.length > 0) {
-    throw new Error('该部门下还有子部门，不能删除');
+    throw createError({
+      statusCode: 400,
+      statusMessage: "该部门下还有子部门，不能删除",
+    });
   }
 
-  // 删除部门
-  const { error } = await (client as any)
-    .from('departments')
-    .delete()
-    .eq('id', id);
+  const { error } = await client.from("departments").delete().eq("id", id);
 
   if (error) {
     throw new Error(`删除部门失败: ${error.message}`);
@@ -189,7 +202,7 @@ async function deleteDepartment(event: any) {
 
   return {
     code: 0,
-    message: '删除部门成功',
+    message: "删除部门成功",
     data: { id },
   };
 }

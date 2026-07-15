@@ -9,9 +9,11 @@
 | 变量 | 用途 |
 |------|------|
 | `NUXT_PUBLIC_SUPABASE_URL` | Supabase 项目 URL |
-| `NUXT_PUBLIC_SUPABASE_ANON_KEY` | 匿名公钥（前端可用） |
-| `SUPABASE_SERVICE_KEY` | Service Role（仅服务端；`serverSupabaseServiceRole` 依赖） |
-| `NUXT_PUBLIC_SITE_URL` | 站点根地址，用于注册/重置邮件回调（默认 `http://localhost:3000`） |
+| `NUXT_PUBLIC_SUPABASE_KEY` | 公开密钥（v2 推荐；可用 publishable/anon） |
+| `NUXT_PUBLIC_SUPABASE_ANON_KEY` | 兼容旧配置的别名 |
+| `NUXT_SUPABASE_SECRET_KEY` | 服务端密钥（v2 推荐） |
+| `SUPABASE_SERVICE_KEY` | 兼容旧配置的 Service Role 别名 |
+| `NUXT_PUBLIC_SITE_URL` | 站点根地址，用于重置邮件回调（默认 `http://localhost:3000`） |
 | `NODE_ENV` | 环境标记 |
 
 配置入口：`nuxt.config.ts` 的 `runtimeConfig.public` 与 `supabase` 模块。
@@ -21,7 +23,7 @@
 | 路径 | 文件 | 说明 |
 |------|------|------|
 | `/login` | `app/pages/login/index.vue` | 邮箱密码登录 |
-| `/login/register` | `app/pages/login/register.vue` | 注册 |
+| `/login/register` | — | **已关闭**：重定向到 `/login`；账号由管理员创建 |
 | `/login/forgot-password` | `app/pages/login/forgot-password.vue` | 发送重置邮件 |
 | `/login/reset-password` | `app/pages/login/reset-password.vue` | 设置新密码 |
 | `/auth/callback` | `app/pages/auth/callback.vue` | 邮箱验证 / hash 会话回调 |
@@ -43,7 +45,9 @@
 
 ### 注册
 
-`supabase.auth.signUp`，`emailRedirectTo = {NUXT_PUBLIC_SITE_URL}/auth/callback`。
+**已关闭公开自助注册。** 新用户请由具备 `system:users` 权限的管理员在「用户管理」中创建。`useAuth().register` 会直接返回失败提示。
+
+> 请同时在 Supabase Dashboard → Authentication → Providers/Settings 中关闭公开 Sign ups，作为双重保险。
 
 ### 登出
 
@@ -68,7 +72,9 @@
 
 公开路由（auth 中间件白名单）包括：
 
-`/login`、`/login/register`、`/login/forgot-password`、`/login/reset-password`、`/auth/callback`、`/getting-started`、`/403`、`/404`、`/debug-permissions`
+`/login`、`/login/forgot-password`、`/login/reset-password`、`/auth/callback`、`/getting-started`、`/403`、`/404`
+
+> `/login/register` 已通过 `routeRules` 重定向到 `/login`。
 
 ## 核心代码
 

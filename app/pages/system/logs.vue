@@ -25,9 +25,9 @@
           <div>
             <Label class="text-sm font-medium mb-1">搜索</Label>
             <Input
-              v-model="searchQuery"
-              placeholder="用户名、操作内容..."
               class="w-full"
+              placeholder="用户名、操作内容..."
+              v-model="searchQuery"
             />
           </div>
           <div>
@@ -50,18 +50,18 @@
           </div>
           <div>
             <Label class="text-sm font-medium mb-1">开始日期</Label>
-            <Input v-model="dateRange.start" type="date" class="w-full" />
+            <Input class="w-full" type="date" v-model="dateRange.start" />
           </div>
           <div>
             <Label class="text-sm font-medium mb-1">结束日期</Label>
-            <Input v-model="dateRange.end" type="date" class="w-full" />
+            <Input class="w-full" type="date" v-model="dateRange.end" />
           </div>
           <div class="flex gap-2">
             <Button class="flex-1" @click="applyFilters">
               <Search class="w-4 h-4 mr-2" />
               查询
             </Button>
-            <Button variant="outline" class="flex-1" @click="resetFilters">
+            <Button class="flex-1" variant="outline" @click="resetFilters">
               <RefreshCw class="w-4 h-4 mr-2" />
               重置
             </Button>
@@ -174,7 +174,7 @@
             </TableHeader>
             <TableBody>
               <TableRow v-if="loading">
-                <TableCell colspan="9" class="text-center py-8">
+                <TableCell class="text-center py-8" colspan="9">
                   <div class="flex items-center justify-center">
                     <div
                       class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"
@@ -185,8 +185,8 @@
               </TableRow>
               <TableRow v-else-if="filteredLogs.length === 0">
                 <TableCell
-                  colspan="9"
                   class="text-center py-8 text-muted-foreground"
+                  colspan="9"
                 >
                   暂无数据
                 </TableCell>
@@ -224,9 +224,9 @@
                   </code>
                 </TableCell>
                 <TableCell>
-                  <span class="text-sm text-muted-foreground">{{
-                    log.ip_address
-                  }}</span>
+                  <span class="text-sm text-muted-foreground"
+                    >{{ log.ip_address }}</span
+                  >
                 </TableCell>
                 <TableCell>
                   <span
@@ -251,7 +251,7 @@
                   </span>
                 </TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="sm" @click="viewLogDetail(log)">
+                  <Button size="sm" variant="ghost" @click="viewLogDetail(log)">
                     <Eye class="w-4 h-4" />
                   </Button>
                 </TableCell>
@@ -268,7 +268,7 @@
         <DialogHeader>
           <DialogTitle>日志详情</DialogTitle>
         </DialogHeader>
-        <div v-if="selectedLog" class="space-y-4">
+        <div class="space-y-4" v-if="selectedLog">
           <div class="grid grid-cols-2 gap-4">
             <div>
               <Label class="text-sm font-medium">日志类型</Label>
@@ -367,228 +367,228 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 手动导入 Lucide 图标
-import {
-  AlertTriangle,
-  Calendar,
-  Download,
-  Eye,
-  FileText,
-  RefreshCw,
-  Search,
-  Trash2,
-  Users,
-} from 'lucide-vue-next';
+<script lang="ts" setup>
+  // 手动导入 Lucide 图标
+  import {
+    AlertTriangle,
+    Calendar,
+    Download,
+    Eye,
+    FileText,
+    RefreshCw,
+    Search,
+    Trash2,
+    Users,
+  } from "lucide-vue-next";
 
-import { toast } from 'vue-sonner';
+  import { toast } from "vue-sonner";
 
-// 页面配置
-definePageMeta({
-  layout: 'default',
-});
+  // 页面配置
+  definePageMeta({
+    layout: "default",
+    requiresAuth: true,
+    permission: "system:logs",
+  });
 
-useHead({
-  title: '系统日志 - ERP 管理系统',
-});
+  useHead({
+    title: "系统日志 - ERP 管理系统",
+  });
 
-// 状态管理
-const loading = ref(false);
-const showLogDetail = ref(false);
-const selectedLog = ref(null as any);
+  // 状态管理
+  const loading = ref(false);
+  const showLogDetail = ref(false);
+  const selectedLog = ref(null as any);
 
-// 搜索和筛选
-const searchQuery = ref('');
-const logTypeFilter = ref('all');
-const dateRange = ref({
-  start: undefined as string | undefined,
-  end: undefined as string | undefined,
-});
+  // 搜索和筛选
+  const searchQuery = ref("");
+  const logTypeFilter = ref("all");
+  const dateRange = ref({
+    start: undefined as string | undefined,
+    end: undefined as string | undefined,
+  });
 
-// 统计数据
-const logStats = ref({
-  total: 12_456,
-  today: 234,
-  errors: 12,
-  activeUsers: 45,
-});
+  // 统计数据
+  const logStats = ref({
+    total: 12_456,
+    today: 234,
+    errors: 12,
+    activeUsers: 45,
+  });
 
-// 选项数据
-const logTypeOptions = ref([
-  { label: '登录日志', value: 'login' },
-  { label: '操作日志', value: 'operation' },
-  { label: '错误日志', value: 'error' },
-  { label: '系统日志', value: 'system' },
-]);
+  // 选项数据
+  const logTypeOptions = ref([
+    { label: "登录日志", value: "login" },
+    { label: "操作日志", value: "operation" },
+    { label: "错误日志", value: "error" },
+    { label: "系统日志", value: "system" },
+  ]);
 
-// 模拟数据
-const mockLogs = ref([
-  {
-    id: '1',
-    type: 'login',
-    user_name: '管理员',
-    action: '用户登录',
-    resource: '/api/auth/login',
-    ip_address: '192.168.1.100',
-    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    method: 'POST',
-    status: 'default',
-    created_at: new Date('2024-01-15 10:30:00'),
-    request_data: { username: 'admin', remember: true },
-    error_message: null,
-  },
-  {
-    id: '2',
-    type: 'operation',
-    user_name: '张三',
-    action: '创建用户',
-    resource: '/api/users',
-    ip_address: '192.168.1.101',
-    user_agent:
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-    method: 'POST',
-    status: 'default',
-    created_at: new Date('2024-01-15 10:25:00'),
-    request_data: { name: '李四', email: 'lisi@example.com' },
-    error_message: null,
-  },
-  {
-    id: '3',
-    type: 'error',
-    user_name: '李四',
-    action: '删除产品',
-    resource: '/api/products/123',
-    ip_address: '192.168.1.102',
-    user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-    method: 'DELETE',
-    status: 'failed',
-    created_at: new Date('2024-01-15 10:20:00'),
-    request_data: null,
-    error_message: '产品不存在或已被删除',
-  },
-  {
-    id: '4',
-    type: 'system',
-    user_name: '系统',
-    action: '系统启动',
-    resource: '/system/startup',
-    ip_address: '127.0.0.1',
-    user_agent: 'System Process',
-    method: 'SYSTEM',
-    status: 'default',
-    created_at: new Date('2024-01-15 09:00:00'),
-    request_data: null,
-    error_message: null,
-  },
-]);
+  // 模拟数据
+  const mockLogs = ref([
+    {
+      id: "1",
+      type: "login",
+      user_name: "管理员",
+      action: "用户登录",
+      resource: "/api/auth/login",
+      ip_address: "192.168.1.100",
+      user_agent:
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      method: "POST",
+      status: "default",
+      created_at: new Date("2024-01-15 10:30:00"),
+      request_data: { username: "admin", remember: true },
+      error_message: null,
+    },
+    {
+      id: "2",
+      type: "operation",
+      user_name: "张三",
+      action: "创建用户",
+      resource: "/api/users",
+      ip_address: "192.168.1.101",
+      user_agent:
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+      method: "POST",
+      status: "default",
+      created_at: new Date("2024-01-15 10:25:00"),
+      request_data: { name: "李四", email: "lisi@example.com" },
+      error_message: null,
+    },
+    {
+      id: "3",
+      type: "error",
+      user_name: "李四",
+      action: "删除产品",
+      resource: "/api/products/123",
+      ip_address: "192.168.1.102",
+      user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+      method: "DELETE",
+      status: "failed",
+      created_at: new Date("2024-01-15 10:20:00"),
+      request_data: null,
+      error_message: "产品不存在或已被删除",
+    },
+    {
+      id: "4",
+      type: "system",
+      user_name: "系统",
+      action: "系统启动",
+      resource: "/system/startup",
+      ip_address: "127.0.0.1",
+      user_agent: "System Process",
+      method: "SYSTEM",
+      status: "default",
+      created_at: new Date("2024-01-15 09:00:00"),
+      request_data: null,
+      error_message: null,
+    },
+  ]);
 
-// 计算属性
-const filteredLogs = computed(() => {
-  let result = mockLogs.value;
+  // 计算属性
+  const filteredLogs = computed(() => {
+    let result = mockLogs.value;
 
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    result = result.filter(
-      (log) =>
-        log.user_name.toLowerCase().includes(query) ||
-        log.action.toLowerCase().includes(query) ||
-        log.resource.toLowerCase().includes(query)
-    );
-  }
-
-  if (logTypeFilter.value && logTypeFilter.value !== 'all') {
-    result = result.filter((log) => log.type === logTypeFilter.value);
-  }
-
-  if (dateRange.value.start && dateRange.value.end) {
-    result = result.filter((log) => {
-      const logDate = new Date(log.created_at);
-      return (
-        logDate >= new Date(dateRange.value.start!) &&
-        logDate <= new Date(dateRange.value.end!)
+    if (searchQuery.value) {
+      const query = searchQuery.value.toLowerCase();
+      result = result.filter(
+        (log) =>
+          log.user_name.toLowerCase().includes(query) ||
+          log.action.toLowerCase().includes(query) ||
+          log.resource.toLowerCase().includes(query)
       );
-    });
-  }
+    }
 
-  return result.sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  );
-});
+    if (logTypeFilter.value && logTypeFilter.value !== "all") {
+      result = result.filter((log) => log.type === logTypeFilter.value);
+    }
 
-// 类型映射
-const logTypeMap: Record<string, string> = {
-  login: '登录日志',
-  operation: '操作日志',
-  error: '错误日志',
-  system: '系统日志',
-};
+    if (dateRange.value.start && dateRange.value.end) {
+      result = result.filter((log) => {
+        const logDate = new Date(log.created_at);
+        return (
+          logDate >= new Date(dateRange.value.start!) &&
+          logDate <= new Date(dateRange.value.end!)
+        );
+      });
+    }
 
-const logTypeSeverityMap: Record<
-  string,
-  'default' | 'destructive' | 'outline' | 'secondary'
-> = {
-  login: 'secondary',
-  operation: 'default',
-  error: 'destructive',
-  system: 'secondary',
-};
+    return result.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+  });
 
-// 方法
-const getLogTypeDisplayName = (type: string) => logTypeMap[type] || type;
-
-const getLogTypeSeverity = (type: string) =>
-  logTypeSeverityMap[type] || 'secondary';
-
-const formatDate = (date: Date) => {
-  return new Date(date).toLocaleString('zh-CN');
-};
-
-const truncateUserAgent = (userAgent: string) => {
-  return userAgent.length > 30 ? `${userAgent.substring(0, 30)}...` : userAgent;
-};
-
-const applyFilters = () => {};
-
-const resetFilters = () => {
-  searchQuery.value = '';
-  logTypeFilter.value = 'all';
-  dateRange.value = {
-    start: undefined,
-    end: undefined,
+  // 类型映射
+  const logTypeMap: Record<string, string> = {
+    login: "登录日志",
+    operation: "操作日志",
+    error: "错误日志",
+    system: "系统日志",
   };
-};
 
-const viewLogDetail = (log: any) => {
-  selectedLog.value = log;
-  showLogDetail.value = true;
-};
-
-const exportLogs = () => {
-  // 这里实现导出逻辑
-  toast.success('日志已成功导出');
-};
-
-const confirmClearLogs = () => {
-  if (confirm('确定要清空所有日志吗？此操作不可撤销。')) {
-    clearLogs();
-  }
-};
-
-const clearLogs = () => {
-  // 这里实现清空逻辑
-  mockLogs.value = [];
-  logStats.value = {
-    total: 0,
-    today: 0,
-    errors: 0,
-    activeUsers: 0,
+  const logTypeSeverityMap: Record<
+    string,
+    "default" | "destructive" | "outline" | "secondary"
+  > = {
+    login: "secondary",
+    operation: "default",
+    error: "destructive",
+    system: "secondary",
   };
-  toast.success('所有日志已清空');
-};
 
-// 初始化
-onMounted(() => {
-  // 加载数据
-});
+  // 方法
+  const getLogTypeDisplayName = (type: string) => logTypeMap[type] || type;
+
+  const getLogTypeSeverity = (type: string) =>
+    logTypeSeverityMap[type] || "secondary";
+
+  const formatDate = (date: Date) => new Date(date).toLocaleString("zh-CN");
+
+  const truncateUserAgent = (userAgent: string) =>
+    userAgent.length > 30 ? `${userAgent.substring(0, 30)}...` : userAgent;
+
+  const applyFilters = () => {};
+
+  const resetFilters = () => {
+    searchQuery.value = "";
+    logTypeFilter.value = "all";
+    dateRange.value = {
+      start: undefined,
+      end: undefined,
+    };
+  };
+
+  const viewLogDetail = (log: any) => {
+    selectedLog.value = log;
+    showLogDetail.value = true;
+  };
+
+  const exportLogs = () => {
+    // 这里实现导出逻辑
+    toast.success("日志已成功导出");
+  };
+
+  const confirmClearLogs = () => {
+    if (confirm("确定要清空所有日志吗？此操作不可撤销。")) {
+      clearLogs();
+    }
+  };
+
+  const clearLogs = () => {
+    // 这里实现清空逻辑
+    mockLogs.value = [];
+    logStats.value = {
+      total: 0,
+      today: 0,
+      errors: 0,
+      activeUsers: 0,
+    };
+    toast.success("所有日志已清空");
+  };
+
+  // 初始化
+  onMounted(() => {
+    // 加载数据
+  });
 </script>

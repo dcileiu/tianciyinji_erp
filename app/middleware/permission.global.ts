@@ -21,7 +21,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const requiredPermission = to.meta.permission;
   let hasAccess = false;
 
-  if (typeof requiredPermission === 'string') {
+  if (typeof requiredPermission === "string") {
     hasAccess = hasPermission(requiredPermission);
   } else if (Array.isArray(requiredPermission)) {
     hasAccess = hasAnyPermission(requiredPermission);
@@ -33,7 +33,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const notLoading = !permissionsStore.loading;
     if (notLoaded && notLoading) {
       await permissionsStore.fetchUserPermissions();
-      if (typeof requiredPermission === 'string') {
+      if (typeof requiredPermission === "string") {
         hasAccess = permissionsStore.permissions.includes(requiredPermission);
       } else if (Array.isArray(requiredPermission)) {
         hasAccess = requiredPermission.some((p) =>
@@ -47,7 +47,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     // 重定向到无权限页面
     throw createError({
       statusCode: 403,
-      statusMessage: '访问被拒绝：您没有权限访问此页面',
+      statusMessage: "访问被拒绝：您没有权限访问此页面",
     });
   }
 });

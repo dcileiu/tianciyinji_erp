@@ -1,6 +1,5 @@
 <template>
-  <Dialog :open="dialogVisible" @update:open="(value) => dialogVisible = value"
-    >
+  <Dialog :open="dialogVisible" @update:open="(value) => dialogVisible = value">
     <DialogContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>{{ editingMenu ? "编辑菜单" : "新增菜单" }}</DialogTitle>
@@ -12,10 +11,10 @@
             <Label for="menu-name">菜单名称 *</Label>
             <Input
               id="menu-name"
-              :model-value="formData.name"
-              @update:model-value="formData.name = $event as string"
               placeholder="请输入菜单名称"
               required
+              :model-value="formData.name"
+              @update:model-value="formData.name = $event as string"
             />
           </div>
 
@@ -62,8 +61,8 @@
             <Label for="menu-path">菜单路径</Label>
             <Input
               id="menu-path"
-              v-model="pathString"
               placeholder="例如: /users"
+              v-model="pathString"
               :disabled="formData.type === 'directory' || formData.type === 'permission'"
             />
             <p class="text-xs text-gray-500">
@@ -79,23 +78,23 @@
             <Popover>
               <PopoverTrigger as-child>
                 <Button
-                  variant="outline"
                   class="w-full justify-between"
+                  variant="outline"
                   :disabled="formData.type === 'permission'"
                 >
                   <div class="flex items-center space-x-2">
                     <component
-                      :is="getMenuIcon(formData.icon)"
-                      :key="formData.icon || 'empty'"
                       class="w-4 h-4"
+                      :is="getMenuIcon(formData.icon)"
                       v-if="formData.icon"
+                      :key="formData.icon || 'empty'"
                     />
                     <span>{{ formData.icon || '选择图标' }}</span>
                   </div>
                   <ChevronDown class="w-4 h-4 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent class="w-96 p-0" align="start">
+              <PopoverContent align="start" class="w-96 p-0">
                 <div class="p-4">
                   <IconPicker v-model="iconString" />
                 </div>
@@ -110,10 +109,12 @@
             <Label for="menu-permission">权限标识</Label>
             <Input
               id="menu-permission"
-              v-model="permissionString"
               placeholder="例如: user:view"
+              v-model="permissionString"
             />
-            <p class="text-xs text-gray-500">用于权限控制，建议格式：模块:操作</p>
+            <p class="text-xs text-gray-500">
+              用于权限控制，建议格式：模块:操作
+            </p>
           </div>
         </div>
 
@@ -122,10 +123,10 @@
             <Label for="sort-order">排序值</Label>
             <Input
               id="sort-order"
-              v-model.number="formData.sort"
-              type="number"
-              placeholder="排序值"
               min="0"
+              placeholder="排序值"
+              type="number"
+              v-model.number="formData.sort"
             />
           </div>
 
@@ -152,150 +153,153 @@
       <DialogFooter>
         <Button variant="outline" @click="handleCancel">取消</Button>
         <Button :disabled="saving" @click="handleSave">
-          <div v-if="saving" class="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+          <div
+            class="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"
+            v-if="saving"
+          ></div>
           保存
         </Button>
       </DialogFooter>
     </DialogContent>
-  </Dialog >
+  </Dialog>
 </template>
 
-<script setup lang="ts">
-import { ChevronDown } from 'lucide-vue-next';
-import IconPicker from '~/components/IconPicker.vue';
-import { getIconByName } from '~/components/icons';
-import type { Menu, MenuForm } from '~/composables/useMenus';
+<script lang="ts" setup>
+  import { ChevronDown } from "lucide-vue-next";
+  import IconPicker from "~/components/IconPicker.vue";
+  import { getIconByName } from "~/components/icons";
+  import type { Menu, MenuForm } from "~/composables/useMenus";
 
-interface MenuDialogProps {
-  open: boolean;
-  editingMenu?: Menu | null;
-  parentMenuOptions: Array<{ label: string; value: string }>;
-  saving?: boolean;
-}
+  interface MenuDialogProps {
+    editingMenu?: Menu | null;
+    open: boolean;
+    parentMenuOptions: Array<{ label: string; value: string }>;
+    saving?: boolean;
+  }
 
-interface MenuDialogEmits {
-  (e: 'update:open', value: boolean): void;
-  (e: 'save', data: MenuForm): void;
-}
+  interface MenuDialogEmits {
+    (e: "update:open", value: boolean): void;
+    (e: "save", data: MenuForm): void;
+  }
 
-const props = withDefaults(defineProps<MenuDialogProps>(), {
-  editingMenu: null,
-  saving: false,
-});
+  const props = withDefaults(defineProps<MenuDialogProps>(), {
+    editingMenu: null,
+    saving: false,
+  });
 
-const emit = defineEmits<MenuDialogEmits>();
+  const emit = defineEmits<MenuDialogEmits>();
 
-// 双向绑定对话框显示状态
-const dialogVisible = computed({
-  get: () => props.open,
-  set: (value) => emit('update:open', value),
-});
+  // 双向绑定对话框显示状态
+  const dialogVisible = computed({
+    get: () => props.open,
+    set: (value) => emit("update:open", value),
+  });
 
-// 表单数据
-const formData = ref<MenuForm>({
-  name: '',
-  parent_id: '0',
-  path: null,
-  icon: null,
-  sort: 0,
-  status: 'active',
-  permission: null,
-  type: 'menu',
-});
+  // 表单数据
+  const formData = ref<MenuForm>({
+    name: "",
+    parent_id: "0",
+    path: null,
+    icon: null,
+    sort: 0,
+    status: "active",
+    permission: null,
+    type: "menu",
+  });
 
-// 用于处理 null 和 string 之间的转换的计算属性
-const parentIdString = computed({
-  get: () => formData.value.parent_id || '0',
-  set: (value: string) => {
-    formData.value.parent_id = value || '0';
-  },
-});
+  // 用于处理 null 和 string 之间的转换的计算属性
+  const parentIdString = computed({
+    get: () => formData.value.parent_id || "0",
+    set: (value: string) => {
+      formData.value.parent_id = value || "0";
+    },
+  });
 
-const pathString = computed({
-  get: () => formData.value.path || '',
-  set: (value: string) => {
-    formData.value.path = value === '' ? null : value;
-  },
-});
+  const pathString = computed({
+    get: () => formData.value.path || "",
+    set: (value: string) => {
+      formData.value.path = value === "" ? null : value;
+    },
+  });
 
-const iconString = computed({
-  get: () => formData.value.icon || '',
-  set: (value: string) => {
-    formData.value.icon = value === '' ? null : value;
-  },
-});
+  const iconString = computed({
+    get: () => formData.value.icon || "",
+    set: (value: string) => {
+      formData.value.icon = value === "" ? null : value;
+    },
+  });
 
-const permissionString = computed({
-  get: () => formData.value.permission || '',
-  set: (value: string) => {
-    formData.value.permission = value === '' ? null : value;
-  },
-});
+  const permissionString = computed({
+    get: () => formData.value.permission || "",
+    set: (value: string) => {
+      formData.value.permission = value === "" ? null : value;
+    },
+  });
 
-// 选项数据
-const statusOptions = [
-  { label: '启用', value: 'active' },
-  { label: '禁用', value: 'inactive' },
-];
+  // 选项数据
+  const statusOptions = [
+    { label: "启用", value: "active" },
+    { label: "禁用", value: "inactive" },
+  ];
 
-const typeOptions = [
-  { label: '目录', value: 'directory' },
-  { label: '菜单', value: 'menu' },
-  { label: '权限', value: 'permission' },
-];
+  const typeOptions = [
+    { label: "目录", value: "directory" },
+    { label: "菜单", value: "menu" },
+    { label: "权限", value: "permission" },
+  ];
 
-// 监听编辑菜单变化，更新表单数据
-watch(
-  () => props.editingMenu,
-  (menu) => {
-    if (menu) {
-      Object.assign(formData.value, {
-        name: menu.name,
-        parent_id: menu.parent_id || '0',
-        path: menu.path || null,
-        icon: menu.icon || null,
-        sort: menu.sort,
-        status: menu.status,
-        permission: menu.permission || null,
-        type: menu.type,
-      });
-    } else {
-      // 重置表单
-      Object.assign(formData.value, {
-        name: '',
-        parent_id: '0',
-        path: null,
-        icon: null,
-        sort: 0,
-        status: 'active',
-        permission: null,
-        type: 'menu',
-      });
+  // 监听编辑菜单变化，更新表单数据
+  watch(
+    () => props.editingMenu,
+    (menu) => {
+      if (menu) {
+        Object.assign(formData.value, {
+          name: menu.name,
+          parent_id: menu.parent_id || "0",
+          path: menu.path || null,
+          icon: menu.icon || null,
+          sort: menu.sort,
+          status: menu.status,
+          permission: menu.permission || null,
+          type: menu.type,
+        });
+      } else {
+        // 重置表单
+        Object.assign(formData.value, {
+          name: "",
+          parent_id: "0",
+          path: null,
+          icon: null,
+          sort: 0,
+          status: "active",
+          permission: null,
+          type: "menu",
+        });
+      }
+    },
+    { immediate: true }
+  );
+
+  // 获取菜单图标
+  const getMenuIcon = (iconName?: string | null) => {
+    if (!iconName) {
+      return getIconByName("HelpCircle");
     }
-  },
-  { immediate: true }
-);
 
-// 获取菜单图标
-const getMenuIcon = (iconName?: string | null) => {
-  if (!iconName) {
-    return getIconByName('HelpCircle');
-  }
+    return getIconByName(iconName);
+  };
 
-  return getIconByName(iconName);
-};
+  // 事件处理
+  const handleSave = () => {
+    if (!formData.value.name.trim()) {
+      // 可以在这里添加验证逻辑
+      return;
+    }
 
-// 事件处理
-const handleSave = () => {
-  if (!formData.value.name.trim()) {
-    // 可以在这里添加验证逻辑
-    return;
-  }
+    emit("save", { ...formData.value });
+  };
 
-  emit('save', { ...formData.value });
-};
-
-const handleCancel = () => {
-  emit('update:open', false);
-};
+  const handleCancel = () => {
+    emit("update:open", false);
+  };
 </script>

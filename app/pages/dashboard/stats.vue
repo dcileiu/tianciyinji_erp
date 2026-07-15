@@ -20,7 +20,7 @@
             <SelectItem value="1y">最近1年</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" size="sm" @click="exportData">
+        <Button size="sm" variant="outline" @click="exportData">
           <Download class="mr-2 h-4 w-4" />
           导出数据
         </Button>
@@ -182,17 +182,17 @@
         <CardContent>
           <div class="space-y-4">
             <div
+              class="flex items-center space-x-4"
               v-for="(item, index) in topSales"
               :key="item.id"
-              class="flex items-center space-x-4"
             >
               <div
                 class="flex h-8 w-8 items-center justify-center rounded-full"
                 :class="getRankingColor(index)"
               >
-                <span class="text-sm font-bold text-white">{{
-                  index + 1
-                }}</span>
+                <span class="text-sm font-bold text-white"
+                  >{{ index + 1 }}</span
+                >
               </div>
               <div class="flex-1 space-y-1">
                 <p class="text-sm font-medium leading-none">{{ item.name }}</p>
@@ -220,9 +220,9 @@
         <CardContent>
           <div class="space-y-4">
             <div
+              class="flex items-center justify-between"
               v-for="(product, index) in topProducts"
               :key="product.id"
-              class="flex items-center justify-between"
             >
               <div class="flex items-center space-x-3">
                 <div
@@ -336,9 +336,9 @@
           </div>
           <div class="space-y-4">
             <div
+              class="flex items-center justify-between"
               v-for="region in regionData"
               :key="region.name"
-              class="flex items-center justify-between"
             >
               <div class="flex items-center space-x-3">
                 <div
@@ -363,132 +363,137 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import {
-  Calculator,
-  Download,
-  Map,
-  PieChart,
-  RefreshCw,
-  ShoppingBag,
-  Target,
-} from 'lucide-vue-next';
+<script lang="ts" setup>
+  import {
+    Calculator,
+    Download,
+    Map,
+    PieChart,
+    RefreshCw,
+    ShoppingBag,
+    Target,
+  } from "lucide-vue-next";
 
-// 响应式数据
-const selectedPeriod = ref('30d');
-const totalRevenue = ref(2_345_678);
-const revenueChange = ref(12.5);
-const totalOrders = ref(1234);
-const orderChange = ref(8.2);
-const avgOrderValue = ref(1900);
-const aovChange = ref(5.3);
-const conversionRate = ref(3.2);
-const conversionChange = ref(0.5);
-const newCustomers = ref(156);
-const customerGrowth = ref(15.3);
-const activeCustomers = ref(892);
-const activityRate = ref(68.5);
-const retentionRate = ref(45.2);
-const retentionChange = ref(3.1);
+  // 响应式数据
+  const selectedPeriod = ref("30d");
+  const totalRevenue = ref(2_345_678);
+  const revenueChange = ref(12.5);
+  const totalOrders = ref(1234);
+  const orderChange = ref(8.2);
+  const avgOrderValue = ref(1900);
+  const aovChange = ref(5.3);
+  const conversionRate = ref(3.2);
+  const conversionChange = ref(0.5);
+  const newCustomers = ref(156);
+  const customerGrowth = ref(15.3);
+  const activeCustomers = ref(892);
+  const activityRate = ref(68.5);
+  const retentionRate = ref(45.2);
+  const retentionChange = ref(3.1);
 
-// 销售排行榜数据
-const topSales = ref([
-  { id: 1, name: '张三', department: '华东区', amount: 156_800, orders: 45 },
-  { id: 2, name: '李四', department: '华南区', amount: 143_200, orders: 38 },
-  { id: 3, name: '王五', department: '华北区', amount: 128_900, orders: 42 },
-  { id: 4, name: '赵六', department: '西南区', amount: 115_600, orders: 35 },
-  { id: 5, name: '钱七', department: '东北区', amount: 98_400, orders: 28 },
-]);
+  // 销售排行榜数据
+  const topSales = ref([
+    { id: 1, name: "张三", department: "华东区", amount: 156_800, orders: 45 },
+    { id: 2, name: "李四", department: "华南区", amount: 143_200, orders: 38 },
+    { id: 3, name: "王五", department: "华北区", amount: 128_900, orders: 42 },
+    { id: 4, name: "赵六", department: "西南区", amount: 115_600, orders: 35 },
+    { id: 5, name: "钱七", department: "东北区", amount: 98_400, orders: 28 },
+  ]);
 
-// 热销产品数据
-const topProducts = ref([
-  {
-    id: 1,
-    name: '智能手机 Pro',
-    category: '电子产品',
-    sales: 245,
-    revenue: 588_000,
-  },
-  { id: 2, name: '无线耳机', category: '配件', sales: 189, revenue: 132_300 },
-  {
-    id: 3,
-    name: '平板电脑',
-    category: '电子产品',
-    sales: 156,
-    revenue: 468_000,
-  },
-  { id: 4, name: '智能手表', category: '可穿戴', sales: 134, revenue: 201_000 },
-  { id: 5, name: '充电宝', category: '配件', sales: 98, revenue: 29_400 },
-]);
+  // 热销产品数据
+  const topProducts = ref([
+    {
+      id: 1,
+      name: "智能手机 Pro",
+      category: "电子产品",
+      sales: 245,
+      revenue: 588_000,
+    },
+    { id: 2, name: "无线耳机", category: "配件", sales: 189, revenue: 132_300 },
+    {
+      id: 3,
+      name: "平板电脑",
+      category: "电子产品",
+      sales: 156,
+      revenue: 468_000,
+    },
+    {
+      id: 4,
+      name: "智能手表",
+      category: "可穿戴",
+      sales: 134,
+      revenue: 201_000,
+    },
+    { id: 5, name: "充电宝", category: "配件", sales: 98, revenue: 29_400 },
+  ]);
 
-// 地域数据
-const regionData = ref([
-  { name: '华东地区', sales: 856_200, percentage: 35.2, color: '#3b82f6' },
-  { name: '华南地区', sales: 642_800, percentage: 26.4, color: '#10b981' },
-  { name: '华北地区', sales: 523_400, percentage: 21.5, color: '#f59e0b' },
-  { name: '西南地区', sales: 298_600, percentage: 12.3, color: '#ef4444' },
-  { name: '东北地区', sales: 114_500, percentage: 4.7, color: '#8b5cf6' },
-]);
+  // 地域数据
+  const regionData = ref([
+    { name: "华东地区", sales: 856_200, percentage: 35.2, color: "#3b82f6" },
+    { name: "华南地区", sales: 642_800, percentage: 26.4, color: "#10b981" },
+    { name: "华北地区", sales: 523_400, percentage: 21.5, color: "#f59e0b" },
+    { name: "西南地区", sales: 298_600, percentage: 12.3, color: "#ef4444" },
+    { name: "东北地区", sales: 114_500, percentage: 4.7, color: "#8b5cf6" },
+  ]);
 
-// 工具函数
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('zh-CN', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
+  // 工具函数
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat("zh-CN", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
 
-const getPeriodLabel = () => {
-  switch (selectedPeriod.value) {
-    case '7d':
-      return '上周';
-    case '30d':
-      return '上月';
-    case '90d':
-      return '上季度';
-    case '1y':
-      return '去年';
-    default:
-      return '上期';
-  }
-};
+  const getPeriodLabel = () => {
+    switch (selectedPeriod.value) {
+      case "7d":
+        return "上周";
+      case "30d":
+        return "上月";
+      case "90d":
+        return "上季度";
+      case "1y":
+        return "去年";
+      default:
+        return "上期";
+    }
+  };
 
-const getRankingColor = (index: number) => {
-  switch (index) {
-    case 0:
-      return 'bg-yellow-500';
-    case 1:
-      return 'bg-gray-400';
-    case 2:
-      return 'bg-orange-600';
-    default:
-      return 'bg-muted-foreground';
-  }
-};
+  const getRankingColor = (index: number) => {
+    switch (index) {
+      case 0:
+        return "bg-yellow-500";
+      case 1:
+        return "bg-gray-400";
+      case 2:
+        return "bg-orange-600";
+      default:
+        return "bg-muted-foreground";
+    }
+  };
 
-// 方法
-const refreshStats = () => {
-  // 模拟数据刷新
-  totalRevenue.value = Math.floor(Math.random() * 1_000_000) + 2_000_000;
-  revenueChange.value = Math.floor(Math.random() * 30) - 10;
-  totalOrders.value = Math.floor(Math.random() * 500) + 1000;
-  orderChange.value = Math.floor(Math.random() * 20) - 5;
-};
+  // 方法
+  const refreshStats = () => {
+    // 模拟数据刷新
+    totalRevenue.value = Math.floor(Math.random() * 1_000_000) + 2_000_000;
+    revenueChange.value = Math.floor(Math.random() * 30) - 10;
+    totalOrders.value = Math.floor(Math.random() * 500) + 1000;
+    orderChange.value = Math.floor(Math.random() * 20) - 5;
+  };
 
-const exportData = () => {
-  // 模拟数据导出
-};
+  const exportData = () => {
+    // 模拟数据导出
+  };
 
-// 监听时间段变化
-watch(selectedPeriod, (_newPeriod) => {
-  // 根据选择的时间段更新数据
-  refreshStats();
-});
+  // 监听时间段变化
+  watch(selectedPeriod, (_newPeriod) => {
+    // 根据选择的时间段更新数据
+    refreshStats();
+  });
 
-// 页面元信息
-definePageMeta({
-  layout: 'default',
-  requiresAuth: true,
-  permission: 'dashboard:stats',
-});
+  // 页面元信息
+  definePageMeta({
+    layout: "default",
+    requiresAuth: true,
+    permission: "dashboard:stats",
+  });
 </script>

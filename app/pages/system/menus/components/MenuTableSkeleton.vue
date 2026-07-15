@@ -63,6 +63,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 菜单表格骨架屏组件
+<script lang="ts" setup>
+  // 菜单表格骨架屏组件
 </script>

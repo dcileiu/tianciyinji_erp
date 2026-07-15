@@ -17,26 +17,27 @@
 
 | 项 | 说明 |
 |----|------|
-| 统一 `roles.status` | API、种子脚本、前端全部改为 `'active'/'inactive'`，修复 `assertPermission` 中 `=== 1` |
-| 生产 RLS | 关闭测试用「全关 RLS」；为 `menus` / `roles_*` / `departments` 定策略；敏感写操作尽量走 Service Role API |
-| 菜单 API 化 | 新增 `/api/menus`，与 users/roles 一致走 `assertPermission`，减少客户端直写 |
-| 密钥轮换 | 若历史曾提交过真实 `.env`，在 Supabase 控制台轮换 Anon / Service Role |
+| ~~统一 `roles.status`~~ | 已修：`isRoleActive` + 角色 API 规范化 |
+| 生产 RLS | 仍建议在 Supabase 启用；应用层菜单写已走 Service Role API |
+| ~~菜单 API 化~~ | 已新增 `/api/menus`、`/api/roles/:id/menus` |
+| 密钥轮换 | 若历史曾提交过真实 `.env`，在 Supabase 控制台轮换 |
 
 ## P1 — 主数据与核心单据
 
-按依赖顺序建议：
+- [x] 主数据表 + API：产品 / 客户 / 供应商 / 仓库
+- [x] 库存 upsert API + 页面
+- [x] 销售订单 / 采购订单（含明细）API + 页面
+- [x] `departments.status` 文本化迁移与 API 归一化
+- [x] 关闭公开注册
+- [x] **订单确认自动库存**：销售 `confirmed/completed` 扣库存，采购入库；取消/删除回滚；需选择仓库
+- [x] **生产**：车间 / 计划 / 工单 / BOM
+- [x] **财务**：应收应付 / 收付款 / 发票
+- [x] **报表**：总览 + 销售/采购/库存/生产聚合
 
-1. **主数据表**：产品、客户、供应商、仓库（迁移 + RLS + 管理页接真数据）
-2. **销售订单 / 采购订单**（状态机、明细行）
-3. **库存**：入库/出库/调拨与库存余额
-4. **财务**：应收应付与收付款（可后置）
+迁移文件：
 
-对应页面多数已有路由与 UI 壳，需：
-
-- 新增 `supabase/migrations` 业务表
-- `server/api/...` + `assertPermission`
-- 替换 mock / ComingSoon
-- 对齐 `definePageMeta.permission` 与菜单种子权限码
+1. `20260715_master_data_and_orders.sql`
+2. `20260715_production_finance_reports.sql`
 
 ## P2 — 生产与报表
 
@@ -59,14 +60,28 @@
 | 方法/路径 | 用途 |
 |-----------|------|
 | `POST /api/auth/login` | 更新在线状态 |
-| `POST /api/auth/logout` | 标记离线 |
+| `POST /api/auth/logout` | 标记离线（合并 metadata） |
 | `GET /api/user?action=profile\|permissions\|menus` | 当前用户 |
 | `CRUD /api/users` | 用户管理 |
-| `CRUD /api/roles` | 角色管理 |
-| `CRUD /api/departments` | 部门管理 |
-| `GET /api/debug/user-data` | 调试 |
+| `CRUD /api/roles` | 角色管理（禁止自造 `super_admin`） |
+| `GET/PUT /api/roles/:id/menus` | 角色菜单授权 |
+| `CRUD /api/menus` | 菜单管理 |
+| `CRUD /api/departments` | 部门管理（status: active/inactive） |
+| `CRUD /api/products` | 产品主数据 |
+| `CRUD /api/customers` | 客户主数据 |
+| `CRUD /api/suppliers` | 供应商主数据 |
+| `CRUD /api/warehouses` | 仓库主数据 |
+| `GET/POST /api/inventory` | 库存查询 / upsert |
+| `CRUD /api/sales/orders` | 销售订单（含明细） |
+| `CRUD /api/purchase/orders` | 采购订单（含明细） |
+| `GET /api/debug/user-data` | 仅开发环境 + 需权限 |
 
-**尚未实现（勿按旧文档开发）：** 自建 `/api/auth/register|refresh`、`/api/menus` REST、`/api/reports/*`、业务模块 CRUD API。
+## 近期已加固
+
+- 超管 `status` 判断、logout metadata 合并、debug 接口门禁
+- 菜单 / 角色菜单改为服务端 API
+- auth 中间件等待会话就绪；生产屏蔽调试页
+- 安全响应头（Nitro / vercel.json）
 
 ## 不建议再做的方向
 

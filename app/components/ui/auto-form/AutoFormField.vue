@@ -1,30 +1,29 @@
-<script setup lang="ts" generic="U extends ZodAny">
-import { computed } from 'vue';
-import type { ZodAny } from 'zod';
-import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from './constant';
-import useDependencies from './dependencies';
-import type { Config, ConfigItem, Shape } from './interface';
+<script generic="U extends ZodAny" lang="ts" setup>
+  import { computed } from "vue";
+  import type { ZodAny } from "zod";
+  import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from "./constant";
+  import useDependencies from "./dependencies";
+  import type { Config, ConfigItem, Shape } from "./interface";
 
-const props = defineProps<{
-  fieldName: string;
-  shape: Shape;
-  config?: ConfigItem | Config<U>;
-}>();
+  const props = defineProps<{
+    fieldName: string;
+    shape: Shape;
+    config?: ConfigItem | Config<U>;
+  }>();
 
-function isValidConfig(config: any): config is ConfigItem {
-  return !!config?.component;
-}
-
-const delegatedProps = computed(() => {
-  if (['ZodObject', 'ZodArray'].includes(props.shape?.type)) {
-    return { schema: props.shape?.schema };
+  function isValidConfig(config: any): config is ConfigItem {
+    return !!config?.component;
   }
-  return;
-});
 
-const { isDisabled, isHidden, isRequired, overrideOptions } = useDependencies(
-  props.fieldName
-);
+  const delegatedProps = computed(() => {
+    if (["ZodObject", "ZodArray"].includes(props.shape?.type)) {
+      return { schema: props.shape?.schema };
+    }
+  });
+
+  const { isDisabled, isHidden, isRequired, overrideOptions } = useDependencies(
+    props.fieldName
+  );
 </script>
 
 <template>
@@ -35,12 +34,12 @@ const { isDisabled, isHidden, isRequired, overrideOptions } = useDependencies(
         : config.component
       : INPUT_COMPONENTS[DEFAULT_ZOD_HANDLERS[shape.type]] "
     v-if="!isHidden"
+    :config="config"
+    :disabled="isDisabled"
     :field-name="fieldName"
     :label="shape.schema?.description"
-    :required="isRequired || shape.required"
     :options="overrideOptions || shape.options"
-    :disabled="isDisabled"
-    :config="config"
+    :required="isRequired || shape.required"
     v-bind="delegatedProps"
   >
     <slot />

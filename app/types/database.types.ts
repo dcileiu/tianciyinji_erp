@@ -4,42 +4,42 @@
 
 // 订单状态类型
 export type OrderStatus =
-  | 'draft'
-  | 'pending'
-  | 'confirmed'
-  | 'in_progress'
-  | 'completed'
-  | 'cancelled';
+  | "draft"
+  | "pending"
+  | "confirmed"
+  | "in_progress"
+  | "completed"
+  | "cancelled";
 
 // 支付状态类型
 export type PaymentStatus =
-  | 'pending'
-  | 'paid'
-  | 'partial'
-  | 'overdue'
-  | 'cancelled';
+  | "pending"
+  | "paid"
+  | "partial"
+  | "overdue"
+  | "cancelled";
 
 // 用户角色类型
-export type UserRole = 'admin' | 'manager' | 'employee' | 'viewer';
+export type UserRole = "admin" | "manager" | "employee" | "viewer";
 
 // 仓库类型
 export type WarehouseType =
-  | 'raw_materials'
-  | 'finished_goods'
-  | 'semi_finished'
-  | 'tools';
+  | "raw_materials"
+  | "finished_goods"
+  | "semi_finished"
+  | "tools";
 
 // 生产状态类型
 export type ProductionStatus =
-  | 'pending'
-  | 'in_progress'
-  | 'completed'
-  | 'cancelled'
-  | 'paused';
+  | "pending"
+  | "in_progress"
+  | "completed"
+  | "cancelled"
+  | "paused";
 
 // 导出所有需要的类型
 export type {} from // 不再导出ProcessRoute和ProcessStep，因为它们未被使用
-'./production';
+"./production";
 
 export type Json =
   | string
@@ -94,11 +94,11 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'menus_parent_id_fkey';
-            columns: ['parent_id'];
+            foreignKeyName: "menus_parent_id_fkey";
+            columns: ["parent_id"];
             isOneToOne: false;
-            referencedRelation: 'menus';
-            referencedColumns: ['id'];
+            referencedRelation: "menus";
+            referencedColumns: ["id"];
           },
         ];
       };
@@ -111,7 +111,7 @@ export type Database = {
           parent_id: string | null;
           manager_id: string | null;
           sort: number;
-          status: number;
+          status: string;
           created_at: string;
           updated_at: string;
         };
@@ -123,7 +123,7 @@ export type Database = {
           parent_id?: string | null;
           manager_id?: string | null;
           sort?: number;
-          status?: number;
+          status?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -135,19 +135,184 @@ export type Database = {
           parent_id?: string | null;
           manager_id?: string | null;
           sort?: number;
-          status?: number;
+          status?: string;
           created_at?: string;
           updated_at?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'departments_parent_id_fkey';
-            columns: ['parent_id'];
+            foreignKeyName: "departments_parent_id_fkey";
+            columns: ["parent_id"];
             isOneToOne: false;
-            referencedRelation: 'departments';
-            referencedColumns: ['id'];
+            referencedRelation: "departments";
+            referencedColumns: ["id"];
           },
         ];
+      };
+      products: {
+        Row: {
+          id: string;
+          code: string;
+          name: string;
+          category: string | null;
+          specification: string | null;
+          unit: string | null;
+          price: number;
+          cost: number;
+          status: string;
+          remark: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          name: string;
+          category?: string | null;
+          specification?: string | null;
+          unit?: string | null;
+          price?: number;
+          cost?: number;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          name?: string;
+          category?: string | null;
+          specification?: string | null;
+          unit?: string | null;
+          price?: number;
+          cost?: number;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      customers: {
+        Row: {
+          id: string;
+          code: string;
+          name: string;
+          contact_name: string | null;
+          phone: string | null;
+          email: string | null;
+          address: string | null;
+          status: string;
+          remark: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          name: string;
+          contact_name?: string | null;
+          phone?: string | null;
+          email?: string | null;
+          address?: string | null;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          name?: string;
+          contact_name?: string | null;
+          phone?: string | null;
+          email?: string | null;
+          address?: string | null;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      suppliers: {
+        Row: {
+          id: string;
+          code: string;
+          name: string;
+          contact_name: string | null;
+          phone: string | null;
+          email: string | null;
+          address: string | null;
+          status: string;
+          remark: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          name: string;
+          contact_name?: string | null;
+          phone?: string | null;
+          email?: string | null;
+          address?: string | null;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          name?: string;
+          contact_name?: string | null;
+          phone?: string | null;
+          email?: string | null;
+          address?: string | null;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      warehouses: {
+        Row: {
+          id: string;
+          code: string;
+          name: string;
+          type: string;
+          address: string | null;
+          status: string;
+          remark: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          name: string;
+          type?: string;
+          address?: string | null;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          name?: string;
+          type?: string;
+          address?: string | null;
+          status?: string;
+          remark?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       roles: {
         Row: {
@@ -203,18 +368,18 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'users_role_role_id_fkey';
-            columns: ['role_id'];
+            foreignKeyName: "users_role_role_id_fkey";
+            columns: ["role_id"];
             isOneToOne: false;
-            referencedRelation: 'roles';
-            referencedColumns: ['id'];
+            referencedRelation: "roles";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: 'users_role_user_id_fkey';
-            columns: ['user_id'];
+            foreignKeyName: "users_role_user_id_fkey";
+            columns: ["user_id"];
             isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
           },
         ];
       };
@@ -239,18 +404,18 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'roles_menu_menu_id_fkey';
-            columns: ['menu_id'];
+            foreignKeyName: "roles_menu_menu_id_fkey";
+            columns: ["menu_id"];
             isOneToOne: false;
-            referencedRelation: 'menus';
-            referencedColumns: ['id'];
+            referencedRelation: "menus";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: 'roles_menu_role_id_fkey';
-            columns: ['role_id'];
+            foreignKeyName: "roles_menu_role_id_fkey";
+            columns: ["role_id"];
             isOneToOne: false;
-            referencedRelation: 'roles';
-            referencedColumns: ['id'];
+            referencedRelation: "roles";
+            referencedColumns: ["id"];
           },
         ];
       };

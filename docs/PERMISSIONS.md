@@ -81,8 +81,8 @@ definePageMeta({
 | 模块 | 实现 |
 |------|------|
 | 用户 / 角色 / 部门 CRUD | `server/api/users|roles|departments`（Service Role） |
-| 菜单 CRUD | **客户端直连 Supabase**（`useMenus`），无 `/api/menus` |
-| 角色挂菜单 | `useRoles` 写 `roles_menu`（客户端 Supabase） |
+| 菜单 CRUD | `server/api/menus` + `assertPermission('system:menus')` |
+| 角色挂菜单 | `GET/PUT /api/roles/:id/menus` |
 
 ## 已接权限的系统页（相对完整）
 
@@ -98,20 +98,11 @@ definePageMeta({
 
 ## 已知问题
 
-1. **`roles.status` 类型混用**  
-   - 迁移脚本将 status 改为字符串 `'active'/'inactive'`  
-   - `assertPermission` 判断超管时仍用 `roles.status === 1`（数字）  
-   - 权限查询用 `status = 'active'`  
-   可能导致超管旁路或权限查询异常，需统一为字符串并改 API / SQL 脚本。
-
-2. **RLS**  
-   `disable_rls_for_testing.sql` 用于开发关闭 RLS；生产策略未在应用层完整落地。菜单等客户端直写依赖 Anon + RLS（或当前关闭状态）。
-
-3. **多种子脚本**  
-   `create_menus_table_complete.sql` 与 `complete_system_init.sql` 权限字符串可能不完全一致，初始化时以一套为准。
-
-4. **辅助脚本**  
-   `scripts/assign-admin-permissions.sql` 中 status 仍可能按数字 `1` 书写，执行前对照当前列类型。
+1. ~~`roles.status` 类型混用导致超管旁路失效~~（已修复：`isRoleActive` 兼容 `'active'` / `1`）
+2. **RLS**：主迁移仍可能未启用完整 RLS；菜单/角色菜单写操作已改为服务端 API + `assertPermission`，降低 anon 直写风险，但仍建议在 Supabase 启用 RLS
+3. **多种子脚本**：`create_menus_table_complete.sql` 与 `complete_system_init.sql` 权限字符串可能不完全一致
+4. **`departments.status`**：~~数字/字符串混用~~ 已通过迁移 `20260715_master_data_and_orders.sql` + API `normalizeEntityStatus` 统一为 `'active'/'inactive'`
+5. 调试接口 `/api/debug/user-data` 仅 `import.meta.dev` 可用，且需 `system:roles`
 
 ## 运维提示
 

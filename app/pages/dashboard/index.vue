@@ -6,22 +6,24 @@
     <!-- 调试信息 -->
     <div class="bg-gray-100 p-4 rounded-lg">
       <h3 class="font-semibold mb-2">用户权限信息（调试）:</h3>
-      <pre class="text-sm">{{ JSON.stringify({ permissions, menus }, null, 2) }}</pre>
+      <pre
+        class="text-sm"
+      >{{ JSON.stringify({ permissions, menus }, null, 2) }}</pre>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-// 页面权限配置 - 必须放在最前面
-definePageMeta({
-  layout: 'default',
-  requiresAuth: true,
-  permission: 'dashboard:view',
-});
+<script lang="ts" setup>
+  // 页面权限配置 - 必须放在最前面
+  definePageMeta({
+    layout: "default",
+    requiresAuth: true,
+    permission: "dashboard:view",
+  });
 
-const { permissions, menus } = usePermissions();
+  const { permissions, menus } = usePermissions();
 
-useHead({
-  title: '仪表盘 - 智能ERP管理系统',
-});
+  useHead({
+    title: "仪表盘 - 智能ERP管理系统",
+  });
 </script>

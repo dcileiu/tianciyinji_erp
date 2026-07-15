@@ -1,19 +1,18 @@
-<script setup lang="ts">
-import { ChevronRight } from 'lucide-vue-next';
-import { getIconByName } from '~/components/icons';
-import type { MenuPermission } from '~/stores/permissions';
+<script lang="ts" setup>
+  import { ChevronRight } from "lucide-vue-next";
+  import { getIconByName } from "~/components/icons";
+  import type { MenuPermission } from "~/stores/permissions";
 
-interface Props {
-  items: MenuPermission[];
-}
+  interface Props {
+    items: MenuPermission[];
+  }
 
-const props = defineProps<Props>();
+  const props = defineProps<Props>();
 
-const route = useRoute();
-const openMap = reactive<Record<string, boolean>>({});
+  const route = useRoute();
+  const openMap = reactive<Record<string, boolean>>({});
 
-const isDirectoryActive = (dir: MenuPermission) => {
-  return (
+  const isDirectoryActive = (dir: MenuPermission) =>
     Array.isArray(dir.children) &&
     dir.children.some((child) => {
       if (!child?.path) {
@@ -22,38 +21,36 @@ const isDirectoryActive = (dir: MenuPermission) => {
       return (
         route.path === child.path || route.path.startsWith(`${child.path}/`)
       );
-    })
-  );
-};
+    });
 
-onMounted(() => {
-  // 初始化时展开包含当前激活项的父级
-  for (const dir of props.items) {
-    if (
-      dir.type === 'directory' &&
-      Array.isArray(dir.children) &&
-      dir.children.length > 0
-    ) {
-      openMap[dir.id] = isDirectoryActive(dir);
-    }
-  }
-});
-
-watch(
-  () => route.path,
-  () => {
-    // 路由变化时，只展开包含新激活项的父级，收起其他父级
+  onMounted(() => {
+    // 初始化时展开包含当前激活项的父级
     for (const dir of props.items) {
       if (
-        dir.type === 'directory' &&
+        dir.type === "directory" &&
         Array.isArray(dir.children) &&
         dir.children.length > 0
       ) {
         openMap[dir.id] = isDirectoryActive(dir);
       }
     }
-  }
-);
+  });
+
+  watch(
+    () => route.path,
+    () => {
+      // 路由变化时，只展开包含新激活项的父级，收起其他父级
+      for (const dir of props.items) {
+        if (
+          dir.type === "directory" &&
+          Array.isArray(dir.children) &&
+          dir.children.length > 0
+        ) {
+          openMap[dir.id] = isDirectoryActive(dir);
+        }
+      }
+    }
+  );
 </script>
 
 <template>
@@ -61,22 +58,34 @@ watch(
     <template v-for="item in items" :key="item.id">
       <!-- 目录类型 - 可展开的菜单组 -->
       <Collapsible
-        v-if="item.type === 'directory' && item.children?.length"
         class="group"
+        v-if="item.type === 'directory' && item.children?.length"
         v-model:open="openMap[item.id]"
       >
         <SidebarMenuButton as-child>
           <CollapsibleTrigger class="w-full">
-            <component v-if="item.icon" :is="getIconByName(item.icon)" class="h-4 w-4" />
+            <component
+              class="h-4 w-4"
+              :is="getIconByName(item.icon)"
+              v-if="item.icon"
+            />
             <span>{{ item.name }}</span>
-            <ChevronRight class="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-90" />
+            <ChevronRight
+              class="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-90"
+            />
           </CollapsibleTrigger>
         </SidebarMenuButton>
 
         <CollapsibleContent>
           <SidebarMenuSub class="ml-6 border-l pl-4">
-            <SidebarMenuSubItem v-for="subItem in item.children" :key="subItem.id">
-              <SidebarMenuSubButton as-child :is-active="$route.path === subItem.path">
+            <SidebarMenuSubItem
+              v-for="subItem in item.children"
+              :key="subItem.id"
+            >
+              <SidebarMenuSubButton
+                as-child
+                :is-active="$route.path === subItem.path"
+              >
                 <NuxtLink :to="subItem.path || '#'">
                   <span>{{ subItem.name }}</span>
                 </NuxtLink>
@@ -90,7 +99,11 @@ watch(
       <SidebarMenuItem v-else>
         <SidebarMenuButton as-child :is-active="$route.path === item.path">
           <NuxtLink :to="item.path || '#'">
-            <component v-if="item.icon" :is="getIconByName(item.icon)" class="h-4 w-4" />
+            <component
+              class="h-4 w-4"
+              :is="getIconByName(item.icon)"
+              v-if="item.icon"
+            />
             <span>{{ item.name }}</span>
           </NuxtLink>
         </SidebarMenuButton>

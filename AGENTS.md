@@ -26,9 +26,9 @@ pnpm install
 pnpm dev                 # http://localhost:3000
 pnpm build
 pnpm type-check
-pnpm lint                # ultracite / biome
-pnpm format              # ultracite format
-pnpm check-all           # type-check + lint + format:check
+pnpm lint                # ultracite check
+pnpm format              # ultracite fix
+pnpm check-all           # type-check + lint
 ```
 
 ## 环境变量
@@ -38,8 +38,10 @@ pnpm check-all           # type-check + lint + format:check
 | 变量 | 用途 |
 |------|------|
 | `NUXT_PUBLIC_SUPABASE_URL` | Supabase URL |
-| `NUXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key |
-| `SUPABASE_SERVICE_KEY` | Service Role（服务端 API） |
+| `NUXT_PUBLIC_SUPABASE_KEY` | 公开密钥（v2 推荐） |
+| `NUXT_PUBLIC_SUPABASE_ANON_KEY` | 兼容别名 |
+| `NUXT_SUPABASE_SECRET_KEY` | 服务端密钥（v2 推荐） |
+| `SUPABASE_SERVICE_KEY` | 兼容别名（Service Role） |
 | `NUXT_PUBLIC_SITE_URL` | 邮件回调基址 |
 
 **禁止**提交 `.env`、`.env.*`（`.env.example` 除外）。`.nuxt`、`.output` 已忽略。
@@ -55,9 +57,12 @@ scripts/             # 运维 SQL 等
 ```
 
 - UI 组件：`app/components/ui/`（shadcn-vue），业务组件放 `app/components/`
+- 菜单 CRUD 走 `server/api/menus`；角色挂菜单走 `/api/roles/:id/menus`
+- 主数据 / 订单走 `/api/products|customers|suppliers|warehouses|inventory|sales/orders|purchase/orders`
+- 勿开放自助注册；用户由管理员创建
 - 全局中间件：`app/middleware/auth.global.ts`、`permission.global.ts`
 - 服务端权限：`server/api/_utils/permissions.ts` → `assertPermission`
-- 菜单 CRUD 目前多为**客户端直连 Supabase**（`useMenus`），与 users/roles 的 server API 模式不同
+- 勿在前端直写 `menus` / `roles_menu`（已改为服务端 API）
 
 ## 编码约定
 

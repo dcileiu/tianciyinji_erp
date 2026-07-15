@@ -1,103 +1,103 @@
 // 通用列表响应
 export interface ListResponse<T = unknown> {
-  success: boolean;
   data: T[];
+  error?: string;
+  message?: string;
   pagination?: {
     page: number;
     pageSize: number;
     total?: number;
   };
-  message?: string;
-  error?: string;
+  success: boolean;
 }
 
 // 表单状态
 export interface FormState {
+  errors: Record<string, string>;
   loading: boolean;
   saving: boolean;
-  errors: Record<string, string>;
 }
 
 // 筛选条件基类
 export interface BaseFilters {
-  search?: string;
-  status?: string;
   dateFrom?: string;
   dateTo?: string;
+  search?: string;
+  status?: string;
 }
 
 // 通用状态枚举
 export enum Status {
-  Active = 'active',
-  Inactive = 'inactive',
-  Pending = 'pending',
-  Approved = 'approved',
-  Rejected = 'rejected',
-  Draft = 'draft',
-  Published = 'published',
+  Active = "active",
+  Inactive = "inactive",
+  Pending = "pending",
+  Approved = "approved",
+  Rejected = "rejected",
+  Draft = "draft",
+  Published = "published",
 }
 
 // 订单状态
 export enum OrderStatus {
-  Draft = 'draft',
-  Pending = 'pending',
-  Confirmed = 'confirmed',
-  InProgress = 'in_progress',
-  Completed = 'completed',
-  Cancelled = 'cancelled',
+  Draft = "draft",
+  Pending = "pending",
+  Confirmed = "confirmed",
+  InProgress = "in_progress",
+  Completed = "completed",
+  Cancelled = "cancelled",
 }
 
 // 支付状态
 export enum PaymentStatus {
-  Pending = 'pending',
-  Paid = 'paid',
-  Partial = 'partial',
-  Overdue = 'overdue',
-  Cancelled = 'cancelled',
+  Pending = "pending",
+  Paid = "paid",
+  Partial = "partial",
+  Overdue = "overdue",
+  Cancelled = "cancelled",
 }
 
 // 仓库类型
 export enum WarehouseType {
-  RawMaterials = 'raw_materials',
-  FinishedGoods = 'finished_goods',
-  SemiFinished = 'semi_finished',
-  Tools = 'tools',
+  RawMaterials = "raw_materials",
+  FinishedGoods = "finished_goods",
+  SemiFinished = "semi_finished",
+  Tools = "tools",
 }
 
 // 基础实体接口
 export interface BaseEntity {
-  id: number | string;
   created_at?: string;
-  updated_at?: string;
   created_by?: string;
+  id: number | string;
+  updated_at?: string;
   updated_by?: string;
 }
 
 // 用户基础信息
 export interface UserInfo {
+  department?: string;
+  email?: string;
   id: string;
   name: string;
-  email?: string;
   role?: string;
-  department?: string;
 }
 
 // 地址信息
 export interface Address {
-  province?: string;
   city?: string;
   district?: string;
+  fullAddress?: string;
+  province?: string;
   street?: string;
   zipCode?: string;
-  fullAddress?: string;
 }
 
 // 联系信息
 export interface ContactInfo {
-  phone?: string;
-  mobile?: string;
-  fax?: string;
   email?: string;
+  fax?: string;
+  mobile?: string;
+  phone?: string;
   website?: string;
 }
 
@@ -105,8 +105,8 @@ export interface ContactInfo {
 export interface AmountInfo {
   amount: number;
   currency?: string;
-  taxRate?: number;
   taxAmount?: number;
+  taxRate?: number;
   totalAmount?: number;
 }
 
@@ -118,6 +118,6 @@ export interface FormValidationRules {
 }
 
 export interface ValidationResult {
-  isValid: boolean;
   errors: Record<string, string>;
+  isValid: boolean;
 }

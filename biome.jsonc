@@ -1,6 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
-  "extends": ["ultracite"],
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "extends": ["ultracite/biome/core", "ultracite/biome/vue"],
   "javascript": {
     "globals": [
       "useHead",
@@ -32,17 +32,13 @@
       "linter": {
         "rules": {
           "correctness": {
-            "noUnusedImports": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["app/plugins/permission-directive.client.ts"],
-      "linter": {
-        "rules": {
-          "nursery": {
-            "noUnnecessaryConditions": "off"
+            "noUnusedImports": "off",
+            "noVueDuplicateKeys": "off",
+            "noVueVIfWithVFor": "off"
+          },
+          "style": {
+            "useVueMultiWordComponentNames": "off",
+            "useVueHyphenatedAttributes": "off"
           }
         }
       }
@@ -50,10 +46,27 @@
   ],
   "linter": {
     "rules": {
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off",
+        "useSemanticElements": "off",
+        "useHeadingContent": "off",
+        "noNoninteractiveElementInteractions": "off",
+        "noLabelWithoutControl": "off",
+        "useFocusableInteractive": "off",
+        "noNoninteractiveTabindex": "off",
+        "useKeyWithClickEvents": "off",
+        "noStaticElementInteractions": "off"
+      },
       "correctness": {
         "useHookAtTopLevel": "off",
         "noUndeclaredVariables": "off",
-        "noUnusedVariables": "off"
+        "noUnusedVariables": "off",
+        "noUnknownPseudoClass": "off",
+        "noVueDuplicateKeys": "off",
+        "noUnusedFunctionParameters": "off",
+        "useParseIntRadix": "off",
+        "noVueVIfWithVFor": "off"
       },
       "suspicious": {
         "noUnknownAtRules": "off",
@@ -62,7 +75,16 @@
         "noDocumentCookie": "off",
         "useAwait": "off",
         "noEmptyBlockStatements": "off",
-        "noEvolvingTypes": "off"
+        "noEvolvingTypes": "off",
+        "useStrictMode": "off",
+        "noUnnecessaryConditions": "off",
+        "noAlert": "off",
+        "noShadow": "off",
+        "noGlobalAssign": "off",
+        "noReturnAssign": "off",
+        "noEmptySource": "off",
+        "useIterableCallbackReturn": "off",
+        "noEqualsToNull": "off"
       },
       "style": {
         "useFilenamingConvention": "off",
@@ -71,20 +93,44 @@
         "noNonNullAssertion": "off",
         "useSymbolDescription": "off",
         "useDefaultSwitchClause": "off",
-        "noNestedTernary": "off"
+        "noNestedTernary": "off",
+        "useVueMultiWordComponentNames": "off",
+        "useVueHyphenatedAttributes": "off",
+        "useConsistentTypeDefinitions": "off",
+        "noRestrictedGlobals": "off",
+        "noIncrementDecrement": "off",
+        "useConsistentArrayType": "off",
+        "useDestructuring": "off",
+        "noSubstr": "off",
+        "noNegationElse": "off",
+        "useNumberNamespace": "off"
       },
       "nursery": {
-        "useConsistentTypeDefinitions": "off",
-        "noShadow": "off"
+        "useSortedClasses": "off"
       },
       "performance": {
         "noBarrelFile": "off",
-        "useTopLevelRegex": "off"
+        "useTopLevelRegex": "off",
+        "noAwaitInLoops": "off"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": "off",
-        "noForEach": "off"
+        "noForEach": "off",
+        "noUselessCatchBinding": "off",
+        "useSimplifiedLogicExpression": "off"
       }
     }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "useSortedKeys": "off",
+        "useSortedProperties": "off",
+        "useSortedAttributes": "off"
+      }
+    }
+  },
+  "html": {
+    "experimentalFullSupportEnabled": false
   }
 }

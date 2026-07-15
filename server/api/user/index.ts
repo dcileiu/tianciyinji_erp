@@ -1,7 +1,7 @@
 import {
   serverSupabaseServiceRole,
   serverSupabaseUser,
-} from '#supabase/server';
+} from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
@@ -16,18 +16,18 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       throw createError({
         statusCode: 401,
-        statusMessage: '用户未登录',
+        statusMessage: "用户未登录",
       });
     }
 
     // 根据action参数分发到不同的处理函数
-    if (action === 'profile' && method === 'GET') {
+    if (action === "profile" && method === "GET") {
       return await getUserProfile(supabase, user);
     }
-    if (action === 'permissions' && method === 'GET') {
+    if (action === "permissions" && method === "GET") {
       return await getUserPermissions(supabase, user);
     }
-    if (action === 'menus' && method === 'GET') {
+    if (action === "menus" && method === "GET") {
       return await getUserMenus(supabase, user);
     }
     // 默认返回用户基本信息
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       code: 1,
-      message: error.message || '服务器内部错误',
+      message: error.message || "服务器内部错误",
       data: null,
     };
   }
@@ -57,7 +57,7 @@ async function getUserProfile(supabase: any, user: any) {
     if (authError || !authUserData.user) {
       return {
         code: 1,
-        message: '获取用户信息失败',
+        message: "获取用户信息失败",
         data: null,
       };
     }
@@ -69,16 +69,16 @@ async function getUserProfile(supabase: any, user: any) {
     let departmentData = null;
     if (metadata.department_id) {
       const { data: dept } = await supabase
-        .from('departments')
-        .select('id, name, code')
-        .eq('id', metadata.department_id)
+        .from("departments")
+        .select("id, name, code")
+        .eq("id", metadata.department_id)
         .single();
       departmentData = dept;
     }
 
     // 查询用户角色
     const { data: userRoles } = await supabase
-      .from('users_role')
+      .from("users_role")
       .select(
         `
         roles (
@@ -89,20 +89,20 @@ async function getUserProfile(supabase: any, user: any) {
         )
       `
       )
-      .eq('user_id', user.id);
+      .eq("user_id", user.id);
 
     // 构建用户信息
     const userProfile = {
       id: authUser.id,
-      name: metadata.name || authUser.email?.split('@')[0] || '',
-      username: metadata.username || authUser.email?.split('@')[0] || '',
+      name: metadata.name || authUser.email?.split("@")[0] || "",
+      username: metadata.username || authUser.email?.split("@")[0] || "",
       email: authUser.email,
-      phone: metadata.phone || '',
-      avatar: metadata.avatar || '',
+      phone: metadata.phone || "",
+      avatar: metadata.avatar || "",
       department_id: metadata.department_id || null,
       position_id: metadata.position_id || null,
-      status: metadata.status || 'active',
-      remarks: metadata.remarks || '',
+      status: metadata.status || "active",
+      remarks: metadata.remarks || "",
       is_online: metadata.is_online,
       login_count: metadata.login_count || 0,
       last_login_at: authUser.last_sign_in_at,
@@ -115,13 +115,13 @@ async function getUserProfile(supabase: any, user: any) {
 
     return {
       code: 0,
-      message: '获取成功',
+      message: "获取成功",
       data: userProfile,
     };
   } catch (error: any) {
     return {
       code: 1,
-      message: error.message || '获取用户信息失败',
+      message: error.message || "获取用户信息失败",
       data: null,
     };
   }
@@ -134,7 +134,7 @@ async function getUserPermissions(supabase: any, user: any) {
   try {
     // 查询用户所有权限
     const { data: userMenus, error } = await supabase
-      .from('menus')
+      .from("menus")
       .select(
         `
         permission,
@@ -145,13 +145,13 @@ async function getUserPermissions(supabase: any, user: any) {
         )
       `
       )
-      .eq('roles_menu.roles.users_role.user_id', user.id)
-      .eq('roles_menu.roles.status', 'active')
-      .eq('status', 'active')
-      .not('permission', 'is', null);
+      .eq("roles_menu.roles.users_role.user_id", user.id)
+      .eq("roles_menu.roles.status", "active")
+      .eq("status", "active")
+      .not("permission", "is", null);
 
     if (error) {
-      throw new Error('查询用户权限失败');
+      throw new Error("查询用户权限失败");
     }
 
     // 提取权限并去重
@@ -163,13 +163,13 @@ async function getUserPermissions(supabase: any, user: any) {
 
     return {
       code: 0,
-      message: '获取成功',
+      message: "获取成功",
       data: permissions,
     };
   } catch (error: any) {
     return {
       code: -1,
-      message: error.message || '获取用户权限失败',
+      message: error.message || "获取用户权限失败",
       data: [],
     };
   }
@@ -182,7 +182,7 @@ async function getUserMenus(supabase: any, user: any) {
   try {
     // 查询用户有权限的菜单
     const { data: userMenus, error } = await supabase
-      .from('menus')
+      .from("menus")
       .select(
         `
         id,
@@ -200,14 +200,14 @@ async function getUserMenus(supabase: any, user: any) {
         )
       `
       )
-      .eq('roles_menu.roles.users_role.user_id', user.id)
-      .eq('roles_menu.roles.status', 'active')
-      .eq('status', 'active')
-      .in('type', ['directory', 'menu'])
-      .order('sort');
+      .eq("roles_menu.roles.users_role.user_id", user.id)
+      .eq("roles_menu.roles.status", "active")
+      .eq("status", "active")
+      .in("type", ["directory", "menu"])
+      .order("sort");
 
     if (error) {
-      throw new Error('查询用户菜单失败');
+      throw new Error("查询用户菜单失败");
     }
 
     // 清理数据，移除重复的菜单
@@ -231,13 +231,13 @@ async function getUserMenus(supabase: any, user: any) {
 
     return {
       code: 0,
-      message: '获取成功',
+      message: "获取成功",
       data: uniqueMenus,
     };
   } catch (error: any) {
     return {
       code: -1,
-      message: error.message || '获取用户菜单失败',
+      message: error.message || "获取用户菜单失败",
       data: [],
     };
   }

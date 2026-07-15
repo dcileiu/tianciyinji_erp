@@ -1,7 +1,7 @@
 import {
   serverSupabaseServiceRole,
   serverSupabaseUser,
-} from '#supabase/server';
+} from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       return {
         code: 401,
-        message: '未登录',
+        message: "未登录",
         data: null,
       };
     }
@@ -43,13 +43,13 @@ export default defineEventHandler(async (event) => {
 
     return {
       code: 0,
-      message: '登录状态已更新',
+      message: "登录状态已更新",
       data: true,
     };
   } catch (err: any) {
     return {
       code: -1,
-      message: err?.message || '登录状态更新失败',
+      message: err?.message || "登录状态更新失败",
       data: null,
     };
   }

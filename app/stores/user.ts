@@ -1,62 +1,62 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
 // 用户扩展信息接口
 export interface UserProfile {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  phone?: string;
   avatar?: string;
-  department_id?: string;
-  position_id?: string;
-  status: 'active' | 'inactive';
-  remarks?: string;
-  is_online: boolean;
-  login_count: number;
-  last_login_at?: string;
   created_at: string;
-  updated_at: string;
   // 关联数据
   department?: {
     id: string;
     name: string;
     code: string;
   };
+  department_id?: string;
+  email: string;
+  id: string;
+  is_online: boolean;
+  last_login_at?: string;
+  login_count: number;
+  name: string;
+  phone?: string;
   position?: {
     id: string;
     name: string;
     code: string;
   };
+  position_id?: string;
+  remarks?: string;
   roles: Array<{
     id: string;
     name: string;
     code: string;
     description?: string;
   }>;
+  status: "active" | "inactive";
+  updated_at: string;
+  username: string;
 }
 
 // 用户状态接口
 interface UserState {
   // 基础认证信息
   authUser: User | null;
+  error: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+
+  // 权限相关
+  permissions: string[];
+  permissionsLoading: boolean;
 
   // 用户详细信息
   profile: UserProfile | null;
 
-  // 权限相关
-  permissions: string[];
-  roles: string[];
-
   // 状态管理
   profileLoading: boolean;
-  permissionsLoading: boolean;
-  error: string | null;
+  roles: string[];
 }
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore("user", {
   state: (): UserState => ({
     // 基础认证
     authUser: null,
@@ -80,47 +80,36 @@ export const useUserStore = defineStore('user', {
     /**
      * 用户显示名称
      */
-    displayName: (state): string => {
-      return (
-        state.profile?.name ||
-        state.profile?.username ||
-        state.authUser?.email?.split('@')[0] ||
-        '未知用户'
-      );
-    },
+    displayName: (state): string =>
+      state.profile?.name ||
+      state.profile?.username ||
+      state.authUser?.email?.split("@")[0] ||
+      "未知用户",
 
     /**
      * 用户头像
      */
-    userAvatar: (state): string => {
-      return (
-        state.profile?.avatar ||
-        `https://api.dicebear.com/7.x/avataaars/svg?seed=${state.authUser?.id}`
-      );
-    },
+    userAvatar: (state): string =>
+      state.profile?.avatar ||
+      `https://api.dicebear.com/7.x/avataaars/svg?seed=${state.authUser?.id}`,
 
     /**
      * 是否为管理员
      */
-    isAdmin: (state): boolean => {
-      return (
-        state.roles.includes('admin') || state.roles.includes('super_admin')
-      );
-    },
+    isAdmin: (state): boolean =>
+      state.roles.includes("admin") || state.roles.includes("super_admin"),
 
     /**
      * 用户部门信息
      */
-    userDepartment: (state): string => {
-      return state.profile?.department?.name || '未分配部门';
-    },
+    userDepartment: (state): string =>
+      state.profile?.department?.name || "未分配部门",
 
     /**
      * 用户角色列表
      */
-    userRoles: (state): string[] => {
-      return state.profile?.roles?.map((role) => role.name) || [];
-    },
+    userRoles: (state): string[] =>
+      state.profile?.roles?.map((role) => role.name) || [],
 
     /**
      * 检查是否有特定权限
@@ -131,7 +120,7 @@ export const useUserStore = defineStore('user', {
         if (!permission) {
           return true;
         }
-        if (state.roles.includes('super_admin')) {
+        if (state.roles.includes("super_admin")) {
           return true; // 超级管理员拥有所有权限
         }
         return state.permissions.includes(permission);
@@ -146,7 +135,7 @@ export const useUserStore = defineStore('user', {
         if (!checkPermissions || checkPermissions.length === 0) {
           return true;
         }
-        if (state.roles.includes('super_admin')) {
+        if (state.roles.includes("super_admin")) {
           return true;
         }
         return checkPermissions.some((permission) =>
@@ -163,7 +152,7 @@ export const useUserStore = defineStore('user', {
         if (!checkPermissions || checkPermissions.length === 0) {
           return true;
         }
-        if (state.roles.includes('super_admin')) {
+        if (state.roles.includes("super_admin")) {
           return true;
         }
         return checkPermissions.every((permission) =>
@@ -176,9 +165,8 @@ export const useUserStore = defineStore('user', {
      */
     hasRole:
       (state) =>
-      (role: string): boolean => {
-        return state.roles.includes(role);
-      },
+      (role: string): boolean =>
+        state.roles.includes(role),
   },
 
   actions: {
@@ -216,8 +204,8 @@ export const useUserStore = defineStore('user', {
           code: number;
           data: UserProfile;
           message: string;
-        }>('/api/user', {
-          query: { action: 'profile' },
+        }>("/api/user", {
+          query: { action: "profile" },
         });
 
         if (response.code === 0) {
@@ -225,10 +213,10 @@ export const useUserStore = defineStore('user', {
           // 提取角色信息
           this.roles = response.data.roles?.map((role) => role.code) || [];
         } else {
-          throw new Error(response.message || '获取用户信息失败');
+          throw new Error(response.message || "获取用户信息失败");
         }
       } catch (err: any) {
-        this.error = err.message || '获取用户信息失败';
+        this.error = err.message || "获取用户信息失败";
       } finally {
         this.profileLoading = false;
       }
@@ -255,17 +243,17 @@ export const useUserStore = defineStore('user', {
           code: number;
           data: string[];
           message: string;
-        }>('/api/user', {
-          query: { action: 'permissions' },
+        }>("/api/user", {
+          query: { action: "permissions" },
         });
 
         if (response.code === 0) {
           this.permissions = response.data || [];
         } else {
-          throw new Error(response.message || '获取用户权限失败');
+          throw new Error(response.message || "获取用户权限失败");
         }
       } catch (err: any) {
-        this.error = err.message || '获取用户权限失败';
+        this.error = err.message || "获取用户权限失败";
         this.permissions = [];
       } finally {
         this.permissionsLoading = false;

@@ -14,7 +14,7 @@
     </div>
 
     <!-- 配置选项卡 -->
-    <Tabs default-value="basic" class="w-full">
+    <Tabs class="w-full" default-value="basic">
       <TabsList class="grid w-full grid-cols-5">
         <TabsTrigger value="basic">基础配置</TabsTrigger>
         <TabsTrigger value="business">业务配置</TabsTrigger>
@@ -38,15 +38,15 @@
               <div class="space-y-2">
                 <Label>公司名称</Label>
                 <Input
-                  v-model="basicConfig.companyName"
                   placeholder="请输入公司名称"
+                  v-model="basicConfig.companyName"
                 />
               </div>
               <div class="space-y-2">
                 <Label>系统名称</Label>
                 <Input
-                  v-model="basicConfig.systemName"
                   placeholder="请输入系统名称"
+                  v-model="basicConfig.systemName"
                 />
               </div>
             </div>
@@ -54,14 +54,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>系统版本</Label>
-                <Input v-model="basicConfig.version" placeholder="如: v1.0.0" />
+                <Input placeholder="如: v1.0.0" v-model="basicConfig.version" />
               </div>
               <div class="space-y-2">
                 <Label>管理员邮箱</Label>
                 <Input
-                  v-model="basicConfig.adminEmail"
-                  type="email"
                   placeholder="admin@company.com"
+                  type="email"
+                  v-model="basicConfig.adminEmail"
                 />
               </div>
             </div>
@@ -69,8 +69,8 @@
             <div class="space-y-2">
               <Label>公司地址</Label>
               <Input
-                v-model="basicConfig.address"
                 placeholder="请输入公司地址"
+                v-model="basicConfig.address"
               />
             </div>
 
@@ -117,11 +117,11 @@
               <div class="space-y-2">
                 <Label>小数位数</Label>
                 <Input
-                  v-model.number="businessConfig.decimalPlaces"
-                  type="number"
-                  min="0"
                   max="6"
+                  min="0"
                   placeholder="小数位数"
+                  type="number"
+                  v-model.number="businessConfig.decimalPlaces"
                 />
               </div>
             </div>
@@ -130,21 +130,21 @@
               <div class="space-y-2">
                 <Label>税率 (%)</Label>
                 <Input
-                  v-model.number="businessConfig.taxRate"
-                  type="number"
-                  min="0"
                   max="100"
-                  step="0.01"
+                  min="0"
                   placeholder="税率"
+                  step="0.01"
+                  type="number"
+                  v-model.number="businessConfig.taxRate"
                 />
               </div>
               <div class="space-y-2">
                 <Label>库存预警阈值</Label>
                 <Input
-                  v-model.number="businessConfig.stockWarningThreshold"
-                  type="number"
                   min="0"
                   placeholder="库存预警阈值"
+                  type="number"
+                  v-model.number="businessConfig.stockWarningThreshold"
                 />
               </div>
             </div>
@@ -185,21 +185,21 @@
               <div class="space-y-2">
                 <Label>密码最小长度</Label>
                 <Input
-                  v-model.number="securityConfig.passwordMinLength"
-                  type="number"
-                  min="6"
                   max="32"
+                  min="6"
                   placeholder="密码最小长度"
+                  type="number"
+                  v-model.number="securityConfig.passwordMinLength"
                 />
               </div>
               <div class="space-y-2">
                 <Label>登录失败锁定次数</Label>
                 <Input
-                  v-model.number="securityConfig.maxLoginAttempts"
-                  type="number"
-                  min="3"
                   max="10"
+                  min="3"
                   placeholder="登录失败锁定次数"
+                  type="number"
+                  v-model.number="securityConfig.maxLoginAttempts"
                 />
               </div>
             </div>
@@ -208,21 +208,21 @@
               <div class="space-y-2">
                 <Label>会话超时时间 (分钟)</Label>
                 <Input
-                  v-model.number="securityConfig.sessionTimeout"
-                  type="number"
-                  min="10"
                   max="1440"
+                  min="10"
                   placeholder="会话超时时间"
+                  type="number"
+                  v-model.number="securityConfig.sessionTimeout"
                 />
               </div>
               <div class="space-y-2">
                 <Label>账户锁定时间 (分钟)</Label>
                 <Input
-                  v-model.number="securityConfig.lockoutDuration"
-                  type="number"
-                  min="5"
                   max="120"
+                  min="5"
                   placeholder="账户锁定时间"
+                  type="number"
+                  v-model.number="securityConfig.lockoutDuration"
                 />
               </div>
             </div>
@@ -273,18 +273,18 @@
               <div class="space-y-2">
                 <Label>SMTP服务器</Label>
                 <Input
-                  v-model="emailConfig.smtpHost"
                   placeholder="如: smtp.qq.com"
+                  v-model="emailConfig.smtpHost"
                 />
               </div>
               <div class="space-y-2">
                 <Label>SMTP端口</Label>
                 <Input
-                  v-model.number="emailConfig.smtpPort"
-                  type="number"
-                  min="1"
                   max="65535"
+                  min="1"
                   placeholder="端口号"
+                  type="number"
+                  v-model.number="emailConfig.smtpPort"
                 />
               </div>
             </div>
@@ -293,14 +293,14 @@
               <div class="space-y-2">
                 <Label>发件人邮箱</Label>
                 <Input
-                  v-model="emailConfig.fromEmail"
-                  type="email"
                   placeholder="system@company.com"
+                  type="email"
+                  v-model="emailConfig.fromEmail"
                 />
               </div>
               <div class="space-y-2">
                 <Label>发件人名称</Label>
-                <Input v-model="emailConfig.fromName" placeholder="ERP系统" />
+                <Input placeholder="ERP系统" v-model="emailConfig.fromName" />
               </div>
             </div>
 
@@ -308,16 +308,16 @@
               <div class="space-y-2">
                 <Label>SMTP用户名</Label>
                 <Input
-                  v-model="emailConfig.smtpUsername"
                   placeholder="SMTP登录用户名"
+                  v-model="emailConfig.smtpUsername"
                 />
               </div>
               <div class="space-y-2">
                 <Label>SMTP密码</Label>
                 <Input
-                  v-model="emailConfig.smtpPassword"
-                  type="password"
                   placeholder="SMTP登录密码"
+                  type="password"
+                  v-model="emailConfig.smtpPassword"
                 />
               </div>
             </div>
@@ -387,11 +387,11 @@
               <div class="space-y-2">
                 <Label>保留天数</Label>
                 <Input
-                  v-model.number="backupConfig.retentionDays"
-                  type="number"
-                  min="1"
                   max="365"
+                  min="1"
                   placeholder="保留天数"
+                  type="number"
+                  v-model.number="backupConfig.retentionDays"
                 />
               </div>
             </div>
@@ -399,8 +399,8 @@
             <div class="space-y-2">
               <Label>备份路径</Label>
               <Input
-                v-model="backupConfig.backupPath"
                 placeholder="/backup/erp"
+                v-model="backupConfig.backupPath"
               />
             </div>
 
@@ -447,213 +447,215 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 手动导入 Lucide 图标
-import {
-  Briefcase,
-  Database,
-  Download,
-  Mail,
-  Save,
-  Send,
-  Settings,
-  Shield,
-} from 'lucide-vue-next';
+<script lang="ts" setup>
+  // 手动导入 Lucide 图标
+  import {
+    Briefcase,
+    Database,
+    Download,
+    Mail,
+    Save,
+    Send,
+    Settings,
+    Shield,
+  } from "lucide-vue-next";
 
-import { toast } from 'vue-sonner';
+  import { toast } from "vue-sonner";
 
-// 页面配置
-definePageMeta({
-  layout: 'default',
-});
+  // 页面配置
+  definePageMeta({
+    layout: "default",
+    requiresAuth: true,
+    permission: "system:config",
+  });
 
-useHead({
-  title: '系统配置 - ERP 管理系统',
-});
+  useHead({
+    title: "系统配置 - ERP 管理系统",
+  });
 
-// 状态管理
-const saving = ref(false);
-const testing = ref(false);
-const backing = ref(false);
+  // 状态管理
+  const saving = ref(false);
+  const testing = ref(false);
+  const backing = ref(false);
 
-// 基础配置
-const basicConfig = ref({
-  companyName: '某某科技有限公司',
-  systemName: 'ERP管理系统',
-  version: 'v1.0.0',
-  adminEmail: 'admin@company.com',
-  address: '北京市朝阳区某某街道123号',
-});
+  // 基础配置
+  const basicConfig = ref({
+    companyName: "某某科技有限公司",
+    systemName: "ERP管理系统",
+    version: "v1.0.0",
+    adminEmail: "admin@company.com",
+    address: "北京市朝阳区某某街道123号",
+  });
 
-// 业务配置
-const businessConfig = ref({
-  defaultCurrency: 'CNY',
-  decimalPlaces: 2,
-  taxRate: 13.0,
-  stockWarningThreshold: 10,
-  autoApproval: false,
-});
+  // 业务配置
+  const businessConfig = ref({
+    defaultCurrency: "CNY",
+    decimalPlaces: 2,
+    taxRate: 13.0,
+    stockWarningThreshold: 10,
+    autoApproval: false,
+  });
 
-// 安全配置
-const securityConfig = ref({
-  passwordMinLength: 8,
-  maxLoginAttempts: 5,
-  sessionTimeout: 120,
-  lockoutDuration: 30,
-  requirePasswordComplexity: true,
-  enableTwoFactor: false,
-});
+  // 安全配置
+  const securityConfig = ref({
+    passwordMinLength: 8,
+    maxLoginAttempts: 5,
+    sessionTimeout: 120,
+    lockoutDuration: 30,
+    requirePasswordComplexity: true,
+    enableTwoFactor: false,
+  });
 
-// 邮件配置
-const emailConfig = ref({
-  smtpHost: '',
-  smtpPort: 587,
-  fromEmail: '',
-  fromName: 'ERP系统',
-  smtpUsername: '',
-  smtpPassword: '',
-  enableSSL: false,
-  enableTLS: true,
-});
+  // 邮件配置
+  const emailConfig = ref({
+    smtpHost: "",
+    smtpPort: 587,
+    fromEmail: "",
+    fromName: "ERP系统",
+    smtpUsername: "",
+    smtpPassword: "",
+    enableSSL: false,
+    enableTLS: true,
+  });
 
-// 备份配置
-const backupConfig = ref({
-  frequency: 'daily',
-  retentionDays: 30,
-  backupPath: '/var/backups/erp',
-  enableAutoBackup: true,
-  compressBackup: true,
-});
+  // 备份配置
+  const backupConfig = ref({
+    frequency: "daily",
+    retentionDays: 30,
+    backupPath: "/var/backups/erp",
+    enableAutoBackup: true,
+    compressBackup: true,
+  });
 
-// 选项数据
-const currencyOptions = ref([
-  { label: '人民币 (CNY)', value: 'CNY' },
-  { label: '美元 (USD)', value: 'USD' },
-  { label: '欧元 (EUR)', value: 'EUR' },
-  { label: '日元 (JPY)', value: 'JPY' },
-]);
+  // 选项数据
+  const currencyOptions = ref([
+    { label: "人民币 (CNY)", value: "CNY" },
+    { label: "美元 (USD)", value: "USD" },
+    { label: "欧元 (EUR)", value: "EUR" },
+    { label: "日元 (JPY)", value: "JPY" },
+  ]);
 
-const backupFrequencyOptions = ref([
-  { label: '每日', value: 'daily' },
-  { label: '每周', value: 'weekly' },
-  { label: '每月', value: 'monthly' },
-  { label: '手动', value: 'manual' },
-]);
+  const backupFrequencyOptions = ref([
+    { label: "每日", value: "daily" },
+    { label: "每周", value: "weekly" },
+    { label: "每月", value: "monthly" },
+    { label: "手动", value: "manual" },
+  ]);
 
-// 方法
-const saveAllConfigs = async () => {
-  saving.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    toast.success('所有配置保存成功');
-  } catch (_error) {
-    toast.error('保存失败，请重试');
-  } finally {
-    saving.value = false;
-  }
-};
+  // 方法
+  const saveAllConfigs = async () => {
+    saving.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      toast.success("所有配置保存成功");
+    } catch (_error) {
+      toast.error("保存失败，请重试");
+    } finally {
+      saving.value = false;
+    }
+  };
 
-const saveBasicConfig = async () => {
-  saving.value = true;
-  try {
-    // 模拟API调用
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('基础配置保存成功');
-  } catch (error: any) {
-    toast.error('保存失败，请重试', {
-      description: error.message,
-    });
-  } finally {
-    saving.value = false;
-  }
-};
+  const saveBasicConfig = async () => {
+    saving.value = true;
+    try {
+      // 模拟API调用
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success("基础配置保存成功");
+    } catch (error: any) {
+      toast.error("保存失败，请重试", {
+        description: error.message,
+      });
+    } finally {
+      saving.value = false;
+    }
+  };
 
-const saveBusinessConfig = async () => {
-  saving.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('业务配置保存成功');
-  } catch (error: any) {
-    toast.error('保存失败，请重试', {
-      description: error.message,
-    });
-  } finally {
-    saving.value = false;
-  }
-};
+  const saveBusinessConfig = async () => {
+    saving.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success("业务配置保存成功");
+    } catch (error: any) {
+      toast.error("保存失败，请重试", {
+        description: error.message,
+      });
+    } finally {
+      saving.value = false;
+    }
+  };
 
-const saveSecurityConfig = async () => {
-  saving.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('安全配置保存成功');
-  } catch (error: any) {
-    toast.error('保存失败，请重试', {
-      description: error.message,
-    });
-  } finally {
-    saving.value = false;
-  }
-};
+  const saveSecurityConfig = async () => {
+    saving.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success("安全配置保存成功");
+    } catch (error: any) {
+      toast.error("保存失败，请重试", {
+        description: error.message,
+      });
+    } finally {
+      saving.value = false;
+    }
+  };
 
-const saveEmailConfig = async () => {
-  saving.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('邮件配置保存成功');
-  } catch (error: any) {
-    toast.error('保存失败，请重试', {
-      description: error.message,
-    });
-  } finally {
-    saving.value = false;
-  }
-};
+  const saveEmailConfig = async () => {
+    saving.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success("邮件配置保存成功");
+    } catch (error: any) {
+      toast.error("保存失败，请重试", {
+        description: error.message,
+      });
+    } finally {
+      saving.value = false;
+    }
+  };
 
-const saveBackupConfig = async () => {
-  saving.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('备份配置保存成功');
-  } catch (error: any) {
-    toast.error('保存失败，请重试', {
-      description: error.message,
-    });
-  } finally {
-    saving.value = false;
-  }
-};
+  const saveBackupConfig = async () => {
+    saving.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success("备份配置保存成功");
+    } catch (error: any) {
+      toast.error("保存失败，请重试", {
+        description: error.message,
+      });
+    } finally {
+      saving.value = false;
+    }
+  };
 
-const testEmailConnection = async () => {
-  testing.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    toast.success('邮件连接测试成功');
-  } catch (error: any) {
-    toast.error('邮件连接测试失败', {
-      description: error.message,
-    });
-  } finally {
-    testing.value = false;
-  }
-};
+  const testEmailConnection = async () => {
+    testing.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      toast.success("邮件连接测试成功");
+    } catch (error: any) {
+      toast.error("邮件连接测试失败", {
+        description: error.message,
+      });
+    } finally {
+      testing.value = false;
+    }
+  };
 
-const performBackup = async () => {
-  backing.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    toast.success('数据备份完成');
-  } catch (error: any) {
-    toast.error('数据备份失败', {
-      description: error.message,
-    });
-  } finally {
-    backing.value = false;
-  }
-};
+  const performBackup = async () => {
+    backing.value = true;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      toast.success("数据备份完成");
+    } catch (error: any) {
+      toast.error("数据备份失败", {
+        description: error.message,
+      });
+    } finally {
+      backing.value = false;
+    }
+  };
 
-// 初始化
-onMounted(() => {
-  // 加载配置数据
-});
+  // 初始化
+  onMounted(() => {
+    // 加载配置数据
+  });
 </script>

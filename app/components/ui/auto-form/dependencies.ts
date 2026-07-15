@@ -1,24 +1,24 @@
-import { createContext } from 'reka-ui';
-import { useFieldValue, useFormValues } from 'vee-validate';
-import type { Ref } from 'vue';
-import { computed, ref, watch } from 'vue';
-import type * as z from 'zod';
-import type { Dependency, EnumValues } from './interface';
-import { DependencyType } from './interface';
-import { getFromPath, getIndexIfArray } from './utils';
+import { createContext } from "reka-ui";
+import { useFieldValue, useFormValues } from "vee-validate";
+import type { Ref } from "vue";
+import { computed, ref, watch } from "vue";
+import type * as z from "zod";
+import type { Dependency, EnumValues } from "./interface";
+import { DependencyType } from "./interface";
+import { getFromPath, getIndexIfArray } from "./utils";
 
 export const [injectDependencies, provideDependencies] = createContext<
   Ref<Dependency<z.infer<z.ZodObject<any>>>[] | undefined>
->('AutoFormDependencies');
+>("AutoFormDependencies");
 
 export default function useDependencies(fieldName: string) {
   const form = useFormValues();
   // parsed test[0].age => test.age
-  const currentFieldName = fieldName.replace(/\[\d+\]/g, '');
+  const currentFieldName = fieldName.replace(/\[\d+\]/g, "");
   const currentFieldValue = useFieldValue<any>(fieldName);
 
   if (!form) {
-    throw new Error('useDependencies should be used within <AutoForm>');
+    throw new Error("useDependencies should be used within <AutoForm>");
   }
 
   const dependencies = injectDependencies();
@@ -36,16 +36,16 @@ export default function useDependencies(fieldName: string) {
   function getSourceValue(dep: Dependency<any>) {
     const source = dep.sourceField as string;
     const index = getIndexIfArray(fieldName) ?? -1;
-    const [sourceLast, ...sourceInitial] = source.split('.').toReversed();
+    const [sourceLast, ...sourceInitial] = source.split(".").toReversed();
     const [_targetLast, ...targetInitial] = (dep.targetField as string)
-      .split('.')
+      .split(".")
       .toReversed();
 
-    if (index >= 0 && sourceInitial.join(',') === targetInitial.join(',')) {
+    if (index >= 0 && sourceInitial.join(",") === targetInitial.join(",")) {
       const [_currentLast, ...currentInitial] = fieldName
-        .split('.')
+        .split(".")
         .toReversed();
-      return getFromPath(form.value, currentInitial.join('.') + sourceLast);
+      return getFromPath(form.value, currentInitial.join(".") + sourceLast);
     }
 
     return getFromPath(form.value, source);

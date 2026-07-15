@@ -32,13 +32,11 @@
                     <div>
                       <p class="font-medium text-color">数据库连接</p>
                       <p class="text-sm text-muted-color">
-                        {{
-                          connectionStatus === "connected"
+                        {{ connectionStatus === "connected"
                             ? "已连接"
                             : connectionStatus === "checking"
                             ? "检查中..."
-                            : "连接失败"
-                        }}
+                            : "连接失败" }}
                       </p>
                     </div>
                   </div>
@@ -63,13 +61,11 @@
                     <div>
                       <p class="font-medium text-color">认证服务</p>
                       <p class="text-sm text-muted-color">
-                        {{
-                          connectionStatus === "connected"
+                        {{ connectionStatus === "connected"
                             ? "已连接"
                             : connectionStatus === "checking"
                             ? "检查中..."
-                            : "连接失败"
-                        }}
+                            : "连接失败" }}
                       </p>
                     </div>
                   </div>
@@ -94,13 +90,11 @@
                     <div>
                       <p class="font-medium text-color">管理员角色</p>
                       <p class="text-sm text-muted-color">
-                        {{
-                          connectionStatus === "connected"
+                        {{ connectionStatus === "connected"
                             ? "已配置"
                             : connectionStatus === "checking"
                             ? "检查中..."
-                            : "未配置"
-                        }}
+                            : "未配置" }}
                       </p>
                     </div>
                   </div>
@@ -129,10 +123,10 @@
                     ]"
                   >
                     <i
+                      class="pi pi-check text-xs"
                       v-if="
                         getStepById('check-connection')?.status === 'completed'
                       "
-                      class="pi pi-check text-xs"
                     ></i>
                     <span v-else>1</span>
                   </div>
@@ -140,11 +134,11 @@
                     <p class="font-medium text-color">检查数据库连接</p>
                     <p class="text-sm text-muted-color">验证数据库连接状态</p>
                     <div
+                      class="mt-1"
                       v-if="
                         getStepById('check-connection')?.progress
                           && getStepById('check-connection')!.progress > 0
                       "
-                      class="mt-1"
                     />
                   </div>
                 </div>
@@ -174,8 +168,8 @@
                     ]"
                   >
                     <i
-                      v-if="getStepById('check-tables')?.status === 'completed'"
                       class="pi pi-check text-xs"
+                      v-if="getStepById('check-tables')?.status === 'completed'"
                     ></i>
                     <span v-else>2</span>
                   </div>
@@ -185,11 +179,11 @@
                       验证所有必要的数据库表是否存在
                     </p>
                     <div
+                      class="mt-1"
                       v-if="
                         getStepById('check-tables')?.progress
                           && getStepById('check-tables')!.progress > 0
                       "
-                      class="mt-1"
                     ></div>
                   </div>
                 </div>
@@ -217,10 +211,10 @@
                     ]"
                   >
                     <i
+                      class="pi pi-check text-xs"
                       v-if="
                         getStepById('check-admin-role')?.status === 'completed'
                       "
-                      class="pi pi-check text-xs"
                     ></i>
                     <span v-else>3</span>
                   </div>
@@ -230,11 +224,11 @@
                       验证管理员角色和权限配置
                     </p>
                     <div
+                      class="mt-1"
                       v-if="
                         getStepById('check-admin-role')?.progress
                           && getStepById('check-admin-role')!.progress > 0
                       "
-                      class="mt-1"
                     ></div>
                   </div>
                 </div>
@@ -264,8 +258,8 @@
                     ]"
                   >
                     <i
-                      v-if="getStepById('create-admin')?.status === 'completed'"
                       class="pi pi-check text-xs"
+                      v-if="getStepById('create-admin')?.status === 'completed'"
                     ></i>
                     <span v-else>4</span>
                   </div>
@@ -273,11 +267,11 @@
                     <p class="font-medium text-color">创建管理员账户</p>
                     <p class="text-sm text-muted-color">设置系统管理员用户</p>
                     <div
+                      class="mt-1"
                       v-if="
                         getStepById('create-admin')?.progress
                           && getStepById('create-admin')!.progress > 0
                       "
-                      class="mt-1"
                     ></div>
                   </div>
                 </div>
@@ -305,8 +299,8 @@
                     ]"
                   >
                     <i
-                      v-if="getStepById('assign-role')?.status === 'completed'"
                       class="pi pi-check text-xs"
+                      v-if="getStepById('assign-role')?.status === 'completed'"
                     ></i>
                     <span v-else>5</span>
                   </div>
@@ -316,11 +310,11 @@
                       为管理员用户分配相应角色和权限
                     </p>
                     <div
+                      class="mt-1"
                       v-if="
                         getStepById('assign-role')?.progress
                           && getStepById('assign-role')!.progress > 0
                       "
-                      class="mt-1"
                     ></div>
                   </div>
                 </div>
@@ -341,9 +335,9 @@
               class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
             >
               <Button
-                :disabled="isInitializing"
-                severity="info"
                 class="w-full"
+                severity="info"
+                :disabled="isInitializing"
                 @click="checkConnection"
               >
                 <i class="pi pi-wifi mr-2"></i>
@@ -351,9 +345,9 @@
               </Button>
 
               <Button
-                :disabled="isInitializing"
-                severity="info"
                 class="w-full"
+                severity="info"
+                :disabled="isInitializing"
                 @click="checkTables"
               >
                 <i class="pi pi-table mr-2"></i>
@@ -361,9 +355,9 @@
               </Button>
 
               <Button
-                :disabled="isInitializing"
-                severity="info"
                 class="w-full"
+                severity="info"
+                :disabled="isInitializing"
                 @click="checkAdminRole"
               >
                 <i class="pi pi-shield mr-2"></i>
@@ -371,9 +365,9 @@
               </Button>
 
               <Button
-                :disabled="isInitializing"
-                severity="warning"
                 class="w-full"
+                severity="warning"
+                :disabled="isInitializing"
                 @click="validateAdminPermissions"
               >
                 <i class="pi pi-verified mr-2"></i>
@@ -394,9 +388,9 @@
                   </p>
                 </div>
                 <Button
+                  severity="success"
                   :disabled="isInitializing"
                   :loading="isInitializing"
-                  severity="success"
                   @click="initializeAll"
                 >
                   开始初始化
@@ -404,7 +398,7 @@
               </div>
 
               <!-- 初始化进度 -->
-              <div v-if="isInitializing" class="mt-4">
+              <div class="mt-4" v-if="isInitializing">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-sm text-color">初始化进度</span>
                   <span class="text-sm text-muted-color"
@@ -422,24 +416,24 @@
             <div
               class="bg-surface-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto"
             >
-              <div v-for="(log, index) in logs" :key="index" class="mb-2">
+              <div class="mb-2" v-for="(log, index) in logs" :key="index">
                 <div class="flex items-start space-x-2">
                   <span class="text-gray-500 flex-shrink-0"
                     >[{{ formatTime(log.timestamp) }}]</span
                   >
                   <div class="flex-1">
-                    <span :class="getLogClass(log.level)">{{
-                      log.message
-                    }}</span>
+                    <span :class="getLogClass(log.level)"
+                      >{{ log.message }}</span
+                    >
                   </div>
                 </div>
               </div>
-              <div v-if="logs.length === 0" class="text-gray-500">
+              <div class="text-gray-500" v-if="logs.length === 0">
                 等待初始化操作...
               </div>
               <div
-                v-if="currentUser"
                 class="text-blue-400 text-xs mt-2 pt-2 border-t border-gray-700"
+                v-if="currentUser"
               >
                 当前用户: {{ currentUser.email || "未登录" }}
               </div>
@@ -448,8 +442,8 @@
 
           <!-- 初始化完成状态 -->
           <div
-            v-if="allStepsCompleted"
             class="bg-green-50 border border-green-200 p-6 rounded-lg"
+            v-if="allStepsCompleted"
           >
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -473,89 +467,86 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { navigateTo } from '#app';
-import { useDbInit } from '~/composables/useDbInit';
+<script lang="ts" setup>
+  import { navigateTo } from "#app";
+  import { useDbInit } from "~/composables/useDbInit";
 
-const {
-  isInitializing,
-  initializationProgress,
-  logs,
-  steps,
-  connectionStatus,
-  currentUser,
-  checkConnection,
-  checkTables,
-  checkAdminRole,
-  createAdmin,
-  assignAdminRole,
-  initializeAll,
-  validateAdminPermissions,
-} = useDbInit();
+  const {
+    isInitializing,
+    initializationProgress,
+    logs,
+    steps,
+    connectionStatus,
+    currentUser,
+    checkConnection,
+    checkTables,
+    checkAdminRole,
+    createAdmin,
+    assignAdminRole,
+    initializeAll,
+    validateAdminPermissions,
+  } = useDbInit();
 
-// 计算属性
-const allStepsCompleted = computed(() => {
-  return steps.value.every((step) => step.status === 'completed');
-});
+  // 计算属性
+  const allStepsCompleted = computed(() =>
+    steps.value.every((step) => step.status === "completed")
+  );
 
-const totalSteps = computed(() => steps.value.length);
-const completedSteps = computed(
-  () => steps.value.filter((step) => step.status === 'completed').length
-);
-const initProgress = computed(() =>
-  isInitializing.value
-    ? initializationProgress.value
-    : Math.round((completedSteps.value / totalSteps.value) * 100)
-);
+  const totalSteps = computed(() => steps.value.length);
+  const completedSteps = computed(
+    () => steps.value.filter((step) => step.status === "completed").length
+  );
+  const initProgress = computed(() =>
+    isInitializing.value
+      ? initializationProgress.value
+      : Math.round((completedSteps.value / totalSteps.value) * 100)
+  );
 
-// 获取特定步骤的辅助函数
-const getStepById = (id: string) => {
-  return steps.value.find((step) => step.id === id);
-};
+  // 获取特定步骤的辅助函数
+  const getStepById = (id: string) =>
+    steps.value.find((step) => step.id === id);
 
-const currentStep = computed(() => {
-  const runningStep = steps.value.find((step) => step.status === 'running');
-  if (runningStep) {
-    const stepNames: Record<string, string> = {
-      'check-connection': '检查数据库连接',
-      'check-tables': '检查数据库表结构',
-      'check-admin-role': '检查管理员角色',
-      'create-admin': '创建管理员用户',
-      'assign-role': '分配管理员角色',
-    };
-    return stepNames[runningStep.id] || '正在处理...';
-  }
-  return isInitializing.value ? '正在初始化...' : '等待开始...';
-});
+  const currentStep = computed(() => {
+    const runningStep = steps.value.find((step) => step.status === "running");
+    if (runningStep) {
+      const stepNames: Record<string, string> = {
+        "check-connection": "检查数据库连接",
+        "check-tables": "检查数据库表结构",
+        "check-admin-role": "检查管理员角色",
+        "create-admin": "创建管理员用户",
+        "assign-role": "分配管理员角色",
+      };
+      return stepNames[runningStep.id] || "正在处理...";
+    }
+    return isInitializing.value ? "正在初始化..." : "等待开始...";
+  });
 
-// 方法
-const formatTime = (date: any) => {
-  return date.toLocaleTimeString();
-};
+  // 方法
+  const formatTime = (date: any) => date.toLocaleTimeString();
 
-const getLogClass = (level: any) => {
-  switch (level) {
-    case 'error':
-      return 'text-red-400';
-    case 'warning':
-      return 'text-yellow-400';
-    case 'success':
-      return 'text-green-400';
-    default:
-      return 'text-green-400';
-  }
-};
+  const getLogClass = (level: any) => {
+    switch (level) {
+      case "error":
+        return "text-red-400";
+      case "warning":
+        return "text-yellow-400";
+      case "success":
+        return "text-green-400";
+      default:
+        return "text-green-400";
+    }
+  };
 
-const goToLogin = () => {
-  navigateTo('/login');
-};
+  const goToLogin = () => {
+    navigateTo("/login");
+  };
 
-const goToDashboard = () => {
-  navigateTo('/dashboard');
-};
+  const goToDashboard = () => {
+    navigateTo("/dashboard");
+  };
 
-// 页面加载时检查连接
-onMounted(async () => {
-  await checkConnection();
-});
+  // 页面加载时检查连接
+  onMounted(async () => {
+    await checkConnection();
+  });
 </script>

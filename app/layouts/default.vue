@@ -26,7 +26,7 @@
                   <Skeleton class="h-3 w-16" />
                 </SidebarGroupLabel>
                 <SidebarMenu>
-                  <SidebarMenuItem v-for="n in 8" :key="n" class="p-0">
+                  <SidebarMenuItem class="p-0" v-for="n in 8" :key="n">
                     <div class="flex h-10 items-center gap-2 p-2">
                       <Skeleton class="h-4 w-4" />
                       <Skeleton class="h-4 w-20" />
@@ -41,7 +41,7 @@
                   <Skeleton class="h-3 w-12" />
                 </SidebarGroupLabel>
                 <SidebarMenu>
-                  <SidebarMenuItem v-for="n in 3" :key="n" class="p-0">
+                  <SidebarMenuItem class="p-0" v-for="n in 3" :key="n">
                     <div class="flex h-10 items-center gap-2 p-2">
                       <Skeleton class="h-4 w-4" />
                       <Skeleton class="h-4 w-16" />
@@ -76,11 +76,11 @@
       >
         <div class="flex items-center gap-2 px-4">
           <SidebarTrigger class="-ml-1" />
-          <Separator orientation="vertical" class="mr-2 h-4" />
+          <Separator class="mr-2 h-4" orientation="vertical" />
           <Breadcrumb>
             <BreadcrumbList>
               <template v-for="(item, index) in breadcrumbItems" :key="index">
-                <BreadcrumbItem v-if="item.route" class="hidden md:block">
+                <BreadcrumbItem class="hidden md:block" v-if="item.route">
                   <BreadcrumbLink :href="item.route">
                     {{ item.label }}
                   </BreadcrumbLink>
@@ -89,8 +89,8 @@
                   <BreadcrumbPage>{{ item.label }}</BreadcrumbPage>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator
-                  v-if="index < breadcrumbItems.length - 1"
                   class="hidden md:block"
+                  v-if="index < breadcrumbItems.length - 1"
                 />
               </template>
             </BreadcrumbList>
@@ -105,18 +105,18 @@
               class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
             />
             <Input
-              v-model="globalSearch"
-              placeholder="全局搜索..."
               class="w-64 pl-8"
+              placeholder="全局搜索..."
               type="search"
+              v-model="globalSearch"
             />
           </div>
 
           <!-- 通知 -->
           <Button
-            variant="ghost"
-            size="icon"
             class="relative"
+            size="icon"
+            variant="ghost"
             @click="toggleNotifications"
           >
             <Bell class="h-4 w-4" />
@@ -129,15 +129,15 @@
           </Button>
 
           <!-- 主题切换 -->
-          <Button variant="ghost" size="icon" @click="toggleTheme">
-            <Sun v-if="isDark" class="h-4 w-4" />
-            <Moon v-else class="h-4 w-4" />
+          <Button size="icon" variant="ghost" @click="toggleTheme">
+            <Sun class="h-4 w-4" v-if="isDark" />
+            <Moon class="h-4 w-4" v-else />
           </Button>
 
           <!-- 全屏 -->
-          <Button variant="ghost" size="icon" @click="toggleFullscreen">
-            <Minimize v-if="isFullscreen" class="h-4 w-4" />
-            <Maximize v-else class="h-4 w-4" />
+          <Button size="icon" variant="ghost" @click="toggleFullscreen">
+            <Minimize class="h-4 w-4" v-if="isFullscreen" />
+            <Maximize class="h-4 w-4" v-else />
           </Button>
         </div>
       </header>
@@ -152,84 +152,84 @@
   </SidebarProvider>
 </template>
 
-<script setup lang="ts">
-import { Bell, Maximize, Minimize, Moon, Search, Sun } from 'lucide-vue-next';
+<script lang="ts" setup>
+  import { Bell, Maximize, Minimize, Moon, Search, Sun } from "lucide-vue-next";
 
-// 获取路由信息
-const route = useRoute();
+  // 获取路由信息
+  const route = useRoute();
 
-// 主题管理
-const { isDark, toggleTheme, initTheme } = useTheme();
+  // 主题管理
+  const { isDark, toggleTheme, initTheme } = useTheme();
 
-// 状态管理
-const isFullscreen = ref(false);
-const globalSearch = ref('');
+  // 状态管理
+  const isFullscreen = ref(false);
+  const globalSearch = ref("");
 
-// 面包屑导航
-const breadcrumbItems = computed(() => {
-  const pathSegments = route.path.split('/').filter(Boolean);
-  const items = [{ label: '首页', route: '/dashboard' }];
+  // 面包屑导航
+  const breadcrumbItems = computed(() => {
+    const pathSegments = route.path.split("/").filter(Boolean);
+    const items = [{ label: "首页", route: "/dashboard" }];
 
-  let currentPath = '';
-  pathSegments.forEach((segment, index) => {
-    currentPath += `/${segment}`;
-    const isLast = index === pathSegments.length - 1;
+    let currentPath = "";
+    pathSegments.forEach((segment, index) => {
+      currentPath += `/${segment}`;
+      const isLast = index === pathSegments.length - 1;
 
-    // 路径映射
-    const pathLabels: Record<string, string> = {
-      dashboard: '仪表盘',
-      sales: '销售管理',
-      purchase: '采购管理',
-      warehouse: '库存管理',
-      production: '生产管理',
-      finance: '财务管理',
-      'master-data': '基础数据',
-      reports: '报表分析',
-      system: '系统设置',
-      orders: '订单管理',
-      customers: '客户管理',
-      suppliers: '供应商管理',
-      inventory: '库存管理',
-      products: '产品管理',
-      invoices: '发票管理',
-      payments: '付款管理',
-      receipts: '收款管理',
-      plans: '计划管理',
-      bom: '物料清单',
-      config: '系统配置',
-      users: '用户管理',
-      login: '登录',
-      roles: '角色管理',
-    };
+      // 路径映射
+      const pathLabels: Record<string, string> = {
+        dashboard: "仪表盘",
+        sales: "销售管理",
+        purchase: "采购管理",
+        warehouse: "库存管理",
+        production: "生产管理",
+        finance: "财务管理",
+        "master-data": "基础数据",
+        reports: "报表分析",
+        system: "系统设置",
+        orders: "订单管理",
+        customers: "客户管理",
+        suppliers: "供应商管理",
+        inventory: "库存管理",
+        products: "产品管理",
+        invoices: "发票管理",
+        payments: "付款管理",
+        receipts: "收款管理",
+        plans: "计划管理",
+        bom: "物料清单",
+        config: "系统配置",
+        users: "用户管理",
+        login: "登录",
+        roles: "角色管理",
+      };
 
-    items.push({
-      label: pathLabels[segment] ?? segment,
-      route: isLast ? '' : currentPath,
+      items.push({
+        label: pathLabels[segment] ?? segment,
+        route: isLast ? "" : currentPath,
+      });
     });
+
+    return items;
   });
 
-  return items;
-});
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      isFullscreen.value = false;
+    } else {
+      document.documentElement.requestFullscreen();
+      isFullscreen.value = true;
+    }
+  };
 
-const toggleFullscreen = () => {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-    isFullscreen.value = false;
-  } else {
-    document.documentElement.requestFullscreen();
-    isFullscreen.value = true;
-  }
-};
+  const toggleNotifications = () => {};
 
-const toggleNotifications = () => {};
+  // 监听全屏状态变化
+  onMounted(() => {
+    document.addEventListener("fullscreenchange", () => {
+      isFullscreen.value = !!document.fullscreenElement;
+    });
 
-// 监听全屏状态变化
-onMounted(() => {
-  document.addEventListener('fullscreenchange', () => {
-    isFullscreen.value = !!document.fullscreenElement;
+    // 初始化主题
+    initTheme();
   });
-
-  // 初始化主题
-  initTheme();
-});
 </script>

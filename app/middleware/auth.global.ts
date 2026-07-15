@@ -1,36 +1,34 @@
-export default defineNuxtRouteMiddleware(async (to, _from) => {
-  // 定义不需要认证的路由
+export default defineNuxtRouteMiddleware(async (to) => {
   const publicRoutes = [
-    '/login',
-    '/login/register',
-    '/login/forgot-password',
-    '/auth/callback',
-    '/login/reset-password',
-    '/getting-started',
-    '/403',
-    '/404',
-    '/debug-permissions',
+    "/login",
+    "/login/forgot-password",
+    "/auth/callback",
+    "/login/reset-password",
+    "/getting-started",
+    "/403",
+    "/404",
   ];
 
-  // 如果是公开路由，直接通过
   if (publicRoutes.includes(to.path)) {
     return;
   }
 
   const { user, isLoading } = useAuth();
 
-  // 如果还在加载认证状态，等待
+  // 等待会话就绪，避免加载中误放行受保护路由
   if (isLoading.value) {
-    return;
+    try {
+      await until(isLoading).toBe(false, { timeout: 10_000 });
+    } catch {
+      return navigateTo("/login");
+    }
   }
 
-  // 如果用户未登录，重定向到登录页面
   if (!user.value) {
-    return navigateTo('/login');
+    return navigateTo("/login");
   }
 
-  // 如果用户已登录但访问根路径，重定向到仪表盘
-  if (user.value && to.path === '/') {
-    return navigateTo('/dashboard');
+  if (to.path === "/") {
+    return navigateTo("/dashboard");
   }
 });

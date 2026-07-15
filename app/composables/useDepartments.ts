@@ -1,43 +1,43 @@
 // 部门数据类型定义
 export interface DepartmentData {
-  id: string;
-  name: string;
-  code: string;
-  description?: string | null;
-  parent_id?: string | null;
-  manager_id?: string | null;
-  sort?: number;
-  status: 'active' | 'inactive';
-  created_at: string;
-  updated_at: string;
   // 扩展字段
   children?: DepartmentData[];
-  parent?: DepartmentData | null;
+  code: string;
+  created_at: string;
+  description?: string | null;
+  employee_count?: number;
+  id: string;
   manager?: {
     id: string;
     name: string;
     email: string;
   } | null;
-  employee_count?: number;
+  manager_id?: string | null;
+  name: string;
+  parent?: DepartmentData | null;
+  parent_id?: string | null;
+  sort?: number;
+  status: "active" | "inactive";
+  updated_at: string;
 }
 
 // 部门表单类型
 export interface DepartmentForm {
-  name: string;
   code: string;
   description?: string;
-  parent_id?: string;
   manager_id?: string;
+  name: string;
+  parent_id?: string;
   sort: number;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
 // 部门查询类型
 export interface DepartmentQuery {
-  name?: string;
-  status?: 'active' | 'inactive' | 'all';
-  parent_id?: string;
   manager_id?: string;
+  name?: string;
+  parent_id?: string;
+  status?: "active" | "inactive" | "all";
 }
 
 export const useDepartments = () => {
@@ -55,7 +55,7 @@ export const useDepartments = () => {
       error.value = null;
 
       // 调用服务端 API
-      const result = (await $fetch('/api/departments', {
+      const result = (await $fetch("/api/departments", {
         query,
       })) as any;
 
@@ -69,10 +69,10 @@ export const useDepartments = () => {
       }
       return result;
     } catch (err: any) {
-      error.value = err.message || '获取部门列表失败';
+      error.value = err.message || "获取部门列表失败";
       return {
         code: -1,
-        message: err.message || '获取部门列表失败',
+        message: err.message || "获取部门列表失败",
         data: [],
       };
     } finally {
@@ -84,9 +84,9 @@ export const useDepartments = () => {
   const getDepartment = async (id: string) => {
     try {
       const { data, error } = await supabase
-        .from('departments')
-        .select('*')
-        .eq('id', id)
+        .from("departments")
+        .select("*")
+        .eq("id", id)
         .single();
 
       if (error) {
@@ -95,13 +95,13 @@ export const useDepartments = () => {
 
       return {
         code: 0,
-        message: '获取成功',
+        message: "获取成功",
         data,
       };
     } catch (err: any) {
       return {
         code: -1,
-        message: err.message || '获取部门失败',
+        message: err.message || "获取部门失败",
         data: null,
       };
     }
@@ -114,17 +114,17 @@ export const useDepartments = () => {
       error.value = null;
 
       // 调用服务端 API 创建部门
-      const result = await $fetch('/api/departments', {
-        method: 'POST',
+      const result = await $fetch("/api/departments", {
+        method: "POST",
         body: departmentData,
       });
 
       return result;
     } catch (err: any) {
-      error.value = err.message || '创建部门失败';
+      error.value = err.message || "创建部门失败";
       return {
         code: -1,
-        message: err.message || '创建部门失败',
+        message: err.message || "创建部门失败",
         data: null,
       };
     } finally {
@@ -142,8 +142,8 @@ export const useDepartments = () => {
       error.value = null;
 
       // 调用服务端 API 更新部门
-      const result = await $fetch('/api/departments', {
-        method: 'PUT',
+      const result = await $fetch("/api/departments", {
+        method: "PUT",
         body: {
           id,
           ...departmentData,
@@ -152,10 +152,10 @@ export const useDepartments = () => {
 
       return result;
     } catch (err: any) {
-      error.value = err.message || '更新部门失败';
+      error.value = err.message || "更新部门失败";
       return {
         code: -1,
-        message: err.message || '更新部门失败',
+        message: err.message || "更新部门失败",
         data: null,
       };
     } finally {
@@ -170,17 +170,17 @@ export const useDepartments = () => {
       error.value = null;
 
       // 调用服务端 API 删除部门
-      const result = await $fetch('/api/departments', {
-        method: 'DELETE',
+      const result = await $fetch("/api/departments", {
+        method: "DELETE",
         body: { id },
       });
 
       return result;
     } catch (err: any) {
-      error.value = err.message || '删除部门失败';
+      error.value = err.message || "删除部门失败";
       return {
         code: -1,
-        message: err.message || '删除部门失败',
+        message: err.message || "删除部门失败",
         data: null,
       };
     } finally {
@@ -193,15 +193,14 @@ export const useDepartments = () => {
     const buildTree = (
       depts: DepartmentData[],
       parentId: string | null = null
-    ): DepartmentData[] => {
-      return depts
+    ): DepartmentData[] =>
+      depts
         .filter((dept) => dept.parent_id === parentId)
         .sort((a, b) => (a.sort || 0) - (b.sort || 0))
         .map((dept) => ({
           ...dept,
           children: buildTree(depts, dept.id),
         }));
-    };
 
     return computed(() => buildTree(departments.value));
   };
@@ -226,11 +225,10 @@ export const useDepartments = () => {
   };
 
   // 检查是否可以删除部门（是否有子部门）
-  const canDeleteDepartment = (departmentId: string): boolean => {
-    return !departments.value.some(
+  const canDeleteDepartment = (departmentId: string): boolean =>
+    !departments.value.some(
       (d: DepartmentData) => d.parent_id === departmentId
     );
-  };
 
   return {
     // 状态

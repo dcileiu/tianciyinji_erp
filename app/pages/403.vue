@@ -1,8 +1,12 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-background">
+  <div
+    class="min-h-screen flex flex-col items-center justify-center bg-background"
+  >
     <div class="text-center space-y-6 max-w-md mx-auto px-4">
       <!-- 403 错误图标 -->
-      <div class="w-24 h-24 mx-auto bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+      <div
+        class="w-24 h-24 mx-auto bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center"
+      >
         <ShieldX class="w-12 h-12 text-red-600 dark:text-red-400" />
       </div>
 
@@ -17,7 +21,7 @@
 
       <!-- 操作按钮 -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <Button @click="$router.back()" variant="outline">
+        <Button variant="outline" @click="$router.back()">
           <ArrowLeft class="w-4 h-4 mr-2" />
           返回上页
         </Button>
@@ -30,16 +34,16 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ArrowLeft, Home, ShieldX } from 'lucide-vue-next';
+<script lang="ts" setup>
+  import { ArrowLeft, Home, ShieldX } from "lucide-vue-next";
 
-// 页面权限配置 - 403页面不需要认证
-definePageMeta({
-  requiresAuth: false,
-});
+  // 页面权限配置 - 403页面不需要认证
+  definePageMeta({
+    requiresAuth: false,
+  });
 
-// 页面标题
-useHead({
-  title: '403 - 访问被拒绝',
-});
+  // 页面标题
+  useHead({
+    title: "403 - 访问被拒绝",
+  });
 </script>

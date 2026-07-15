@@ -14,20 +14,20 @@
         <!-- 邮箱输入 -->
         <div>
           <label
-            for="email"
             class="block text-sm font-medium text-foreground mb-2"
+            for="email"
             >邮箱地址</label
           >
           <Input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
             autocomplete="email"
-            placeholder="请输入您的邮箱"
             class="w-full"
+            id="email"
+            placeholder="请输入您的邮箱"
+            required
+            type="email"
+            v-model="form.email"
           />
-          <p v-if="errors.email" class="mt-1 text-sm text-destructive">
+          <p class="mt-1 text-sm text-destructive" v-if="errors.email">
             {{ errors.email }}
           </p>
         </div>
@@ -35,20 +35,20 @@
         <!-- 密码输入 -->
         <div>
           <label
-            for="password"
             class="block text-sm font-medium text-foreground mb-2"
+            for="password"
             >密码</label
           >
           <Input
-            id="password"
-            v-model="form.password"
-            type="password"
-            required
             autocomplete="new-password"
-            placeholder="请输入密码"
             class="w-full"
+            id="password"
+            placeholder="请输入密码"
+            required
+            type="password"
+            v-model="form.password"
           />
-          <p v-if="errors.password" class="mt-1 text-sm text-destructive">
+          <p class="mt-1 text-sm text-destructive" v-if="errors.password">
             {{ errors.password }}
           </p>
         </div>
@@ -56,41 +56,41 @@
         <!-- 确认密码输入 -->
         <div>
           <label
-            for="confirmPassword"
             class="block text-sm font-medium text-foreground mb-2"
+            for="confirmPassword"
           >
             确认密码
           </label>
           <Input
-            id="confirmPassword"
-            v-model="form.confirmPassword"
-            type="password"
-            required
             autocomplete="new-password"
-            placeholder="请再次输入密码"
             class="w-full"
+            id="confirmPassword"
+            placeholder="请再次输入密码"
+            required
+            type="password"
+            v-model="form.confirmPassword"
           />
           <p
-            v-if="errors.confirmPassword"
             class="mt-1 text-sm text-destructive"
+            v-if="errors.confirmPassword"
           >
             {{ errors.confirmPassword }}
           </p>
         </div>
 
         <!-- 注册按钮 -->
-        <Button type="submit" class="w-full" :disabled="isLoading">
+        <Button class="w-full" type="submit" :disabled="isLoading">
           <span v-if="isLoading">注册中...</span>
           <span v-else>注册</span>
         </Button>
 
         <!-- 错误信息 -->
-        <div v-if="error" class="text-sm text-destructive text-center">
+        <div class="text-sm text-destructive text-center" v-if="error">
           {{ error }}
         </div>
 
         <!-- 成功信息 -->
-        <div v-if="success" class="text-sm text-green-600 text-center">
+        <div class="text-sm text-green-600 text-center" v-if="success">
           {{ success }}
         </div>
 
@@ -98,7 +98,7 @@
         <div class="text-center">
           <p class="text-sm text-muted-foreground">
             已有账户？
-            <NuxtLink to="/login" class="text-primary hover:underline"
+            <NuxtLink class="text-primary hover:underline" to="/login"
               >立即登录</NuxtLink
             >
           </p>
@@ -108,80 +108,80 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const { register } = useAuth();
+<script lang="ts" setup>
+  const { register } = useAuth();
 
-const form = ref({
-  email: '',
-  password: '',
-  confirmPassword: '',
-});
+  const form = ref({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-const errors = ref({
-  email: '',
-  password: '',
-  confirmPassword: '',
-});
-const isLoading = ref(false);
-const error = ref('');
-const success = ref('');
+  const errors = ref({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const isLoading = ref(false);
+  const error = ref("");
+  const success = ref("");
 
-const validateForm = () => {
-  errors.value = {
-    email: '',
-    password: '',
-    confirmPassword: '',
+  const validateForm = () => {
+    errors.value = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    };
+
+    if (!form.value.email) {
+      errors.value.email = "请输入邮箱地址";
+    } else if (!/\S+@\S+\.\S+/.test(form.value.email)) {
+      errors.value.email = "请输入有效的邮箱地址";
+    }
+
+    if (!form.value.password) {
+      errors.value.password = "请输入密码";
+    } else if (form.value.password.length < 6) {
+      errors.value.password = "密码长度不能少于6个字符";
+    }
+
+    if (!form.value.confirmPassword) {
+      errors.value.confirmPassword = "请确认密码";
+    } else if (form.value.password !== form.value.confirmPassword) {
+      errors.value.confirmPassword = "两次输入的密码不一致";
+    }
+
+    return Object.keys(errors.value).length === 0;
   };
 
-  if (!form.value.email) {
-    errors.value.email = '请输入邮箱地址';
-  } else if (!/\S+@\S+\.\S+/.test(form.value.email)) {
-    errors.value.email = '请输入有效的邮箱地址';
-  }
-
-  if (!form.value.password) {
-    errors.value.password = '请输入密码';
-  } else if (form.value.password.length < 6) {
-    errors.value.password = '密码长度不能少于6个字符';
-  }
-
-  if (!form.value.confirmPassword) {
-    errors.value.confirmPassword = '请确认密码';
-  } else if (form.value.password !== form.value.confirmPassword) {
-    errors.value.confirmPassword = '两次输入的密码不一致';
-  }
-
-  return Object.keys(errors.value).length === 0;
-};
-
-const handleRegister = async () => {
-  if (!validateForm()) {
-    return;
-  }
-
-  isLoading.value = true;
-  error.value = '';
-  success.value = '';
-
-  try {
-    const result = await register(form.value.email, form.value.password);
-
-    if (result.success) {
-      if (result.needsEmailConfirmation) {
-        success.value = '注册成功！请检查您的邮箱并点击确认链接。';
-      } else {
-        success.value = '注册成功！正在跳转...';
-        setTimeout(() => {
-          navigateTo('/dashboard');
-        }, 1000);
-      }
-    } else {
-      error.value = result.error?.message || '注册失败，请重试';
+  const handleRegister = async () => {
+    if (!validateForm()) {
+      return;
     }
-  } catch (err: any) {
-    error.value = err.message || '注册失败，请重试';
-  } finally {
-    isLoading.value = false;
-  }
-};
+
+    isLoading.value = true;
+    error.value = "";
+    success.value = "";
+
+    try {
+      const result = await register(form.value.email, form.value.password);
+
+      if (result.success) {
+        if (result.needsEmailConfirmation) {
+          success.value = "注册成功！请检查您的邮箱并点击确认链接。";
+        } else {
+          success.value = "注册成功！正在跳转...";
+          setTimeout(() => {
+            navigateTo("/dashboard");
+          }, 1000);
+        }
+      } else {
+        error.value = result.error?.message || "注册失败，请重试";
+      }
+    } catch (err: any) {
+      error.value = err.message || "注册失败，请重试";
+    } finally {
+      isLoading.value = false;
+    }
+  };
 </script>

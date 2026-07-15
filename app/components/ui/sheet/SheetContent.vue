@@ -1,35 +1,35 @@
-<script setup lang="ts">
-import { reactiveOmit } from '@vueuse/core';
-import { X } from 'lucide-vue-next';
-import type { DialogContentEmits, DialogContentProps } from 'reka-ui';
-import {
-  DialogClose,
-  DialogContent,
-  DialogOverlay,
-  DialogPortal,
-  useForwardPropsEmits,
-} from 'reka-ui';
-import type { HTMLAttributes } from 'vue';
-import { cn } from '@/lib/utils';
-import type { SheetVariants } from '.';
-import { sheetVariants } from '.';
+<script lang="ts" setup>
+  import { reactiveOmit } from "@vueuse/core";
+  import { X } from "lucide-vue-next";
+  import type { DialogContentEmits, DialogContentProps } from "reka-ui";
+  import {
+    DialogClose,
+    DialogContent,
+    DialogOverlay,
+    DialogPortal,
+    useForwardPropsEmits,
+  } from "reka-ui";
+  import type { HTMLAttributes } from "vue";
+  import { cn } from "@/lib/utils";
+  import type { SheetVariants } from ".";
+  import { sheetVariants } from ".";
 
-interface SheetContentProps extends DialogContentProps {
-  class?: HTMLAttributes['class'];
-  side?: SheetVariants['side'];
-}
+  interface SheetContentProps extends DialogContentProps {
+    class?: HTMLAttributes["class"];
+    side?: SheetVariants["side"];
+  }
 
-defineOptions({
-  inheritAttrs: false,
-});
+  defineOptions({
+    inheritAttrs: false,
+  });
 
-const props = defineProps<SheetContentProps>();
+  const props = defineProps<SheetContentProps>();
 
-const emits = defineEmits<DialogContentEmits>();
+  const emits = defineEmits<DialogContentEmits>();
 
-const delegatedProps = reactiveOmit(props, 'class', 'side');
+  const delegatedProps = reactiveOmit(props, "class", "side");
 
-const forwarded = useForwardPropsEmits(delegatedProps, emits);
+  const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
 
 <template>

@@ -1,4 +1,4 @@
-import type { DirectiveBinding } from 'vue';
+import type { DirectiveBinding } from "vue";
 
 export default defineNuxtPlugin((nuxtApp) => {
   // 权限指令
@@ -35,7 +35,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       return; // 没有权限要求，直接显示
     }
 
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       // 单个权限
       hasAccess = hasPermission(value);
     } else if (Array.isArray(value)) {
@@ -51,19 +51,19 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     // 控制元素显示/隐藏
     if (hasAccess) {
-      el.style.display = '';
-      el.removeAttribute('disabled');
+      el.style.display = "";
+      el.removeAttribute("disabled");
     } else if (modifiers.hide) {
       // 完全隐藏元素
-      el.style.display = 'none';
+      el.style.display = "none";
     } else if (modifiers.disable) {
       // 禁用但保持可见
-      el.setAttribute('disabled', 'true');
-      el.style.opacity = '0.5';
-      el.style.cursor = 'not-allowed';
+      el.setAttribute("disabled", "true");
+      el.style.opacity = "0.5";
+      el.style.cursor = "not-allowed";
     } else {
       // 默认行为：隐藏
-      el.style.display = 'none';
+      el.style.display = "none";
     }
   }
 
@@ -82,7 +82,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     const userRoleCodes = roles.value.map((role: any) => role.code);
 
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       hasAccess = userRoleCodes.includes(value);
     } else if (Array.isArray(value)) {
       if (modifiers.all) {
@@ -94,20 +94,20 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     // 控制元素显示/隐藏
     if (hasAccess) {
-      el.style.display = '';
-      el.removeAttribute('disabled');
+      el.style.display = "";
+      el.removeAttribute("disabled");
     } else if (modifiers.hide) {
-      el.style.display = 'none';
+      el.style.display = "none";
     } else if (modifiers.disable) {
-      el.setAttribute('disabled', 'true');
-      el.style.opacity = '0.5';
-      el.style.cursor = 'not-allowed';
+      el.setAttribute("disabled", "true");
+      el.style.opacity = "0.5";
+      el.style.cursor = "not-allowed";
     } else {
-      el.style.display = 'none';
+      el.style.display = "none";
     }
   }
 
   // 注册指令
-  nuxtApp.vueApp.directive('permission', permissionDirective);
-  nuxtApp.vueApp.directive('role', roleDirective);
+  nuxtApp.vueApp.directive("permission", permissionDirective);
+  nuxtApp.vueApp.directive("role", roleDirective);
 });

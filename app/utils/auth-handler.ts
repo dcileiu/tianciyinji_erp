@@ -9,15 +9,15 @@ export function isAuthError(error: any): boolean {
   }
 
   // 检查错误消息
-  const message = error.message || error.error_description || '';
+  const message = error.message || error.error_description || "";
   const authErrorMessages = [
-    'JWT expired',
-    'Invalid JWT',
-    'Session not found',
-    'User not authenticated',
-    'Token expired',
-    'Unauthorized',
-    'Authentication required',
+    "JWT expired",
+    "Invalid JWT",
+    "Session not found",
+    "User not authenticated",
+    "Token expired",
+    "Unauthorized",
+    "Authentication required",
   ];
 
   return authErrorMessages.some((msg) =>
@@ -39,7 +39,7 @@ export async function handleAuthError(error: any): Promise<void> {
     await logout();
   } catch (logoutError) {
     // 强制重定向到登录页
-    await router.push('/login');
+    await router.push("/login");
   }
 }
 

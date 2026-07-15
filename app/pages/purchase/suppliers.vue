@@ -1,18 +1,13 @@
-<script setup lang="ts">
-// 页面权限
-definePageMeta({
-  layout: 'default',
-  requiresAuth: true,
-  permission: 'purchase-supplier:view',
-});
+<script lang="ts" setup>
+  definePageMeta({
+    layout: "default",
+    requiresAuth: true,
+    permission: "supplier:view",
+  });
 
-import ComingSoon from '~/components/ComingSoon.vue';
+  await navigateTo("/master-data/suppliers");
 </script>
 
 <template>
-  <ComingSoon
-    title="供应商管理"
-    subtitle="Supplier Management"
-    icon="Building"
-  />
+  <div />
 </template>

@@ -1,25 +1,23 @@
 export interface RoleData {
+  code: string;
+  created_at: string;
+  description: string | null;
   id: string;
   name: string;
-  code: string;
-  description: string | null;
-  status: 'active' | 'inactive';
-  type: 'system' | 'custom';
-  created_at: string;
+  status: "active" | "inactive";
+  type: "system" | "custom";
   updated_at: string;
 }
 
 export interface RoleForm {
-  name: string;
   code: string;
   description?: string;
-  type: 'system' | 'custom';
-  status: 'active' | 'inactive';
+  name: string;
+  status: "active" | "inactive";
+  type: "system" | "custom";
 }
 
 export const useRoles = () => {
-  const supabase = useSupabaseClient();
-
   // 响应式状态
   const roles = ref<RoleData[]>([]);
   const loading = ref(false);
@@ -32,7 +30,7 @@ export const useRoles = () => {
       error.value = null;
 
       // 调用API获取角色数据
-      const result = (await $fetch('/api/roles')) as any;
+      const result = (await $fetch("/api/roles")) as any;
 
       if (result.code === 0) {
         roles.value = result.data.map((role: any) => ({
@@ -41,13 +39,13 @@ export const useRoles = () => {
           code: role.code,
           description: role.description,
           status: role.status,
-          type: role.is_system ? 'system' : 'custom',
+          type: role.is_system ? "system" : "custom",
           created_at: role.created_at,
           updated_at: role.updated_at,
         }));
       }
     } catch (err: any) {
-      error.value = err.message || '获取角色列表失败';
+      error.value = err.message || "获取角色列表失败";
     } finally {
       loading.value = false;
     }
@@ -58,14 +56,14 @@ export const useRoles = () => {
     try {
       loading.value = true;
 
-      const result = await $fetch('/api/roles', {
-        method: 'POST',
+      const result = await $fetch("/api/roles", {
+        method: "POST",
         body: {
           name: roleData.name,
           code: roleData.code,
           description: roleData.description,
           status: roleData.status,
-          is_system: roleData.type === 'system',
+          is_system: roleData.type === "system",
         },
       });
 
@@ -73,7 +71,7 @@ export const useRoles = () => {
     } catch (err: any) {
       return {
         code: -1,
-        message: err.message || '创建角色失败',
+        message: err.message || "创建角色失败",
       };
     } finally {
       loading.value = false;
@@ -85,15 +83,15 @@ export const useRoles = () => {
     try {
       loading.value = true;
 
-      const result = await $fetch('/api/roles', {
-        method: 'PUT',
+      const result = await $fetch("/api/roles", {
+        method: "PUT",
         body: {
           id,
           name: roleData.name,
           code: roleData.code,
           description: roleData.description,
           status: roleData.status,
-          is_system: roleData.type === 'system',
+          is_system: roleData.type === "system",
         },
       });
 
@@ -101,7 +99,7 @@ export const useRoles = () => {
     } catch (err: any) {
       return {
         code: -1,
-        message: err.message || '更新角色失败',
+        message: err.message || "更新角色失败",
       };
     } finally {
       loading.value = false;
@@ -113,8 +111,8 @@ export const useRoles = () => {
     try {
       loading.value = true;
 
-      const result = await $fetch('/api/roles', {
-        method: 'DELETE',
+      const result = await $fetch("/api/roles", {
+        method: "DELETE",
         body: { id },
       });
 
@@ -122,7 +120,7 @@ export const useRoles = () => {
     } catch (err: any) {
       return {
         code: -1,
-        message: err.message || '删除角色失败',
+        message: err.message || "删除角色失败",
       };
     } finally {
       loading.value = false;
@@ -132,16 +130,18 @@ export const useRoles = () => {
   // 获取角色菜单权限
   const getRoleMenuPermissions = async (roleId: string): Promise<string[]> => {
     try {
-      const { data, error } = await supabase
-        .from('roles_menu')
-        .select('menu_id')
-        .eq('role_id', roleId);
+      const result = await $fetch<{
+        code: number;
+        data: string[];
+        message: string;
+      }>(`/api/roles/${roleId}/menus`);
 
-      if (error) {
-        throw error;
+      if (result.code !== 0) {
+        throw new Error(result.message || "获取角色菜单失败");
       }
-      return data?.map((item) => item.menu_id) || [];
-    } catch (err: any) {
+
+      return result.data || [];
+    } catch {
       return [];
     }
   };
@@ -152,28 +152,23 @@ export const useRoles = () => {
     menuIds: string[]
   ) => {
     try {
-      // 先删除现有权限
-      await supabase.from('roles_menu').delete().eq('role_id', roleId);
+      const result = await $fetch<{
+        code: number;
+        message: string;
+      }>(`/api/roles/${roleId}/menus`, {
+        method: "PUT",
+        body: { menu_ids: menuIds },
+      });
 
-      // 添加新权限
-      if (menuIds.length > 0) {
-        const permissions = menuIds.map((menuId) => ({
-          role_id: roleId,
-          menu_id: menuId,
-        }));
-
-        const { error } = await supabase.from('roles_menu').insert(permissions);
-
-        if (error) {
-          throw error;
-        }
+      if (result.code !== 0) {
+        throw new Error(result.message || "更新权限失败");
       }
 
-      return { code: 0, message: '权限更新成功' };
-    } catch (err: any) {
+      return { code: 0, message: "权限更新成功" };
+    } catch (err: unknown) {
       return {
         code: -1,
-        message: err.message || '更新权限失败',
+        message: err instanceof Error ? err.message : "更新权限失败",
       };
     }
   };

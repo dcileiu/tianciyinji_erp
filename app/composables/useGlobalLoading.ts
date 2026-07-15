@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref } from "vue";
 
 // 全局加载状态管理
 const loadingTasks = ref(new Set<string>());
@@ -9,11 +9,11 @@ export const useGlobalLoading = () => {
   const isLoading = computed(() => loadingTasks.value.size > 0);
   const currentMessage = computed(() => {
     const messages = Array.from(loadingMessages.value.values());
-    return messages.at(-1) || '加载中...';
+    return messages.at(-1) || "加载中...";
   });
 
   // 开始加载
-  const startLoading = (taskId: string, message = '加载中...') => {
+  const startLoading = (taskId: string, message = "加载中...") => {
     loadingTasks.value.add(taskId);
     loadingMessages.value.set(taskId, message);
   };
@@ -41,7 +41,7 @@ export const useGlobalLoading = () => {
   const withLoading = async <T>(
     fn: () => Promise<T>,
     taskId: string = Math.random().toString(36).substr(2, 9),
-    message = '加载中...'
+    message = "加载中..."
   ): Promise<T> => {
     try {
       startLoading(taskId, message);
@@ -74,25 +74,25 @@ export const useGlobalLoading = () => {
 
 // 常用加载任务ID
 export const LoadingTasks = {
-  PAGE_INIT: 'page-init',
-  DATA_FETCH: 'data-fetch',
-  FORM_SUBMIT: 'form-submit',
-  FILE_UPLOAD: 'file-upload',
-  API_REQUEST: 'api-request',
-  USER_LOGIN: 'user-login',
-  USER_LOGOUT: 'user-logout',
+  PAGE_INIT: "page-init",
+  DATA_FETCH: "data-fetch",
+  FORM_SUBMIT: "form-submit",
+  FILE_UPLOAD: "file-upload",
+  API_REQUEST: "api-request",
+  USER_LOGIN: "user-login",
+  USER_LOGOUT: "user-logout",
 } as const;
 
 // 预定义加载消息
 export const LoadingMessages = {
-  PAGE_LOADING: '页面加载中...',
-  DATA_LOADING: '数据加载中...',
-  SAVING: '保存中...',
-  DELETING: '删除中...',
-  UPLOADING: '上传中...',
-  PROCESSING: '处理中...',
-  SIGNING_IN: '登录中...',
-  SIGNING_OUT: '退出中...',
-  VALIDATING: '验证中...',
-  CONNECTING: '连接中...',
+  PAGE_LOADING: "页面加载中...",
+  DATA_LOADING: "数据加载中...",
+  SAVING: "保存中...",
+  DELETING: "删除中...",
+  UPLOADING: "上传中...",
+  PROCESSING: "处理中...",
+  SIGNING_IN: "登录中...",
+  SIGNING_OUT: "退出中...",
+  VALIDATING: "验证中...",
+  CONNECTING: "连接中...",
 } as const;
