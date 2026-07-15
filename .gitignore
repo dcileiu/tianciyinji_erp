@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 .vite
 .output
-.nuxt/*
+.nuxt
 .env
 .env.*
 !.env.example

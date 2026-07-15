@@ -1,2 +1,1 @@
-pnpm dlx ultracite format
-pnpm dlx ultracite format
+pnpm exec lint-staged
