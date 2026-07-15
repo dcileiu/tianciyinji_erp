@@ -7,7 +7,7 @@
             <h1 class="text-2xl font-bold text-surface-900">
               🧪 认证功能测试页面
             </h1>
-            <p class="text-surface-600 mt-2">测试所有 Supabase 认证功能</p>
+            <p class="text-surface-600 mt-2">测试 Session 认证功能</p>
           </div>
         </template>
 

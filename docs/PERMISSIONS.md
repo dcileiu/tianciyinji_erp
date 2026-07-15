@@ -12,8 +12,8 @@
 | `roles_menu` | 角色 ↔ 菜单 |
 | `departments` | 组织架构（非权限本体） |
 
-主初始化脚本：`supabase/migrations/complete_system_init.sql`  
-类型定义：`app/types/database.types.ts`
+初始化：`pnpm db:push` + `pnpm db:seed`（Schema 在 `server/db/schema/`）。  
+历史 SQL 仅作参考：`docs/legacy-supabase/`。
 
 没有独立的 `permissions` 表。
 
@@ -80,7 +80,7 @@ definePageMeta({
 
 | 模块 | 实现 |
 |------|------|
-| 用户 / 角色 / 部门 CRUD | `server/api/users|roles|departments`（Service Role） |
+| 用户 / 角色 / 部门 CRUD | `server/api/users|roles|departments`（Drizzle + Session） |
 | 菜单 CRUD | `server/api/menus` + `assertPermission('system:menus')` |
 | 角色挂菜单 | `GET/PUT /api/roles/:id/menus` |
 
@@ -99,10 +99,9 @@ definePageMeta({
 ## 已知问题
 
 1. ~~`roles.status` 类型混用导致超管旁路失效~~（已修复：`isRoleActive` 兼容 `'active'` / `1`）
-2. **RLS**：主迁移仍可能未启用完整 RLS；菜单/角色菜单写操作已改为服务端 API + `assertPermission`，降低 anon 直写风险，但仍建议在 Supabase 启用 RLS
-3. **多种子脚本**：`create_menus_table_complete.sql` 与 `complete_system_init.sql` 权限字符串可能不完全一致
-4. **`departments.status`**：~~数字/字符串混用~~ 已通过迁移 `20260715_master_data_and_orders.sql` + API `normalizeEntityStatus` 统一为 `'active'/'inactive'`
-5. 调试接口 `/api/debug/user-data` 仅 `import.meta.dev` 可用，且需 `system:roles`
+2. **鉴权边界**：浏览器不直连库；写操作走 Nitro API + Session Cookie + `assertPermission`
+3. **`departments.status`**：API `normalizeEntityStatus` 统一为 `'active'/'inactive'`
+4. 调试接口 `/api/debug/user-data` 仅 `import.meta.dev` 可用，且需 `system:roles`
 
 ## 运维提示
 

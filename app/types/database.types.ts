@@ -1,6 +1,4 @@
-// 数据库表类型定义
-// 从 supabase gen types typescript --project-id YOUR_PROJECT_ID 自动生成
-// 手动添加的自定义类型
+// 数据库表类型定义（历史手写类型，新代码优先用 Drizzle 推断类型）
 
 // 订单状态类型
 export type OrderStatus =

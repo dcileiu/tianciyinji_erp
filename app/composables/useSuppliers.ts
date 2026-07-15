@@ -1,8 +1,19 @@
 import { computed } from "vue";
 import { useMasterEntity } from "~/composables/useMasterEntity";
-import type { Database } from "~/types/database.types";
 
-type Supplier = Database["public"]["Tables"]["suppliers"]["Row"];
+export type Supplier = {
+  id: string;
+  code: string;
+  name: string;
+  contact_name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  status?: string;
+  remark?: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
 
 export const useSuppliers = () => {
   const api = useMasterEntity<Supplier>("/api/suppliers");

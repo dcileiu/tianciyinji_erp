@@ -193,8 +193,8 @@
               <ul class="text-sm text-muted-foreground space-y-1">
                 <li>• 前端：Nuxt.js 4 + Vue 3</li>
                 <li>• UI组件：shadcn/ui + Tailwind CSS</li>
-                <li>• 后端：Supabase (PostgreSQL)</li>
-                <li>• 认证：Supabase Auth</li>
+                <li>• 数据库：PostgreSQL（Drizzle）</li>
+                <li>• 认证：Session Cookie（邮箱密码）</li>
                 <li>• 部署：支持多种部署方式</li>
               </ul>
             </div>
@@ -307,11 +307,7 @@
     <div class="text-center space-y-4">
       <h2 class="text-xl font-semibold">准备好开始了吗？</h2>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <Button @click="navigateTo('/db-init')">
-          <Database class="mr-2 h-4 w-4" />
-          初始化数据库
-        </Button>
-        <Button variant="outline" @click="navigateTo('/dashboard')">
+        <Button @click="navigateTo('/dashboard')">
           <LayoutDashboard class="mr-2 h-4 w-4" />
           进入仪表盘
         </Button>

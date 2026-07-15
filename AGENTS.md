@@ -40,7 +40,6 @@ pnpm check-all           # type-check + lint
 | `SESSION_SECRET` | Session 密钥 |
 | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | seed 超管 |
 | `NUXT_PUBLIC_SITE_URL` | 站点根地址 |
-| `NUXT_PUBLIC_SITE_URL` | 邮件回调基址 |
 
 **禁止**提交 `.env`、`.env.*`（`.env.example` 除外）。`.nuxt`、`.output` 已忽略。
 
@@ -82,6 +81,6 @@ scripts/             # 运维脚本等
 ## 已知坑（勿重复踩）
 
 - `assertPermission` 超管判断曾用 `status === 1`，权限查询用 `'active'` — 修权限时优先对齐
-- 存在 `disable_rls_for_testing.sql`；生产勿默认关闭 RLS
-- 多个 migration 种子权限字符串可能不一致；以 `complete_system_init.sql` 为主
+- 种子与菜单权限以 `pnpm db:seed` / `server/db/seed.ts` 为准；`docs/legacy-supabase` 仅历史参考
 - Composable 里可能引用尚不存在的业务表类型，接库前不要扩大这类假依赖
+- 生产务必更换 `SESSION_SECRET` 与 seed 默认超管密码

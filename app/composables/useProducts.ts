@@ -1,7 +1,19 @@
 import { useMasterEntity } from "~/composables/useMasterEntity";
-import type { Database } from "~/types/database.types";
 
-type Product = Database["public"]["Tables"]["products"]["Row"];
+export type Product = {
+  id: string;
+  code: string;
+  name: string;
+  category?: string | null;
+  specification?: string | null;
+  unit?: string | null;
+  price?: string | number;
+  cost?: string | number;
+  status?: string;
+  remark?: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
 
 /** 产品主数据（服务端 API） */
 export const useProducts = () => {

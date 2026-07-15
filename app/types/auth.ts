@@ -1,28 +1,10 @@
-// 用户元数据类型
-export interface UserMetadata {
-  avatar_url?: string;
-  full_name?: string;
-  [key: string]: string | number | boolean | undefined;
-}
-
-// 用户类型定义（改进版本）
-export interface User {
-  app_metadata?: Record<string, unknown>;
-  created_at?: string;
-  email?: string;
-  id: string;
-  last_sign_in_at?: string;
-  updated_at?: string;
-  user_metadata?: UserMetadata;
-}
-
 // 登录表单数据
 export interface LoginForm {
   email: string;
   password: string;
 }
 
-// 注册表单数据
+// 注册表单数据（公开注册已关闭，类型仅保留兼容）
 export interface RegisterForm {
   confirmPassword: string;
   department?: string;
@@ -32,11 +14,19 @@ export interface RegisterForm {
   position?: string;
 }
 
+/** Session 登录用户（与 /api/auth/login、useAuth 对齐） */
+export interface AuthUser {
+  email: string;
+  id: string;
+  name?: string | null;
+  username?: string | null;
+}
+
 // 用户状态
 export interface UserState {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user: User | null;
+  user: AuthUser | null;
 }
 
 // 认证错误类型
@@ -50,12 +40,12 @@ export interface AuthError {
 export interface LoginResponse {
   error?: AuthError;
   success: boolean;
-  user?: User;
+  user?: AuthUser;
 }
 
 // 注册响应
 export interface RegisterResponse {
   error?: AuthError;
   success: boolean;
-  user?: User;
+  user?: AuthUser;
 }

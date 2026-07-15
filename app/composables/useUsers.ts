@@ -8,7 +8,7 @@ export interface UserData {
   is_online: boolean;
   last_sign_in_at?: string | null;
   login_count: number;
-  // 从 raw_user_meta_data 提取的字段
+  // 扩展字段
   name?: string;
   phone?: string | null;
   position_id?: string;
@@ -292,8 +292,6 @@ export const useUsers = () => {
 
 // 转换用户数据格式的辅助函数
 function transformUserData(rawUser: any): UserData {
-  const metadata = rawUser.raw_user_meta_data || {};
-
   return {
     id: rawUser.id,
     email: rawUser.email,
@@ -302,21 +300,15 @@ function transformUserData(rawUser: any): UserData {
     last_sign_in_at: rawUser.last_sign_in_at,
     created_at: rawUser.created_at,
     updated_at: rawUser.updated_at,
-    name: rawUser.name || metadata.name || rawUser.email?.split("@")[0] || "",
-    username:
-      rawUser.username ||
-      metadata.username ||
-      rawUser.email?.split("@")[0] ||
-      "",
-    avatar: rawUser.avatar || metadata.avatar,
-    department_id: rawUser.department_id || metadata.department_id,
-    position_id: rawUser.position_id || metadata.position_id,
-    remarks: rawUser.remarks || metadata.remarks,
-    status: rawUser.status || metadata.status || "active",
+    name: rawUser.name || rawUser.email?.split("@")[0] || "",
+    username: rawUser.username || rawUser.email?.split("@")[0] || "",
+    avatar: rawUser.avatar,
+    department_id: rawUser.department_id,
+    position_id: rawUser.position_id,
+    remarks: rawUser.remarks,
+    status: rawUser.status || "active",
     is_online: rawUser.is_online,
     login_count: rawUser.login_count || 0,
-    // 修复角色数据映射 - 直接使用API返回的roles字段
-    roles:
-      rawUser.roles || rawUser.users_role?.map((ur: any) => ur.roles) || [],
+    roles: rawUser.roles || [],
   };
 }

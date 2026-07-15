@@ -203,8 +203,8 @@
                   class="px-4 py-8 text-center text-muted-foreground"
                   :colspan="displayFields.length + 1"
                 >
-                  暂无数据，请先在 Supabase 执行迁移
-                  <code class="mx-1">20260715_master_data_and_orders.sql</code>
+                  暂无数据，请确认已执行
+                  <code class="mx-1">pnpm db:push && pnpm db:seed</code>
                   后再新增
                 </td>
               </tr>

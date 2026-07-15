@@ -1,19 +1,18 @@
 # ERP 企业资源管理系统
 
-基于 Nuxt 3(v4.x) + Supabase + shadcn-vue 构建的现代化企业资源管理系统。
+基于 Nuxt 4 + Postgres（Drizzle）+ Session 认证 + shadcn-vue 构建的企业资源管理系统。
 
 ## 🚀 技术栈
 
-- **前端框架**: Nuxt 3 (v4.x)
-- **UI 组件**: shadcn-vue + Tailwind CSS (v4.x)
+- **前端框架**: Nuxt 4 + Vue 3
+- **UI 组件**: shadcn-vue + Tailwind CSS
 - **图标库**: Lucide Vue Next
-- **后端服务**: Supabase
-- **认证系统**: Supabase Auth
-- **数据库**: PostgreSQL (Supabase)
+- **数据库**: PostgreSQL（Docker / 直连，Drizzle ORM）
+- **认证系统**: 邮箱密码 + HttpOnly Session Cookie
 - **包管理器**: pnpm
 - **开发语言**: TypeScript + Vue 3 (Composition API)
 - **表单验证**: vee-validate + zod
-- **代码规范**: ESLint + TypeScript
+- **代码规范**: Biome / Ultracite
 
 ## ✅ 项目完成状态
 
@@ -103,12 +102,12 @@
 
 ## 🔐 安全特性
 
-- **用户认证**: 基于 Supabase Auth 的安全认证
+- **用户认证**: Session Cookie（`erp_session`）+ bcrypt 密码
 - **权限控制**: 基于角色的访问控制 (RBAC)
 - **路由保护**: 全局权限中间件 (`middleware/permission.global.ts`)
-- **组件级权限**: `PermissionWrapper` 组件控制
-- **数据安全**: RLS (Row Level Security) 策略
-- **会话管理**: 安全的用户会话管理
+- **组件级权限**: `PermissionWrapper` / `v-permission`
+- **数据访问**: 仅服务端 Drizzle；前端走 `/api/*`
+- **会话管理**: 表 `sessions` + HttpOnly Cookie
 
 ## 🚀 技术特色
 
@@ -139,7 +138,7 @@
 
 - Node.js 18+
 - pnpm 8+
-- Supabase 项目
+- Docker（本地 Postgres，或自备 `DATABASE_URL`）
 
 ### 安装步骤
 
@@ -162,17 +161,20 @@ pnpm install
 # 复制环境变量文件
 cp .env.example .env
 
-# 配置 Supabase 环境变量
-NUXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NUXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# 配置数据库与站点（见 .env.example）
+DATABASE_URL=postgresql://erp:erp_secret@localhost:5432/erp
+SESSION_SECRET=change-me-to-a-long-random-string
+SEED_ADMIN_EMAIL=admin@example.com
+SEED_ADMIN_PASSWORD=Admin123!
 NUXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 4. **数据库初始化**
 
 ```bash
-# 运行数据库迁移文件
-# supabase/migrations/ 目录下的所有SQL文件
+pnpm db:up
+pnpm db:push
+pnpm db:seed
 ```
 
 5. **启动开发服务器**
@@ -207,41 +209,18 @@ erp/
 │   │   ├── AppSideBar.vue # 侧边栏导航
 │   │   ├── NavMain.vue    # 主导航菜单
 │   │   └── PermissionWrapper.vue # 权限控制组件
-│   ├── composables/       # 业务逻辑（27个文件）
+│   ├── composables/       # 业务逻辑（走 /api）
 │   │   ├── useAuth.ts     # 认证管理
-│   │   ├── useSupabase.ts # 数据库操作
-│   │   └── useDbInit.ts   # 数据库初始化
-│   ├── layouts/           # 布局组件
-│   │   ├── default.vue    # 默认布局
-│   │   └── auth.vue       # 认证布局
-│   ├── middleware/        # 路由中间件
-│   │   ├── auth.global.ts # 认证中间件
-│   │   └── permission.global.ts # 权限中间件
-│   ├── pages/             # 页面路由（36个页面）
-│   │   ├── dashboard.vue  # 仪表盘
-│   │   ├── users.vue      # 用户管理
-│   │   ├── master-data/   # 基础数据管理
-│   │   ├── sales/         # 销售管理
-│   │   ├── purchase/      # 采购管理
-│   │   ├── production/    # 生产管理
-│   │   ├── warehouse/     # 仓库管理
-│   │   ├── finance/       # 财务管理
-│   │   ├── reports/       # 报表分析
-│   │   └── system/        # 系统设置
-│   ├── types/            # TypeScript 类型定义
-│   │   ├── database.types.ts # 数据库类型
-│   │   ├── auth.ts        # 认证类型
-│   │   └── common.ts      # 通用类型
-│   └── utils/            # 工具函数
-│       ├── error-handler.ts # 错误处理
-│       └── logger.ts     # 日志系统
-├── supabase/             # 数据库配置
-│   └── migrations/       # 数据库迁移文件
-├── docs/                 # 项目文档
-│   ├── CODE_QUALITY_REPORT.md # 代码质量报告
-│   ├── PROJECT_COMPLETION_REPORT.md # 项目完成报告
-│   └── DEV_GUIDE.md      # 开发指南
-└── components.json       # shadcn-vue 配置
+│   │   └── useProducts.ts # 主数据示例
+│   ├── middleware/        # auth / permission
+│   ├── pages/             # 业务页面
+│   └── types/             # 前端类型
+├── server/
+│   ├── api/               # Nitro API
+│   └── db/                # Drizzle schema / seed
+├── docs/                  # 现状文档 + legacy-supabase
+├── docker-compose.yml     # 本地 Postgres
+└── components.json        # shadcn-vue 配置
 ```
 
 ## 🔧 开发指南
@@ -278,8 +257,9 @@ const { handleSubmit } = useForm({
 ### 数据操作
 
 ```typescript
-// 使用 composables 进行数据操作
-const { data, loading, error, refresh } = await useSupabase().from('users').select('*').execute()
+// 通过 composable 调服务端 API（示例）
+const { products, getProducts, createProduct } = useProducts();
+await getProducts({ search: "SKU" });
 ```
 
 ## 📊 技术指标

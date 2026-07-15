@@ -13,8 +13,8 @@ export interface InitLog {
 }
 
 /**
- * 旧版 Supabase 初始化页已废弃。请使用：
- * docker compose up -d && pnpm db:push && pnpm db:seed
+ * 旧版 Web 初始化页已废弃。请使用：
+ * pnpm db:up && pnpm db:push && pnpm db:seed
  */
 export const useDbInit = () => {
   const isInitializing = ref(false);
