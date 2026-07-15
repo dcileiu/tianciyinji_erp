@@ -2,6 +2,8 @@
 
 本目录描述**当前代码真实状态**，不以 README 中的完成度宣传为准。
 
+> **分支**：当前文档对应 **`master`（Supabase）**。若不想用 Supabase，请切到 **`dev-Postgres`**（直连 Postgres + Drizzle + Session），并阅读该分支下的 `docs/` 与 `README.md`。
+
 ## 现状一览
 
 | 领域 | 状态 |

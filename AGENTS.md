@@ -2,6 +2,15 @@
 
 给 AI coding agent 的项目说明。人类文档见 `docs/`；本文件描述**如何改代码**。
 
+## 分支
+
+| 分支 | 数据库 / 认证 |
+|------|----------------|
+| `master`（当前） | Supabase（托管库 + Auth） |
+| `dev-Postgres` | 自建 Postgres + Drizzle + Session Cookie；**不依赖 Supabase** |
+
+不想用 Supabase 时：`git checkout dev-Postgres`，按该分支 `.env.example` 与 `pnpm db:*` 初始化。
+
 ## 项目概览
 
 Nuxt 4 + Vue 3 + Supabase + Pinia + shadcn-vue 的 ERP 后台。

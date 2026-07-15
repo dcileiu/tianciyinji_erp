@@ -1,5 +1,13 @@
 # ERP 企业资源管理系统
 
+> **分支说明**  
+> - 当前分支 **`master`**：使用 **Supabase**（托管 Postgres + Auth）。  
+> - 若不想依赖 Supabase，请切换到 **`dev-Postgres`**：直连自建 / Docker **PostgreSQL** + Drizzle + Session 认证（无 `@nuxtjs/supabase`）。  
+>   ```bash
+>   git checkout dev-Postgres
+>   ```
+>   初始化见该分支 `README.md` / `.env.example`（`pnpm db:up && pnpm db:push && pnpm db:seed`）。
+
 基于 Nuxt 3(v4.x) + Supabase + shadcn-vue 构建的现代化企业资源管理系统。
 
 ## 🚀 技术栈
