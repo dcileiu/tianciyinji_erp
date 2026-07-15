@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import type { AuthUser } from "~/composables/useAuth";
 
 // 用户扩展信息接口
 export interface UserProfile {
@@ -39,7 +40,7 @@ export interface UserProfile {
 // 用户状态接口
 interface UserState {
   // 基础认证信息
-  authUser: User | null;
+  authUser: AuthUser | null;
   error: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -173,7 +174,7 @@ export const useUserStore = defineStore("user", {
     /**
      * 设置认证用户
      */
-    setAuthUser(user: User | null) {
+    setAuthUser(user: AuthUser | null) {
       this.authUser = user;
       this.isAuthenticated = !!user;
       this.isLoading = false;

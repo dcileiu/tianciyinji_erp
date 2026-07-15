@@ -1,86 +1,68 @@
 import type { LoginForm } from "~/types/auth";
 
+export type AuthUser = {
+  id: string;
+  email: string;
+  name?: string | null;
+  username?: string | null;
+};
+
 /**
- * 认证管理 Composable - 使用 Pinia Store
+ * 认证管理 Composable - Session Cookie + Pinia
  */
 export const useAuth = () => {
   const userStore = useUserStore();
-  const supabase = useSupabaseClient();
   const router = useRouter();
-  const user = useSupabaseUser();
 
-  // 监听 Supabase 用户状态变化
-  watch(
-    user,
-    (newUser) => {
-      userStore.setAuthUser(newUser);
-    },
-    { immediate: true }
-  );
-
-  // 登录
   const login = async (credentials: LoginForm) => {
     try {
       userStore.isLoading = true;
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: credentials.email,
-        password: credentials.password,
+      const res = await $fetch<{
+        code: number;
+        message: string;
+        data: AuthUser | null;
+      }>("/api/auth/login", {
+        method: "POST",
+        body: {
+          email: credentials.email,
+          password: credentials.password,
+        },
       });
 
-      if (error) {
-        throw new Error(getAuthErrorMessage(error));
+      if (res.code !== 0 || !res.data) {
+        throw new Error(res.message || "登录失败");
       }
 
-      if (data.user && data.session) {
-        userStore.setAuthUser(data.user);
+      userStore.setAuthUser(res.data);
+      await userStore.refreshUserData();
 
-        // 更新用户在线状态
-        try {
-          await $fetch<{
-            code: number;
-            message: string;
-            data: any;
-          }>("/api/auth/login", {
-            method: "POST",
-          });
-        } catch (error: any) {
-          // 忽略在线状态更新失败，继续执行登录流程
+      try {
+        const permRes = await $fetch<{ code: number; data: string[] }>(
+          "/api/user",
+          { query: { action: "permissions" } }
+        );
+        if (
+          permRes?.code === 0 &&
+          Array.isArray(permRes.data) &&
+          permRes.data.length === 0
+        ) {
+          return {
+            success: false,
+            error: { message: "请联系管理员" },
+          };
         }
-
-        // 登录成功后强制刷新用户数据（避免缓存问题）
-        await userStore.refreshUserData();
-
-        // 额外校验：如果没有任何权限（/api/user?action=permissions 返回 []），提示联系管理员
-        try {
-          const permRes = await $fetch<{ code: number; data: string[] }>(
-            "/api/user",
-            { query: { action: "permissions" } }
-          );
-          if (
-            permRes?.code === 0 &&
-            Array.isArray(permRes.data) &&
-            permRes.data.length === 0
-          ) {
-            return {
-              success: false,
-              error: { message: "请联系管理员" },
-            };
-          }
-        } catch (_) {
-          // 忽略权限接口异常，不影响后续
-        }
-
-        return { success: true, user: data.user };
+      } catch {
+        // 忽略权限接口异常
       }
 
-      throw new Error("登录失败");
+      return { success: true, user: res.data };
     } catch (error: unknown) {
-      const err = error as Error;
+      const err = error as { data?: { message?: string }; message?: string };
       return {
         success: false,
         error: {
-          message: err.message || "登录失败，请重试",
+          message: err?.data?.message || err?.message || "登录失败，请重试",
         },
       };
     } finally {
@@ -88,11 +70,10 @@ export const useAuth = () => {
     }
   };
 
-  // 注册（ERP 默认关闭公开自助注册，改由管理员创建用户）
   const register = async (
     _email: string,
     _password: string,
-    _userData?: any
+    _userData?: unknown
   ) => ({
     success: false,
     error: {
@@ -100,121 +81,83 @@ export const useAuth = () => {
     },
   });
 
-  // 登出
   const logout = async () => {
     try {
       userStore.isLoading = true;
-
-      // 尝试更新服务端用户元数据，标记为离线
       try {
         await $fetch("/api/auth/logout", { method: "POST" });
-      } catch (_) {
-        // 忽略元数据更新失败，继续执行登出
+      } catch {
+        // 继续本地清理
       }
 
-      // 全局登出，撤销当前用户的所有刷新令牌，确保彻底退出
-      const { error } = await supabase.auth.signOut({ scope: "global" });
-      if (error) {
-        throw new Error(getAuthErrorMessage(error));
-      }
-
-      // 清理本地用户与权限数据
       const permissionsStore = usePermissionsStore();
       permissionsStore.clearPermissions();
       userStore.logout();
-
       await router.push("/login");
-
       return { success: true };
     } catch (error: unknown) {
       const err = error as Error;
       return {
         success: false,
-        error: {
-          message: err.message || "登出失败",
-        },
+        error: { message: err.message || "登出失败" },
       };
     } finally {
       userStore.isLoading = false;
     }
   };
 
-  // 获取会话
+  const bootstrapSession = async () => {
+    try {
+      userStore.isLoading = true;
+      const res = await $fetch<{
+        code: number;
+        data: {
+          id: string;
+          email: string;
+          name: string;
+          username: string;
+        };
+      }>("/api/user", { query: { action: "profile" } });
+
+      if (res.code === 0 && res.data) {
+        userStore.setAuthUser({
+          id: res.data.id,
+          email: res.data.email,
+          name: res.data.name,
+          username: res.data.username,
+        });
+        await userStore.initializeUserData();
+        return true;
+      }
+
+      userStore.setAuthUser(null);
+      return false;
+    } catch {
+      userStore.setAuthUser(null);
+      return false;
+    } finally {
+      userStore.isLoading = false;
+    }
+  };
+
   const getSession = async () => {
-    try {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        throw error;
-      }
-      return data.session;
-    } catch (error) {
-      return null;
-    }
+    const ok = userStore.isAuthenticated || (await bootstrapSession());
+    return ok ? { user: userStore.authUser } : null;
   };
 
-  // 刷新会话
-  const refreshSession = async () => {
-    try {
-      const { data, error } = await supabase.auth.refreshSession();
-      if (error) {
-        throw error;
-      }
-      return data.session;
-    } catch (error) {
-      return null;
-    }
-  };
+  const refreshSession = async () => getSession();
 
-  // 重置密码
-  const resetPassword = async (email: string) => {
-    try {
-      const runtimeConfig = useRuntimeConfig();
-      const baseUrl =
-        runtimeConfig.public?.siteUrl ||
-        (process.client ? window.location.origin : "");
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${baseUrl}/login/reset-password`,
-      });
+  const resetPassword = async (_email: string) => ({
+    success: false,
+    error: { message: "请联系管理员重置密码" },
+  });
 
-      if (error) {
-        throw new Error(getAuthErrorMessage(error));
-      }
-
-      return { success: true };
-    } catch (error: unknown) {
-      const err = error as Error;
-      return {
-        success: false,
-        error: {
-          message: err.message || "重置密码失败",
-        },
-      };
-    }
-  };
-
-  // 更新密码
-  const updatePassword = async (password: string) => {
-    try {
-      const { error } = await supabase.auth.updateUser({ password });
-
-      if (error) {
-        throw new Error(getAuthErrorMessage(error));
-      }
-
-      return { success: true };
-    } catch (error: unknown) {
-      const err = error as Error;
-      return {
-        success: false,
-        error: {
-          message: err.message || "更新密码失败",
-        },
-      };
-    }
-  };
+  const updatePassword = async (_password: string) => ({
+    success: false,
+    error: { message: "请联系管理员重置密码" },
+  });
 
   return {
-    // 状态
     user: computed(() => userStore.authUser),
     isAuthenticated: computed(() => userStore.isAuthenticated),
     isLoading: computed(() => userStore.isLoading),
@@ -225,13 +168,11 @@ export const useAuth = () => {
     userAvatar: computed(() => userStore.userAvatar),
     isAdmin: computed(() => userStore.isAdmin),
 
-    // 权限检查方法
     hasPermission: userStore.hasPermission,
     hasAnyPermission: userStore.hasAnyPermission,
     hasAllPermissions: userStore.hasAllPermissions,
     hasRole: userStore.hasRole,
 
-    // 认证方法
     login,
     register,
     logout,
@@ -239,24 +180,9 @@ export const useAuth = () => {
     refreshSession,
     resetPassword,
     updatePassword,
+    bootstrapSession,
 
-    // 数据管理方法
     refreshUserData: userStore.refreshUserData,
     updateProfile: userStore.updateProfile,
   };
 };
-
-// 错误信息转换
-function getAuthErrorMessage(error: any): string {
-  const errorMessages: Record<string, string> = {
-    "Invalid login credentials": "邮箱或密码错误",
-    "Email not confirmed": "邮箱未验证，请检查邮箱",
-    "Too many requests": "请求过于频繁，请稍后重试",
-    "User already registered": "用户已存在",
-    "Weak password": "密码强度不足",
-    "Invalid email": "邮箱格式无效",
-  };
-
-  const message = error?.message || error?.error_description || error;
-  return errorMessages[message] || message || "操作失败";
-}

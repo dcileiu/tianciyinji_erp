@@ -13,18 +13,18 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return;
   }
 
-  const { user, isLoading } = useAuth();
+  const userStore = useUserStore();
+  const { bootstrapSession } = useAuth();
 
-  // 等待会话就绪，避免加载中误放行受保护路由
-  if (isLoading.value) {
+  if (userStore.isLoading) {
     try {
-      await until(isLoading).toBe(false, { timeout: 10_000 });
+      await until(() => !userStore.isLoading).toBe(true, { timeout: 10_000 });
     } catch {
       return navigateTo("/login");
     }
   }
 
-  if (!user.value) {
+  if (!(userStore.isAuthenticated || (await bootstrapSession()))) {
     return navigateTo("/login");
   }
 

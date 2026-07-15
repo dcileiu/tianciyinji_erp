@@ -1,11 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    "@nuxtjs/supabase",
-    "@nuxtjs/tailwindcss",
-    "shadcn-nuxt",
-    "@pinia/nuxt",
-  ],
+  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@pinia/nuxt"],
 
   // shadcn-nuxt 配置
   shadcn: {
@@ -40,6 +35,7 @@ export default defineNuxtConfig({
   // 生产环境屏蔽调试/初始化入口；关闭公开注册入口
   routeRules: {
     "/login/register": { redirect: "/login" },
+    "/auth/callback": { redirect: "/login" },
     ...(process.env.NODE_ENV === "production"
       ? {
           "/db-init": { redirect: "/" },
@@ -86,12 +82,9 @@ export default defineNuxtConfig({
   ssr: true,
 
   runtimeConfig: {
+    databaseUrl: process.env.DATABASE_URL,
+    sessionSecret: process.env.SESSION_SECRET,
     public: {
-      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
-      // v2 推荐 KEY；保留 ANON_KEY 兼容旧 .env
-      supabaseAnonKey:
-        process.env.NUXT_PUBLIC_SUPABASE_KEY ||
-        process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || "http://localhost:3000",
     },
   },
@@ -132,24 +125,6 @@ export default defineNuxtConfig({
           "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
         },
       },
-    },
-  },
-
-  supabase: {
-    url: process.env.NUXT_PUBLIC_SUPABASE_URL,
-    key:
-      process.env.NUXT_PUBLIC_SUPABASE_KEY ||
-      process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
-    redirectOptions: {
-      login: "/login",
-      callback: "/auth/callback",
-      exclude: [
-        "/login/forgot-password",
-        "/login/reset-password",
-        "/getting-started",
-        "/components-demo",
-        "/db-init",
-      ],
     },
   },
 });
