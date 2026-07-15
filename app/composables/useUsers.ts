@@ -1,6 +1,3 @@
-import type { Database } from "~/types/database.types";
-
-// 用户类型定义（扩展 auth.users）
 export interface UserData {
   avatar?: string;
   created_at: string;
@@ -64,8 +61,6 @@ export interface UserStats {
 }
 
 export const useUsers = () => {
-  const supabase = useSupabaseClient<Database>();
-
   // 状态
   const users = ref<UserData[]>([]);
   const loading = ref(false);

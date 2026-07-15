@@ -1,9 +1,26 @@
-import { serverSupabaseServiceRole } from "#supabase/server";
+import { and, asc, eq, ilike, or } from "drizzle-orm";
+import { db } from "../../db";
+import { menus } from "../../db/schema/system";
 import { assertPermission, rethrowIfHttpError } from "../_utils/permissions";
+
+function toMenuApi(row: typeof menus.$inferSelect) {
+  return {
+    id: row.id,
+    name: row.name,
+    icon: row.icon,
+    path: row.path,
+    parent_id: row.parentId,
+    sort: row.sort,
+    status: row.status,
+    permission: row.permission,
+    type: row.type,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
+  };
+}
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
-  const supabase = serverSupabaseServiceRole(event);
 
   try {
     await assertPermission(event, "system:menus");
@@ -11,44 +28,38 @@ export default defineEventHandler(async (event) => {
     switch (method) {
       case "GET": {
         const query = getQuery(event);
-        let dbQuery = supabase
-          .from("menus")
-          .select("*")
-          .order("sort", { ascending: true })
-          .order("created_at", { ascending: true });
+        const conditions = [];
 
         if (query.search && typeof query.search === "string") {
-          dbQuery = dbQuery.or(
-            `name.ilike.%${query.search}%,path.ilike.%${query.search}%`
+          conditions.push(
+            or(
+              ilike(menus.name, `%${query.search}%`),
+              ilike(menus.path, `%${query.search}%`)
+            )!
           );
         }
-
         if (
           query.status &&
           typeof query.status === "string" &&
           query.status !== "all"
         ) {
-          dbQuery = dbQuery.eq("status", query.status);
+          conditions.push(eq(menus.status, query.status));
         }
-
         if (
           query.type &&
           typeof query.type === "string" &&
           query.type !== "all"
         ) {
-          dbQuery = dbQuery.eq("type", query.type);
+          conditions.push(eq(menus.type, query.type));
         }
 
-        const { data, error } = await dbQuery;
-        if (error) {
-          throw error;
-        }
+        const rows = await db
+          .select()
+          .from(menus)
+          .where(conditions.length ? and(...conditions) : undefined)
+          .orderBy(asc(menus.sort), asc(menus.createdAt));
 
-        return {
-          code: 0,
-          message: "获取成功",
-          data: data || [],
-        };
+        return { code: 0, message: "获取成功", data: rows.map(toMenuApi) };
       }
 
       case "POST": {
@@ -60,28 +71,24 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data, error } = await supabase
-          .from("menus")
-          .insert([
-            {
-              name: body.name,
-              icon: body.icon || null,
-              path: body.path || null,
-              parent_id: body.parent_id || "0",
-              sort: body.sort ?? 0,
-              status: body.status || "active",
-              permission: body.permission || null,
-              type: body.type,
-            },
-          ])
-          .select()
-          .single();
+        const parentId =
+          !body.parent_id || body.parent_id === "0" ? null : body.parent_id;
 
-        if (error) {
-          throw error;
-        }
+        const [created] = await db
+          .insert(menus)
+          .values({
+            name: body.name,
+            icon: body.icon || null,
+            path: body.path || null,
+            parentId,
+            sort: body.sort ?? 0,
+            status: body.status || "active",
+            permission: body.permission || null,
+            type: body.type,
+          })
+          .returning();
 
-        return { code: 0, message: "创建成功", data };
+        return { code: 0, message: "创建成功", data: toMenuApi(created) };
       }
 
       case "PUT": {
@@ -93,81 +100,43 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const updatePayload: Record<string, unknown> = {
-          updated_at: new Date().toISOString(),
-        };
-
+        const patch: Record<string, unknown> = { updatedAt: new Date() };
         for (const key of [
           "name",
           "icon",
           "path",
-          "parent_id",
           "sort",
           "status",
           "permission",
           "type",
         ] as const) {
           if (body[key] !== undefined) {
-            updatePayload[key] = body[key];
+            patch[key] = body[key];
           }
         }
-
-        if (updatePayload.parent_id === undefined && body.parent_id === null) {
-          updatePayload.parent_id = "0";
+        if (body.parent_id !== undefined) {
+          patch.parentId =
+            !body.parent_id || body.parent_id === "0" ? null : body.parent_id;
         }
 
-        const { data, error } = await supabase
-          .from("menus")
-          .update(updatePayload)
-          .eq("id", body.id)
-          .select()
-          .single();
+        const [updated] = await db
+          .update(menus)
+          .set(patch as any)
+          .where(eq(menus.id, body.id))
+          .returning();
 
-        if (error) {
-          throw error;
-        }
-
-        return { code: 0, message: "更新成功", data };
+        return { code: 0, message: "更新成功", data: toMenuApi(updated) };
       }
 
       case "DELETE": {
         const body = await readBody(event);
-        const ids: string[] = Array.isArray(body?.ids)
-          ? body.ids
-          : body?.id
-            ? [body.id]
-            : [];
-
-        if (ids.length === 0) {
+        if (!body?.id) {
           throw createError({
             statusCode: 400,
             statusMessage: "菜单 ID 不能为空",
           });
         }
-
-        const { data: children, error: childError } = await supabase
-          .from("menus")
-          .select("id")
-          .in("parent_id", ids)
-          .limit(1);
-
-        if (childError) {
-          throw childError;
-        }
-
-        if (children && children.length > 0) {
-          return {
-            code: -1,
-            message: "无法删除有子菜单的菜单，请先删除子菜单",
-          };
-        }
-
-        const { error } = await supabase.from("menus").delete().in("id", ids);
-
-        if (error) {
-          throw error;
-        }
-
+        await db.delete(menus).where(eq(menus.id, body.id));
         return { code: 0, message: "删除成功" };
       }
 
@@ -180,10 +149,6 @@ export default defineEventHandler(async (event) => {
   } catch (error: unknown) {
     rethrowIfHttpError(error);
     const message = error instanceof Error ? error.message : "操作失败";
-    return {
-      code: -1,
-      message,
-      data: null,
-    };
+    return { code: -1, message, data: null };
   }
 });

@@ -1,7 +1,10 @@
-import {
-  serverSupabaseServiceRole,
-  serverSupabaseUser,
-} from "#supabase/server";
+import { hash } from "bcryptjs";
+import { and, desc, eq, ilike, inArray, or } from "drizzle-orm";
+import type { H3Event } from "h3";
+import { db } from "../../db";
+import { users } from "../../db/schema/auth";
+import { roles, usersRole } from "../../db/schema/system";
+import { requireUser } from "../../utils/auth";
 import { assertPermission } from "../_utils/permissions";
 
 export default defineEventHandler(async (event) => {
@@ -27,24 +30,21 @@ export default defineEventHandler(async (event) => {
           statusMessage: "Method Not Allowed",
         });
     }
-  } catch (error: any) {
-    if (error?.statusCode) {
+  } catch (error: unknown) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "statusCode" in error &&
+      typeof (error as { statusCode: unknown }).statusCode === "number"
+    ) {
       throw error;
     }
-    return {
-      code: -1,
-      message: error.message || "操作失败",
-      data: null,
-    };
+    const message = error instanceof Error ? error.message : "操作失败";
+    return { code: -1, message, data: null };
   }
 });
 
-// 获取用户列表
-async function getUsers(event: any) {
-  // 使用 Nuxt Supabase 服务端客户端（自动处理 Service Role）
-  const client = serverSupabaseServiceRole(event);
-
-  // 获取查询参数
+async function getUsers(event: H3Event) {
   const query = getQuery(event);
   const {
     page = 1,
@@ -55,335 +55,194 @@ async function getUsers(event: any) {
     status,
   } = query;
 
-  // 使用 Admin API 获取用户列表
-  const { data: authUsers, error: authError } =
-    await client.auth.admin.listUsers({
-      page: Number(page),
-      perPage: Number(pageSize),
-    });
-
-  if (authError) {
-    throw new Error(`Admin API Error: ${authError.message}`);
-  }
-
-  if (!authUsers?.users || authUsers.users.length === 0) {
-    return {
-      code: 0,
-      message: "暂无用户数据",
-      data: [],
-      total: 0,
-    };
-  }
-
-  const userIds = authUsers.users.map((u: any) => u.id);
-
-  // 获取用户角色信息
-  const { data: userRoles, error: roleError } = await client
-    .from("users_role")
-    .select(
-      `
-      user_id,
-      roles!inner(
-        id,
-        name,
-        code
-      )
-    `
-    )
-    .in("user_id", userIds);
-
-  if (roleError) {
-  }
-
-  // 合并用户和角色数据
-  const usersWithRoles = authUsers.users.map((user: any) => {
-    const roles =
-      userRoles
-        ?.filter((ur: any) => ur.user_id === user.id)
-        ?.map((ur: any) => ur.roles) || [];
-
-    const metadata = user.user_metadata || {};
-
-    return {
-      id: user.id,
-      email: user.email || "",
-      name: metadata.name || user.email?.split("@")[0] || "",
-      username: metadata.username || user.email?.split("@")[0] || "",
-      status: metadata.status || "active",
-      department_id: metadata.department_id || "",
-      created_at: user.created_at,
-      last_sign_in_at: user.last_sign_in_at,
-      login_count: metadata.login_count || 0, // 从用户元数据获取实际值
-      is_online: metadata.is_online, // 从用户元数据获取实际值
-      roles,
-    };
-  });
-
-  // 应用搜索和过滤条件
-  let filteredUsers = usersWithRoles;
-
-  if (search) {
-    const searchLower = String(search).toLowerCase();
-    filteredUsers = filteredUsers.filter(
-      (user: any) =>
-        user.email?.toLowerCase().includes(searchLower) ||
-        user.name?.toLowerCase().includes(searchLower) ||
-        user.username?.toLowerCase().includes(searchLower)
+  const conditions = [];
+  if (search && typeof search === "string") {
+    conditions.push(
+      or(
+        ilike(users.email, `%${search}%`),
+        ilike(users.name, `%${search}%`),
+        ilike(users.username, `%${search}%`)
+      )!
     );
   }
-
-  if (role_id && role_id !== "all") {
-    filteredUsers = filteredUsers.filter((user: any) =>
-      user.roles?.some((role: any) => role.id === role_id)
-    );
+  if (status && typeof status === "string" && status !== "all") {
+    conditions.push(eq(users.status, status));
+  }
+  if (department_id && typeof department_id === "string") {
+    conditions.push(eq(users.departmentId, department_id));
   }
 
-  if (department_id && department_id !== "all") {
-    filteredUsers = filteredUsers.filter(
-      (user: any) => user.department_id === department_id
-    );
+  let userRows = await db
+    .select()
+    .from(users)
+    .where(conditions.length ? and(...conditions) : undefined)
+    .orderBy(desc(users.createdAt));
+
+  if (role_id && typeof role_id === "string") {
+    const linked = await db
+      .select({ userId: usersRole.userId })
+      .from(usersRole)
+      .where(eq(usersRole.roleId, role_id));
+    const ids = new Set(linked.map((r) => r.userId));
+    userRows = userRows.filter((u) => ids.has(u.id));
   }
 
-  if (status && status !== "all") {
-    filteredUsers = filteredUsers.filter((user: any) => user.status === status);
+  const total = userRows.length;
+  const start = (Number(page) - 1) * Number(pageSize);
+  const pageRows = userRows.slice(start, start + Number(pageSize));
+  const pageIds = pageRows.map((u) => u.id);
+
+  const roleLinks =
+    pageIds.length === 0
+      ? []
+      : await db
+          .select({
+            userId: usersRole.userId,
+            id: roles.id,
+            name: roles.name,
+            code: roles.code,
+          })
+          .from(usersRole)
+          .innerJoin(roles, eq(roles.id, usersRole.roleId))
+          .where(inArray(usersRole.userId, pageIds));
+
+  const rolesByUser = new Map<
+    string,
+    Array<{ id: string; name: string; code: string }>
+  >();
+  for (const link of roleLinks) {
+    const list = rolesByUser.get(link.userId) || [];
+    list.push({ id: link.id, name: link.name, code: link.code });
+    rolesByUser.set(link.userId, list);
   }
 
   return {
     code: 0,
     message: "获取成功",
-    data: filteredUsers,
-    total: filteredUsers.length,
+    total,
+    data: pageRows.map((user) => ({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      username: user.username,
+      phone: user.phone,
+      department_id: user.departmentId,
+      status: user.status,
+      is_online: user.isOnline,
+      login_count: user.loginCount,
+      last_sign_in_at: user.lastLoginAt,
+      created_at: user.createdAt,
+      updated_at: user.updatedAt,
+      roles: rolesByUser.get(user.id) || [],
+    })),
   };
 }
 
-// 创建用户
 async function createUser(event: any) {
-  const client = serverSupabaseServiceRole(event);
-
-  // 获取请求体数据
   const body = await readBody(event);
-  const {
-    email,
-    password,
-    name,
-    username,
-    phone,
-    department_id,
-    role_ids,
-    remarks,
-    status,
-  } = body;
+  const email = String(body?.email || "")
+    .trim()
+    .toLowerCase();
+  const password = String(body?.password || "");
+  const name = String(body?.name || "").trim();
+  const username = String(body?.username || "").trim();
 
-  // 验证必填字段
-  if (!(email && password && name && username)) {
-    throw new Error("邮箱、密码、姓名和用户名为必填字段");
-  }
-
-  // 创建用户
-  const { data: newUser, error: createError } =
-    await client.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true, // 自动确认邮箱
-      user_metadata: {
-        name,
-        username,
-        phone: phone || "",
-        department_id: department_id || "",
-        remarks: remarks || "",
-        status: status || "active",
-      },
-    });
-
-  if (createError) {
-    throw new Error(`创建用户失败: ${createError.message}`);
-  }
-
-  if (!newUser.user) {
-    throw new Error("创建用户失败：未返回用户数据");
-  }
-
-  // 分配角色
-  if (role_ids && Array.isArray(role_ids) && role_ids.length > 0) {
-    const roleAssignments = role_ids.map((roleId: string) => ({
-      user_id: newUser.user.id,
-      role_id: roleId,
-      assigned_at: new Date().toISOString(),
-    }));
-
-    const { error: roleError } = await client
-      .from("users_role")
-      .insert(roleAssignments);
-
-    if (roleError) {
-      await client.auth.admin.deleteUser(newUser.user.id);
-      throw new Error(`分配角色失败: ${roleError.message}`);
-    }
-  }
-
-  return {
-    code: 0,
-    message: "创建用户成功",
-    data: {
-      id: newUser.user.id,
-      email: newUser.user.email,
-      name,
-      username,
-      phone,
-      department_id,
-      remarks,
-      status,
-      created_at: newUser.user.created_at,
-    },
-  };
-}
-
-// 更新用户
-async function updateUser(event: any) {
-  const client = serverSupabaseServiceRole(event);
-
-  // 获取请求体数据
-  const body = await readBody(event);
-  const {
-    id,
-    name,
-    username,
-    phone,
-    department_id,
-    role_ids,
-    remarks,
-    status,
-  } = body;
-
-  if (!id) {
-    throw new Error("用户ID不能为空");
-  }
-
-  // 更新用户元数据
-  const updateData: any = {};
-  if (name !== undefined) {
-    updateData.name = name;
-  }
-  if (username !== undefined) {
-    updateData.username = username;
-  }
-  if (phone !== undefined) {
-    updateData.phone = phone;
-  }
-  if (department_id !== undefined) {
-    updateData.department_id = department_id;
-  }
-  if (remarks !== undefined) {
-    updateData.remarks = remarks;
-  }
-  if (status !== undefined) {
-    updateData.status = status;
-  }
-
-  // 先获取当前用户数据，避免覆盖其他元数据字段
-  const { data: currentUser, error: fetchError } =
-    await client.auth.admin.getUserById(id);
-
-  if (fetchError) {
-    throw new Error(`获取用户信息失败: ${fetchError.message}`);
-  }
-
-  // 合并现有元数据和更新数据
-  const mergedMetadata = {
-    ...currentUser.user?.user_metadata,
-    ...updateData,
-  };
-
-  // 使用 Admin API 更新用户元数据
-  const { data: updatedUser, error: updateError } =
-    await client.auth.admin.updateUserById(id, {
-      user_metadata: mergedMetadata,
-    });
-
-  if (updateError) {
-    throw new Error(`更新用户信息失败: ${updateError.message}`);
-  }
-
-  // 更新用户角色
-  if (role_ids && Array.isArray(role_ids)) {
-    // 删除现有角色
-    const { error: deleteRoleError } = await client
-      .from("users_role")
-      .delete()
-      .eq("user_id", id);
-
-    if (deleteRoleError) {
-      throw new Error(`删除现有角色失败: ${deleteRoleError.message}`);
-    }
-
-    // 添加新角色
-    if (role_ids.length > 0) {
-      const roleAssignments = role_ids.map((roleId: string) => ({
-        user_id: id,
-        role_id: roleId,
-        assigned_at: new Date().toISOString(),
-      }));
-
-      const { error: roleError } = await client
-        .from("users_role")
-        .insert(roleAssignments);
-
-      if (roleError) {
-        throw new Error(`添加新角色失败: ${roleError.message}`);
-      }
-    }
-  }
-
-  return {
-    code: 0,
-    message: "更新用户成功",
-    data: {
-      id,
-      ...updateData,
-      updated_at: new Date().toISOString(),
-    },
-  };
-}
-
-// 删除用户
-async function deleteUser(event: any) {
-  const client = serverSupabaseServiceRole(event);
-  const currentUser = await serverSupabaseUser(event);
-
-  const body = await readBody(event);
-  const { id } = body;
-
-  if (!id) {
-    throw new Error("用户ID不能为空");
-  }
-
-  if (currentUser?.id === id) {
+  if (!(email && password && name)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "不能删除当前登录账号",
+      statusMessage: "邮箱、密码和姓名不能为空",
     });
   }
 
-  // 删除用户角色关联
-  const { error: deleteRoleError } = await client
-    .from("users_role")
-    .delete()
-    .eq("user_id", id);
+  const passwordHash = await hash(password, 10);
+  const [created] = await db
+    .insert(users)
+    .values({
+      email,
+      passwordHash,
+      name,
+      username: username || email.split("@")[0],
+      phone: body.phone || null,
+      departmentId: body.department_id || null,
+      status: body.status || "active",
+    })
+    .returning();
 
-  if (deleteRoleError) {
-    throw new Error(`删除用户角色关联失败: ${deleteRoleError.message}`);
-  }
-
-  // 删除用户账户
-  const { error: deleteUserError } = await client.auth.admin.deleteUser(id);
-
-  if (deleteUserError) {
-    throw new Error(`删除用户账户失败: ${deleteUserError.message}`);
+  const roleIds: string[] = Array.isArray(body.role_ids) ? body.role_ids : [];
+  if (roleIds.length) {
+    await db.insert(usersRole).values(
+      roleIds.map((roleId) => ({
+        userId: created.id,
+        roleId,
+      }))
+    );
   }
 
   return {
     code: 0,
-    message: "删除用户成功",
-    data: { id },
+    message: "创建成功",
+    data: { id: created.id, email: created.email },
   };
+}
+
+async function updateUser(event: any) {
+  const body = await readBody(event);
+  if (!body?.id) {
+    throw createError({ statusCode: 400, statusMessage: "用户 ID 不能为空" });
+  }
+
+  const patch: Record<string, unknown> = { updatedAt: new Date() };
+  for (const [from, to] of [
+    ["name", "name"],
+    ["username", "username"],
+    ["phone", "phone"],
+    ["status", "status"],
+  ] as const) {
+    if (body[from] !== undefined) {
+      patch[to] = body[from];
+    }
+  }
+  if (body.department_id !== undefined) {
+    patch.departmentId = body.department_id;
+  }
+  if (body.password) {
+    patch.passwordHash = await hash(String(body.password), 10);
+  }
+
+  await db
+    .update(users)
+    .set(patch as any)
+    .where(eq(users.id, body.id));
+
+  if (Array.isArray(body.role_ids)) {
+    await db.delete(usersRole).where(eq(usersRole.userId, body.id));
+    if (body.role_ids.length) {
+      await db.insert(usersRole).values(
+        body.role_ids.map((roleId: string) => ({
+          userId: body.id,
+          roleId,
+        }))
+      );
+    }
+  }
+
+  return { code: 0, message: "更新成功", data: true };
+}
+
+async function deleteUser(event: any) {
+  const body = await readBody(event);
+  if (!body?.id) {
+    throw createError({ statusCode: 400, statusMessage: "用户 ID 不能为空" });
+  }
+
+  const current = await requireUser(event);
+  if (current.id === body.id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "不能删除当前登录用户",
+    });
+  }
+
+  await db.delete(users).where(eq(users.id, body.id));
+  return { code: 0, message: "删除成功", data: true };
 }

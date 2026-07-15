@@ -1,4 +1,6 @@
-import { serverSupabaseServiceRole } from "#supabase/server";
+import { desc, eq } from "drizzle-orm";
+import { db } from "../../db";
+import { roles, usersRole } from "../../db/schema/system";
 import {
   assertPermission,
   RESERVED_ROLE_CODES,
@@ -12,28 +14,31 @@ function normalizeRoleStatus(status: unknown): "active" | "inactive" {
   return "active";
 }
 
+function toRoleApi(row: typeof roles.$inferSelect) {
+  return {
+    id: row.id,
+    name: row.name,
+    code: row.code,
+    description: row.description,
+    status: row.status,
+    is_system: row.isSystem,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
+  };
+}
+
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
-  const supabase = serverSupabaseServiceRole(event);
 
   try {
     switch (method) {
       case "GET": {
         await assertPermission(event, "system:roles");
-        const { data: roles, error: fetchError } = await supabase
-          .from("roles")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (fetchError) {
-          throw fetchError;
-        }
-
-        return {
-          code: 0,
-          message: "获取成功",
-          data: roles || [],
-        };
+        const rows = await db
+          .select()
+          .from(roles)
+          .orderBy(desc(roles.createdAt));
+        return { code: 0, message: "获取成功", data: rows.map(toRoleApi) };
       }
 
       case "POST": {
@@ -59,29 +64,18 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data: newRole, error: insertError } = await supabase
-          .from("roles")
-          .insert([
-            {
-              name: createData.name,
-              code,
-              description: createData.description || "",
-              status: normalizeRoleStatus(createData.status),
-              is_system: false,
-            },
-          ])
-          .select()
-          .single();
+        const [newRole] = await db
+          .insert(roles)
+          .values({
+            name: createData.name,
+            code,
+            description: createData.description || "",
+            status: normalizeRoleStatus(createData.status),
+            isSystem: false,
+          })
+          .returning();
 
-        if (insertError) {
-          throw insertError;
-        }
-
-        return {
-          code: 0,
-          message: "创建成功",
-          data: newRole,
-        };
+        return { code: 0, message: "创建成功", data: toRoleApi(newRole) };
       }
 
       case "PUT": {
@@ -95,13 +89,13 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data: existing, error: existingError } = await supabase
-          .from("roles")
-          .select("id, code, is_system")
-          .eq("id", updateData.id)
-          .single();
+        const [existing] = await db
+          .select()
+          .from(roles)
+          .where(eq(roles.id, updateData.id))
+          .limit(1);
 
-        if (existingError || !existing) {
+        if (!existing) {
           throw createError({
             statusCode: 404,
             statusMessage: "角色不存在",
@@ -113,37 +107,31 @@ export default defineEventHandler(async (event) => {
             ? existing.code
             : String(updateData.code).trim();
 
-        if (
-          existing.is_system ||
+        const isReserved =
+          existing.isSystem ||
           RESERVED_ROLE_CODES.includes(
             existing.code as (typeof RESERVED_ROLE_CODES)[number]
-          )
-        ) {
-          // 系统角色：仅允许改名称/描述/状态，禁止改 code / is_system
-          const { data: updatedRole, error: updateError } = await supabase
-            .from("roles")
-            .update({
-              name: updateData.name ?? undefined,
-              description: updateData.description ?? undefined,
+          );
+
+        if (isReserved) {
+          const [updatedRole] = await db
+            .update(roles)
+            .set({
+              name: updateData.name ?? existing.name,
+              description:
+                updateData.description === undefined
+                  ? existing.description
+                  : updateData.description,
               status:
                 updateData.status === undefined
-                  ? undefined
+                  ? existing.status
                   : normalizeRoleStatus(updateData.status),
-              updated_at: new Date().toISOString(),
+              updatedAt: new Date(),
             })
-            .eq("id", updateData.id)
-            .select()
-            .single();
+            .where(eq(roles.id, updateData.id))
+            .returning();
 
-          if (updateError) {
-            throw updateError;
-          }
-
-          return {
-            code: 0,
-            message: "更新成功",
-            data: updatedRole,
-          };
+          return { code: 0, message: "更新成功", data: toRoleApi(updatedRole) };
         }
 
         if (
@@ -157,41 +145,32 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data: updatedRole, error: updateError } = await supabase
-          .from("roles")
-          .update({
+        const [updatedRole] = await db
+          .update(roles)
+          .set({
             name: updateData.name,
             code: nextCode,
             description: updateData.description,
             status: normalizeRoleStatus(updateData.status),
-            updated_at: new Date().toISOString(),
+            updatedAt: new Date(),
           })
-          .eq("id", updateData.id)
-          .select()
-          .single();
+          .where(eq(roles.id, updateData.id))
+          .returning();
 
-        if (updateError) {
-          throw updateError;
-        }
-
-        return {
-          code: 0,
-          message: "更新成功",
-          data: updatedRole,
-        };
+        return { code: 0, message: "更新成功", data: toRoleApi(updatedRole) };
       }
 
       case "DELETE": {
         await assertPermission(event, "system:roles");
         const deleteData = await readBody(event);
 
-        const { data: existing, error: existingError } = await supabase
-          .from("roles")
-          .select("id, code, is_system")
-          .eq("id", deleteData.id)
-          .single();
+        const [existing] = await db
+          .select()
+          .from(roles)
+          .where(eq(roles.id, deleteData.id))
+          .limit(1);
 
-        if (existingError || !existing) {
+        if (!existing) {
           throw createError({
             statusCode: 404,
             statusMessage: "角色不存在",
@@ -199,7 +178,7 @@ export default defineEventHandler(async (event) => {
         }
 
         if (
-          existing.is_system ||
+          existing.isSystem ||
           RESERVED_ROLE_CODES.includes(
             existing.code as (typeof RESERVED_ROLE_CODES)[number]
           )
@@ -210,36 +189,18 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data: userRoles, error: checkError } = await supabase
-          .from("users_role")
-          .select("user_id")
-          .eq("role_id", deleteData.id)
+        const linked = await db
+          .select({ userId: usersRole.userId })
+          .from(usersRole)
+          .where(eq(usersRole.roleId, deleteData.id))
           .limit(1);
 
-        if (checkError) {
-          throw checkError;
+        if (linked.length > 0) {
+          return { code: -1, message: "该角色已被用户使用，无法删除" };
         }
 
-        if (userRoles && userRoles.length > 0) {
-          return {
-            code: -1,
-            message: "该角色已被用户使用，无法删除",
-          };
-        }
-
-        const { error: deleteError } = await supabase
-          .from("roles")
-          .delete()
-          .eq("id", deleteData.id);
-
-        if (deleteError) {
-          throw deleteError;
-        }
-
-        return {
-          code: 0,
-          message: "删除成功",
-        };
+        await db.delete(roles).where(eq(roles.id, deleteData.id));
+        return { code: 0, message: "删除成功" };
       }
 
       default:
@@ -251,9 +212,6 @@ export default defineEventHandler(async (event) => {
   } catch (error: unknown) {
     rethrowIfHttpError(error);
     const message = error instanceof Error ? error.message : "操作失败";
-    return {
-      code: -1,
-      message,
-    };
+    return { code: -1, message };
   }
 });
