@@ -238,22 +238,50 @@ export const useUsers = () => {
     }
   };
 
-  // 重置密码（暂时禁用，需要服务端支持）
-  const resetPassword = async (_id: string, _newPassword: string) => ({
-    code: -1,
-    message: "重置密码功能需要服务端API支持，请联系管理员",
-    data: null,
-  });
+  // 重置密码（走 PUT /api/users 的 password 字段）
+  const resetPassword = async (id: string, newPassword: string) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      return await $fetch("/api/users", {
+        method: "PUT",
+        body: { id, password: newPassword },
+      });
+    } catch (err: any) {
+      error.value = err.message || "重置密码失败";
+      return {
+        code: -1,
+        message: err.message || "重置密码失败",
+        data: null,
+      };
+    } finally {
+      loading.value = false;
+    }
+  };
 
-  // 切换用户状态（暂时禁用，需要服务端支持）
+  // 切换用户状态
   const toggleUserStatus = async (
-    _id: string,
-    _status: "active" | "inactive"
-  ) => ({
-    code: -1,
-    message: "状态切换功能需要服务端API支持，请联系管理员",
-    data: null,
-  });
+    id: string,
+    status: "active" | "inactive"
+  ) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      return await $fetch("/api/users", {
+        method: "PUT",
+        body: { id, status },
+      });
+    } catch (err: any) {
+      error.value = err.message || "状态切换失败";
+      return {
+        code: -1,
+        message: err.message || "状态切换失败",
+        data: null,
+      };
+    } finally {
+      loading.value = false;
+    }
+  };
 
   // 获取部门列表
   const getDepartments = async () => {
