@@ -4,11 +4,10 @@
 
 ## 项目概览
 
-Nuxt 4 + Vue 3 + Supabase + Pinia + shadcn-vue 的 ERP 后台。
+Nuxt 4 + Vue 3 + **Postgres（Drizzle）** + Pinia + shadcn-vue 的 ERP 后台。
 
-- **已落地**：Supabase Auth；用户 / 角色 / 部门 / 菜单与权限校验
-- **多数业务页**：UI 壳、本地 mock 或 ComingSoon，**没有业务表与真实 API**
-- 根 `README.md` 完成度偏乐观，以 `docs/` 为准
+- **已落地**：自建 Session 认证；用户 / 角色 / 部门 / 菜单与权限；主数据与业务 API（Drizzle）
+- 包管理器：**pnpm**；本地库：`pnpm db:up && pnpm db:push && pnpm db:seed`
 
 详细说明：
 
@@ -37,11 +36,10 @@ pnpm check-all           # type-check + lint
 
 | 变量 | 用途 |
 |------|------|
-| `NUXT_PUBLIC_SUPABASE_URL` | Supabase URL |
-| `NUXT_PUBLIC_SUPABASE_KEY` | 公开密钥（v2 推荐） |
-| `NUXT_PUBLIC_SUPABASE_ANON_KEY` | 兼容别名 |
-| `NUXT_SUPABASE_SECRET_KEY` | 服务端密钥（v2 推荐） |
-| `SUPABASE_SERVICE_KEY` | 兼容别名（Service Role） |
+| `DATABASE_URL` | Postgres 连接串 |
+| `SESSION_SECRET` | Session 密钥 |
+| `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | seed 超管 |
+| `NUXT_PUBLIC_SITE_URL` | 站点根地址 |
 | `NUXT_PUBLIC_SITE_URL` | 邮件回调基址 |
 
 **禁止**提交 `.env`、`.env.*`（`.env.example` 除外）。`.nuxt`、`.output` 已忽略。
@@ -71,8 +69,8 @@ scripts/             # 运维 SQL 等
 - 权限页：`definePageMeta({ permission: 'module:action' })`
 - 需要登录保护的 API：用 `assertPermission`；超管角色码为 `super_admin`
 - `roles.status` 期望字符串 `'active' | 'inactive'`（代码里仍有数字 `1` 混用，改相关逻辑时一并统一）
-- 不要引入自建 JWT / 密码登录替代 Supabase Auth
-- 改动保持最小范围；勿顺手大改无关 mock 业务页除非任务要求
+- 不要引入 Supabase；认证用 Session Cookie + `users.password_hash`
+- 数据访问走 `server/db`（Drizzle），勿在前端直连库
 
 ## 改功能时注意
 

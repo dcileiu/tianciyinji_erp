@@ -1,4 +1,12 @@
-import { serverSupabaseServiceRole } from "#supabase/server";
+import { and, desc, eq, ilike } from "drizzle-orm";
+import { db } from "../../../db";
+import {
+  products,
+  purchaseOrderItems,
+  purchaseOrders,
+  suppliers,
+  warehouses,
+} from "../../../db/schema/master";
 import type { OrderItemInput } from "../../_utils/crud";
 import {
   computeOrderItems,
@@ -11,11 +19,8 @@ import {
 } from "../../_utils/inventory";
 import { assertPermission } from "../../_utils/permissions";
 
-const ORDER_TABLE = "purchase_orders";
-const ITEM_TABLE = "purchase_order_items";
 const PERMISSION = "purchase-order:view";
 const ORDER_NO_PREFIX = "PO";
-
 const ORDER_STATUSES = [
   "draft",
   "pending",
@@ -36,9 +41,25 @@ function normalizeOrderStatus(
   return "draft";
 }
 
+function toOrderApi(row: typeof purchaseOrders.$inferSelect) {
+  return {
+    id: row.id,
+    order_no: row.orderNo,
+    supplier_id: row.supplierId,
+    warehouse_id: row.warehouseId,
+    status: row.status,
+    order_date: row.orderDate,
+    total_amount: row.totalAmount,
+    inventory_applied: row.inventoryApplied,
+    remark: row.remark,
+    created_by: row.createdBy,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
+  };
+}
+
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
-  const supabase = serverSupabaseServiceRole(event);
 
   try {
     await assertPermission(event, PERMISSION);
@@ -48,80 +69,128 @@ export default defineEventHandler(async (event) => {
         const query = getQuery(event);
 
         if (query.id && typeof query.id === "string") {
-          const { data: order, error: orderError } = await supabase
-            .from(ORDER_TABLE)
-            .select("*, suppliers(id, code, name), warehouses(id, code, name)")
-            .eq("id", query.id)
-            .single();
+          const [order] = await db
+            .select({
+              order: purchaseOrders,
+              customer: {
+                id: suppliers.id,
+                code: suppliers.code,
+                name: suppliers.name,
+              },
+              warehouse: {
+                id: warehouses.id,
+                code: warehouses.code,
+                name: warehouses.name,
+              },
+            })
+            .from(purchaseOrders)
+            .leftJoin(suppliers, eq(suppliers.id, purchaseOrders.supplierId))
+            .leftJoin(warehouses, eq(warehouses.id, purchaseOrders.warehouseId))
+            .where(eq(purchaseOrders.id, query.id))
+            .limit(1);
 
-          if (orderError) {
-            throw orderError;
+          if (!order) {
+            throw createError({ statusCode: 404, statusMessage: "订单不存在" });
           }
 
-          const { data: items, error: itemsError } = await supabase
-            .from(ITEM_TABLE)
-            .select("*, products(id, code, name, unit)")
-            .eq("order_id", query.id);
-
-          if (itemsError) {
-            throw itemsError;
-          }
+          const items = await db
+            .select({
+              item: purchaseOrderItems,
+              product: {
+                id: products.id,
+                code: products.code,
+                name: products.name,
+                unit: products.unit,
+              },
+            })
+            .from(purchaseOrderItems)
+            .leftJoin(products, eq(products.id, purchaseOrderItems.productId))
+            .where(eq(purchaseOrderItems.orderId, query.id));
 
           return {
             code: 0,
             message: "获取成功",
-            data: { ...order, items: items || [] },
+            data: {
+              ...toOrderApi(order.order),
+              suppliers: order.customer,
+              warehouses: order.warehouse,
+              items: items.map((row) => ({
+                id: row.item.id,
+                order_id: row.item.orderId,
+                product_id: row.item.productId,
+                quantity: row.item.quantity,
+                unit_price: row.item.unitPrice,
+                amount: row.item.amount,
+                products: row.product,
+              })),
+            },
           };
         }
 
-        let dbQuery = supabase
-          .from(ORDER_TABLE)
-          .select("*, suppliers(id, code, name), warehouses(id, code, name)")
-          .order("created_at", { ascending: false });
-
+        const conditions = [];
         if (query.search && typeof query.search === "string") {
-          dbQuery = dbQuery.ilike("order_no", `%${query.search}%`);
+          conditions.push(ilike(purchaseOrders.orderNo, `%${query.search}%`));
         }
-
         if (
           query.status &&
           typeof query.status === "string" &&
           query.status !== "all"
         ) {
-          dbQuery = dbQuery.eq("status", query.status);
+          conditions.push(eq(purchaseOrders.status, query.status));
         }
 
-        const { data, error } = await dbQuery;
-        if (error) {
-          throw error;
-        }
+        const rows = await db
+          .select({
+            order: purchaseOrders,
+            customer: {
+              id: suppliers.id,
+              code: suppliers.code,
+              name: suppliers.name,
+            },
+            warehouse: {
+              id: warehouses.id,
+              code: warehouses.code,
+              name: warehouses.name,
+            },
+          })
+          .from(purchaseOrders)
+          .leftJoin(suppliers, eq(suppliers.id, purchaseOrders.supplierId))
+          .leftJoin(warehouses, eq(warehouses.id, purchaseOrders.warehouseId))
+          .where(conditions.length ? and(...conditions) : undefined)
+          .orderBy(desc(purchaseOrders.createdAt));
 
-        return { code: 0, message: "获取成功", data: data || [] };
+        return {
+          code: 0,
+          message: "获取成功",
+          data: rows.map((row) => ({
+            ...toOrderApi(row.order),
+            suppliers: row.customer,
+            warehouses: row.warehouse,
+          })),
+        };
       }
 
       case "POST": {
         const body = await readBody(event);
-        const customerId = body?.supplier_id;
+        const supplierId = body?.supplier_id;
         const rawItems: OrderItemInput[] = Array.isArray(body?.items)
           ? body.items
           : [];
         const status = normalizeOrderStatus(body.status);
         const warehouseId = body.warehouse_id || null;
 
-        if (!customerId) {
+        if (!supplierId) {
           throw createError({
             statusCode: 400,
             statusMessage: "供应商不能为空",
           });
         }
-
         if (rawItems.length === 0) {
           throw createError({
             statusCode: 400,
             statusMessage: "订单明细不能为空",
           });
         }
-
         if (shouldApplyInventory(status) && !warehouseId) {
           throw createError({
             statusCode: 400,
@@ -133,7 +202,7 @@ export default defineEventHandler(async (event) => {
         const willApplyInventory = shouldApplyInventory(status);
 
         if (willApplyInventory) {
-          await syncOrderInventoryOnStatusChange(supabase, {
+          await syncOrderInventoryOnStatusChange({
             direction: "in",
             previousStatus: "draft",
             nextStatus: status,
@@ -146,28 +215,54 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data: order, error: orderError } = await supabase
-          .from(ORDER_TABLE)
-          .insert([
-            {
-              order_no: generateOrderNo(ORDER_NO_PREFIX),
-              supplier_id: customerId,
-              warehouse_id: warehouseId,
+        try {
+          const [order] = await db
+            .insert(purchaseOrders)
+            .values({
+              orderNo: generateOrderNo(ORDER_NO_PREFIX),
+              supplierId,
+              warehouseId,
               status,
-              order_date:
+              orderDate:
                 body.order_date || new Date().toISOString().slice(0, 10),
-              total_amount: totalAmount,
+              totalAmount: String(totalAmount),
               remark: body.remark ?? null,
-              created_by: body.created_by ?? null,
-              inventory_applied: willApplyInventory,
-            },
-          ])
-          .select()
-          .single();
+              createdBy: body.created_by ?? null,
+              inventoryApplied: willApplyInventory,
+            })
+            .returning();
 
-        if (orderError) {
+          const insertedItems = await db
+            .insert(purchaseOrderItems)
+            .values(
+              items.map((item) => ({
+                orderId: order.id,
+                productId: item.product_id,
+                quantity: String(item.quantity),
+                unitPrice: String(item.unit_price),
+                amount: String(item.amount),
+              }))
+            )
+            .returning();
+
+          return {
+            code: 0,
+            message: "创建成功",
+            data: {
+              ...toOrderApi(order),
+              items: insertedItems.map((item) => ({
+                id: item.id,
+                order_id: item.orderId,
+                product_id: item.productId,
+                quantity: item.quantity,
+                unit_price: item.unitPrice,
+                amount: item.amount,
+              })),
+            },
+          };
+        } catch (error) {
           if (willApplyInventory) {
-            await syncOrderInventoryOnStatusChange(supabase, {
+            await syncOrderInventoryOnStatusChange({
               direction: "in",
               previousStatus: status,
               nextStatus: "cancelled",
@@ -179,30 +274,8 @@ export default defineEventHandler(async (event) => {
               })),
             });
           }
-          if (orderError.code === "23505") {
-            throw createError({
-              statusCode: 400,
-              statusMessage: "订单编号已存在，请重试",
-            });
-          }
-          throw orderError;
+          throw error;
         }
-
-        const { data: insertedItems, error: itemsError } = await supabase
-          .from(ITEM_TABLE)
-          .insert(items.map((item) => ({ ...item, order_id: order.id })))
-          .select();
-
-        if (itemsError) {
-          await supabase.from(ORDER_TABLE).delete().eq("id", order.id);
-          throw itemsError;
-        }
-
-        return {
-          code: 0,
-          message: "创建成功",
-          data: { ...order, items: insertedItems || [] },
-        };
       }
 
       case "PUT": {
@@ -214,37 +287,35 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data: existing, error: existingError } = await supabase
-          .from(ORDER_TABLE)
-          .select("*")
-          .eq("id", body.id)
-          .single();
-        if (existingError || !existing) {
+        const [existing] = await db
+          .select()
+          .from(purchaseOrders)
+          .where(eq(purchaseOrders.id, body.id))
+          .limit(1);
+        if (!existing) {
           throw createError({ statusCode: 404, statusMessage: "订单不存在" });
         }
 
-        const { data: existingItems, error: existingItemsError } =
-          await supabase
-            .from(ITEM_TABLE)
-            .select("product_id, quantity")
-            .eq("order_id", body.id);
-        if (existingItemsError) {
-          throw existingItemsError;
+        const existingItems = await db
+          .select({
+            product_id: purchaseOrderItems.productId,
+            quantity: purchaseOrderItems.quantity,
+          })
+          .from(purchaseOrderItems)
+          .where(eq(purchaseOrderItems.orderId, body.id));
+
+        const patch: Record<string, unknown> = { updatedAt: new Date() };
+        if (body.supplier_id !== undefined) {
+          patch.supplierId = body.supplier_id;
         }
-
-        const updatePayload: Record<string, unknown> = {
-          updated_at: new Date().toISOString(),
-        };
-
-        for (const key of [
-          "supplier_id",
-          "order_date",
-          "remark",
-          "warehouse_id",
-        ] as const) {
-          if (body[key] !== undefined) {
-            updatePayload[key] = body[key];
-          }
+        if (body.order_date !== undefined) {
+          patch.orderDate = body.order_date;
+        }
+        if (body.remark !== undefined) {
+          patch.remark = body.remark;
+        }
+        if (body.warehouse_id !== undefined) {
+          patch.warehouseId = body.warehouse_id;
         }
 
         const nextStatus =
@@ -252,17 +323,17 @@ export default defineEventHandler(async (event) => {
             ? existing.status
             : normalizeOrderStatus(body.status);
         if (body.status !== undefined) {
-          updatePayload.status = nextStatus;
+          patch.status = nextStatus;
         }
+
+        let nextItems = existingItems.map((i) => ({
+          product_id: i.product_id,
+          quantity: Number(i.quantity),
+        }));
 
         const rawItems: OrderItemInput[] | undefined = Array.isArray(body.items)
           ? body.items
           : undefined;
-
-        let nextItems = (existingItems || []).map((i) => ({
-          product_id: i.product_id as string,
-          quantity: Number(i.quantity),
-        }));
 
         if (rawItems) {
           if (rawItems.length === 0) {
@@ -271,73 +342,83 @@ export default defineEventHandler(async (event) => {
               statusMessage: "订单明细不能为空",
             });
           }
-
-          if (existing.inventory_applied) {
+          if (existing.inventoryApplied) {
             throw createError({
               statusCode: 400,
-              statusMessage: "已入库存的订单不可修改明细，请先取消后再改",
+              statusMessage: "已入账库存的订单不可修改明细，请先取消后再改",
             });
           }
 
-          const { items, totalAmount } = computeOrderItems(rawItems);
-          updatePayload.total_amount = totalAmount;
-          nextItems = items.map((i) => ({
+          const computed = computeOrderItems(rawItems);
+          patch.totalAmount = String(computed.totalAmount);
+          nextItems = computed.items.map((i) => ({
             product_id: i.product_id,
             quantity: i.quantity,
           }));
 
-          const { error: deleteItemsError } = await supabase
-            .from(ITEM_TABLE)
-            .delete()
-            .eq("order_id", body.id);
-          if (deleteItemsError) {
-            throw deleteItemsError;
-          }
-
-          const { error: insertItemsError } = await supabase
-            .from(ITEM_TABLE)
-            .insert(items.map((item) => ({ ...item, order_id: body.id })));
-          if (insertItemsError) {
-            throw insertItemsError;
-          }
+          await db
+            .delete(purchaseOrderItems)
+            .where(eq(purchaseOrderItems.orderId, body.id));
+          await db.insert(purchaseOrderItems).values(
+            computed.items.map((item) => ({
+              orderId: body.id,
+              productId: item.product_id,
+              quantity: String(item.quantity),
+              unitPrice: String(item.unit_price),
+              amount: String(item.amount),
+            }))
+          );
         }
 
         const warehouseId =
-          (updatePayload.warehouse_id as string | null | undefined) ??
-          existing.warehouse_id;
+          (patch.warehouseId as string | null | undefined) ??
+          existing.warehouseId;
 
-        const sync = await syncOrderInventoryOnStatusChange(supabase, {
+        const sync = await syncOrderInventoryOnStatusChange({
           direction: "in",
           previousStatus: existing.status,
           nextStatus,
-          inventoryApplied: Boolean(existing.inventory_applied),
+          inventoryApplied: Boolean(existing.inventoryApplied),
           warehouseId,
           items: nextItems,
         });
-        updatePayload.inventory_applied = sync.inventoryApplied;
+        patch.inventoryApplied = sync.inventoryApplied;
 
-        const { data: order, error: updateError } = await supabase
-          .from(ORDER_TABLE)
-          .update(updatePayload)
-          .eq("id", body.id)
-          .select("*, suppliers(id, code, name), warehouses(id, code, name)")
-          .single();
-        if (updateError) {
-          throw updateError;
-        }
+        const [order] = await db
+          .update(purchaseOrders)
+          .set(patch as any)
+          .where(eq(purchaseOrders.id, body.id))
+          .returning();
 
-        const { data: currentItems, error: currentItemsError } = await supabase
-          .from(ITEM_TABLE)
-          .select("*, products(id, code, name, unit)")
-          .eq("order_id", body.id);
-        if (currentItemsError) {
-          throw currentItemsError;
-        }
+        const currentItems = await db
+          .select({
+            item: purchaseOrderItems,
+            product: {
+              id: products.id,
+              code: products.code,
+              name: products.name,
+              unit: products.unit,
+            },
+          })
+          .from(purchaseOrderItems)
+          .leftJoin(products, eq(products.id, purchaseOrderItems.productId))
+          .where(eq(purchaseOrderItems.orderId, body.id));
 
         return {
           code: 0,
           message: "更新成功",
-          data: { ...order, items: currentItems || [] },
+          data: {
+            ...toOrderApi(order),
+            items: currentItems.map((row) => ({
+              id: row.item.id,
+              order_id: row.item.orderId,
+              product_id: row.item.productId,
+              quantity: row.item.quantity,
+              unit_price: row.item.unitPrice,
+              amount: row.item.amount,
+              products: row.product,
+            })),
+          },
         };
       }
 
@@ -350,38 +431,34 @@ export default defineEventHandler(async (event) => {
           });
         }
 
-        const { data: existing } = await supabase
-          .from(ORDER_TABLE)
-          .select("*")
-          .eq("id", body.id)
-          .single();
-        const { data: items } = await supabase
-          .from(ITEM_TABLE)
-          .select("product_id, quantity")
-          .eq("order_id", body.id);
+        const [existing] = await db
+          .select()
+          .from(purchaseOrders)
+          .where(eq(purchaseOrders.id, body.id))
+          .limit(1);
+        const items = await db
+          .select({
+            product_id: purchaseOrderItems.productId,
+            quantity: purchaseOrderItems.quantity,
+          })
+          .from(purchaseOrderItems)
+          .where(eq(purchaseOrderItems.orderId, body.id));
 
-        if (existing?.inventory_applied) {
-          await syncOrderInventoryOnStatusChange(supabase, {
+        if (existing?.inventoryApplied) {
+          await syncOrderInventoryOnStatusChange({
             direction: "in",
             previousStatus: existing.status,
             nextStatus: "cancelled",
             inventoryApplied: true,
-            warehouseId: existing.warehouse_id,
-            items: (items || []).map((i) => ({
-              product_id: i.product_id as string,
+            warehouseId: existing.warehouseId,
+            items: items.map((i) => ({
+              product_id: i.product_id,
               quantity: Number(i.quantity),
             })),
           });
         }
 
-        const { error } = await supabase
-          .from(ORDER_TABLE)
-          .delete()
-          .eq("id", body.id);
-        if (error) {
-          throw error;
-        }
-
+        await db.delete(purchaseOrders).where(eq(purchaseOrders.id, body.id));
         return { code: 0, message: "删除成功" };
       }
 

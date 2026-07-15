@@ -1,68 +1,92 @@
-import { serverSupabaseServiceRole } from "#supabase/server";
+import { count } from "drizzle-orm";
+import { db } from "../../db";
+import {
+  customers,
+  inventoryStocks,
+  products,
+  purchaseOrders,
+  salesOrders,
+} from "../../db/schema/master";
+import { financePayables, financeReceivables } from "../../db/schema/ops";
 import { handleApiError } from "../_utils/crud";
 import { assertPermission } from "../_utils/permissions";
 
 export default defineEventHandler(async (event) => {
   try {
     await assertPermission(event, "reports:view");
-    const supabase = serverSupabaseServiceRole(event);
 
     const [
-      products,
-      customers,
+      productCount,
+      customerCount,
       sales,
       purchase,
-      stocks,
+      stockCount,
       receivables,
       payables,
     ] = await Promise.all([
-      supabase.from("products").select("id", { count: "exact", head: true }),
-      supabase.from("customers").select("id", { count: "exact", head: true }),
-      supabase.from("sales_orders").select("total_amount, status"),
-      supabase.from("purchase_orders").select("total_amount, status"),
-      supabase
-        .from("inventory_stocks")
-        .select("id", { count: "exact", head: true }),
-      supabase
-        .from("finance_receivables")
-        .select("amount, paid_amount, status"),
-      supabase.from("finance_payables").select("amount, paid_amount, status"),
+      db.select({ value: count() }).from(products),
+      db.select({ value: count() }).from(customers),
+      db
+        .select({
+          totalAmount: salesOrders.totalAmount,
+          status: salesOrders.status,
+        })
+        .from(salesOrders),
+      db
+        .select({
+          totalAmount: purchaseOrders.totalAmount,
+          status: purchaseOrders.status,
+        })
+        .from(purchaseOrders),
+      db.select({ value: count() }).from(inventoryStocks),
+      db
+        .select({
+          amount: financeReceivables.amount,
+          paidAmount: financeReceivables.paidAmount,
+          status: financeReceivables.status,
+        })
+        .from(financeReceivables),
+      db
+        .select({
+          amount: financePayables.amount,
+          paidAmount: financePayables.paidAmount,
+          status: financePayables.status,
+        })
+        .from(financePayables),
     ]);
 
-    const salesTotal = (sales.data || []).reduce(
-      (s, r) => s + Number(r.total_amount || 0),
+    const salesTotal = sales.reduce(
+      (s, r) => s + Number(r.totalAmount || 0),
       0
     );
-    const purchaseTotal = (purchase.data || []).reduce(
-      (s, r) => s + Number(r.total_amount || 0),
+    const purchaseTotal = purchase.reduce(
+      (s, r) => s + Number(r.totalAmount || 0),
       0
     );
-    const openReceivable = (receivables.data || [])
+    const openReceivable = receivables
       .filter((r) => r.status !== "paid" && r.status !== "cancelled")
       .reduce(
-        (s, r) => s + (Number(r.amount || 0) - Number(r.paid_amount || 0)),
+        (s, r) => s + (Number(r.amount || 0) - Number(r.paidAmount || 0)),
         0
       );
-    const openPayable = (payables.data || [])
+    const openPayable = payables
       .filter((r) => r.status !== "paid" && r.status !== "cancelled")
       .reduce(
-        (s, r) => s + (Number(r.amount || 0) - Number(r.paid_amount || 0)),
+        (s, r) => s + (Number(r.amount || 0) - Number(r.paidAmount || 0)),
         0
       );
 
     return {
       code: 0,
-      message: "ok",
+      message: "获取成功",
       data: {
-        productCount: products.count || 0,
-        customerCount: customers.count || 0,
-        salesOrderCount: (sales.data || []).length,
-        salesAmount: Math.round(salesTotal * 100) / 100,
-        purchaseOrderCount: (purchase.data || []).length,
-        purchaseAmount: Math.round(purchaseTotal * 100) / 100,
-        inventorySkuCount: stocks.count || 0,
-        openReceivable: Math.round(openReceivable * 100) / 100,
-        openPayable: Math.round(openPayable * 100) / 100,
+        products: productCount[0]?.value || 0,
+        customers: customerCount[0]?.value || 0,
+        sales_order_amount: salesTotal,
+        purchase_order_amount: purchaseTotal,
+        inventory_skus: stockCount[0]?.value || 0,
+        open_receivable: openReceivable,
+        open_payable: openPayable,
       },
     };
   } catch (error: unknown) {

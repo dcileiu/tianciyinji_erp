@@ -1,115 +1,103 @@
-import { serverSupabaseServiceRole } from "#supabase/server";
+import { desc, eq } from "drizzle-orm";
+import { db } from "../../../db";
+import { customers } from "../../../db/schema/master";
+import { financeReceipts } from "../../../db/schema/ops";
 import { generateOrderNo, handleApiError } from "../../_utils/crud";
 import { assertPermission } from "../../_utils/permissions";
 
-async function bumpReceivable(
-  supabase: ReturnType<typeof serverSupabaseServiceRole>,
-  receivableId: string,
-  amount: number
-) {
-  const { data: rec, error } = await supabase
-    .from("finance_receivables")
-    .select("id, amount, paid_amount")
-    .eq("id", receivableId)
-    .single();
-  if (error || !rec) {
-    throw (
-      error || createError({ statusCode: 404, statusMessage: "应收不存在" })
-    );
-  }
-  const paid = Number(rec.paid_amount || 0) + amount;
-  const total = Number(rec.amount || 0);
-  let status = "open";
-  if (paid <= 0) {
-    status = "open";
-  } else if (paid >= total) {
-    status = "paid";
-  } else {
-    status = "partial";
-  }
-  await supabase
-    .from("finance_receivables")
-    .update({
-      paid_amount: paid,
-      status,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", receivableId);
+function toApi(row: typeof financeReceipts.$inferSelect) {
+  return {
+    id: row.id,
+    receipt_no: row.receiptNo,
+    customer_id: row.customerId,
+    receivable_id: row.receivableId,
+    amount: row.amount,
+    receipt_date: row.receiptDate,
+    method: row.method,
+    remark: row.remark,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
+  };
 }
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
-  const supabase = serverSupabaseServiceRole(event);
-
   try {
     await assertPermission(event, "receipt:view");
-
     if (method === "GET") {
-      const { data, error } = await supabase
-        .from("finance_receipts")
-        .select("*, customers(id, code, name)")
-        .order("created_at", { ascending: false });
-      if (error) {
-        throw error;
-      }
-      return { code: 0, message: "获取成功", data: data || [] };
+      const rows = await db
+        .select({
+          row: financeReceipts,
+          customer: {
+            id: customers.id,
+            code: customers.code,
+            name: customers.name,
+          },
+        })
+        .from(financeReceipts)
+        .leftJoin(customers, eq(customers.id, financeReceipts.customerId))
+        .orderBy(desc(financeReceipts.createdAt));
+      return {
+        code: 0,
+        message: "获取成功",
+        data: rows.map((r) => ({ ...toApi(r.row), customers: r.customer })),
+      };
     }
-
     if (method === "POST") {
       const body = await readBody(event);
       if (!body?.customer_id) {
         throw createError({ statusCode: 400, statusMessage: "客户不能为空" });
       }
-      const amount = Number(body.amount) || 0;
-      const { data, error } = await supabase
-        .from("finance_receipts")
-        .insert([
-          {
-            receipt_no: body.receipt_no || generateOrderNo("RC"),
-            customer_id: body.customer_id,
-            receivable_id: body.receivable_id || null,
-            amount,
-            receipt_date:
-              body.receipt_date || new Date().toISOString().slice(0, 10),
-            method: body.method || "transfer",
-            remark: body.remark || null,
-          },
-        ])
-        .select("*, customers(id, code, name)")
-        .single();
-      if (error) {
-        throw error;
-      }
-      if (body.receivable_id) {
-        await bumpReceivable(supabase, body.receivable_id, amount);
-      }
-      return { code: 0, message: "创建成功", data };
+      const [created] = await db
+        .insert(financeReceipts)
+        .values({
+          receiptNo: body.receipt_no || generateOrderNo("RC"),
+          customerId: body.customer_id,
+          receivableId: body.receivable_id || null,
+          amount: String(body.amount || 0),
+          receiptDate: body.receipt_date || null,
+          method: body.method || "transfer",
+          remark: body.remark || null,
+        })
+        .returning();
+      return { code: 0, message: "创建成功", data: toApi(created) };
     }
-
+    if (method === "PUT") {
+      const body = await readBody(event);
+      if (!body?.id) {
+        throw createError({ statusCode: 400, statusMessage: "ID 不能为空" });
+      }
+      const patch: Record<string, unknown> = { updatedAt: new Date() };
+      if (body.customer_id !== undefined) {
+        patch.customerId = body.customer_id;
+      }
+      if (body.receivable_id !== undefined) {
+        patch.receivableId = body.receivable_id;
+      }
+      if (body.amount !== undefined) {
+        patch.amount = String(body.amount);
+      }
+      if (body.receipt_date !== undefined) {
+        patch.receiptDate = body.receipt_date;
+      }
+      if (body.method !== undefined) {
+        patch.method = body.method;
+      }
+      if (body.remark !== undefined) {
+        patch.remark = body.remark;
+      }
+      const [updated] = await db
+        .update(financeReceipts)
+        .set(patch as any)
+        .where(eq(financeReceipts.id, body.id))
+        .returning();
+      return { code: 0, message: "更新成功", data: toApi(updated) };
+    }
     if (method === "DELETE") {
       const body = await readBody(event);
-      const { data: receipt } = await supabase
-        .from("finance_receipts")
-        .select("*")
-        .eq("id", body.id)
-        .single();
-      const { error } = await supabase
-        .from("finance_receipts")
-        .delete()
-        .eq("id", body.id);
-      if (error) {
-        throw error;
-      }
-      if (receipt?.receivable_id) {
-        await bumpReceivable(
-          supabase,
-          receipt.receivable_id,
-          -Number(receipt.amount || 0)
-        );
-      }
+      await db.delete(financeReceipts).where(eq(financeReceipts.id, body.id));
       return { code: 0, message: "删除成功" };
     }
-
     throw createError({ statusCode: 405, statusMessage: "Method not allowed" });
   } catch (error: unknown) {
     return handleApiError(error);

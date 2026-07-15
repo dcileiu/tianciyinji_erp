@@ -1,23 +1,24 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { and, eq } from "drizzle-orm";
+import { db } from "../../db";
+import { inventoryStocks } from "../../db/schema/master";
 
 type StockItem = { product_id: string; quantity: number };
 
 async function adjustStock(
-  supabase: SupabaseClient,
   warehouseId: string,
   productId: string,
   delta: number
 ) {
-  const { data: existing, error: fetchError } = await supabase
-    .from("inventory_stocks")
-    .select("id, quantity")
-    .eq("warehouse_id", warehouseId)
-    .eq("product_id", productId)
-    .maybeSingle();
-
-  if (fetchError) {
-    throw fetchError;
-  }
+  const [existing] = await db
+    .select({ id: inventoryStocks.id, quantity: inventoryStocks.quantity })
+    .from(inventoryStocks)
+    .where(
+      and(
+        eq(inventoryStocks.warehouseId, warehouseId),
+        eq(inventoryStocks.productId, productId)
+      )
+    )
+    .limit(1);
 
   const current = Number(existing?.quantity || 0);
   const next = Math.round((current + delta) * 1000) / 1000;
@@ -30,41 +31,27 @@ async function adjustStock(
   }
 
   if (existing?.id) {
-    const { error } = await supabase
-      .from("inventory_stocks")
-      .update({
-        quantity: next,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", existing.id);
-    if (error) {
-      throw error;
-    }
+    await db
+      .update(inventoryStocks)
+      .set({ quantity: String(next), updatedAt: new Date() })
+      .where(eq(inventoryStocks.id, existing.id));
     return;
   }
 
-  const { error } = await supabase.from("inventory_stocks").insert([
-    {
-      warehouse_id: warehouseId,
-      product_id: productId,
-      quantity: next,
-      updated_at: new Date().toISOString(),
-    },
-  ]);
-  if (error) {
-    throw error;
-  }
+  await db.insert(inventoryStocks).values({
+    warehouseId,
+    productId,
+    quantity: String(next),
+    updatedAt: new Date(),
+  });
 }
 
 /** 订单确认后扣减(out)或增加(in)库存 */
-export async function applyOrderInventory(
-  supabase: SupabaseClient,
-  opts: {
-    direction: "out" | "in";
-    warehouseId: string;
-    items: StockItem[];
-  }
-) {
+export async function applyOrderInventory(opts: {
+  direction: "out" | "in";
+  warehouseId: string;
+  items: StockItem[];
+}) {
   if (!opts.warehouseId) {
     throw createError({
       statusCode: 400,
@@ -81,22 +68,18 @@ export async function applyOrderInventory(
       continue;
     }
     const delta = opts.direction === "out" ? -qty : qty;
-    await adjustStock(supabase, opts.warehouseId, item.product_id, delta);
+    await adjustStock(opts.warehouseId, item.product_id, delta);
   }
 }
 
 /** 撤销已应用的库存变动 */
-export async function reverseOrderInventory(
-  supabase: SupabaseClient,
-  opts: {
-    direction: "out" | "in";
-    warehouseId: string;
-    items: StockItem[];
-  }
-) {
-  // 原 out 撤销 => in；原 in 撤销 => out
+export async function reverseOrderInventory(opts: {
+  direction: "out" | "in";
+  warehouseId: string;
+  items: StockItem[];
+}) {
   const reverseDirection = opts.direction === "out" ? "in" : "out";
-  await applyOrderInventory(supabase, {
+  await applyOrderInventory({
     direction: reverseDirection,
     warehouseId: opts.warehouseId,
     items: opts.items,
@@ -112,23 +95,20 @@ export function shouldApplyInventory(status: string): boolean {
 /**
  * 根据订单新旧状态同步库存，并返回是否应标记 inventory_applied
  */
-export async function syncOrderInventoryOnStatusChange(
-  supabase: SupabaseClient,
-  opts: {
-    direction: "out" | "in";
-    previousStatus: string;
-    nextStatus: string;
-    inventoryApplied: boolean;
-    warehouseId: string | null | undefined;
-    items: StockItem[];
-  }
-): Promise<{ inventoryApplied: boolean }> {
+export async function syncOrderInventoryOnStatusChange(opts: {
+  direction: "out" | "in";
+  previousStatus: string;
+  nextStatus: string;
+  inventoryApplied: boolean;
+  warehouseId: string | null | undefined;
+  items: StockItem[];
+}): Promise<{ inventoryApplied: boolean }> {
   const wasApplied = opts.inventoryApplied;
   const shouldApply = shouldApplyInventory(opts.nextStatus);
   const wasShouldApply = shouldApplyInventory(opts.previousStatus);
 
   if (!wasApplied && shouldApply) {
-    await applyOrderInventory(supabase, {
+    await applyOrderInventory({
       direction: opts.direction,
       warehouseId: String(opts.warehouseId || ""),
       items: opts.items,
@@ -137,7 +117,7 @@ export async function syncOrderInventoryOnStatusChange(
   }
 
   if (wasApplied && wasShouldApply && !shouldApply) {
-    await reverseOrderInventory(supabase, {
+    await reverseOrderInventory({
       direction: opts.direction,
       warehouseId: String(opts.warehouseId || ""),
       items: opts.items,

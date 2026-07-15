@@ -1,115 +1,103 @@
-import { serverSupabaseServiceRole } from "#supabase/server";
+import { desc, eq } from "drizzle-orm";
+import { db } from "../../../db";
+import { suppliers } from "../../../db/schema/master";
+import { financePayments } from "../../../db/schema/ops";
 import { generateOrderNo, handleApiError } from "../../_utils/crud";
 import { assertPermission } from "../../_utils/permissions";
 
-async function bumpPayable(
-  supabase: ReturnType<typeof serverSupabaseServiceRole>,
-  payableId: string,
-  amount: number
-) {
-  const { data: row, error } = await supabase
-    .from("finance_payables")
-    .select("id, amount, paid_amount")
-    .eq("id", payableId)
-    .single();
-  if (error || !row) {
-    throw (
-      error || createError({ statusCode: 404, statusMessage: "应付不存在" })
-    );
-  }
-  const paid = Number(row.paid_amount || 0) + amount;
-  const total = Number(row.amount || 0);
-  let status = "open";
-  if (paid <= 0) {
-    status = "open";
-  } else if (paid >= total) {
-    status = "paid";
-  } else {
-    status = "partial";
-  }
-  await supabase
-    .from("finance_payables")
-    .update({
-      paid_amount: paid,
-      status,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", payableId);
+function toApi(row: typeof financePayments.$inferSelect) {
+  return {
+    id: row.id,
+    payment_no: row.paymentNo,
+    supplier_id: row.supplierId,
+    payable_id: row.payableId,
+    amount: row.amount,
+    payment_date: row.paymentDate,
+    method: row.method,
+    remark: row.remark,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
+  };
 }
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
-  const supabase = serverSupabaseServiceRole(event);
-
   try {
     await assertPermission(event, "payment:view");
-
     if (method === "GET") {
-      const { data, error } = await supabase
-        .from("finance_payments")
-        .select("*, suppliers(id, code, name)")
-        .order("created_at", { ascending: false });
-      if (error) {
-        throw error;
-      }
-      return { code: 0, message: "获取成功", data: data || [] };
+      const rows = await db
+        .select({
+          row: financePayments,
+          supplier: {
+            id: suppliers.id,
+            code: suppliers.code,
+            name: suppliers.name,
+          },
+        })
+        .from(financePayments)
+        .leftJoin(suppliers, eq(suppliers.id, financePayments.supplierId))
+        .orderBy(desc(financePayments.createdAt));
+      return {
+        code: 0,
+        message: "获取成功",
+        data: rows.map((r) => ({ ...toApi(r.row), suppliers: r.supplier })),
+      };
     }
-
     if (method === "POST") {
       const body = await readBody(event);
       if (!body?.supplier_id) {
         throw createError({ statusCode: 400, statusMessage: "供应商不能为空" });
       }
-      const amount = Number(body.amount) || 0;
-      const { data, error } = await supabase
-        .from("finance_payments")
-        .insert([
-          {
-            payment_no: body.payment_no || generateOrderNo("PM"),
-            supplier_id: body.supplier_id,
-            payable_id: body.payable_id || null,
-            amount,
-            payment_date:
-              body.payment_date || new Date().toISOString().slice(0, 10),
-            method: body.method || "transfer",
-            remark: body.remark || null,
-          },
-        ])
-        .select("*, suppliers(id, code, name)")
-        .single();
-      if (error) {
-        throw error;
-      }
-      if (body.payable_id) {
-        await bumpPayable(supabase, body.payable_id, amount);
-      }
-      return { code: 0, message: "创建成功", data };
+      const [created] = await db
+        .insert(financePayments)
+        .values({
+          paymentNo: body.payment_no || generateOrderNo("PY"),
+          supplierId: body.supplier_id,
+          payableId: body.payable_id || null,
+          amount: String(body.amount || 0),
+          paymentDate: body.payment_date || null,
+          method: body.method || "transfer",
+          remark: body.remark || null,
+        })
+        .returning();
+      return { code: 0, message: "创建成功", data: toApi(created) };
     }
-
+    if (method === "PUT") {
+      const body = await readBody(event);
+      if (!body?.id) {
+        throw createError({ statusCode: 400, statusMessage: "ID 不能为空" });
+      }
+      const patch: Record<string, unknown> = { updatedAt: new Date() };
+      if (body.supplier_id !== undefined) {
+        patch.supplierId = body.supplier_id;
+      }
+      if (body.payable_id !== undefined) {
+        patch.payableId = body.payable_id;
+      }
+      if (body.amount !== undefined) {
+        patch.amount = String(body.amount);
+      }
+      if (body.payment_date !== undefined) {
+        patch.paymentDate = body.payment_date;
+      }
+      if (body.method !== undefined) {
+        patch.method = body.method;
+      }
+      if (body.remark !== undefined) {
+        patch.remark = body.remark;
+      }
+      const [updated] = await db
+        .update(financePayments)
+        .set(patch as any)
+        .where(eq(financePayments.id, body.id))
+        .returning();
+      return { code: 0, message: "更新成功", data: toApi(updated) };
+    }
     if (method === "DELETE") {
       const body = await readBody(event);
-      const { data: payment } = await supabase
-        .from("finance_payments")
-        .select("*")
-        .eq("id", body.id)
-        .single();
-      const { error } = await supabase
-        .from("finance_payments")
-        .delete()
-        .eq("id", body.id);
-      if (error) {
-        throw error;
-      }
-      if (payment?.payable_id) {
-        await bumpPayable(
-          supabase,
-          payment.payable_id,
-          -Number(payment.amount || 0)
-        );
-      }
+      await db.delete(financePayments).where(eq(financePayments.id, body.id));
       return { code: 0, message: "删除成功" };
     }
-
     throw createError({ statusCode: 405, statusMessage: "Method not allowed" });
   } catch (error: unknown) {
     return handleApiError(error);

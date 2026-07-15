@@ -41,8 +41,6 @@ export interface DepartmentQuery {
 }
 
 export const useDepartments = () => {
-  const supabase = useSupabaseClient<Database>();
-
   // 状态
   const departments = ref<DepartmentData[]>([]);
   const loading = ref(false);

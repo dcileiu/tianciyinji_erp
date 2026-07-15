@@ -587,13 +587,12 @@
   const fetchMenuPermissions = async () => {
     try {
       menuLoading.value = true;
-      const { data: menus } = await useSupabaseClient()
-        .from("menus")
-        .select("*")
-        .eq("status", "active")
-        .order("sort", { ascending: true });
+      const res = await $fetch<{ code: number; data: any[] }>("/api/menus", {
+        query: { status: "active" },
+      });
+      const menus = res.code === 0 ? res.data || [] : [];
 
-      if (menus) {
+      if (menus.length) {
         menuPermissions.value = buildMenuTree(menus);
         // 默认展开所有一级菜单
         menuPermissions.value.forEach((menu) => {

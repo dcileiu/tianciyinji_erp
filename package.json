@@ -25,7 +25,6 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@nuxtjs/supabase": "^2.0.9",
     "@pinia/nuxt": "^1.0.0",
     "@tanstack/vue-table": "^8.21.3",
     "@unovis/ts": "^1.6.7",
