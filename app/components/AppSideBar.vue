@@ -119,7 +119,29 @@
 
   // 使用权限系统
   const { loading: permissionLoading } = usePermissions();
-  const { user } = useAuth();
+  const { user, profile, displayName } = useAuth();
+
+  // 当前用户信息
+  const currentUser = computed(() => {
+    if (!user.value) {
+      return {
+        name: "User",
+        email: "user@example.com",
+        avatar: "",
+      };
+    }
+
+    return {
+      name:
+        profile.value?.name ||
+        user.value.name ||
+        displayName.value ||
+        user.value.email?.split("@")[0] ||
+        "User",
+      email: user.value.email || profile.value?.email || "user@example.com",
+      avatar: profile.value?.avatar || "",
+    };
+  });
 
   // 加载状态
   const isLoading = computed(() => permissionLoading.value);
@@ -161,24 +183,4 @@
       icon: Map,
     },
   ]);
-
-  // 当前用户信息
-  const currentUser = computed(() => {
-    if (!user.value) {
-      return {
-        name: "User",
-        email: "user@example.com",
-        avatar: "",
-      };
-    }
-
-    return {
-      name:
-        (user.value.user_metadata?.name as string) ||
-        user.value.email?.split("@")[0] ||
-        "User",
-      email: user.value.email || "user@example.com",
-      avatar: user.value.user_metadata?.avatar_url || "",
-    };
-  });
 </script>

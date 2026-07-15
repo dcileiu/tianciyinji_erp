@@ -81,19 +81,18 @@ export const useDepartments = () => {
   // 获取单个部门
   const getDepartment = async (id: string) => {
     try {
-      const { data, error } = await supabase
-        .from("departments")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (error) {
-        throw error;
+      const result = (await $fetch("/api/departments")) as {
+        code: number;
+        message: string;
+        data: DepartmentData[];
+      };
+      if (result.code !== 0) {
+        throw new Error(result.message || "获取部门失败");
       }
-
+      const data = (result.data || []).find((d) => d.id === id) || null;
       return {
-        code: 0,
-        message: "获取成功",
+        code: data ? 0 : -1,
+        message: data ? "获取成功" : "部门不存在",
         data,
       };
     } catch (err: any) {

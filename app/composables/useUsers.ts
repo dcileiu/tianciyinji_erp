@@ -109,51 +109,31 @@ export const useUsers = () => {
   // 获取单个用户
   const getUser = async (id: string) => {
     try {
-      // 获取用户角色信息
-      const { data: userRoles, error: roleError } = await supabase
-        .from("users_role")
-        .select(`
-          user_id,
-          roles!inner(
-            id,
-            name,
-            code
-          )
-        `)
-        .eq("user_id", id);
+      const result = (await $fetch("/api/users", {
+        query: { page: 1, pageSize: 500 },
+      })) as {
+        code: number;
+        message: string;
+        data: any[];
+      };
 
-      if (roleError) {
-        throw roleError;
+      if (result.code !== 0) {
+        throw new Error(result.message || "获取用户失败");
       }
 
-      // 创建模拟用户数据
-      const mockUser = {
-        id,
-        email:
-          id === "098db796-66e3-4a87-b43c-57ecda4d4ecb"
-            ? "dianci.liu@gmail.com"
-            : `user${id.slice(0, 8)}@example.com`,
-        user_metadata: {
-          name:
-            id === "098db796-66e3-4a87-b43c-57ecda4d4ecb"
-              ? "管理员"
-              : `用户${id.slice(0, 8)}`,
-          username:
-            id === "098db796-66e3-4a87-b43c-57ecda4d4ecb"
-              ? "admin"
-              : `user${id.slice(0, 8)}`,
-          status: "active",
-          department_id: "1",
-        },
-        created_at: new Date().toISOString(),
-        last_sign_in_at: new Date().toISOString(),
-        roles: userRoles?.map((ur) => ur.roles) || [],
-      };
+      const rawUser = (result.data || []).find((u) => u.id === id);
+      if (!rawUser) {
+        return {
+          code: -1,
+          message: "用户不存在",
+          data: null,
+        };
+      }
 
       return {
         code: 0,
         message: "获取成功",
-        data: transformUserData(mockUser),
+        data: transformUserData(rawUser),
       };
     } catch (err: any) {
       return {
