@@ -49,9 +49,9 @@ pnpm check-all           # type-check + lint
 ```
 app/                 # Nuxt 应用（pages / components / composables / middleware / stores）
 server/api/          # Nitro API（users / roles / departments / auth / user）
-supabase/migrations/ # SQL（权限域为主）
-docs/                # 现状文档
-scripts/             # 运维 SQL 等
+server/db/           # Drizzle schema / seed
+docs/                # 现状文档（含 docs/legacy-supabase 历史 SQL）
+scripts/             # 运维脚本等
 ```
 
 - UI 组件：`app/components/ui/`（shadcn-vue），业务组件放 `app/components/`

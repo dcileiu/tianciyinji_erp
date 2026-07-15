@@ -105,6 +105,6 @@ const result = await $fetch("/api/departments", {
 
 ## 🔐 **安全说明**
 
-- 所有需要权限的 API 都使用 `serverSupabaseServiceRole`
+- 所有需要权限的 API 都使用 Session Cookie + `assertPermission`
 - 包含完整的错误处理和参数验证
 - 支持事务操作和关联数据处理
